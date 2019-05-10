@@ -16,7 +16,6 @@ class AuthController extends Controller
     {
         $this->middleware('JWT', ['except' => ['login','signup']]);
     }
-
     
     /**
      * Get a JWT via given credentials.
