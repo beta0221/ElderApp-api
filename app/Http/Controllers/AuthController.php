@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Role;
+use App\UserDetial;
 
 class AuthController extends Controller
 {
@@ -39,7 +41,12 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         
-        User::create($request->all());
+        $user = User::create($request->all());
+        UserDetial::create([
+            'id'=>$user->id,
+        ]);
+        $user->roles()->attach(Role::where('name','user')->first());
+
         return $this->login($request);
     }
 

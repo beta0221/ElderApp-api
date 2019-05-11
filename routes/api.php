@@ -14,10 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group([
-
-    'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
 
     Route::post('login', 'AuthController@login');
@@ -27,3 +24,6 @@ Route::group([
     Route::post('me', 'AuthController@me');
 
 });
+
+
+Route::post('transaction','TransactionController@transaction');
