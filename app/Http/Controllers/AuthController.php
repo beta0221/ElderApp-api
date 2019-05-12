@@ -45,11 +45,11 @@ class AuthController extends Controller
         UserDetial::create([
             'id'=>$user->id,
         ]);
+
         $user->roles()->attach(Role::where('name','user')->first());
 
         return $this->login($request);
     }
-
 
 
     /**
@@ -69,9 +69,11 @@ class AuthController extends Controller
      */
     public function logout()
     {
+
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
+    
     }
 
     /**
@@ -93,10 +95,20 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+
+        $detial = auth()->user()->detial;
+        $user = auth()->user();
+
         return response()->json([
             'access_token' => $token,
+            'email'=>$user->email,
+            'name'=>$user->name,
+            'wallet'=>$detial->wallet,
+            'rank'=>$detial->rank,
+            'img'=>$detial->img,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
         ]);
+
     }
 }
