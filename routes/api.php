@@ -27,3 +27,5 @@ Route::group([
 
 
 Route::post('transaction','TransactionController@transaction');
+Route::post('uploadImage','UserDetialController@uploadImage');
+Route::get('trans-history/{id}','TransactionController@show');

@@ -108,9 +108,11 @@ class TransactionController extends Controller
      * @param  \App\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaction $transaction)
+    public function show($user_id)
     {
-        //
+        $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->get();
+
+        return response()->json($trans);
     }
 
     /**

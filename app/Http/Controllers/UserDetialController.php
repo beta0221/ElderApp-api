@@ -5,12 +5,42 @@ namespace App\Http\Controllers;
 use App\UserDetial;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Image;
 
 class UserDetialController extends Controller
 {
 
     
+    public function uploadImage(Request $request)
+    {
+        
+        //handle image
+        $image = $request->image;  // your base64 encoded
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $imageName = time().'.'.'png';
+        $path = 'images/users/'.$request->name;
 
+        if(!Storage::exists($path)){
+            Storage::makeDirectory($path);   
+        }else{
+            \File::cleanDirectory($path);
+        }
+
+        \File::put($path.'/'.$imageName, base64_decode($image));
+        
+        $user = User::find($request->id);
+        $user_detial = $user->detial;        
+        $user_detial->img = $imageName;
+        $user_detial->save();
+
+
+        return response()->json([
+            'status'=>'ok',
+            'image_name'=>$imageName,
+        ]); 
+    }
 
     /**
      * Display a listing of the resource.
