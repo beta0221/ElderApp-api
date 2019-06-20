@@ -1,0 +1,13 @@
+
+form label.error{
+    color: #dc3545;
+}
+form input.error,form textarea.error{
+    border:2px solid #dc3545;
+}
+
+
+form input.valid{
+    border:2px solid #28a745;
+}
+

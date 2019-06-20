@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin');
 });
+
+
+Route::view('/member/join','member.join');
+
+Route::view('/{any}','admin');
+Route::view('/{any}/{any1}','admin');
