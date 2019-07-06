@@ -3,9 +3,13 @@
     :headers="headers"
     :items="desserts"
     :rows-per-page-items="[15,30]"
+    :pagination.sync="pagination"
+    :total-items="totalDesserts"
+    :loading="loading"
     class="elevation-1"
   >
     <template v-slot:items="props" >
+      <td class="text-xs-left">{{ props.item.id }}</td>
       <td class="text-xs-left" :class="gender[props.item.gender]">{{ props.item.name }}</td>
       <td class="text-xs-left">{{ props.item.email }}</td>
       <td class="text-xs-left">{{ rank[props.item.rank] }}</td>
@@ -16,8 +20,6 @@
       <td class="text-xs-left">
         <v-btn :color="status[props.item.pay_status].color">{{status[props.item.pay_status].text}}</v-btn>
       </td>
-      
-      
     </template>
   </v-data-table>
 </template>
@@ -27,6 +29,12 @@
   export default {
     data () {
       return {
+        totalDesserts: 0,
+        desserts: [],
+        loading: true,
+        pagination: {},
+        
+
         gender:{1:'blue--text',0:'red--text'},
         status:{
           '0':{text:'免費',color:'grey'},
@@ -40,6 +48,7 @@
           '3':'理事',
         },
         headers: [
+          { text: '#', value: 'id' },
           { text: '姓名', value: 'name' },
           { text: '信箱', value: 'email' },
           { text: '位階', value: 'rank' },
@@ -49,25 +58,93 @@
           { text: '上次付款日', value: 'last_pay_date' },
           { text: '會員狀態', value: 'pay_status' },
         ],
-        desserts: [
 
-        ],
+
+
+
       }
     },
-    methods:{
-      getMembers(){
-        axios.get('/api/get-members')
-        .then(res=> {
-          this.desserts = res.data;
-          console.log(res.data);
-        })
-        .catch(function (error) {
-          console.log(error);
+    watch: {
+      pagination: {
+        handler () {
+          this.getDataFromApi()
+            .then(data => {
+              this.desserts = data.items
+              this.totalDesserts = data.total
+            })
+        },
+        deep: true
+      }
+    },
+    // created () {
+      // this.getDataFromApi()
+      //   .then(data => {
+      //     this.desserts = data.items
+      //     this.totalDesserts = data.total
+      //   })
+    // },
+    methods: {
+      getDataFromApi () {
+        this.loading = true
+        return new Promise((resolve, reject) => {
+          const { sortBy, descending, page, rowsPerPage } = this.pagination
+
+          console.log(this.pagination);
+          axios.get('/api/get-members',{
+            params:{
+              'page':this.pagination.page,
+              'rowsPerPage':this.pagination.rowsPerPage,
+              'descending':this.pagination.descending,
+              'sortBy':this.pagination.sortBy,
+            }
+          })
+          .then(res=> {
+            
+            
+            console.log(res.data.users);
+            console.log(res.data.total);
+
+            let items =  res.data.users;
+
+          // const total = items.length
+          const total = res.data.total;
+
+          if (this.pagination.sortBy) {
+            items = items.sort((a, b) => {
+              const sortA = a[sortBy]
+              const sortB = b[sortBy]
+
+              if (descending) {
+                if (sortA < sortB) return 1
+                if (sortA > sortB) return -1
+                return 0
+              } else {
+                if (sortA < sortB) return -1
+                if (sortA > sortB) return 1
+                return 0
+              }
+            })
+          }
+
+          // if (rowsPerPage > 0) {
+          //   items = items.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+          // }
+
+          setTimeout(() => {
+            this.loading = false
+            resolve({
+              items,
+              total
+            })
+          }, 500)
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+
         })
       },
-    },
-    created(){
-      this.getMembers();
     }
   }
 </script>

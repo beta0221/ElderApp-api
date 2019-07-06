@@ -1757,9 +1757,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      totalDesserts: 0,
+      desserts: [],
+      loading: true,
+      pagination: {},
       gender: {
         1: 'blue--text',
         0: 'red--text'
@@ -1788,6 +1794,9 @@ __webpack_require__.r(__webpack_exports__);
         '3': '理事'
       },
       headers: [{
+        text: '#',
+        value: 'id'
+      }, {
         text: '姓名',
         value: 'name'
       }, {
@@ -1811,24 +1820,87 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: '會員狀態',
         value: 'pay_status'
-      }],
-      desserts: []
+      }]
     };
   },
-  methods: {
-    getMembers: function getMembers() {
-      var _this = this;
+  watch: {
+    pagination: {
+      handler: function handler() {
+        var _this = this;
 
-      axios.get('/api/get-members').then(function (res) {
-        _this.desserts = res.data;
-        console.log(res.data);
-      })["catch"](function (error) {
-        console.log(error);
-      });
+        this.getDataFromApi().then(function (data) {
+          _this.desserts = data.items;
+          _this.totalDesserts = data.total;
+        });
+      },
+      deep: true
     }
   },
-  created: function created() {
-    this.getMembers();
+  // created () {
+  // this.getDataFromApi()
+  //   .then(data => {
+  //     this.desserts = data.items
+  //     this.totalDesserts = data.total
+  //   })
+  // },
+  methods: {
+    getDataFromApi: function getDataFromApi() {
+      var _this2 = this;
+
+      this.loading = true;
+      return new Promise(function (resolve, reject) {
+        var _this2$pagination = _this2.pagination,
+            sortBy = _this2$pagination.sortBy,
+            descending = _this2$pagination.descending,
+            page = _this2$pagination.page,
+            rowsPerPage = _this2$pagination.rowsPerPage;
+        console.log(_this2.pagination);
+        axios.get('/api/get-members', {
+          params: {
+            'page': _this2.pagination.page,
+            'rowsPerPage': _this2.pagination.rowsPerPage,
+            'descending': _this2.pagination.descending,
+            'sortBy': _this2.pagination.sortBy
+          }
+        }).then(function (res) {
+          console.log(res.data.users);
+          console.log(res.data.total);
+          var items = res.data.users; // const total = items.length
+
+          var total = res.data.total;
+
+          if (_this2.pagination.sortBy) {
+            items = items.sort(function (a, b) {
+              var sortA = a[sortBy];
+              var sortB = b[sortBy];
+
+              if (descending) {
+                if (sortA < sortB) return 1;
+                if (sortA > sortB) return -1;
+                return 0;
+              } else {
+                if (sortA < sortB) return -1;
+                if (sortA > sortB) return 1;
+                return 0;
+              }
+            });
+          } // if (rowsPerPage > 0) {
+          //   items = items.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+          // }
+
+
+          setTimeout(function () {
+            _this2.loading = false;
+            resolve({
+              items: items,
+              total: total
+            });
+          }, 500);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      });
+    }
   }
 });
 
@@ -37866,13 +37938,25 @@ var render = function() {
     attrs: {
       headers: _vm.headers,
       items: _vm.desserts,
-      "rows-per-page-items": [15, 30]
+      "rows-per-page-items": [15, 30],
+      pagination: _vm.pagination,
+      "total-items": _vm.totalDesserts,
+      loading: _vm.loading
+    },
+    on: {
+      "update:pagination": function($event) {
+        _vm.pagination = $event
+      }
     },
     scopedSlots: _vm._u([
       {
         key: "items",
         fn: function(props) {
           return [
+            _c("td", { staticClass: "text-xs-left" }, [
+              _vm._v(_vm._s(props.item.id))
+            ]),
+            _vm._v(" "),
             _c(
               "td",
               {
