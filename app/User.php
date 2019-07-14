@@ -78,21 +78,18 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class);
     }
 
-    public function detial()
-    {
-        return $this->hasOne('App\UserDetial','id');
-    }
+  
     //database relationship binding
 
     public function updateWallet($give_take,$amount)
     {
-        $user = $this->detial;
+        
         if ($give_take) {
-            $user->wallet += $amount;
+            $this->wallet += $amount;
         }else{
-            $user->wallet -= $amount;
+            $this->wallet -= $amount;
         }
-        $user->save();
+        $this->save();
         
     }
 

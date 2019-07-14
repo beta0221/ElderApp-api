@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\UserDetial;
 use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
@@ -24,8 +23,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy)?$request->sortBy:'id';
 
         $users = DB::table('users')
-        ->join('user_detials','users.id','=','user_detials.id')
-        ->select('users.id','name','email','gender','rank','inviter','inviter_phone','pay_status','join_date','last_pay_date')
+        ->select('id','name','email','gender','rank','inviter','inviter_phone','pay_status','join_date','last_pay_date')
         ->orderBy($orderBy,$ascOrdesc)
         ->skip($skip)
         ->take($rows)

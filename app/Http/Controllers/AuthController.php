@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
-use App\UserDetial;
+
 
 class AuthController extends Controller
 {
@@ -42,9 +42,9 @@ class AuthController extends Controller
     {
         
         $user = User::create($request->all());
-        UserDetial::create([
-            'id'=>$user->id,
-        ]);
+        // UserDetial::create([
+        //     'id'=>$user->id,
+        // ]);
 
         $user->roles()->attach(Role::where('name','user')->first());
 
@@ -105,7 +105,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
 
-        $detial = auth()->user()->detial;
+        
         $user = auth()->user();
 
         return response()->json([
@@ -113,12 +113,42 @@ class AuthController extends Controller
             'user_id'=>$user->id,
             'email'=>$user->email,
             'name'=>$user->name,
-            'wallet'=>$detial->wallet,
-            'rank'=>$detial->rank,
-            'img'=>$detial->img,
+            'wallet'=>$user->wallet,
+            'rank'=>$user->rank,
+            'img'=>$user->img,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
         ]);
 
     }
+
+    public function uploadImage(Request $request)
+    {
+        
+        //handle image
+        $image = $request->image;  // your base64 encoded
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $imageName = time().'.'.'png';
+        $path = 'images/users/'.$request->name;
+
+        if(!Storage::exists($path)){
+            Storage::makeDirectory($path);   
+        }else{
+            \File::cleanDirectory($path);
+        }
+
+        \File::put($path.'/'.$imageName, base64_decode($image));
+        
+        $user = User::find($request->id);
+        $user->img = $imageName;
+        $user->save();
+
+
+        return response()->json([
+            'status'=>'ok',
+            'image_name'=>$imageName,
+        ]); 
+    }
+
 }
