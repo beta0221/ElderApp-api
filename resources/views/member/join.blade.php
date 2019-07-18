@@ -39,33 +39,43 @@
                         </div>
                 </div>
 
-            <form id="validate_form" action='/' method="POST">
-                
+                @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
+
+            <form id="validate_form" action='/member/join' method="POST">
+                {{csrf_field()}}
                   <div class="form-group">
                     <label for="phone">手機號碼</label>
-                    <input type="text" class="form-control" id="phone" name="phone" placeholder="手機號碼" required="true">
+                  <input type="text" class="form-control" id="email" name="email" placeholder="手機號碼" required="true" value="{{old('email')}}">
                   </div>
 
                   <div class="form-group ">
                     <label for="password">密碼</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="密碼" required="true">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="密碼" required="true" >
                   </div>
 
                   <div class="form-group ">
                       <label for="confirm_password">確認密碼</label>
-                      <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="確認密碼" required="true">
+                      <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="確認密碼" required="true" >
                   </div>
                 
                 <div class="form-group">
                   <label for="name">姓名</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="姓名" required="true">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="姓名" required="true" value="{{old('name')}}">
                 </div>
 
                 <div class="form-group">
                   <label for="gender">性別</label>
-                  <select class="form-control" id="gender" name="gender" required="true">
-                    <option>男</option>
-                    <option>女</option>
+                  <select class="form-control" id="gender" name="gender" required="true" >
+                    <option value='1'>男</option>
+                    <option value='0'>女</option>
                   </select>
                 </div>
 
@@ -73,30 +83,30 @@
 
                 <div class="form-group">
                     <label for="area">地區</label>
-                    <select class="form-control" id="area" name="district_id" required="true">
-                      <option>桃園</option>
-                      <option>中壢</option>
-                      <option>平鎮</option>
-                      <option>大園</option>
-                      <option>復興</option>
+                    <select class="form-control" id="area" name="district_id" required="true" >
+                      <option value="1">桃園</option>
+                      <option value="2">中壢</option>
+                      <option value="3">平鎮</option>
+                      <option value="4">大園</option>
+                      <option value="5">復興</option>
                     </select>
                   </div>
 
                 <div class="form-group ">
                     <label for="address">地址</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="地址" required="true">
+                    <input type="text" class="form-control" id="address" name="address" placeholder="地址" required="true" value="{{old('address')}}">
                   </div>
 
                   <hr class="mt-4 mb-4">
                 
                   <div class="form-group ">
                     <label for="inviter">推薦人</label>
-                    <input type="text" class="form-control" id="inviter" name="inviter" placeholder="推薦人" required="true">
+                    <input type="text" class="form-control" id="inviter" name="inviter" placeholder="推薦人" required="true" value="{{old('inviter')}}">
                   </div>
 
                   <div class="form-group ">
                     <label for="inviter_phone">推薦人電話</label>
-                    <input type="text" class="form-control" id="inviter_phone" name="inviter_phone" placeholder="推薦人電話" required="true">
+                    <input type="text" class="form-control" id="inviter_phone" name="inviter_phone" placeholder="推薦人電話" required="true" value="{{old('inviter_phone')}}">
                   </div>
 
 
@@ -117,5 +127,36 @@
 <script src="/js/bootstrap.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js"></script>
-<script src="/js/validate.js"></script>
+<script>
+var gender = '{{ old('gender') }}';
+var district_id = '{{ old('district_id') }}';
+$(document).ready(function(){
+  if(gender){
+    $('[name="gender"]').val(gender);
+  }
+  if (district_id) {
+    $('[name="district_id"]').val(district_id);  
+  }
+});
+
+$().ready(function() {
+    $("#validate_form").validate({
+      rules:{
+        confirm_password:{
+          equalTo:'#password',
+        }
+      }
+    });
+});
+
+jQuery.extend(jQuery.validator.messages, {
+    required: "這是必填欄位",
+    email: "email格式錯誤",
+    maxlength: jQuery.validator.format("最多{0}碼"),
+    minlength: jQuery.validator.format("最少{0}碼"),
+    max: jQuery.validator.format("最多為{0}"),
+    min: jQuery.validator.format("最少為{0}"),
+    equalTo:jQuery.validator.format("與密碼不相符"),
+  });
+</script>
 </html>

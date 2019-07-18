@@ -42,10 +42,6 @@ class AuthController extends Controller
     {
         
         $user = User::create($request->all());
-        // UserDetial::create([
-        //     'id'=>$user->id,
-        // ]);
-
         $user->roles()->attach(Role::where('name','user')->first());
 
         return $this->login($request);
