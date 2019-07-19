@@ -1711,9 +1711,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1844,23 +1841,42 @@ __webpack_require__.r(__webpack_exports__);
   //   })
   // },
   methods: {
-    getDataFromApi: function getDataFromApi() {
+    clickPayStatus: function clickPayStatus(id, index) {
       var _this2 = this;
+
+      axios.post('/api/changePayStatus', {
+        id: id
+      }).then(function (res) {
+        console.log(res);
+
+        if (res.data.s == 1) {
+          if (_this2.desserts[index]['pay_status'] == 3) {
+            _this2.desserts[index]['pay_status'] = 0;
+          } else {
+            _this2.desserts[index]['pay_status']++;
+          }
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getDataFromApi: function getDataFromApi() {
+      var _this3 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this2$pagination = _this2.pagination,
-            sortBy = _this2$pagination.sortBy,
-            descending = _this2$pagination.descending,
-            page = _this2$pagination.page,
-            rowsPerPage = _this2$pagination.rowsPerPage;
-        console.log(_this2.pagination);
+        var _this3$pagination = _this3.pagination,
+            sortBy = _this3$pagination.sortBy,
+            descending = _this3$pagination.descending,
+            page = _this3$pagination.page,
+            rowsPerPage = _this3$pagination.rowsPerPage;
+        console.log(_this3.pagination);
         axios.get('/api/get-members', {
           params: {
-            'page': _this2.pagination.page,
-            'rowsPerPage': _this2.pagination.rowsPerPage,
-            'descending': _this2.pagination.descending,
-            'sortBy': _this2.pagination.sortBy
+            'page': _this3.pagination.page,
+            'rowsPerPage': _this3.pagination.rowsPerPage,
+            'descending': _this3.pagination.descending,
+            'sortBy': _this3.pagination.sortBy
           }
         }).then(function (res) {
           console.log(res.data.users);
@@ -1869,7 +1885,7 @@ __webpack_require__.r(__webpack_exports__);
 
           var total = res.data.total;
 
-          if (_this2.pagination.sortBy) {
+          if (_this3.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -1884,18 +1900,15 @@ __webpack_require__.r(__webpack_exports__);
                 return 0;
               }
             });
-          } // if (rowsPerPage > 0) {
-          //   items = items.slice((page - 1) * rowsPerPage, page * rowsPerPage)
-          // }
-
+          }
 
           setTimeout(function () {
-            _this2.loading = false;
+            _this3.loading = false;
             resolve({
               items: items,
               total: total
             });
-          }, 500);
+          }, 300);
         })["catch"](function (error) {
           console.log(error);
         });
@@ -37996,7 +38009,14 @@ var render = function() {
               [
                 _c(
                   "v-btn",
-                  { attrs: { color: _vm.status[props.item.pay_status].color } },
+                  {
+                    attrs: { color: _vm.status[props.item.pay_status].color },
+                    on: {
+                      click: function($event) {
+                        return _vm.clickPayStatus(props.item.id, props.index)
+                      }
+                    }
+                  },
                   [_vm._v(_vm._s(_vm.status[props.item.pay_status].text))]
                 )
               ],

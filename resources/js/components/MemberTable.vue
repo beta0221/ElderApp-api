@@ -18,7 +18,7 @@
       <td class="text-xs-left">{{ props.item.join_date }}</td>
       <td class="text-xs-left">{{ props.item.last_pay_date }}</td>
       <td class="text-xs-left">
-        <v-btn :color="status[props.item.pay_status].color">{{status[props.item.pay_status].text}}</v-btn>
+        <v-btn @click="clickPayStatus(props.item.id,props.index)" :color="status[props.item.pay_status].color">{{status[props.item.pay_status].text}}</v-btn>
       </td>
     </template>
   </v-data-table>
@@ -58,10 +58,6 @@
           { text: '上次付款日', value: 'last_pay_date' },
           { text: '會員狀態', value: 'pay_status' },
         ],
-
-
-
-
       }
     },
     watch: {
@@ -84,6 +80,26 @@
       //   })
     // },
     methods: {
+      clickPayStatus(id,index){
+
+        axios.post('/api/changePayStatus', {
+          id:id,
+        })
+        .then(res=>{
+          console.log(res);
+          if(res.data.s == 1){
+            if(this.desserts[index]['pay_status'] == 3){
+              this.desserts[index]['pay_status'] = 0;
+            }else{
+              this.desserts[index]['pay_status']++;
+            }
+            
+          }
+        })
+        .catch(error=>{
+          console.log(error);
+        })
+      },
       getDataFromApi () {
         this.loading = true
         return new Promise((resolve, reject) => {
@@ -99,13 +115,9 @@
             }
           })
           .then(res=> {
-            
-            
             console.log(res.data.users);
             console.log(res.data.total);
-
             let items =  res.data.users;
-
           // const total = items.length
           const total = res.data.total;
 
@@ -126,17 +138,13 @@
             })
           }
 
-          // if (rowsPerPage > 0) {
-          //   items = items.slice((page - 1) * rowsPerPage, page * rowsPerPage)
-          // }
-
           setTimeout(() => {
             this.loading = false
             resolve({
               items,
               total
             })
-          }, 500)
+          }, 300)
 
           })
           .catch(function (error) {
