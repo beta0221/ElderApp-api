@@ -1797,10 +1797,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -38170,20 +38166,6 @@ var render = function() {
             }
           },
           [
-            _c("v-select", {
-              attrs: {
-                label: "Food Type",
-                items: ["vegetable", "meat", "fruit"]
-              },
-              model: {
-                value: _vm.search,
-                callback: function($$v) {
-                  _vm.search = $$v
-                },
-                expression: "search"
-              }
-            }),
-            _vm._v(" "),
             _c(
               "v-card",
               [
