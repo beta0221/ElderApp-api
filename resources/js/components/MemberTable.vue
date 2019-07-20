@@ -8,11 +8,7 @@
       v-model="dialog"
       max-width="290"
     >
-    <v-select
-                label="Food Type"
-                :items="['vegetable', 'meat', 'fruit']"
-                v-model="search"
-        ></v-select>
+    
       <v-card>
         <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
 

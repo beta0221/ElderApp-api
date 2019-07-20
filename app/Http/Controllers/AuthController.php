@@ -55,15 +55,15 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $detial = auth()->user()->detial;
+        
         $user = auth()->user();
 
         return response()->json([
             'user_id'=>$user->id,
             'email'=>$user->email,
             'name'=>$user->name,
-            'wallet'=>$detial->wallet,
-            'rank'=>$detial->rank,
+            'wallet'=>$user->wallet,
+            'rank'=>$user->rank,
         ]);
     }
 
