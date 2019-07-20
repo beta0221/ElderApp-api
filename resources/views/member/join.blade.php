@@ -110,7 +110,7 @@
                   </div>
 
 
-                <button type="submit" class="btn btn-secondary mt-4 btn-block">確定送出</button>
+                <div onclick="inviter_check();" class="btn btn-secondary mt-4 btn-block">確定送出</div>
               </form>
 
 
@@ -122,7 +122,11 @@
 
 
 </body>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> --}}
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="/js/bootstrap.min.js"></script>
 
@@ -138,6 +142,30 @@ $(document).ready(function(){
     $('[name="district_id"]').val(district_id);  
   }
 });
+
+function inviter_check(){
+  $.ajax({
+			type:'GET',
+			url: '/api/inviterCheck',
+      dataType:'json',
+      data:{
+        'inviter':$('[name="inviter"]').val(),
+        'inviter_phone':$('[name="inviter_phone"]').val(),
+      },
+			success: function (response) {
+        if(response.s == 1){
+          $('#validate_form').submit();
+        }else if(response.s == 0){
+          alert('對應此聯絡電話的用戶並不存在，請檢查是否輸入錯誤或向推薦人確認。')
+        }
+        console.log(response);
+      },
+      error: function (error) {
+        console.log(error);
+        // alert('錯誤');
+      },
+		});
+}
 
 $().ready(function() {
     $("#validate_form").validate({

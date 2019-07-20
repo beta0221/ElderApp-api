@@ -17,7 +17,20 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','gender','phone','address','img','district_id','district_name','inviter','inviter_phone','pay_status'
+        'name',
+        'email',
+        'password',
+        'gender',
+        'phone',
+        'address',
+        'img',
+        'district_id',
+        'district_name',
+        'inviter',
+        'inviter_phone',
+        'pay_status',
+        'last_pay_date',
+        'valid',
     ];
 
     /**
@@ -131,6 +144,11 @@ class User extends Authenticatable implements JWTSubject
     public function hasRole($role)
     {
         return null !== $this->roles()->where(‘name’, $role)->first();
+    }
+
+    public function payHistory()
+    {
+        return $this->hasMany('App\PayDate','user_id');
     }
 
 }

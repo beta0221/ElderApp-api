@@ -1756,9 +1756,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      dialog: false,
+      dialogName: '',
+      dialogText: '',
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -1766,6 +1814,16 @@ __webpack_require__.r(__webpack_exports__);
       gender: {
         1: 'blue--text',
         0: 'red--text'
+      },
+      valid: {
+        0: {
+          text: '無效',
+          color: 'red--text'
+        },
+        1: {
+          text: '有效',
+          color: 'green--text'
+        }
       },
       status: {
         '0': {
@@ -1810,10 +1868,13 @@ __webpack_require__.r(__webpack_exports__);
         value: 'inviter_phone'
       }, {
         text: '入會日期',
-        value: 'join_date'
+        value: 'created_at'
       }, {
         text: '上次付款日',
         value: 'last_pay_date'
+      }, {
+        text: '效期',
+        value: 'valid'
       }, {
         text: '會員狀態',
         value: 'pay_status'
@@ -1841,51 +1902,142 @@ __webpack_require__.r(__webpack_exports__);
   //   })
   // },
   methods: {
-    clickPayStatus: function clickPayStatus(id, index) {
+    customFilter: function customFilter(items, search, filter) {
+      console.log({
+        'items': items,
+        'search': search,
+        'filter': filter
+      });
+      search = search.toString().toLowerCase();
+      return items.filter(function (row) {
+        return filter(row["type"], search);
+      });
+    },
+    toValid: function toValid(id, index) {
       var _this2 = this;
 
-      axios.post('/api/changePayStatus', {
-        id: id
-      }).then(function (res) {
-        console.log(res);
-
-        if (res.data.s == 1) {
-          if (_this2.desserts[index]['pay_status'] == 3) {
-            _this2.desserts[index]['pay_status'] = 0;
-          } else {
-            _this2.desserts[index]['pay_status']++;
+      if (this.desserts[index]['valid'] == 0 && this.desserts[index]['last_pay_date'] != null) {
+        axios.post('/api/toValid', {
+          id: id
+        }).then(function (res) {
+          if (res.data.s == 1) {
+            _this2.desserts[index]['valid'] = 1;
+            _this2.desserts[index]['last_pay_date'] = res.data.d;
           }
+
+          console.log(res);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    },
+    getMemberDetail: function getMemberDetail(id, name) {
+      var _this3 = this;
+
+      this.dialog = true;
+      axios.get("/api/getMemberDetail/".concat(id)).then(function (res) {
+        if (res.data.length != 0) {
+          var text = "";
+          text += '紅包餘額：' + res.data.wallet + '<br>';
+          text += '地址：' + res.data.address + '<br>';
+          text += '地區：' + res.data.district_id + '<br>';
+          text += '緊急聯絡人：' + res.data.emg_contact + '<br>';
+          text += '緊急聯絡電話：' + res.data.emg_phone + '<br>';
+          _this3.dialogText = text;
+        }
+
+        _this3.dialogName = name;
+        console.log(res);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getPayHistory: function getPayHistory(id, name) {
+      var _this4 = this;
+
+      this.dialog = true;
+      axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
+        _this4.dialogName = name;
+
+        if (res.data.length != 0) {
+          var text = '';
+
+          for (var i in res.data) {
+            text += res.data[i]['created_at'].substring(0, 10) + '<br>'; // console.log(res.data[i]['created_at']);
+          }
+
+          _this4.dialogText = text;
+        } else {
+          _this4.dialogText = '';
+        } // console.log(res);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    executeExpired: function executeExpired() {
+      var _this5 = this;
+
+      axios.post('/api/executeExpired', {}).then(function (res) {
+        if (res.data.s == 1) {
+          _this5.getDataFromApi().then(function (data) {
+            _this5.desserts = data.items;
+            _this5.totalDesserts = data.total;
+          });
+        } else {
+          alert('系統錯誤，未正常運作。');
         }
       })["catch"](function (error) {
         console.log(error);
       });
     },
+    clickPayStatus: function clickPayStatus(id, index) {
+      var _this6 = this;
+
+      if (this.desserts[index]['pay_status'] < 3) {
+        axios.post('/api/changePayStatus', {
+          id: id
+        }).then(function (res) {
+          // console.log(res);
+          if (res.data.s == 1) {
+            _this6.desserts[index]['pay_status']++;
+          }
+
+          if (_this6.desserts[index]['pay_status'] == 3) {
+            _this6.desserts[index]['last_pay_date'] = res.data.d;
+            _this6.desserts[index]['valid'] = 1;
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    },
     getDataFromApi: function getDataFromApi() {
-      var _this3 = this;
+      var _this7 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this3$pagination = _this3.pagination,
-            sortBy = _this3$pagination.sortBy,
-            descending = _this3$pagination.descending,
-            page = _this3$pagination.page,
-            rowsPerPage = _this3$pagination.rowsPerPage;
-        console.log(_this3.pagination);
+        var _this7$pagination = _this7.pagination,
+            sortBy = _this7$pagination.sortBy,
+            descending = _this7$pagination.descending,
+            page = _this7$pagination.page,
+            rowsPerPage = _this7$pagination.rowsPerPage; // console.log(this.pagination);
+
         axios.get('/api/get-members', {
           params: {
-            'page': _this3.pagination.page,
-            'rowsPerPage': _this3.pagination.rowsPerPage,
-            'descending': _this3.pagination.descending,
-            'sortBy': _this3.pagination.sortBy
+            'page': _this7.pagination.page,
+            'rowsPerPage': _this7.pagination.rowsPerPage,
+            'descending': _this7.pagination.descending,
+            'sortBy': _this7.pagination.sortBy
           }
         }).then(function (res) {
-          console.log(res.data.users);
-          console.log(res.data.total);
+          // console.log(res.data.users);
+          // console.log(res.data.total);
           var items = res.data.users; // const total = items.length
 
           var total = res.data.total;
 
-          if (_this3.pagination.sortBy) {
+          if (_this7.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -1903,7 +2055,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this3.loading = false;
+            _this7.loading = false;
             resolve({
               items: items,
               total: total
@@ -6442,6 +6594,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.side-bar{\n    position: absolute;\n    left: 0;\n    top :0;\n    width: 200px;\n    height: 100%;\n}\n.content{\n    position: absolute;\n    left: 200px;\n    top: 0;\n    height: 100%;\n    width: calc(100% - 200px);\n    overflow-y: scroll;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.history,.valid,.name{\n  cursor:pointer;\n}\n.history:hover,.valid:hover,.name:hover{\n  background-color: lightgrey;\n  color:#fff;\n}\n", ""]);
 
 // exports
 
@@ -37319,6 +37490,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MemberTable.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -37946,87 +38147,211 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-data-table", {
-    staticClass: "elevation-1",
-    attrs: {
-      headers: _vm.headers,
-      items: _vm.desserts,
-      "rows-per-page-items": [15, 30],
-      pagination: _vm.pagination,
-      "total-items": _vm.totalDesserts,
-      loading: _vm.loading
-    },
-    on: {
-      "update:pagination": function($event) {
-        _vm.pagination = $event
-      }
-    },
-    scopedSlots: _vm._u([
-      {
-        key: "items",
-        fn: function(props) {
-          return [
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.id))
-            ]),
-            _vm._v(" "),
-            _c(
-              "td",
-              {
-                staticClass: "text-xs-left",
-                class: _vm.gender[props.item.gender]
+  return _c("div", [
+    _c(
+      "div",
+      [
+        _c(
+          "v-btn",
+          { attrs: { color: "info" }, on: { click: _vm.executeExpired } },
+          [_vm._v("執行效期檢查")]
+        ),
+        _vm._v(" "),
+        _c(
+          "v-dialog",
+          {
+            attrs: { "max-width": "290" },
+            model: {
+              value: _vm.dialog,
+              callback: function($$v) {
+                _vm.dialog = $$v
               },
-              [_vm._v(_vm._s(props.item.name))]
-            ),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.email))
-            ]),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(_vm.rank[props.item.rank]))
-            ]),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.inviter))
-            ]),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.inviter_phone))
-            ]),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.join_date))
-            ]),
-            _vm._v(" "),
-            _c("td", { staticClass: "text-xs-left" }, [
-              _vm._v(_vm._s(props.item.last_pay_date))
-            ]),
+              expression: "dialog"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: {
+                label: "Food Type",
+                items: ["vegetable", "meat", "fruit"]
+              },
+              model: {
+                value: _vm.search,
+                callback: function($$v) {
+                  _vm.search = $$v
+                },
+                expression: "search"
+              }
+            }),
             _vm._v(" "),
             _c(
-              "td",
-              { staticClass: "text-xs-left" },
+              "v-card",
               [
+                _c("v-card-title", { staticClass: "headline" }, [
+                  _vm._v("姓名：" + _vm._s(_vm.dialogName))
+                ]),
+                _vm._v(" "),
+                _c("v-card-text", [
+                  _c("p", { domProps: { innerHTML: _vm._s(_vm.dialogText) } })
+                ]),
+                _vm._v(" "),
                 _c(
-                  "v-btn",
-                  {
-                    attrs: { color: _vm.status[props.item.pay_status].color },
-                    on: {
-                      click: function($event) {
-                        return _vm.clickPayStatus(props.item.id, props.index)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.status[props.item.pay_status].text))]
+                  "v-card-actions",
+                  [
+                    _c("v-spacer"),
+                    _vm._v(" "),
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "green darken-1", flat: "flat" },
+                        on: {
+                          click: function($event) {
+                            _vm.dialog = false
+                          }
+                        }
+                      },
+                      [_vm._v("\n            關閉\n          ")]
+                    )
+                  ],
+                  1
                 )
               ],
               1
             )
-          ]
-        }
-      }
-    ])
-  })
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            headers: _vm.headers,
+            items: _vm.desserts,
+            "rows-per-page-items": [15, 30],
+            pagination: _vm.pagination,
+            "total-items": _vm.totalDesserts,
+            loading: _vm.loading
+          },
+          on: {
+            "update:pagination": function($event) {
+              _vm.pagination = $event
+            }
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "items",
+              fn: function(props) {
+                return [
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.id))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    {
+                      staticClass: "text-xs-left name",
+                      class: _vm.gender[props.item.gender],
+                      on: {
+                        click: function($event) {
+                          return _vm.getMemberDetail(
+                            props.item.id,
+                            props.item.name
+                          )
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(props.item.name))]
+                  ),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.email))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(_vm.rank[props.item.rank]))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.inviter))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.inviter_phone))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.created_at.substring(0, 10)))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    {
+                      staticClass: "text-xs-left history",
+                      on: {
+                        click: function($event) {
+                          return _vm.getPayHistory(
+                            props.item.id,
+                            props.item.name
+                          )
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(props.item.last_pay_date))]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    {
+                      staticClass: "text-xs-left valid",
+                      class: _vm.valid[props.item.valid].color,
+                      on: {
+                        click: function($event) {
+                          return _vm.toValid(props.item.id, props.index)
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(_vm.valid[props.item.valid].text))]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    { staticClass: "text-xs-left" },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: _vm.status[props.item.pay_status].color
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.clickPayStatus(
+                                props.item.id,
+                                props.index
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.status[props.item.pay_status].text))]
+                      )
+                    ],
+                    1
+                  )
+                ]
+              }
+            }
+          ])
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -79142,7 +79467,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MemberTable_vue_vue_type_template_id_512d8239___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MemberTable.vue?vue&type=template&id=512d8239& */ "./resources/js/components/MemberTable.vue?vue&type=template&id=512d8239&");
 /* harmony import */ var _MemberTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MemberTable.vue?vue&type=script&lang=js& */ "./resources/js/components/MemberTable.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MemberTable.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -79150,7 +79477,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _MemberTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _MemberTable_vue_vue_type_template_id_512d8239___WEBPACK_IMPORTED_MODULE_0__["render"],
   _MemberTable_vue_vue_type_template_id_512d8239___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -79179,6 +79506,22 @@ component.options.__file = "resources/js/components/MemberTable.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MemberTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MemberTable.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MemberTable.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MemberTable.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MemberTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

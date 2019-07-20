@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use App\PayDate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 
@@ -25,7 +26,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name', 'email', 'gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'join_date', 'last_pay_date')
+            ->select('id', 'name', 'email', 'gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
@@ -75,17 +76,80 @@ class MemberController extends Controller
     public function changePayStatus(Request $request){
         $user = User::where('id',$request->id)->firstOrFail();
         $p = $user->pay_status;
-        if ($p == 3) {
-            $p = 0;
-        }else{
+        if ($p < 3) {
             $p++;
+            $user->pay_status =$p;
         }
-        $user->update(['pay_status'=>$p]);
 
-        // $user->pay_status = $p;
-        // $user->save();
+        if($p == 3){
+            $user->last_pay_date = date('Y-m-d');
+            $user->valid = 1;
+            PayDate::create(['user_id'=>$request->id]);
+        }
+        $user->save();
 
+        return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d')],Response::HTTP_ACCEPTED);
+
+    }
+
+    public function getPayHistory($id){
+
+        $user = User::findOrFail($id);
+        
+
+        return response()->json($user->payHistory()->get());
+    }
+
+    public function getMemberDetail($id){
+        
+        $user = User::findOrFail($id);
+
+        return response()->json($user);
+
+    }
+
+    public function executeExpired(Request $request){
+
+        DB::update('update users set valid = 0 WHERE last_pay_date < DATE_SUB(NOW(),INTERVAL 1 YEAR)');
+        
         return response(['s'=>1,'m'=>'Updated'],Response::HTTP_ACCEPTED);
+    }
+
+    public function toValid(Request $request){
+        $user = User::where('id',$request->id)->firstOrFail();
+        if($user->valid == 0 && $user->last_pay_date != null){
+            $user->update([
+                'valid'=>1,
+                'last_pay_date'=>date('Y-m-d'),
+                ]);
+            PayDate::create(['user_id'=>$request->id]);
+            return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d')],Response::HTTP_ACCEPTED);
+        }else{
+            return response(['s'=>0,'m'=>'not allowed to valid'],Response::HTTP_ACCEPTED);
+        }
+
+    }
+
+    public function inviterCheck(Request $request){
+        
+        
+        $inviters = User::where('name',$request->inviter)->where('email',$request->inviter_phone)->get();
+        
+        if(count($inviters) <= 0){
+            return response()->json([
+                's'=>0,
+            ]);
+        }else if(count($inviters) == 1){
+            return response()->json([
+                's'=>1,
+            ]);
+        }else{
+            return response()->json([
+                's'=>2,
+                'inviters'=>$inviters,
+            ]);
+        }
+
 
     }
 
