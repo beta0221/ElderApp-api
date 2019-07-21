@@ -79,7 +79,15 @@
                   </select>
                 </div>
 
-                
+                <div class="form-group">
+                  <label for="birthdate">出生年月日</label>
+                  <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="出生年月日" required="true" value="{{old('birthdate')}}">
+                </div>
+
+                <div class="form-group">
+                  <label for="id_number">身分證字號</label>
+                  <input type="text" class="form-control" id="id_number" name="id_number" placeholder="身分證字號" required="true" value="{{old('id_number')}}">
+                </div>
 
                 <div class="form-group">
                     <label for="area">地區</label>
@@ -107,6 +115,15 @@
                   <div class="form-group ">
                     <label for="inviter_phone">推薦人電話</label>
                     <input type="text" class="form-control" id="inviter_phone" name="inviter_phone" placeholder="推薦人電話" required="true" value="{{old('inviter_phone')}}">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pay_method">繳費方式</label>
+                    <select class="form-control" id="pay_method" name="pay_method" required="true" >
+                      <option value=''>請選擇繳費方式</option>
+                      <option value='1'>推薦人代收</option>
+                      <option value='0'>自行繳費</option>
+                    </select>
                   </div>
 
 

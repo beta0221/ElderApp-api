@@ -53,10 +53,13 @@ class MemberController extends Controller
             'password' => 'required',
             'name' => 'required',
             'gender' => 'required',
+            'birthdate'=>'required',
+            'id_number'=>'required',
             'district_id' => 'required',
             'address' => 'required',
             'inviter' => 'required',
             'inviter_phone' => 'required',
+            'pay_method'=>'required',
         ]);
 
         $request->merge([
