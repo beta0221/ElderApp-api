@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
-
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -128,6 +128,8 @@ class AuthController extends Controller
         $imageName = time().'.'.'png';
         $path = 'images/users/'.$request->name;
 
+
+        
         if(!Storage::exists($path)){
             Storage::makeDirectory($path);   
         }else{
