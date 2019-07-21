@@ -33,7 +33,7 @@
 
                 <div class="jumbotron jumbotron-fluid">
                         <div class="container">
-                          <h1 class="display-4 pl-4 pr-4">銀髮學院會員申請</h1>
+                          <h1 class="display-4 pl-4 pr-4">桃園市銀髮族協會</h1>
                           <p class="lead pl-4 pr-4">桃園銀髮學院成立於2015年9月</p>
                           <p class="lead pl-4 pr-4">本會主要成立宗旨為協助政府機關湍展銀髮族之權益・福利・政策與法令，並研究建議事項</p>
                         </div>
@@ -121,8 +121,8 @@
                     <label for="pay_method">繳費方式</label>
                     <select class="form-control" id="pay_method" name="pay_method" required="true" >
                       <option value=''>請選擇繳費方式</option>
-                      <option value='1'>推薦人代收</option>
-                      <option value='0'>自行繳費</option>
+                      <option value='1'>推薦人代收(禮品由代收人負責交付)</option>
+                      <option value='0'>自行繳費(自行領取禮品)</option>
                     </select>
                   </div>
 
