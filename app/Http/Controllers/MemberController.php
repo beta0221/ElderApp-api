@@ -160,7 +160,7 @@ class MemberController extends Controller
         
         $inviter = User::where('id_code',$request->inviter_id_code)->first();
         
-        if(count($inviter) <= 0){
+        if(!$inviter){
             return response()->json([
                 's'=>0,
             ]);
