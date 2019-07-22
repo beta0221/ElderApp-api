@@ -52,8 +52,8 @@
             <form id="validate_form" action='/member/join' method="POST">
                 {{csrf_field()}}
                   <div class="form-group">
-                    <label for="phone">手機號碼</label>
-                  <input type="text" class="form-control" id="email" name="email" placeholder="手機號碼" required="true" value="{{old('email')}}">
+                    <label for="phone">會員帳號(建議使用手機或Email)</label>
+                  <input type="text" class="form-control" id="email" name="email" placeholder="會員帳號(建議使用手機或Email)" required="true" value="{{old('email')}}">
                   </div>
 
                   <div class="form-group ">
@@ -95,8 +95,16 @@
                       <option value="1">桃園</option>
                       <option value="2">中壢</option>
                       <option value="3">平鎮</option>
-                      <option value="4">大園</option>
-                      <option value="5">復興</option>
+                      <option value="4">八德</option>
+                      <option value="5">龜山</option>
+                      <option value="6">蘆竹</option>
+                      <option value="7">大園</option>
+                      <option value="8">觀音</option>
+                      <option value="9">新屋</option>
+                      <option value="10">楊梅</option>
+                      <option value="11">龍潭</option>
+                      <option value="12">大溪</option>
+                      <option value="13">復興</option>
                     </select>
                   </div>
 
@@ -106,17 +114,7 @@
                   </div>
 
                   <hr class="mt-4 mb-4">
-                
-                  <div class="form-group ">
-                    <label for="inviter">推薦人</label>
-                    <input type="text" class="form-control" id="inviter" name="inviter" placeholder="推薦人" required="true" value="{{old('inviter')}}">
-                  </div>
-
-                  <div class="form-group ">
-                    <label for="inviter_phone">推薦人電話</label>
-                    <input type="text" class="form-control" id="inviter_phone" name="inviter_phone" placeholder="推薦人電話" required="true" value="{{old('inviter_phone')}}">
-                  </div>
-
+                  
                   <div class="form-group">
                     <label for="pay_method">繳費方式</label>
                     <select class="form-control" id="pay_method" name="pay_method" required="true" >
@@ -125,6 +123,18 @@
                       <option value='0'>自行繳費(自行領取禮品)</option>
                     </select>
                   </div>
+
+                  {{-- <div class="form-group inviter-field d-none">
+                    <label for="inviter">推薦人</label>
+                    <input type="text" class="form-control" id="inviter" name="inviter" placeholder="推薦人" required="true" value="{{old('inviter')}}">
+                  </div> --}}
+
+                  <div class="form-group inviter-field d-none">
+                    <label for="inviter_id_code">推薦人會員編號</label>
+                    <input type="text" class="form-control" id="inviter_id_code" name="inviter_id_code" placeholder="推薦人會員編號" required="true" value="{{old('inviter_id_code')}}">
+                  </div>
+
+                  
 
 
                 <div onclick="inviter_check();" class="btn btn-secondary mt-4 btn-block">確定送出</div>
@@ -158,22 +168,37 @@ $(document).ready(function(){
   if (district_id) {
     $('[name="district_id"]').val(district_id);  
   }
+  $('#pay_method').change(function(){
+    if($(this).val() == 1){
+      $('.inviter-field').removeClass('d-none');
+    }else{
+      $('.inviter-field').addClass('d-none');
+    }
+    
+  })
 });
 
 function inviter_check(){
-  $.ajax({
+  if($('#pay_method').val() == 1){
+
+    $.ajax({
 			type:'GET',
 			url: '/api/inviterCheck',
       dataType:'json',
       data:{
-        'inviter':$('[name="inviter"]').val(),
-        'inviter_phone':$('[name="inviter_phone"]').val(),
+        // 'inviter':$('[name="inviter"]').val(),
+        'inviter_id_code':$('[name="inviter_id_code"]').val(),
       },
 			success: function (response) {
         if(response.s == 1){
-          $('#validate_form').submit();
+
+          var r = confirm(`確認推薦人姓名為：${response.inviter}`);
+          if(r){
+            $('#validate_form').submit();
+          }
+          
         }else if(response.s == 0){
-          alert('對應此聯絡電話的用戶並不存在，請檢查是否輸入錯誤或向推薦人確認。')
+          alert('此會員編號用戶並不存在，請檢查是否輸入錯誤或向推薦人確認。');
         }
         console.log(response);
       },
@@ -182,6 +207,11 @@ function inviter_check(){
         // alert('錯誤');
       },
 		});
+
+  }else{
+    $('#validate_form').submit();
+  }
+
 }
 
 $().ready(function() {

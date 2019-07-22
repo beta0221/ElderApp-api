@@ -57,23 +57,45 @@ class MemberController extends Controller
             'id_number'=>'required',
             'district_id' => 'required',
             'address' => 'required',
-            'inviter' => 'required',
-            'inviter_phone' => 'required',
+            // 'inviter' => 'required',
+            // 'inviter_id_code' => 'required',
             'pay_method'=>'required',
         ]);
+
+        if($request->pay_method == 1){
+            $inviter = User::where('id_code',$request->inviter_id_code)->firstOrFail();
+            $request->merge([
+                'inviter'=>$inviter->name,
+                'inviter_phone'=>$inviter->phone,
+            ]);    
+        }
+        
 
         $request->merge([
             'pay_status'=>1,
         ]);
         
+        
+
+
         try {
             $user = User::create($request->all());
             $user->roles()->attach(Role::where('name', 'user')->first());
+            $id = $user->id;
+
+            while (strlen($id) < 4) {
+                $id = '0'.$id;
+            }
+
+            $id_code = 'H' . substr(date('Y'),-2) . date('m') . $id . rand(0,9);
+
+            $user->update(['id_code'=>$id_code]);
+
         } catch (\Throwable $th) {
             return response($th);
         }
 
-        return view('member.welcome');
+        return view('member.welcome',['id_code'=>$id_code]);
     }
 
     public function changePayStatus(Request $request){
@@ -136,20 +158,16 @@ class MemberController extends Controller
     public function inviterCheck(Request $request){
         
         
-        $inviters = User::where('name',$request->inviter)->where('email',$request->inviter_phone)->get();
+        $inviter = User::where('id_code',$request->inviter_id_code)->first();
         
-        if(count($inviters) <= 0){
+        if(count($inviter) <= 0){
             return response()->json([
                 's'=>0,
             ]);
-        }else if(count($inviters) == 1){
-            return response()->json([
-                's'=>1,
-            ]);
         }else{
             return response()->json([
-                's'=>2,
-                'inviters'=>$inviters,
+                's'=>1,
+                'inviter'=>$inviter->name,
             ]);
         }
 
