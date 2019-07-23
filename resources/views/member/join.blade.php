@@ -130,11 +130,9 @@
                   </div> --}}
 
                   <div class="form-group inviter-field d-none">
-                    <label for="inviter_id_code">推薦人會員編號</label>
-                    <input type="text" class="form-control" id="inviter_id_code" name="inviter_id_code" placeholder="推薦人會員編號" required="true" value="{{old('inviter_id_code')}}">
+                    <label for="inviter_id_code">推薦人手機或會員編號</label>
+                    <input type="text" class="form-control" id="inviter_id_code" name="inviter_id_code" placeholder="推薦人手機或會員編號" required="true" value="{{old('inviter_id_code')}}">
                   </div>
-
-                  
 
 
                 <div onclick="inviter_check();" class="btn btn-secondary mt-4 btn-block">確定送出</div>
@@ -179,7 +177,7 @@ $(document).ready(function(){
 });
 
 function inviter_check(){
-  if($('#pay_method').val() == 1){
+  if($('#pay_method').val() == 1 && $('#inviter_id_code').val()){
 
     $.ajax({
 			type:'GET',

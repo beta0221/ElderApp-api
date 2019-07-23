@@ -11,6 +11,17 @@
         body{
             padding: 40px 0 ;
         }
+        .line-btn{
+            text-align: center;
+            font-size: 40px;
+            padding: 24px 0;
+            background-color: #00c300;
+            color: #fff;
+            cursor: pointer;
+        }
+        .line-btn:hover{
+            opacity: 0.8;
+        }
     </style>
 </head>
 
@@ -26,9 +37,18 @@
                         <p class="lead pl-4 pr-4">等待會員資格生肖可能需要2-3個工作天。</p>
                     </div>
                 </div>
+                <div style="text-align:center;" class="mb-4">
+                    <h2>歡迎加入！</h2>
+                </div>
+                <div>
+                    <div class="line-btn" onclick='location.href="https://line.me/R/ti/p/%40vsc579"'>
+                        LINE＠ VSC579 
+                    </div>
+                </div>
 
             </div>
         </div>
+        
     </div>
 
 </body>

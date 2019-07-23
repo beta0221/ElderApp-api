@@ -63,7 +63,10 @@ class MemberController extends Controller
         ]);
 
         if($request->pay_method == 1){
-            $inviter = User::where('id_code',$request->inviter_id_code)->firstOrFail();
+            $inviter = User::where('id_code',$request->inviter_id_code)->first();
+            if(!$inviter){
+                $inviter = User::where('phone',$request->inviter_id_code)->firstOrFail();
+            }
             $request->merge([
                 'inviter'=>$inviter->name,
                 'inviter_phone'=>$inviter->phone,
@@ -157,9 +160,15 @@ class MemberController extends Controller
 
     public function inviterCheck(Request $request){
         
-        
+        $request->validate([
+            'inviter_id_code'=>'required',
+        ]);
         $inviter = User::where('id_code',$request->inviter_id_code)->first();
         
+        if(!$inviter){
+            $inviter = User::where('phone',$request->inviter_id_code)->first();
+        }
+
         if(!$inviter){
             return response()->json([
                 's'=>0,
@@ -174,8 +183,8 @@ class MemberController extends Controller
 
     }
 
-    // public function welcome(){
-    //     return view('member.welcome');
-    // }
+    public function welcome(){
+        return view('member.welcome');
+    }
     
 }

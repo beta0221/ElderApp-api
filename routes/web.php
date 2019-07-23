@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
-// Route::get('/member/welcome','MemberController@welcome');
+Route::get('/member/welcome','MemberController@welcome');
 
 
 Route::view('/{any}','admin');
