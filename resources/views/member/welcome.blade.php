@@ -34,7 +34,7 @@
                 <div class="jumbotron jumbotron-fluid">
                     <div class="container">
                         <h1 class="display-4 pl-4 pr-4">您的申請已送出</h1>
-                        <p class="lead pl-4 pr-4">等待會員資格生肖可能需要2-3個工作天。</p>
+                        <p class="lead pl-4 pr-4">等待會員資格生效可能需要2-3個工作天。</p>
                     </div>
                 </div>
                 <div style="text-align:center;" class="mb-4">
