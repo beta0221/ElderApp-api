@@ -96,6 +96,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class);
     }
 
+    public function groupUsers()
+    {
+        return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
+    }
   
     //database relationship binding
 

@@ -1797,83 +1797,89 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       dialog: false,
-      dialogName: '',
-      dialogText: '',
+      dialogName: "",
+      dialogText: "",
+      searchText: "",
       totalDesserts: 0,
       desserts: [],
       loading: true,
       pagination: {},
       gender: {
-        1: 'blue--text',
-        0: 'red--text'
+        1: "blue--text",
+        0: "red--text"
       },
       valid: {
         0: {
-          text: '無效',
-          color: 'red--text'
+          text: "無效",
+          color: "red--text"
         },
         1: {
-          text: '有效',
-          color: 'green--text'
+          text: "有效",
+          color: "green--text"
         }
       },
       status: {
-        '0': {
-          text: '免費',
-          color: 'grey'
+        "0": {
+          text: "免費",
+          color: "grey"
         },
-        '1': {
-          text: '申請中',
-          color: 'warning'
+        "1": {
+          text: "申請中",
+          color: "warning"
         },
-        '2': {
-          text: '已繳清',
-          color: 'info'
+        "2": {
+          text: "已繳清",
+          color: "info"
         },
-        '3': {
-          text: '完成',
-          color: 'success'
+        "3": {
+          text: "完成",
+          color: "success"
         }
       },
       rank: {
-        '1': '',
-        '2': '組長',
-        '3': '理事'
+        "1": "",
+        "2": "組長",
+        "3": "理事"
       },
       headers: [{
-        text: '#',
-        value: 'id'
+        text: "#",
+        value: "id"
       }, {
-        text: '姓名',
-        value: 'name'
+        text: "姓名",
+        value: "name"
       }, {
-        text: '信箱',
-        value: 'email'
+        text: "信箱",
+        value: "email"
       }, {
-        text: '位階',
-        value: 'rank'
+        text: "位階",
+        value: "rank"
       }, {
-        text: '推薦人',
-        value: 'inviter'
+        text: "推薦人",
+        value: "inviter"
       }, {
-        text: '推薦人電話',
-        value: 'inviter_phone'
+        text: "推薦人電話",
+        value: "inviter_phone"
       }, {
-        text: '入會日期',
-        value: 'created_at'
+        text: "入會日期",
+        value: "created_at"
       }, {
-        text: '上次付款日',
-        value: 'last_pay_date'
+        text: "上次付款日",
+        value: "last_pay_date"
       }, {
-        text: '效期',
-        value: 'valid'
+        text: "效期",
+        value: "valid"
       }, {
-        text: '會員狀態',
-        value: 'pay_status'
+        text: "會員狀態",
+        value: "pay_status"
       }]
     };
   },
@@ -1886,23 +1892,40 @@ __webpack_require__.r(__webpack_exports__);
           _this.desserts = data.items;
           _this.totalDesserts = data.total;
         });
-      },
-      deep: true
+      }
     }
   },
-  // created () {
-  // this.getDataFromApi()
-  //   .then(data => {
-  //     this.desserts = data.items
-  //     this.totalDesserts = data.total
-  //   })
-  // },
   methods: {
+    search: function search() {
+      var _this2 = this;
+
+      if (!this.searchText) {
+        this.getDataFromApi().then(function (data) {
+          _this2.desserts = data.items;
+          _this2.totalDesserts = data.total;
+        });
+      } else {
+        axios.get('/api/search-member', {
+          params: {
+            searchText: this.searchText
+          }
+        }).then(function (res) {
+          console.log(res);
+          _this2.loading = true;
+          setTimeout(function () {
+            _this2.loading = false;
+            _this2.desserts = res.data;
+          }, 300);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    },
     customFilter: function customFilter(items, search, filter) {
       console.log({
-        'items': items,
-        'search': search,
-        'filter': filter
+        items: items,
+        search: search,
+        filter: filter
       });
       search = search.toString().toLowerCase();
       return items.filter(function (row) {
@@ -1910,15 +1933,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toValid: function toValid(id, index) {
-      var _this2 = this;
+      var _this3 = this;
 
-      if (this.desserts[index]['valid'] == 0 && this.desserts[index]['last_pay_date'] != null) {
-        axios.post('/api/toValid', {
+      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["last_pay_date"] != null) {
+        axios.post("/api/toValid", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
-            _this2.desserts[index]['valid'] = 1;
-            _this2.desserts[index]['last_pay_date'] = res.data.d;
+            _this3.desserts[index]["valid"] = 1;
+            _this3.desserts[index]["last_pay_date"] = res.data.d;
           }
 
           console.log(res);
@@ -1928,43 +1951,43 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getMemberDetail: function getMemberDetail(id, name) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.dialog = true;
       axios.get("/api/getMemberDetail/".concat(id)).then(function (res) {
         if (res.data.length != 0) {
           var text = "";
-          text += '紅包餘額：' + res.data.wallet + '<br>';
-          text += '地址：' + res.data.address + '<br>';
-          text += '地區：' + res.data.district_id + '<br>';
-          text += '緊急聯絡人：' + res.data.emg_contact + '<br>';
-          text += '緊急聯絡電話：' + res.data.emg_phone + '<br>';
-          _this3.dialogText = text;
+          text += "紅包餘額：" + res.data.wallet + "<br>";
+          text += "地址：" + res.data.address + "<br>";
+          text += "地區：" + res.data.district_id + "<br>";
+          text += "緊急聯絡人：" + res.data.emg_contact + "<br>";
+          text += "緊急聯絡電話：" + res.data.emg_phone + "<br>";
+          _this4.dialogText = text;
         }
 
-        _this3.dialogName = name;
+        _this4.dialogName = name;
         console.log(res);
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getPayHistory: function getPayHistory(id, name) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.dialog = true;
       axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
-        _this4.dialogName = name;
+        _this5.dialogName = name;
 
         if (res.data.length != 0) {
-          var text = '';
+          var text = "";
 
           for (var i in res.data) {
-            text += res.data[i]['created_at'].substring(0, 10) + '<br>'; // console.log(res.data[i]['created_at']);
+            text += res.data[i]["created_at"].substring(0, 10) + "<br>"; // console.log(res.data[i]['created_at']);
           }
 
-          _this4.dialogText = text;
+          _this5.dialogText = text;
         } else {
-          _this4.dialogText = '';
+          _this5.dialogText = "";
         } // console.log(res);
 
       })["catch"](function (error) {
@@ -1972,36 +1995,36 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     executeExpired: function executeExpired() {
-      var _this5 = this;
+      var _this6 = this;
 
-      axios.post('/api/executeExpired', {}).then(function (res) {
+      axios.post("/api/executeExpired", {}).then(function (res) {
         if (res.data.s == 1) {
-          _this5.getDataFromApi().then(function (data) {
-            _this5.desserts = data.items;
-            _this5.totalDesserts = data.total;
+          _this6.getDataFromApi().then(function (data) {
+            _this6.desserts = data.items;
+            _this6.totalDesserts = data.total;
           });
         } else {
-          alert('系統錯誤，未正常運作。');
+          alert("系統錯誤，未正常運作。");
         }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this6 = this;
+      var _this7 = this;
 
-      if (this.desserts[index]['pay_status'] < 3) {
-        axios.post('/api/changePayStatus', {
+      if (this.desserts[index]["pay_status"] < 3) {
+        axios.post("/api/changePayStatus", {
           id: id
         }).then(function (res) {
           // console.log(res);
           if (res.data.s == 1) {
-            _this6.desserts[index]['pay_status']++;
+            _this7.desserts[index]["pay_status"]++;
           }
 
-          if (_this6.desserts[index]['pay_status'] == 3) {
-            _this6.desserts[index]['last_pay_date'] = res.data.d;
-            _this6.desserts[index]['valid'] = 1;
+          if (_this7.desserts[index]["pay_status"] == 3) {
+            _this7.desserts[index]["last_pay_date"] = res.data.d;
+            _this7.desserts[index]["valid"] = 1;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -2009,22 +2032,22 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this7 = this;
+      var _this8 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this7$pagination = _this7.pagination,
-            sortBy = _this7$pagination.sortBy,
-            descending = _this7$pagination.descending,
-            page = _this7$pagination.page,
-            rowsPerPage = _this7$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this8$pagination = _this8.pagination,
+            sortBy = _this8$pagination.sortBy,
+            descending = _this8$pagination.descending,
+            page = _this8$pagination.page,
+            rowsPerPage = _this8$pagination.rowsPerPage; // console.log(this.pagination);
 
-        axios.get('/api/get-members', {
+        axios.get("/api/get-members", {
           params: {
-            'page': _this7.pagination.page,
-            'rowsPerPage': _this7.pagination.rowsPerPage,
-            'descending': _this7.pagination.descending,
-            'sortBy': _this7.pagination.sortBy
+            page: _this8.pagination.page,
+            rowsPerPage: _this8.pagination.rowsPerPage,
+            descending: _this8.pagination.descending,
+            sortBy: _this8.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data.users);
@@ -2033,7 +2056,7 @@ __webpack_require__.r(__webpack_exports__);
 
           var total = res.data.total;
 
-          if (_this7.pagination.sortBy) {
+          if (_this8.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2051,7 +2074,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this7.loading = false;
+            _this8.loading = false;
             resolve({
               items: items,
               total: total
@@ -6608,7 +6631,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.history,.valid,.name{\n  cursor:pointer;\n}\n.history:hover,.valid:hover,.name:hover{\n  background-color: lightgrey;\n  color:#fff;\n}\n", ""]);
+exports.push([module.i, "\n.history,\n.valid,\n.name {\n  cursor: pointer;\n}\n.history:hover,\n.valid:hover,\n.name:hover {\n  background-color: lightgrey;\n  color: #fff;\n}\n", ""]);
 
 // exports
 
@@ -38154,6 +38177,52 @@ var render = function() {
         ),
         _vm._v(" "),
         _c(
+          "div",
+          {
+            staticStyle: {
+              display: "inline-block",
+              width: "240px",
+              float: "right"
+            }
+          },
+          [
+            _c("v-text-field", {
+              attrs: {
+                "append-icon": "search",
+                label: "Search",
+                "single-line": "",
+                "hide-details": ""
+              },
+              nativeOn: {
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.search($event)
+                }
+              },
+              model: {
+                value: _vm.searchText,
+                callback: function($$v) {
+                  _vm.searchText = $$v
+                },
+                expression: "searchText"
+              }
+            })
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
+        _c(
           "v-dialog",
           {
             attrs: { "max-width": "290" },
@@ -38192,7 +38261,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("\n            關閉\n          ")]
+                      [_vm._v("關閉")]
                     )
                   ],
                   1

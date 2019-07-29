@@ -11,6 +11,17 @@ use Illuminate\Http\Response;
 
 class MemberController extends Controller
 {
+    public function searchMember(Request $request)
+    {
+        $user = User::where('id_code',$request->searchText)->get();
+        if(count($user)<=0){
+            $user = User::where('name','like',"%$request->searchText%")->get();
+        }
+
+        return response()->json($user);
+
+    }
+
     public function getMembers(Request $request)
     {
         $page = $request->page;

@@ -30,6 +30,7 @@ Route::post('transaction','TransactionController@transaction');
 Route::post('uploadImage','AuthController@uploadImage');
 Route::get('trans-history/{id}','TransactionController@show');
 Route::get('get-members','MemberController@getMembers');
+Route::get('search-member','MemberController@searchMember');
 Route::post('changePayStatus','MemberController@changePayStatus');
 Route::post('executeExpired','MemberController@executeExpired');
 Route::get('getPayHistory/{id}','MemberController@getPayHistory');
