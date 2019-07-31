@@ -4,10 +4,15 @@
       <v-btn color="info" @click="executeExpired">執行效期檢查</v-btn>
 
       <div style="display:inline-block;width:240px;float:right;">
-        <v-text-field v-model.lazy="searchText" @keyup.native.enter="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+        <v-text-field
+          v-model.lazy="searchText"
+          @keyup.native.enter="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
       </div>
-      
-      
     </div>
 
     <div>
@@ -19,8 +24,13 @@
             <p v-html="dialogText"></p>
           </v-card-text>
 
+          <div style="padding:12px;">
+            <v-text-field label="會員代號" single-line outlined></v-text-field>
+          </div>
+
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat="flat" @click="dialog = false">新增</v-btn>
             <v-btn color="green darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
           </v-card-actions>
         </v-card>
@@ -79,7 +89,7 @@ export default {
       dialogName: "",
       dialogText: "",
 
-      searchText:"",
+      searchText: "",
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -122,37 +132,35 @@ export default {
           this.desserts = data.items;
           this.totalDesserts = data.total;
         });
-      },
-    },
-
+      }
+    }
   },
 
   methods: {
-    search(){
-      if(!this.searchText){
+    search() {
+      if (!this.searchText) {
         this.getDataFromApi().then(data => {
           this.desserts = data.items;
           this.totalDesserts = data.total;
         });
-      }else{
-
-        axios.get('/api/search-member', {
-          params: {
-            searchText:this.searchText,
-          }
-        })
-        .then(res=>{
-          console.log(res);
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.desserts = res.data;    
-          }, 300);
-        })
-        .catch(error=>{
-          console.log(error);
-        });
-
+      } else {
+        axios
+          .get("/api/search-member", {
+            params: {
+              searchText: this.searchText
+            }
+          })
+          .then(res => {
+            console.log(res);
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.desserts = res.data;
+            }, 300);
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
     },
     customFilter(items, search, filter) {
@@ -318,7 +326,6 @@ export default {
             console.log(error);
           });
       });
-
     }
   }
 };

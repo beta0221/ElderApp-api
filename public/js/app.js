@@ -1802,6 +1802,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1905,7 +1915,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.totalDesserts = data.total;
         });
       } else {
-        axios.get('/api/search-member', {
+        axios.get("/api/search-member", {
           params: {
             searchText: this.searchText
           }
@@ -38247,9 +38257,37 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c(
+                  "div",
+                  { staticStyle: { padding: "12px" } },
+                  [
+                    _c("v-text-field", {
+                      attrs: {
+                        label: "會員代號",
+                        "single-line": "",
+                        outlined: ""
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
                   "v-card-actions",
                   [
                     _c("v-spacer"),
+                    _vm._v(" "),
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "blue darken-1", flat: "flat" },
+                        on: {
+                          click: function($event) {
+                            _vm.dialog = false
+                          }
+                        }
+                      },
+                      [_vm._v("新增")]
+                    ),
                     _vm._v(" "),
                     _c(
                       "v-btn",
