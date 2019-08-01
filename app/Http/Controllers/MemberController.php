@@ -37,7 +37,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name', 'email', 'gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid')
+            ->select('id', 'name','org_rank','email', 'gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
@@ -84,14 +84,10 @@ class MemberController extends Controller
             ]);    
         }
         
-
         $request->merge([
             'pay_status'=>1,
         ]);
         
-        
-
-
         try {
             $user = User::create($request->all());
             $user->roles()->attach(Role::where('name', 'user')->first());
@@ -191,6 +187,38 @@ class MemberController extends Controller
             ]);
         }
 
+    }
+
+    public function getMemberGroupMembers($id){
+        $groupMembers = User::find($id)->groupUsers()->get();
+        return response()->json([
+            's'=>1,
+            'groupMembers'=>$groupMembers,
+        ]);
+    }
+
+    public function addGroupMember(Request $request){
+        $leader = User::find($request->leaderId);
+        $addUser = User::where('id_code',$request->addUserCode)->first();
+
+        if($addUser){
+            try {
+                $leader->groupUsers()->attach($addUser->id);
+            } catch (\Throwable $th) {
+                return response($th);
+            }
+    
+            return response()->json([
+                's'=>1,
+                'addUser'=>$addUser,
+            ]);
+        }else{
+            return response()->json([
+                's'=>0,
+            ]);
+        }
+        
+        
 
     }
 

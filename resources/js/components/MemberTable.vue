@@ -8,7 +8,7 @@
           v-model.lazy="searchText"
           @keyup.native.enter="search"
           append-icon="search"
-          label="Search"
+          label="搜尋"
           single-line
           hide-details
         ></v-text-field>
@@ -16,7 +16,7 @@
     </div>
 
     <div>
-      <v-dialog v-model="dialog" max-width="290">
+      <v-dialog v-model="dialog" max-width="480px">
         <v-card>
           <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
 
@@ -24,17 +24,34 @@
             <p v-html="dialogText"></p>
           </v-card-text>
 
-          <div style="padding:12px;">
-            <v-text-field label="會員代號" single-line outlined></v-text-field>
-          </div>
-
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat="flat" @click="dialog = false">新增</v-btn>
             <v-btn color="green darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="group_member_dialog" max-width="480px">
+        <v-card>
+          <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
+
+          <div style="padding:2px 16px" v-for="member in group_members" v-bind:key="member.id">
+            <span>{{member.name}}-{{member.email}}</span>
+          </div>
+
+          <div style="padding:16px;">
+            <v-text-field v-model="addUserCode" label="會員代號" single-line outlined></v-text-field>
+          </div>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat="flat" @click="addGroupMember">新增</v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="group_member_dialog = false">關閉</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+
     </div>
 
     <div>
@@ -48,7 +65,11 @@
         class="elevation-1"
       >
         <template v-slot:items="props">
-          <td class="text-xs-left">{{ props.item.id }}</td>
+          <td class="text-xs-left">{{ props.index + 1 }}</td>
+          <td class="text-xs-left org_rank"
+            @click="getMemberGroupMembers(props.item.id,props.item.name)">
+            <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
+          </td>
           <td
             class="text-xs-left name"
             @click="getMemberDetail(props.item.id,props.item.name)"
@@ -86,8 +107,14 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogUserId:'',
       dialogName: "",
       dialogText: "",
+
+      group_member_dialog:false,
+      group_members:[],
+      addUserCode:'',
+      
 
       searchText: "",
       totalDesserts: 0,
@@ -111,8 +138,13 @@ export default {
         "2": "組長",
         "3": "理事"
       },
+      org_rank:{
+        '0':'',
+        '1':'supervised_user_circle',
+      },
       headers: [
         { text: "#", value: "id" },
+        { text: "", value: "org_rank", },
         { text: "姓名", value: "name" },
         { text: "信箱", value: "email" },
         { text: "位階", value: "rank" },
@@ -189,8 +221,44 @@ export default {
           });
       }
     },
+    addGroupMember(){
+      axios.post('/api/addGroupMember',{
+        leaderId:this.dialogUserId,
+        addUserCode:this.addUserCode,
+      })
+      .then(res => {
+        if(res.data.s==1){
+          this.group_members.push(res.data.addUser);
+        }else{
+          alert('會員代號錯誤');
+        }
+        console.log(res)
+      })
+      .catch(err => {
+        console.error(err); 
+      })
+    },
+    getMemberGroupMembers(id,name){
+      this.group_member_dialog = true;
+      this.dialogName = name;
+      this.dialogUserId = id;
+      this.addUserCode = '';
+      axios
+        .get(`/api/getMemberGroupMembers/${id}`)
+        .then(res => {
+          if(res.data.s==1){
+            // console.log(res.data.groupMembers);
+            this.group_members = res.data.groupMembers;
+          }
+          // console.log(res);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getMemberDetail(id, name) {
       this.dialog = true;
+      this.dialogName = name;
       axios
         .get(`/api/getMemberDetail/${id}`)
         .then(res => {
@@ -204,8 +272,6 @@ export default {
 
             this.dialogText = text;
           }
-          this.dialogName = name;
-
           console.log(res);
         })
         .catch(error => {
@@ -334,12 +400,14 @@ export default {
 <style>
 .history,
 .valid,
-.name {
+.name,
+.org_rank{
   cursor: pointer;
 }
 .history:hover,
 .valid:hover,
-.name:hover {
+.name:hover,
+.org_rank:hover {
   background-color: lightgrey;
   color: #fff;
 }

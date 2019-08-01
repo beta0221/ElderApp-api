@@ -37,3 +37,5 @@ Route::get('getPayHistory/{id}','MemberController@getPayHistory');
 Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
 Route::post('toValid','MemberController@toValid');
 Route::get('inviterCheck','MemberController@inviterCheck');
+Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
+Route::post('addGroupMember','MemberController@addGroupMember');

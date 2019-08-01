@@ -100,19 +100,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
     }
+
+    public function payHistory()
+    {
+        return $this->hasMany('App\PayDate','user_id');
+    }
   
     //database relationship binding
 
     public function updateWallet($give_take,$amount)
     {
-        
         if ($give_take) {
             $this->wallet += $amount;
         }else{
             $this->wallet -= $amount;
         }
         $this->save();
-        
     }
 
 
@@ -123,8 +126,7 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-
-
+    //user roles helper
 
     /**
     * @param string|array $roles
@@ -155,9 +157,6 @@ class User extends Authenticatable implements JWTSubject
         return null !== $this->roles()->where(‘name’, $role)->first();
     }
 
-    public function payHistory()
-    {
-        return $this->hasMany('App\PayDate','user_id');
-    }
+    
 
 }
