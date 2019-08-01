@@ -40,7 +40,7 @@
           </div>
 
           <div style="padding:16px;">
-            <v-text-field v-model="addUserCode" label="會員代號" single-line outlined></v-text-field>
+            <v-text-field v-model="addAcount" label="會員帳號" single-line outlined></v-text-field>
           </div>
 
           <v-card-actions>
@@ -113,7 +113,7 @@ export default {
 
       group_member_dialog:false,
       group_members:[],
-      addUserCode:'',
+      addAcount:'',
       
 
       searchText: "",
@@ -224,13 +224,13 @@ export default {
     addGroupMember(){
       axios.post('/api/addGroupMember',{
         leaderId:this.dialogUserId,
-        addUserCode:this.addUserCode,
+        addAcount:this.addAcount,
       })
       .then(res => {
         if(res.data.s==1){
           this.group_members.push(res.data.addUser);
         }else{
-          alert('會員代號錯誤');
+          alert(res.data.m);
         }
         console.log(res)
       })
@@ -242,7 +242,7 @@ export default {
       this.group_member_dialog = true;
       this.dialogName = name;
       this.dialogUserId = id;
-      this.addUserCode = '';
+      this.addAcount = '';
       axios
         .get(`/api/getMemberGroupMembers/${id}`)
         .then(res => {

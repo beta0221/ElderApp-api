@@ -1842,7 +1842,7 @@ __webpack_require__.r(__webpack_exports__);
       dialogText: "",
       group_member_dialog: false,
       group_members: [],
-      addUserCode: '',
+      addAcount: '',
       searchText: "",
       totalDesserts: 0,
       desserts: [],
@@ -1997,12 +1997,12 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/api/addGroupMember', {
         leaderId: this.dialogUserId,
-        addUserCode: this.addUserCode
+        addAcount: this.addAcount
       }).then(function (res) {
         if (res.data.s == 1) {
           _this4.group_members.push(res.data.addUser);
         } else {
-          alert('會員代號錯誤');
+          alert(res.data.m);
         }
 
         console.log(res);
@@ -2016,7 +2016,7 @@ __webpack_require__.r(__webpack_exports__);
       this.group_member_dialog = true;
       this.dialogName = name;
       this.dialogUserId = id;
-      this.addUserCode = '';
+      this.addAcount = '';
       axios.get("/api/getMemberGroupMembers/".concat(id)).then(function (res) {
         if (res.data.s == 1) {
           // console.log(res.data.groupMembers);
@@ -38388,16 +38388,16 @@ var render = function() {
                   [
                     _c("v-text-field", {
                       attrs: {
-                        label: "會員代號",
+                        label: "會員帳號",
                         "single-line": "",
                         outlined: ""
                       },
                       model: {
-                        value: _vm.addUserCode,
+                        value: _vm.addAcount,
                         callback: function($$v) {
-                          _vm.addUserCode = $$v
+                          _vm.addAcount = $$v
                         },
-                        expression: "addUserCode"
+                        expression: "addAcount"
                       }
                     })
                   ],

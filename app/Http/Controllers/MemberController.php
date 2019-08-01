@@ -199,22 +199,33 @@ class MemberController extends Controller
 
     public function addGroupMember(Request $request){
         $leader = User::find($request->leaderId);
-        $addUser = User::where('id_code',$request->addUserCode)->first();
+        $addUser = User::where('email',$request->addAcount)->first();
 
         if($addUser){
             try {
-                $leader->groupUsers()->attach($addUser->id);
+
+                if(!$leader->groupUsers()->find($addUser->id)){
+                    $leader->groupUsers()->attach($addUser->id);
+                    return response()->json([
+                        's'=>1,
+                        'addUser'=>$addUser,
+                    ]);
+                }else{
+                    return response()->json([
+                        's'=>-1,
+                        'm'=>'會員帳號已經存在該組織',
+                    ]);
+                }
+                
             } catch (\Throwable $th) {
                 return response($th);
             }
     
-            return response()->json([
-                's'=>1,
-                'addUser'=>$addUser,
-            ]);
+            
         }else{
             return response()->json([
                 's'=>0,
+                'm'=>'會員帳號不存在',
             ]);
         }
         
