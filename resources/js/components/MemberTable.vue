@@ -67,7 +67,7 @@
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.index + 1 }}</td>
           <td class="text-xs-left org_rank"
-            @click="getMemberGroupMembers(props.item.id,props.item.name)">
+            @click="(props.item.org_rank>=1)?getMemberGroupMembers(props.item.id,props.item.name):''">
             <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
           </td>
           <td

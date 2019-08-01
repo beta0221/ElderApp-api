@@ -38476,10 +38476,12 @@ var render = function() {
                       staticClass: "text-xs-left org_rank",
                       on: {
                         click: function($event) {
-                          return _vm.getMemberGroupMembers(
-                            props.item.id,
-                            props.item.name
-                          )
+                          props.item.org_rank >= 1
+                            ? _vm.getMemberGroupMembers(
+                                props.item.id,
+                                props.item.name
+                              )
+                            : ""
                         }
                       }
                     },
