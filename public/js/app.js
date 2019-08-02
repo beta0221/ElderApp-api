@@ -1887,7 +1887,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       org_rank: {
         '0': '',
-        '1': 'supervised_user_circle'
+        '1': 'supervised_user_circle',
+        '2': 'stars'
       },
       headers: [{
         text: "#",

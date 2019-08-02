@@ -141,6 +141,7 @@ export default {
       org_rank:{
         '0':'',
         '1':'supervised_user_circle',
+        '2':'stars',
       },
       headers: [
         { text: "#", value: "id" },
