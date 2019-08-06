@@ -190,7 +190,14 @@ class MemberController extends Controller
     }
 
     public function getMemberGroupMembers($id){
-        $groupMembers = User::find($id)->groupUsers()->get();
+        $user = User::find($id);
+        if($user->org_rank==2){
+            $groupMembers = $user->groupUsers()->get();
+        }elseif($user->org_rank==1){
+            $groupMembers = $user->groupUsers()->get();
+        }
+
+        
         return response()->json([
             's'=>1,
             'groupMembers'=>$groupMembers,
@@ -203,6 +210,24 @@ class MemberController extends Controller
 
         if($addUser){
             try {
+
+                if ($leader->org_rank==2) {
+                    if($addUser->org_rank!=1){
+                        return response()->json([
+                            's'=>-1,
+                            'm'=>'會員階級不符合'
+                        ]);
+                    }
+                }
+
+                if($leader->org_rank==1){
+                    if($addUser->org_rank>=1){
+                        return response()->json([
+                            's'=>-1,
+                            'm'=>'會員階級不符合'
+                        ]);
+                    }
+                }
 
                 if(!$leader->groupUsers()->find($addUser->id)){
                     $leader->groupUsers()->attach($addUser->id);
