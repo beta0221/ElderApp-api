@@ -39,3 +39,4 @@ Route::post('toValid','MemberController@toValid');
 Route::get('inviterCheck','MemberController@inviterCheck');
 Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
 Route::post('addGroupMember','MemberController@addGroupMember');
+Route::post('deleteGroupMember','MemberController@deleteGroupMember');

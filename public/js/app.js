@@ -1833,16 +1833,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       dialog: false,
-      dialogUserId: '',
+      dialogUserId: "",
       dialogName: "",
       dialogText: "",
       group_member_dialog: false,
       group_members: [],
-      addAcount: '',
+      addAcount: "",
       searchText: "",
       totalDesserts: 0,
       desserts: [],
@@ -1886,9 +1889,9 @@ __webpack_require__.r(__webpack_exports__);
         "3": "理事"
       },
       org_rank: {
-        '0': '',
-        '1': 'supervised_user_circle',
-        '2': 'stars'
+        "0": "",
+        "1": "supervised_user_circle",
+        "2": "stars"
       },
       headers: [{
         text: "#",
@@ -1996,9 +1999,9 @@ __webpack_require__.r(__webpack_exports__);
     addGroupMember: function addGroupMember() {
       var _this4 = this;
 
-      axios.post('/api/addGroupMember', {
+      axios.post("/api/addGroupMember", {
         leaderId: this.dialogUserId,
-        addAcount: this.addAcount
+        addAccount: this.addAcount
       }).then(function (res) {
         if (res.data.s == 1) {
           _this4.group_members.push(res.data.addUser);
@@ -2011,17 +2014,33 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    getMemberGroupMembers: function getMemberGroupMembers(id, name) {
+    deleteGroupMember: function deleteGroupMember(deleteAccountId, index) {
       var _this5 = this;
+
+      axios.post("/api/deleteGroupMember", {
+        leaderId: this.dialogUserId,
+        deleteAccountId: deleteAccountId
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this5.group_members.splice(index, 1);
+        }
+
+        console.log(res);
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    getMemberGroupMembers: function getMemberGroupMembers(id, name) {
+      var _this6 = this;
 
       this.group_member_dialog = true;
       this.dialogName = name;
       this.dialogUserId = id;
-      this.addAcount = '';
+      this.addAcount = "";
       axios.get("/api/getMemberGroupMembers/".concat(id)).then(function (res) {
         if (res.data.s == 1) {
           // console.log(res.data.groupMembers);
-          _this5.group_members = res.data.groupMembers;
+          _this6.group_members = res.data.groupMembers;
         } // console.log(res);
 
       })["catch"](function (error) {
@@ -2029,7 +2048,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getMemberDetail: function getMemberDetail(id, name) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.dialog = true;
       this.dialogName = name;
@@ -2041,7 +2060,7 @@ __webpack_require__.r(__webpack_exports__);
           text += "地區：" + res.data.district_id + "<br>";
           text += "緊急聯絡人：" + res.data.emg_contact + "<br>";
           text += "緊急聯絡電話：" + res.data.emg_phone + "<br>";
-          _this6.dialogText = text;
+          _this7.dialogText = text;
         }
 
         console.log(res);
@@ -2050,11 +2069,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getPayHistory: function getPayHistory(id, name) {
-      var _this7 = this;
+      var _this8 = this;
 
       this.dialog = true;
       axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
-        _this7.dialogName = name;
+        _this8.dialogName = name;
 
         if (res.data.length != 0) {
           var text = "";
@@ -2063,9 +2082,9 @@ __webpack_require__.r(__webpack_exports__);
             text += res.data[i]["created_at"].substring(0, 10) + "<br>"; // console.log(res.data[i]['created_at']);
           }
 
-          _this7.dialogText = text;
+          _this8.dialogText = text;
         } else {
-          _this7.dialogText = "";
+          _this8.dialogText = "";
         } // console.log(res);
 
       })["catch"](function (error) {
@@ -2073,13 +2092,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     executeExpired: function executeExpired() {
-      var _this8 = this;
+      var _this9 = this;
 
       axios.post("/api/executeExpired", {}).then(function (res) {
         if (res.data.s == 1) {
-          _this8.getDataFromApi().then(function (data) {
-            _this8.desserts = data.items;
-            _this8.totalDesserts = data.total;
+          _this9.getDataFromApi().then(function (data) {
+            _this9.desserts = data.items;
+            _this9.totalDesserts = data.total;
           });
         } else {
           alert("系統錯誤，未正常運作。");
@@ -2089,7 +2108,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this9 = this;
+      var _this10 = this;
 
       if (this.desserts[index]["pay_status"] < 3) {
         axios.post("/api/changePayStatus", {
@@ -2097,12 +2116,12 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (res) {
           // console.log(res);
           if (res.data.s == 1) {
-            _this9.desserts[index]["pay_status"]++;
+            _this10.desserts[index]["pay_status"]++;
           }
 
-          if (_this9.desserts[index]["pay_status"] == 3) {
-            _this9.desserts[index]["last_pay_date"] = res.data.d;
-            _this9.desserts[index]["valid"] = 1;
+          if (_this10.desserts[index]["pay_status"] == 3) {
+            _this10.desserts[index]["last_pay_date"] = res.data.d;
+            _this10.desserts[index]["valid"] = 1;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -2110,22 +2129,22 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this10 = this;
+      var _this11 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this10$pagination = _this10.pagination,
-            sortBy = _this10$pagination.sortBy,
-            descending = _this10$pagination.descending,
-            page = _this10$pagination.page,
-            rowsPerPage = _this10$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this11$pagination = _this11.pagination,
+            sortBy = _this11$pagination.sortBy,
+            descending = _this11$pagination.descending,
+            page = _this11$pagination.page,
+            rowsPerPage = _this11$pagination.rowsPerPage; // console.log(this.pagination);
 
         axios.get("/api/get-members", {
           params: {
-            page: _this10.pagination.page,
-            rowsPerPage: _this10.pagination.rowsPerPage,
-            descending: _this10.pagination.descending,
-            sortBy: _this10.pagination.sortBy
+            page: _this11.pagination.page,
+            rowsPerPage: _this11.pagination.rowsPerPage,
+            descending: _this11.pagination.descending,
+            sortBy: _this11.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data.users);
@@ -2134,7 +2153,7 @@ __webpack_require__.r(__webpack_exports__);
 
           var total = res.data.total;
 
-          if (_this10.pagination.sortBy) {
+          if (_this11.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2152,7 +2171,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this10.loading = false;
+            _this11.loading = false;
             resolve({
               items: items,
               total: total
@@ -6709,7 +6728,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.history,\n.valid,\n.name,\n.org_rank{\n  cursor: pointer;\n}\n.history:hover,\n.valid:hover,\n.name:hover,\n.org_rank:hover {\n  background-color: lightgrey;\n  color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.history,\n.valid,\n.name,\n.org_rank {\n  cursor: pointer;\n}\n.history:hover,\n.valid:hover,\n.name:hover,\n.org_rank:hover {\n  background-color: lightgrey;\n  color: #fff;\n}\n", ""]);
 
 // exports
 
@@ -38371,15 +38390,30 @@ var render = function() {
                   _vm._v("姓名：" + _vm._s(_vm.dialogName))
                 ]),
                 _vm._v(" "),
-                _vm._l(_vm.group_members, function(member) {
+                _vm._l(_vm.group_members, function(member, index) {
                   return _c(
                     "div",
                     { key: member.id, staticStyle: { padding: "2px 16px" } },
                     [
                       _c("span", [
                         _vm._v(_vm._s(member.name) + "-" + _vm._s(member.email))
-                      ])
-                    ]
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "error" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteGroupMember(member.id, index)
+                            }
+                          }
+                        },
+                        [_c("v-icon", [_vm._v("delete")])],
+                        1
+                      )
+                    ],
+                    1
                   )
                 }),
                 _vm._v(" "),
@@ -79902,8 +79936,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

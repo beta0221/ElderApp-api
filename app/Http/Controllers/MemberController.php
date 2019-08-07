@@ -206,7 +206,7 @@ class MemberController extends Controller
 
     public function addGroupMember(Request $request){
         $leader = User::find($request->leaderId);
-        $addUser = User::where('email',$request->addAcount)->first();
+        $addUser = User::where('email',$request->addAccount)->first();
 
         if($addUser){
             try {
@@ -254,7 +254,20 @@ class MemberController extends Controller
             ]);
         }
         
-        
+    }
+
+    public function deleteGroupMember(Request $request){
+        $leader = User::find($request->leaderId);
+        $deleteUser = User::find($request->deleteAccountId);
+
+        if($leader != null && $deleteUser != null){
+            $leader->groupUsers()->detach($deleteUser->id);
+        }
+
+        return response()->json([
+            's'=>1,
+            'addUser'=>$deleteUser,
+        ]);
 
     }
 

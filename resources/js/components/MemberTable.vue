@@ -35,8 +35,11 @@
         <v-card>
           <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
 
-          <div style="padding:2px 16px" v-for="member in group_members" v-bind:key="member.id">
+          <div style="padding:2px 16px" v-for="(member,index) in group_members" v-bind:key="member.id">
             <span>{{member.name}}-{{member.email}}</span>
+            <v-btn color="error" @click="deleteGroupMember(member.id,index)">
+              <v-icon>delete</v-icon>
+            </v-btn>
           </div>
 
           <div style="padding:16px;">
@@ -50,8 +53,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-
-
     </div>
 
     <div>
@@ -66,8 +67,10 @@
       >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.index + 1 }}</td>
-          <td class="text-xs-left org_rank"
-            @click="(props.item.org_rank>=1)?getMemberGroupMembers(props.item.id,props.item.name):''">
+          <td
+            class="text-xs-left org_rank"
+            @click="(props.item.org_rank>=1)?getMemberGroupMembers(props.item.id,props.item.name):''"
+          >
             <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
           </td>
           <td
@@ -107,14 +110,13 @@ export default {
   data() {
     return {
       dialog: false,
-      dialogUserId:'',
+      dialogUserId: "",
       dialogName: "",
       dialogText: "",
 
-      group_member_dialog:false,
-      group_members:[],
-      addAcount:'',
-      
+      group_member_dialog: false,
+      group_members: [],
+      addAcount: "",
 
       searchText: "",
       totalDesserts: 0,
@@ -138,14 +140,14 @@ export default {
         "2": "組長",
         "3": "理事"
       },
-      org_rank:{
-        '0':'',
-        '1':'supervised_user_circle',
-        '2':'stars',
+      org_rank: {
+        "0": "",
+        "1": "supervised_user_circle",
+        "2": "stars"
       },
       headers: [
         { text: "#", value: "id" },
-        { text: "", value: "org_rank", },
+        { text: "", value: "org_rank" },
         { text: "姓名", value: "name" },
         { text: "信箱", value: "email" },
         { text: "位階", value: "rank" },
@@ -222,32 +224,49 @@ export default {
           });
       }
     },
-    addGroupMember(){
-      axios.post('/api/addGroupMember',{
-        leaderId:this.dialogUserId,
-        addAcount:this.addAcount,
-      })
-      .then(res => {
-        if(res.data.s==1){
-          this.group_members.push(res.data.addUser);
-        }else{
-          alert(res.data.m);
-        }
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err); 
-      })
+    addGroupMember() {
+      axios
+        .post("/api/addGroupMember", {
+          leaderId: this.dialogUserId,
+          addAccount: this.addAcount
+        })
+        .then(res => {
+          if (res.data.s == 1) {
+            this.group_members.push(res.data.addUser);
+          } else {
+            alert(res.data.m);
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
-    getMemberGroupMembers(id,name){
+    deleteGroupMember(deleteAccountId,index) {
+      axios
+        .post("/api/deleteGroupMember", {
+          leaderId: this.dialogUserId,
+          deleteAccountId: deleteAccountId,
+        })
+        .then(res => {
+          if (res.data.s==1) {
+            this.group_members.splice(index,1);
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getMemberGroupMembers(id, name) {
       this.group_member_dialog = true;
       this.dialogName = name;
       this.dialogUserId = id;
-      this.addAcount = '';
+      this.addAcount = "";
       axios
         .get(`/api/getMemberGroupMembers/${id}`)
         .then(res => {
-          if(res.data.s==1){
+          if (res.data.s == 1) {
             // console.log(res.data.groupMembers);
             this.group_members = res.data.groupMembers;
           }
@@ -402,7 +421,7 @@ export default {
 .history,
 .valid,
 .name,
-.org_rank{
+.org_rank {
   cursor: pointer;
 }
 .history:hover,
