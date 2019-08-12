@@ -178,6 +178,8 @@ class User extends Authenticatable implements JWTSubject
         return null !== $this->roles()->where(‘name’, $role)->first();
     }
 
-    
+    public function go_events(){
+        return $this->belongsToMany('App\Event','event_users','user_id','event_id');
+    }
 
 }
