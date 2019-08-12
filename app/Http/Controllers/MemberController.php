@@ -11,6 +11,14 @@ use Illuminate\Http\Response;
 
 class MemberController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck']]);
+    }
+
+
+
     public function searchMember(Request $request)
     {
         $user = User::where('id_code',$request->searchText)->get();

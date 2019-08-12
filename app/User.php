@@ -96,6 +96,27 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class);
     }
 
+    // public function mainRole()
+    // {
+    //     $roles = $this->roles()->get();
+    //     return $roles->last();
+    // }
+
+    public function isAdmin()
+    {
+        $roles = $this->roles()->get();
+
+        foreach ($roles as $role) {
+            
+            if ($role->name=='admin') {
+                return true;
+            }    
+        }
+
+        return false;
+        
+    }
+
     public function groupUsers()
     {
         return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');

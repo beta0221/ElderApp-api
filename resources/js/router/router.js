@@ -5,13 +5,15 @@ Vue.use(VueRouter)
 
 
 import MemberTable from '../components/MemberTable'
+import Login from '../components/Login/Login'
 const routes = [
     {path:'/member', component: MemberTable},
+    {path:'/login',name:'login',component: Login},
 ]
 
 
 const router = new VueRouter({
-    routes,
+    routes,//short for routes:routes,
     hashbang:false,
     mode:'history',
 })

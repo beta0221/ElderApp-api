@@ -35,7 +35,11 @@
         <v-card>
           <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
 
-          <div style="padding:2px 16px" v-for="(member,index) in group_members" v-bind:key="member.id">
+          <div
+            style="padding:2px 16px"
+            v-for="(member,index) in group_members"
+            v-bind:key="member.id"
+          >
             <span>{{member.name}}-{{member.email}}</span>
             <v-btn color="error" @click="deleteGroupMember(member.id,index)">
               <v-icon>delete</v-icon>
@@ -170,7 +174,11 @@ export default {
       }
     }
   },
-
+  created() {
+    if (!User.loggedIn()) {
+      this.$router.push({ name: "login" });
+    }
+  },
   methods: {
     search() {
       if (!this.searchText) {
@@ -242,15 +250,15 @@ export default {
           console.error(err);
         });
     },
-    deleteGroupMember(deleteAccountId,index) {
+    deleteGroupMember(deleteAccountId, index) {
       axios
         .post("/api/deleteGroupMember", {
           leaderId: this.dialogUserId,
-          deleteAccountId: deleteAccountId,
+          deleteAccountId: deleteAccountId
         })
         .then(res => {
-          if (res.data.s==1) {
-            this.group_members.splice(index,1);
+          if (res.data.s == 1) {
+            this.group_members.splice(index, 1);
           }
           console.log(res);
         })
@@ -408,9 +416,7 @@ export default {
               });
             }, 300);
           })
-          .catch(function(error) {
-            console.log(error);
-          });
+          .catch(error => Exception.handle(error))
       });
     }
   }
