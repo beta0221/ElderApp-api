@@ -416,7 +416,10 @@ export default {
               });
             }, 300);
           })
-          .catch(error => Exception.handle(error))
+          .catch(error => {
+            Exception.handle(error);
+            User.logout();
+          })
       });
     }
   }

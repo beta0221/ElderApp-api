@@ -2263,7 +2263,8 @@ __webpack_require__.r(__webpack_exports__);
             });
           }, 300);
         })["catch"](function (error) {
-          return Exception.handle(error);
+          Exception.handle(error);
+          User.logout();
         });
       });
     }
