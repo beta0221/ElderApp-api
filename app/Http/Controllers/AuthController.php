@@ -127,7 +127,7 @@ class AuthController extends Controller
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
         $imageName = time().'.'.'png';
-        $path = 'images/users/'.$request->name;
+        $path = 'images/users/'.$request->id;
 
 
         
