@@ -13,7 +13,13 @@
           hide-details
         ></v-text-field>
       </div>
+
+      <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
+        <v-select v-model="searchColumn" :items="headers" label="欄位"></v-select>
+      </div>
+
     </div>
+
 
     <div>
       <v-dialog v-model="dialog" max-width="480px">
@@ -83,9 +89,11 @@
             :class="gender[props.item.gender]"
           >{{ props.item.name }}</td>
           <td class="text-xs-left">{{ props.item.email }}</td>
-          <td class="text-xs-left">{{ rank[props.item.rank] }}</td>
+          <td class="text-xs-left">{{ props.item.id_number }}</td>
+          <td class="text-xs-left">{{ props.item.birthdate }}</td>
+          <!-- <td class="text-xs-left">{{ rank[props.item.rank] }}</td> -->
           <td class="text-xs-left">{{ props.item.inviter }}</td>
-          <td class="text-xs-left">{{ props.item.inviter_phone }}</td>
+          <!-- <td class="text-xs-left">{{ props.item.inviter_phone }}</td> -->
           <td class="text-xs-left">{{ (props.item.created_at).substring(0,10) }}</td>
           <td
             class="text-xs-left history"
@@ -123,6 +131,7 @@ export default {
       addAcount: "",
 
       searchText: "",
+      searchColumn:"",
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -151,12 +160,14 @@ export default {
       },
       headers: [
         { text: "#", value: "id" },
-        { text: "", value: "org_rank" },
+        { text: "職務", value: "org_rank" },
         { text: "姓名", value: "name" },
         { text: "信箱", value: "email" },
-        { text: "位階", value: "rank" },
+        { text: "身分證", value: "id_number" },
+        { text: "生日", value: "birthdate" },
+        // { text: "位階", value: "rank" },
         { text: "推薦人", value: "inviter" },
-        { text: "推薦人電話", value: "inviter_phone" },
+        // { text: "推薦人電話", value: "inviter_phone" },
         { text: "入會日期", value: "created_at" },
         { text: "上次付款日", value: "last_pay_date" },
         { text: "效期", value: "valid" },
@@ -190,6 +201,7 @@ export default {
         axios
           .get("/api/search-member", {
             params: {
+              searchColumn:this.searchColumn,
               searchText: this.searchText
             }
           })
@@ -292,6 +304,10 @@ export default {
         .then(res => {
           if (res.data.length != 0) {
             let text = "";
+            text += "身分證：" + res.data.id_number + "<br>";
+            text += "生日：" + res.data.birthdate + "<br>";
+            text += "住家電話：" + res.data.tel + "<br>";
+            text += "手機：" + res.data.phone + "<br>";
             text += "紅包餘額：" + res.data.wallet + "<br>";
             text += "地址：" + res.data.address + "<br>";
             text += "地區：" + res.data.district_id + "<br>";

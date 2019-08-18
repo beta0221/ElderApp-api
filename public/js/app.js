@@ -1914,6 +1914,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1925,6 +1933,7 @@ __webpack_require__.r(__webpack_exports__);
       group_members: [],
       addAcount: "",
       searchText: "",
+      searchColumn: "",
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -1975,7 +1984,7 @@ __webpack_require__.r(__webpack_exports__);
         text: "#",
         value: "id"
       }, {
-        text: "",
+        text: "職務",
         value: "org_rank"
       }, {
         text: "姓名",
@@ -1984,15 +1993,17 @@ __webpack_require__.r(__webpack_exports__);
         text: "信箱",
         value: "email"
       }, {
-        text: "位階",
-        value: "rank"
+        text: "身分證",
+        value: "id_number"
       }, {
+        text: "生日",
+        value: "birthdate"
+      }, // { text: "位階", value: "rank" },
+      {
         text: "推薦人",
         value: "inviter"
-      }, {
-        text: "推薦人電話",
-        value: "inviter_phone"
-      }, {
+      }, // { text: "推薦人電話", value: "inviter_phone" },
+      {
         text: "入會日期",
         value: "created_at"
       }, {
@@ -2038,6 +2049,7 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         axios.get("/api/search-member", {
           params: {
+            searchColumn: this.searchColumn,
             searchText: this.searchText
           }
         }).then(function (res) {
@@ -2140,6 +2152,10 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("/api/getMemberDetail/".concat(id)).then(function (res) {
         if (res.data.length != 0) {
           var text = "";
+          text += "身分證：" + res.data.id_number + "<br>";
+          text += "生日：" + res.data.birthdate + "<br>";
+          text += "住家電話：" + res.data.tel + "<br>";
+          text += "手機：" + res.data.phone + "<br>";
           text += "紅包餘額：" + res.data.wallet + "<br>";
           text += "地址：" + res.data.address + "<br>";
           text += "地區：" + res.data.district_id + "<br>";
@@ -38470,6 +38486,31 @@ var render = function() {
             })
           ],
           1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticStyle: {
+              display: "inline-block",
+              width: "240px",
+              float: "right",
+              margin: "0 20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: { items: _vm.headers, label: "欄位" },
+              model: {
+                value: _vm.searchColumn,
+                callback: function($$v) {
+                  _vm.searchColumn = $$v
+                },
+                expression: "searchColumn"
+              }
+            })
+          ],
+          1
         )
       ],
       1
@@ -38709,15 +38750,15 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-xs-left" }, [
-                    _vm._v(_vm._s(_vm.rank[props.item.rank]))
+                    _vm._v(_vm._s(props.item.id_number))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.birthdate))
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-xs-left" }, [
                     _vm._v(_vm._s(props.item.inviter))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-xs-left" }, [
-                    _vm._v(_vm._s(props.item.inviter_phone))
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-xs-left" }, [

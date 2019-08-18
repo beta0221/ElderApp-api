@@ -21,7 +21,9 @@ class MemberController extends Controller
 
     public function searchMember(Request $request)
     {
-        $user = User::where('id_code',$request->searchText)->get();
+        $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
+
+        $user = User::where($searchColumn,$request->searchText)->get();
         if(count($user)<=0){
             $user = User::where('name','like',"%$request->searchText%")->get();
         }
@@ -45,7 +47,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name','org_rank','email', 'gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid')
+            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
