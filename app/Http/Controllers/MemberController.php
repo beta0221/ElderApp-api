@@ -8,6 +8,7 @@ use App\Role;
 use App\PayDate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class MemberController extends Controller
 {
@@ -279,6 +280,11 @@ class MemberController extends Controller
             'addUser'=>$deleteUser,
         ]);
 
+    }
+
+    public function myAccount(){
+
+        return response()->json(Auth::user());
     }
 
     public function welcome(){
