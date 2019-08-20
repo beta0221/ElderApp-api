@@ -40,6 +40,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('deleteGroupMember','MemberController@deleteGroupMember');
 });
 
+Route::apiresource('category','CategoryController');
 Route::apiresource('event','EventController');
 Route::post('joinevent/{slug}','EventController@JoinEvent');
 Route::post('cancelevent/{slug}','EventController@CancelEVent');
