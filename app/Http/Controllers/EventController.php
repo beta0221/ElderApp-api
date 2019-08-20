@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\Category;
 
 class EventController extends Controller
 {
@@ -42,21 +43,33 @@ class EventController extends Controller
                 'dateTime'=>'required',
                 'location'=>'required',
                 'deadline'=>'required',
+                'category'=>'required'
             ]);
         }catch(Exception $e){
             return response($e);
         }
-        // $request['slug']=$request->title.time();
+
         $request['slug']='A'.time();
-        // $request['slug']='123';
-        //--------------------------------------------------
-        $event=Event::create($request->all());
-        //--------------------------------------------------
+        $name=$request['category'];
+        unset($request['category']);
+        $category=Category::where('name',$name)->first();
+        if($category){
+            $request['category_id']=$category->id;
+            //--------------------------------------------------
+            $event=Event::create($request->all());
+            //--------------------------------------------------
+            
+            return response()->json([
+                's'=>1,
+                'event'=>$event,
+            ]);
+        }else{
+            return response()->json([
+                's'=>0,
+                'm'=>'Category not found!'
+            ]);
+        }
         
-        return response()->json([
-            's'=>1,
-            'event'=>$event,
-        ]);
     }
 
     /**
@@ -110,6 +123,20 @@ class EventController extends Controller
             }
             if($request['deadline']){
                 $event->update(['deadline'=>$request->deadline]);
+            }
+            if($request['category']){
+                $name=$request['category'];
+                unset($request['category']);
+                $category=Category::where('name',$name)->first();
+                if($category){
+                    $event->update(['category_id'=>$category->id]);
+                }else{
+                    return response()->json([
+                        's'=>0,
+                        'm'=>'Category not found!'
+                    ]);
+                }
+                
             }
             // $event=Event::where('slug',$slug)->first();
             return response()->json([
@@ -233,5 +260,18 @@ class EventController extends Controller
             ]);
         }
 
+    }
+    public function which_category_event($name){
+        $category=Category::where('name',$name)->first();
+        if($category){
+            $those_events=$category->events()->get();
+            return response()->json($those_events);
+        }else
+        {
+            return response()->json([
+                's'=>0,
+                'm'=>'Category not found!'
+            ]);
+        }
     }
 }

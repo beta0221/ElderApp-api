@@ -16,6 +16,6 @@ class Event extends Model
         return $this->belongsToMany('App\User','event_users','event_id','user_id');
     }
     public function category(){
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo('App\Category');
     }
 }

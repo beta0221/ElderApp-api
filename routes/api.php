@@ -41,6 +41,8 @@ Route::group(['middleware' => ['admin']], function () {
 });
 
 Route::apiresource('category','CategoryController');
+Route::get('which_category_event/{name}','EventController@which_category_event');
+
 Route::apiresource('event','EventController');
 Route::post('joinevent/{slug}','EventController@JoinEvent');
 Route::post('cancelevent/{slug}','EventController@CancelEVent');
