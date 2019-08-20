@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSlugToEvent extends Migration
+class AddSomethingToEvents extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddSlugToEvent extends Migration
     public function up()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->string('slug');
+            $table->integer('category_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddSlugToEvent extends Migration
     public function down()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn('slug');
+            $table->dropColumn('category_id');
         });
     }
 }
