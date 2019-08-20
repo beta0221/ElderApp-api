@@ -287,6 +287,24 @@ class MemberController extends Controller
         return response()->json(Auth::user());
     }
 
+    public function updateAccount(Request $request){
+        $user = User::find(Auth::user()->id);
+
+        if($user){
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->tel = $request->tel;
+            $user->address = $request->address;
+            $user->id_number = $request->id_number;
+            $user->save();
+        }
+
+        return response()->json([
+            's'=>1,
+            'm'=>'成功更新資料',
+        ]);
+    }
+
     public function welcome(){
         return view('member.welcome');
     }
