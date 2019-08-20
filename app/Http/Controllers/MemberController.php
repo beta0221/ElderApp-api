@@ -294,6 +294,7 @@ class MemberController extends Controller
             $user->name = $request->name;
             $user->phone = $request->phone;
             $user->tel = $request->tel;
+            $user->address = $request->address;
             $user->id_number = $request->id_number;
             $user->save();
         }
