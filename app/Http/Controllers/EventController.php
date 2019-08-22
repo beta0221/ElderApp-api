@@ -52,6 +52,18 @@ class EventController extends Controller
         $request['slug']='A'.time();
         $name=$request['category'];
         unset($request['category']);
+
+        $unixNow=time();
+        $unixDeadline=strtotime($request['deadline']);
+        $unixDateTime=strtotime($request['dateTime']);
+        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
+        {
+            return response()->json([
+                's'=>0,
+                'm'=>'活動時間與截止期限設定錯誤!'
+            ]);
+        }
+
         $category=Category::where('name',$name)->first();
         if($category){
             $request['category_id']=$category->id;
@@ -108,22 +120,33 @@ class EventController extends Controller
         
         $event=Event::where('slug',$slug)->first();
         if($event){
-            
+            if($request['dateTime']){
+                unset($request['dateTime']);
+            }
+            if($request['deadline']){
+                $unixNow=time();
+                $unixDeadline=strtotime($request['deadline']);
+                $unixDateTime=strtotime($event->dateTime);
+                if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
+                {
+                    return response()->json([
+                        's'=>0,
+                        'm'=>'活動時間與截止期限設定錯誤!'
+                    ]);
+                }
+                $event->update(['deadline'=>$request->deadline]);
+            }
             if($request['title']){
                 $event->update(['title'=>$request->title]);
             }
             if($request['body']){
                 $event->update(['body'=>$request->body]);
             }
-            if($request['dateTime']){
-                $event->update(['dateTime'=>$request->dateTime]);
-            }
+            
             if($request['location']){
                 $event->update(['location'=>$request->location]);
             }
-            if($request['deadline']){
-                $event->update(['deadline'=>$request->deadline]);
-            }
+            
             if($request['category']){
                 $name=$request['category'];
                 unset($request['category']);
@@ -210,28 +233,40 @@ class EventController extends Controller
     public function JoinEvent(Request $request,$slug){
 
         $event=Event::where('slug',$slug)->first();
-        if($event){
-            $user=User::where('id',$request->id)->first();
-            if(!$user->go_events()->find($event->id)){
-                $user->go_events()->attach($event->id);
-                return response()->json([
-                    's'=>1,
-                    'm'=>'Joint event success!'
-                ]);
-            }else{
-                return response()->json([
-                    's'=>0,
-                    'm'=>'Already join'
-                ]);
-            }
-            
-        }
-        else{
+
+        $unixDeadline=strtotime($event->deadline);
+        $unixNow=time();
+        if($unixNow>$unixDeadline){
             return response()->json([
                 's'=>0,
-                'm'=>'Event not found!'
+                'm'=>'報名已截止!'
             ]);
+        }else{
+            if($event){
+                $user=User::where('id',$request->id)->first();
+                if(!$user->go_events()->find($event->id)){
+                    $user->go_events()->attach($event->id);
+                    return response()->json([
+                        's'=>1,
+                        'm'=>'加入成功!'
+                    ]);
+                }else{
+                    return response()->json([
+                        's'=>0,
+                        'm'=>'已經加入'
+                    ]);
+                }
+                
+            }
+            else{
+                return response()->json([
+                    's'=>0,
+                    'm'=>'Event not found!'
+                ]);
+            }
         }
+
+        
 
     }
     public function CancelEvent(Request $request,$slug){
