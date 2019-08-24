@@ -73,7 +73,7 @@ class MemberController extends Controller
 
         try {
             
-            $users = User::whereBetween('id',[901,1050])->get();
+            $users = User::whereBetween('id',[1051,1200])->get();
 
             foreach($users as $user){
 
