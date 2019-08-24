@@ -9,13 +9,14 @@ use App\PayDate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class MemberController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu']]);
     }
 
 
@@ -66,6 +67,45 @@ class MemberController extends Controller
     {
         return view('member.join');
     }
+
+    public function cacu()
+    {
+
+        try {
+            
+            $users = User::whereBetween('id',[1,250])->get();
+
+            foreach($users as $user){
+
+                $id = $user->id;
+                $user = User::find($id);
+
+                while (strlen($id) < 4) {
+                    $id = '0'.$id;
+                }
+
+                $m = substr($user->created_at,5,2);
+
+                $id_code = 'H' . substr(date('Y'),-2) . $m . $id . rand(0,9);
+
+                $user->id_code = $id_code;  
+                
+                $user->password = Hash::make($user->email);
+
+                $user->save();
+
+            }
+
+        } catch (\Throwable $th) {
+            return response($th);
+        }
+
+        return response('success');
+
+
+
+    }
+
 
     public function store(Request $request)
     {
