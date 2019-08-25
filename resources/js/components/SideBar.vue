@@ -41,7 +41,8 @@
       return {
         items: [
           { title: 'Home', icon: 'dashboard' ,url:'/'},
-          { title: '會員管理', icon: 'question_answer',url:'/member' }
+          { title: '會員管理', icon: 'question_answer',url:'/member' },
+          { title: '活動管理', icon: 'question_answer',url:'/event' }
         ],
         right: null
       }
