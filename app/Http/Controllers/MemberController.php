@@ -97,7 +97,8 @@ class MemberController extends Controller
                 // $id_code = 'H' . substr(date('Y'),-2) . $m . $id . rand(0,9);
                 // $user->id_code = $id_code;  
 
-                $user->password = bcrypt($user->email);
+                // $user->password = bcrypt($user->email);
+                $user->password = $user->email;
 
                 $user->save();
 
