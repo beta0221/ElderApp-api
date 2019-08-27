@@ -135,7 +135,7 @@ export default {
       totalDesserts: 0,
       desserts: [],
       loading: true,
-      pagination: {},
+      pagination: {'sortBy':'id','descending':true},
 
       gender: { 1: "blue--text", 0: "red--text" },
       valid: {
