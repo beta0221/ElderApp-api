@@ -35,11 +35,18 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid');
-    Route::get('inviterCheck','MemberController@inviterCheck');
+    
     Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::post('deleteGroupMember','MemberController@deleteGroupMember');
 });
+
+Route::get('inviterCheck','MemberController@inviterCheck');
+
+
+
+
+
 
 Route::apiresource('category','CategoryController');
 Route::get('which_category_event/{name}','EventController@which_category_event');
