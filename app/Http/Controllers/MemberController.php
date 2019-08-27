@@ -16,7 +16,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store']]);
     }
 
 
