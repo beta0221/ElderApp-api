@@ -71,26 +71,33 @@ class MemberController extends Controller
     public function cacu()
     {
 
+        
+
+        if (empty($_GET['from']) || empty($_GET['to'])) {
+            return response('no paremeters');
+        }
+
+        $from = (int)$_GET['from'];
+        $to = (int)$_GET['to'];
+
+
         try {
             
-            $users = User::whereBetween('id',[1501,1524])->get();
+            $users = User::whereBetween('id',[$from,$to])->get();
 
             foreach($users as $user){
 
                 $id = $user->id;
                 $user = User::find($id);
 
-                while (strlen($id) < 4) {
-                    $id = '0'.$id;
-                }
+                // while (strlen($id) < 4) {
+                //     $id = '0'.$id;
+                // }
+                // $m = substr($user->created_at,5,2);
+                // $id_code = 'H' . substr(date('Y'),-2) . $m . $id . rand(0,9);
+                // $user->id_code = $id_code;  
 
-                $m = substr($user->created_at,5,2);
-
-                $id_code = 'H' . substr(date('Y'),-2) . $m . $id . rand(0,9);
-
-                $user->id_code = $id_code;  
-                
-                $user->password = Hash::make($user->email);
+                $user->password = bcrypt($user->email);
 
                 $user->save();
 
