@@ -122,7 +122,7 @@ class TransactionController extends Controller
         $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->get();
         $result = [];
         foreach($trans as $tran){
-            $target_name = User::find($tran->user_id)->name;
+            $target_name = User::find($tran->target_id)->name;
             $tran['target_name'] = $target_name;
             array_push($result,$tran);
         }
