@@ -122,8 +122,12 @@ class TransactionController extends Controller
         $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->get();
         $result = [];
         foreach($trans as $tran){
-            $target_name = User::find($tran->target_id)->name;
-            $tran['target_name'] = $target_name;
+            if($tran->target_id == 0){
+                $tran['target_name'] = '銀髮學院';
+            }else{
+                $target_name = User::find($tran->target_id)->name;
+                $tran['target_name'] = $target_name;
+            }
             array_push($result,$tran);
         }
         return response()->json($result);
