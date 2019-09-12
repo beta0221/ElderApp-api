@@ -21,12 +21,39 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // return Event::all();
-        return Event::orderBy('created_at','desc')->get();
-    }
+        if($request->page){
 
+            $page = $request->page;
+            $rows = $request->rowsPerPage;
+            $skip = ($page - 1) * $rows;
+            if ($request->descending == null || $request->descending == 'false') {
+                $ascOrdesc = 'asc';
+            } else {
+                $ascOrdesc = 'desc';
+            }
+            $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+
+            $events = DB::table('events')
+            ->select('*')
+            ->orderBy($orderBy, $ascOrdesc)
+            ->skip($skip)
+            ->take($rows)
+            ->get();
+
+            $total = DB::table('events')->count();
+
+            return response()->json([
+                'events' => $events,
+                'total' => $total,
+            ]);
+
+        }else{
+            return Event::orderBy('created_at','desc')->get();
+        }
+        
+    }
  
     /**
      * Store a newly created resource in storage.

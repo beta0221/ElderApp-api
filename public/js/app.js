@@ -1755,102 +1755,146 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      pagination: {
+        sortBy: "id",
+        descending: true
+      },
+      totalEvent: 0,
+      loading: true,
+      eventArray: [],
+      eventCat: {},
       headers: [{
-        text: '#',
-        align: 'left',
-        sortable: false,
-        value: 'name'
+        text: '#'
       }, {
-        text: '活動',
-        value: 'calories'
+        text: "類別",
+        value: "category_id"
       }, {
-        text: '類別',
-        value: 'iron'
+        text: "活動",
+        value: "title"
       }, {
-        text: '地點',
-        value: 'carbs'
+        text: "地點",
+        value: "location"
       }, {
-        text: '活動時間',
-        value: 'fat'
+        text: "活動時間",
+        value: "dateTime"
       }, {
-        text: '截止日期',
-        value: 'protein'
-      }],
-      desserts: [{
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        iron: '1%'
-      }, {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        iron: '1%'
-      }, {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0,
-        iron: '7%'
-      }, {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3,
-        iron: '8%'
-      }, {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9,
-        iron: '16%'
-      }, {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0,
-        iron: '0%'
-      }, {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0,
-        iron: '2%'
-      }, {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5,
-        iron: '45%'
-      }, {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9,
-        iron: '22%'
-      }, {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7,
-        iron: '6%'
+        text: "截止日期",
+        value: "deadline"
       }]
     };
+  },
+  watch: {
+    pagination: {
+      handler: function handler() {
+        var _this = this;
+
+        this.getDataFromApi().then(function (data) {
+          _this.eventArray = data.items;
+          _this.totalEvent = data.total;
+        });
+      }
+    }
+  },
+  created: function created() {
+    this.getCat();
+  },
+  methods: {
+    getCat: function getCat() {
+      var _this2 = this;
+
+      axios.get('/api/category').then(function (res) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var data = _step.value;
+            _this2.eventCat[data.id] = data.name;
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    getDataFromApi: function getDataFromApi() {
+      var _this3 = this;
+
+      this.loading = true;
+      return new Promise(function (resolve, reject) {
+        var _this3$pagination = _this3.pagination,
+            sortBy = _this3$pagination.sortBy,
+            descending = _this3$pagination.descending,
+            page = _this3$pagination.page,
+            rowsPerPage = _this3$pagination.rowsPerPage; // console.log(this.pagination);
+
+        axios.get("/api/event", {
+          params: {
+            page: _this3.pagination.page,
+            rowsPerPage: _this3.pagination.rowsPerPage,
+            descending: _this3.pagination.descending,
+            sortBy: _this3.pagination.sortBy
+          }
+        }).then(function (res) {
+          // console.log(res.data);
+          // return false;
+          var items = res.data.events;
+          var total = res.data.total;
+
+          if (_this3.pagination.sortBy) {
+            items = items.sort(function (a, b) {
+              var sortA = a[sortBy];
+              var sortB = b[sortBy];
+
+              if (descending) {
+                if (sortA < sortB) return 1;
+                if (sortA > sortB) return -1;
+                return 0;
+              } else {
+                if (sortA < sortB) return -1;
+                if (sortA > sortB) return 1;
+                return 0;
+              }
+            });
+          }
+
+          setTimeout(function () {
+            _this3.loading = false;
+            resolve({
+              items: items,
+              total: total
+            });
+          }, 300);
+        })["catch"](function (error) {
+          Exception.handle(error); // User.logout();
+        });
+      });
+    }
   }
 });
 
@@ -38505,30 +38549,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-data-table", {
-    staticClass: "elevation-1",
-    attrs: { headers: _vm.headers, items: _vm.desserts, "items-per-page": 5 },
-    scopedSlots: _vm._u([
-      {
-        key: "items",
-        fn: function(props) {
-          return [
-            _c("td", [_vm._v(_vm._s(props.index))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(props.index))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(props.index))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(props.index))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(props.index))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(props.index))])
-          ]
-        }
-      }
-    ])
-  })
+  return _c("div", [
+    _c(
+      "div",
+      [_c("v-btn", { attrs: { color: "success" } }, [_vm._v("新增活動")])],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            headers: _vm.headers,
+            items: _vm.eventArray,
+            "rows-per-page-items": [15, 30],
+            pagination: _vm.pagination,
+            "total-items": _vm.totalEvent,
+            loading: _vm.loading
+          },
+          on: {
+            "update:pagination": function($event) {
+              _vm.pagination = $event
+            }
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "items",
+              fn: function(props) {
+                return [
+                  _c("td", [_vm._v(_vm._s(props.index + 1))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.eventCat[props.item.category_id]))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.title))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.location))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.dateTime))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.deadline))])
+                ]
+              }
+            }
+          ])
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -80762,8 +80834,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
