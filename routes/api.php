@@ -62,4 +62,6 @@ Route::post('transaction','TransactionController@transaction');
 Route::post('uploadImage','AuthController@uploadImage');
 Route::get('trans-history/{id}','TransactionController@show');
 
+Route::post('couponcode/exchange','PromocodeController@exchange');
+
 

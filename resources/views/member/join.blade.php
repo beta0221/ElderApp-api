@@ -72,6 +72,16 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="phone">手機號碼</label>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="手機號碼" value="{{old('phone')}}">
+                </div>
+
+                <div class="form-group">
+                  <label for="tel">家用電話</label>
+                  <input type="text" class="form-control" id="tel" name="tel" placeholder="家用電話" value="{{old('tel')}}">
+                </div>
+
+                <div class="form-group">
                   <label for="gender">性別</label>
                   <select class="form-control" id="gender" name="gender" required="true" >
                     <option value='1'>男</option>

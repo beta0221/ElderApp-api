@@ -28,6 +28,14 @@ class TransactionController extends Controller
             $give_user->updateWallet(false,$req->amount);
             $take_user->updateWallet(true,$req->amount);
             
+            // $give_user_name = $give_user->name;
+            // $take_user_name = $take_user->name;
+
+            // $req->merge([
+            //     'giver_user_name'=>$give_user_name,
+            //     'take_user_name'=>$take_user_name
+            // ]);
+
             $store = $this->store($req);
             if ($store) {
                 return response('success',200);
@@ -58,6 +66,7 @@ class TransactionController extends Controller
                 'user_id'=>$req->give_id,
                 'event' =>$req->event,
                 'amount'=>$req->amount,
+                'target_id'=>$req->take_id,
                 'give_take'=>false,
             ]);
     
@@ -66,6 +75,7 @@ class TransactionController extends Controller
                 'user_id'=>$req->take_id,
                 'event' =>$req->event,
                 'amount'=>$req->amount,
+                'target_id'=>$req->give_id,
                 'give_take'=>true,
             ]);
 
@@ -110,8 +120,17 @@ class TransactionController extends Controller
     public function show($user_id)
     {
         $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->get();
-
-        return response()->json($trans);
+        $result = [];
+        foreach($trans as $tran){
+            if($tran->target_id == 0){
+                $tran['target_name'] = '銀髮學院';
+            }else{
+                $target_name = User::find($tran->target_id)->name;
+                $tran['target_name'] = $target_name;
+            }
+            array_push($result,$tran);
+        }
+        return response()->json($result);
     }
 
     /**
