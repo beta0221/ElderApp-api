@@ -42,6 +42,7 @@ Route::group(['middleware' => ['admin']], function () {
 });
 
 Route::get('inviterCheck','MemberController@inviterCheck');
+Route::post('extendMemberShip','MemberController@extendMemberShip');
 
 
 
