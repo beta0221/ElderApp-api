@@ -73,7 +73,7 @@ class EventController extends Controller
                 'location'=>'required',
                 'deadline'=>'required',
                 'category'=>'required',
-                'file'=>'image',
+                'file'=>'sometimes|required|image',
             ]);
         }catch(Exception $e){
             return response($e);
@@ -87,7 +87,7 @@ class EventController extends Controller
         $unixNow=time();
         $unixDeadline=strtotime($request['deadline']);
         $unixDateTime=strtotime($request['dateTime']);
-        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline<$unixDateTime)
+        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
         {
             return response()->json([
                 's'=>0,
