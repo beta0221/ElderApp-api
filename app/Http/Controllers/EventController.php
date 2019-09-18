@@ -8,6 +8,8 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Category;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class EventController extends Controller
 {
@@ -70,13 +72,15 @@ class EventController extends Controller
                 'dateTime'=>'required',
                 'location'=>'required',
                 'deadline'=>'required',
-                'category'=>'required'
+                'category'=>'required',
+                'file'=>'image',
             ]);
         }catch(Exception $e){
             return response($e);
         }
 
-        $request['slug']='A'.time();
+        $event_slug='A'.time();
+        $request['slug']=$event_slug;
         $name=$request['category'];
         unset($request['category']);
 
@@ -91,11 +95,37 @@ class EventController extends Controller
             ]);
         }
 
+
+        try {
+            if($request->hasFile('file')){
+                $file = $request->file('file');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $request->merge(['image'=>$filename]);
+                $path = "/images/events/" . $event_slug . "/";
+                
+                if(!Storage::disk('local')->exists($path)){
+                    
+                    if(!Storage::disk('local')->put($path . $filename,File::get($file))){
+                        return response()->json([
+                            's'=>0,
+                            'm'=>'檔案無法儲存',
+                        ]);    
+                    }
+                    
+                }
+                
+            }
+        } catch (\Throwable $th) {
+            return response()->json($th);
+        }
+        
+
+
         $category=Category::where('name',$name)->first();
         if($category){
             $request['category_id']=$category->id;
             //--------------------------------------------------
-            $event=Event::create($request->all());
+            $event=Event::create($request->except('file'));
             //--------------------------------------------------
             
             return response()->json([

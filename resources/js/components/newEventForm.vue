@@ -4,7 +4,17 @@
     <v-card>
       <v-card-title class="headline">新增活動</v-card-title>
 
+      
+
+        
+
       <div style="padding:0 24px 24px 24px;">
+
+        <v-col cols="12" sm="6" md="3">
+          <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+          <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn> 
+        </v-col>
+
         <v-col cols="12" sm="6" md="3">
           <v-text-field label="Solo" placeholder="活動標題" solo v-model="form.title"></v-text-field>
         </v-col>
@@ -50,6 +60,7 @@
 export default {
   data() {
     return {
+      file:'',
       eventCat:[],
       event_date:"",
       event_time:"",
@@ -85,6 +96,9 @@ export default {
     this.getCat();
   },
   methods: {
+    onChangeFileUpload(){
+        this.file = this.$refs.file.files[0];
+    },
     getCat() {
       axios.get("/api/category")
         .then(res => {
@@ -95,7 +109,16 @@ export default {
         });
     },
     submitForm(){
-      axios.post("/api/event", this.form)
+
+      let formData = new FormData();
+      formData.append('file', this.file);
+      Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
+
+      axios.post("/api/event", formData,{
+        headers:{
+          'content-type': 'multipart/form-data',
+        }
+      })
       .then(res =>{
         if(res.data.s == 1){
           this.$router.push({name:"event"});

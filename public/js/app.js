@@ -2607,9 +2607,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      file: '',
       eventCat: [],
       event_date: "",
       event_time: "",
@@ -2643,6 +2654,9 @@ __webpack_require__.r(__webpack_exports__);
     this.getCat();
   },
   methods: {
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.file = this.$refs.file.files[0];
+    },
     getCat: function getCat() {
       var _this = this;
 
@@ -2655,7 +2669,16 @@ __webpack_require__.r(__webpack_exports__);
     submitForm: function submitForm() {
       var _this2 = this;
 
-      axios.post("/api/event", this.form).then(function (res) {
+      var formData = new FormData();
+      formData.append('file', this.file);
+      Object.keys(this.form).forEach(function (key) {
+        return formData.append(key, _this2.form[key]);
+      });
+      axios.post("/api/event", formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (res) {
         if (res.data.s == 1) {
           _this2.$router.push({
             name: "event"
@@ -58218,6 +58241,37 @@ var render = function() {
             "div",
             { staticStyle: { padding: "0 24px 24px 24px" } },
             [
+              _c(
+                "v-col",
+                { attrs: { cols: "12", sm: "6", md: "3" } },
+                [
+                  _c("input", {
+                    ref: "file",
+                    staticStyle: { display: "none" },
+                    attrs: { type: "file", id: "file" },
+                    on: {
+                      change: function($event) {
+                        return _vm.onChangeFileUpload()
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "success" },
+                      on: {
+                        click: function($event) {
+                          return _vm.$refs.file.click()
+                        }
+                      }
+                    },
+                    [_vm._v("上傳圖片")]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
               _c(
                 "v-col",
                 { attrs: { cols: "12", sm: "6", md: "3" } },
