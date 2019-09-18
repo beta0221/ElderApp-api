@@ -83,7 +83,7 @@ class EventController extends Controller
         $unixNow=time();
         $unixDeadline=strtotime($request['deadline']);
         $unixDateTime=strtotime($request['dateTime']);
-        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
+        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline<$unixDateTime)
         {
             return response()->json([
                 's'=>0,

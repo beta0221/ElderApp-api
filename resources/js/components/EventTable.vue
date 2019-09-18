@@ -1,10 +1,17 @@
 <template>
 <div>
-
+  <!-- title bar -->
   <div>
-    <v-btn color="success">新增活動</v-btn>
+    
+      <router-link class="white--text" to="/newEvent" style="text-decoration:none;">
+        <v-btn color="success">
+          新增活動
+        </v-btn>
+      </router-link>
+      
   </div>
 
+  <!-- table -->
   <div>
     <v-data-table
       :headers="headers"
@@ -34,6 +41,9 @@
 export default {
   data() {
     return {
+      newEventDialog:false,
+
+
       pagination: { sortBy: "id", descending: true },
       totalEvent: 0,
       loading: true,
@@ -64,6 +74,9 @@ export default {
     this.getCat();
   },
   methods:{
+    newEvent(){
+      this.newEventDialog = true;
+    },
     getCat(){
       axios.get('/api/category')
       .then(res => {
