@@ -136,6 +136,14 @@ class MemberController extends Controller
         } catch (\Throwable $th) {
             return response($th);
         }
+
+        if($request->app){
+            return response()->json([
+                's'=>1,
+                'user'=>$request,
+            ]);
+        }
+
         return view('member.welcome',['id_code'=>$id_code]);
     }
 
