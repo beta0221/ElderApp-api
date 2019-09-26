@@ -98,7 +98,7 @@ class MemberController extends Controller
     //註冊新會員
     public function store(Request $request)
     {
-        $request->flash();
+        // $request->flash();
         $request->validate([
             'email' => 'required|unique:users',
             'password' => 'required',
