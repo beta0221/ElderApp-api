@@ -26,6 +26,7 @@
         <td>{{props.index + 1}}</td>
         <td>{{eventCat[props.item.category_id]}}</td>
         <td>{{props.item.title}}</td>
+        <td>{{district[props.item.district_id]}}</td>
         <td>{{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
         <td>{{props.item.deadline}}</td>
@@ -49,10 +50,12 @@ export default {
       loading: true,
       eventArray: [],
       eventCat:{},
+      district:{},
       headers: [
         { text:'#'},
         { text: "類別", value: "category_id" },
         { text: "活動", value: "title" },
+        { text: "地區", value: "district_id" },
         { text: "地點", value: "location" },
         { text: "活動時間", value: "dateTime" },
         { text: "截止日期", value: "deadline" }
@@ -72,10 +75,23 @@ export default {
   },
   created(){
     this.getCat();
+    this.getDistrict();
   },
   methods:{
     newEvent(){
       this.newEventDialog = true;
+    },
+    getDistrict(){
+      axios.get('/api/district')
+      .then(res => {
+        
+        for(let data of res.data){
+          this.district[data.id] = data.name;
+        }
+      })
+      .catch(err => {
+        console.error(err); 
+      })
     },
     getCat(){
       axios.get('/api/category')

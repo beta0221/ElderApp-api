@@ -1771,6 +1771,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1783,6 +1784,7 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       eventArray: [],
       eventCat: {},
+      district: {},
       headers: [{
         text: '#'
       }, {
@@ -1791,6 +1793,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "活動",
         value: "title"
+      }, {
+        text: "地區",
+        value: "district_id"
       }, {
         text: "地點",
         value: "location"
@@ -1817,15 +1822,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getCat();
+    this.getDistrict();
   },
   methods: {
     newEvent: function newEvent() {
       this.newEventDialog = true;
     },
-    getCat: function getCat() {
+    getDistrict: function getDistrict() {
       var _this2 = this;
 
-      axios.get('/api/category').then(function (res) {
+      axios.get('/api/district').then(function (res) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -1833,7 +1839,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var data = _step.value;
-            _this2.eventCat[data.id] = data.name;
+            _this2.district[data.id] = data.name;
           }
         } catch (err) {
           _didIteratorError = true;
@@ -1853,23 +1859,54 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    getDataFromApi: function getDataFromApi() {
+    getCat: function getCat() {
       var _this3 = this;
+
+      axios.get('/api/category').then(function (res) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = res.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var data = _step2.value;
+            _this3.eventCat[data.id] = data.name;
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+              _iterator2["return"]();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    getDataFromApi: function getDataFromApi() {
+      var _this4 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this3$pagination = _this3.pagination,
-            sortBy = _this3$pagination.sortBy,
-            descending = _this3$pagination.descending,
-            page = _this3$pagination.page,
-            rowsPerPage = _this3$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this4$pagination = _this4.pagination,
+            sortBy = _this4$pagination.sortBy,
+            descending = _this4$pagination.descending,
+            page = _this4$pagination.page,
+            rowsPerPage = _this4$pagination.rowsPerPage; // console.log(this.pagination);
 
         axios.get("/api/event", {
           params: {
-            page: _this3.pagination.page,
-            rowsPerPage: _this3.pagination.rowsPerPage,
-            descending: _this3.pagination.descending,
-            sortBy: _this3.pagination.sortBy
+            page: _this4.pagination.page,
+            rowsPerPage: _this4.pagination.rowsPerPage,
+            descending: _this4.pagination.descending,
+            sortBy: _this4.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data);
@@ -1877,7 +1914,7 @@ __webpack_require__.r(__webpack_exports__);
           var items = res.data.events;
           var total = res.data.total;
 
-          if (_this3.pagination.sortBy) {
+          if (_this4.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -1895,7 +1932,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this3.loading = false;
+            _this4.loading = false;
             resolve({
               items: items,
               total: total
@@ -2617,11 +2654,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       file: '',
       eventCat: [],
+      district: [],
       event_date: "",
       event_time: "",
       dead_date: "",
@@ -2629,6 +2671,7 @@ __webpack_require__.r(__webpack_exports__);
       form: {
         title: "",
         category: "",
+        district_id: "",
         location: "",
         dateTime: "",
         deadline: "",
@@ -2652,27 +2695,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getCat();
+    this.getDistrict();
   },
   methods: {
     onChangeFileUpload: function onChangeFileUpload() {
       this.file = this.$refs.file.files[0];
     },
-    getCat: function getCat() {
+    getDistrict: function getDistrict() {
       var _this = this;
 
+      axios.get('/api/district').then(function (res) {
+        _this.district = res.data;
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    getCat: function getCat() {
+      var _this2 = this;
+
       axios.get("/api/category").then(function (res) {
-        _this.eventCat = res.data;
+        _this2.eventCat = res.data;
       })["catch"](function (err) {
         console.error(err);
       });
     },
     submitForm: function submitForm() {
-      var _this2 = this;
+      var _this3 = this;
 
       var formData = new FormData();
       formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
-        return formData.append(key, _this2.form[key]);
+        return formData.append(key, _this3.form[key]);
       });
       axios.post("/api/event", formData, {
         headers: {
@@ -2680,7 +2733,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this2.$router.push({
+          _this3.$router.push({
             name: "event"
           });
         } else {
@@ -57604,6 +57657,10 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.title))]),
                   _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.district[props.item.district_id]))
+                  ]),
+                  _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.location))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.dateTime))]),
@@ -58308,6 +58365,30 @@ var render = function() {
                         _vm.$set(_vm.form, "category", $$v)
                       },
                       expression: "form.category"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
+                [
+                  _c("v-select", {
+                    attrs: {
+                      items: _vm.district,
+                      "item-text": "name",
+                      "item-value": "id",
+                      label: "地區",
+                      solo: ""
+                    },
+                    model: {
+                      value: _vm.form.district_id,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "district_id", $$v)
+                      },
+                      expression: "form.district_id"
                     }
                   })
                 ],

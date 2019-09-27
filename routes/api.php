@@ -57,6 +57,8 @@ Route::post('joinevent/{slug}','EventController@JoinEvent');
 Route::post('cancelevent/{slug}','EventController@CancelEVent');
 Route::post('myevent','EventController@MyEvent');
 Route::get('eventguests/{slug}','EventController@EventGuests');
+Route::get('district','EventController@GetDistrict');
+
 
 
 Route::post('transaction','TransactionController@transaction');

@@ -23,6 +23,10 @@
           <v-select :items="eventCat" item-text="name" item-value="name" label="活動類別" solo v-model="form.category"></v-select>
         </v-col>
 
+        <v-col class="d-flex" cols="12" sm="6">
+          <v-select :items="district" item-text="name" item-value="id" label="地區" solo v-model="form.district_id"></v-select>
+        </v-col>
+
         <v-col cols="12" sm="6" md="3">
           <v-text-field label="Solo" placeholder="地點" solo v-model="form.location"></v-text-field>
         </v-col>
@@ -62,6 +66,7 @@ export default {
     return {
       file:'',
       eventCat:[],
+      district:[],
       event_date:"",
       event_time:"",
       dead_date: "",
@@ -69,6 +74,7 @@ export default {
       form: {
         title: "",
         category: "",
+        district_id:"",
         location: "",
         dateTime:"",
         deadline:"",
@@ -94,10 +100,20 @@ export default {
   },
   created() {
     this.getCat();
+    this.getDistrict();
   },
   methods: {
     onChangeFileUpload(){
         this.file = this.$refs.file.files[0];
+    },
+    getDistrict(){
+      axios.get('/api/district')
+      .then(res => {
+        this.district = res.data
+      })
+      .catch(err => {
+        console.error(err); 
+      })
     },
     getCat() {
       axios.get("/api/category")

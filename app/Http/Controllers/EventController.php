@@ -73,7 +73,8 @@ class EventController extends Controller
                 'location'=>'required',
                 'deadline'=>'required',
                 'category'=>'required',
-                'file'=>'sometimes|required|image',
+                'district_id'=>'required',
+                'file'=>'sometimes|nullable|image',
             ]);
         }catch(Exception $e){
             return response($e);
@@ -366,4 +367,14 @@ class EventController extends Controller
             ]);
         }
     }
+
+
+//----------------district-----------------
+public function GetDistrict(){
+
+    $districts = DB::table('districts')->get();
+
+    return response()->json($districts);
+}
+
 }
