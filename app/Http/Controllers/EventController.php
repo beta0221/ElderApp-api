@@ -25,8 +25,9 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
+        
         if($request->page){
-
+            //管理後台
             $page = $request->page;
             $rows = $request->rowsPerPage;
             $skip = ($page - 1) * $rows;
@@ -52,7 +53,22 @@ class EventController extends Controller
             ]);
 
         }else{
-            return Event::orderBy('created_at','desc')->get();
+            //手機
+            
+            $events = Event::where(function($query)use($request){
+
+                if($request->category){
+                    $query->where('category_id',$request->category);
+                }
+
+                if($request->district){
+                    $query->where('district_id',$request->district);
+                }
+
+
+            })->orderBy('created_at','desc')->get();
+
+            return $events;
         }
         
     }
