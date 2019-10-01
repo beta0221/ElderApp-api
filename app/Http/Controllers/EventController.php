@@ -294,7 +294,12 @@ class EventController extends Controller
     public function EventGuests($slug){
         $event=Event::where('slug',$slug)->first();
         if($event){
-            return $event->guests()->get();
+            
+
+            return response()->json([
+                's'=>1,
+                'guests'=>$event->guests()->get(),
+            ]);
         }else{
             return response()->json([
                 's'=>0,
