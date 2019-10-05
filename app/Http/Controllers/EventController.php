@@ -293,19 +293,19 @@ class EventController extends Controller
     }
     public function EventGuests($slug){
         $event=Event::where('slug',$slug)->first();
-        if($event){
-            
-
-            return response()->json([
-                's'=>1,
-                'guests'=>$event->guests()->get(),
-            ]);
-        }else{
+        
+        if(!$event){
             return response()->json([
                 's'=>0,
                 'm'=>'Event not found!'
-            ]);
+            ]);    
         }
+
+        return response()->json([
+            's'=>1,
+            //select: id,name,img
+            'guests'=>$event->guests()->get(),
+        ]);
 
     }
 
