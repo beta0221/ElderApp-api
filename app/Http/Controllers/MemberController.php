@@ -125,14 +125,24 @@ class MemberController extends Controller
         $request->merge(['pay_status'=>1,]);
         
         try {
+            
+            $lastId = User::select('id')->orderBy('id','desc')->first()->id;
+            if(!$lastId){
+                $lastId = 0;
+            }
+            $nextId = $lastId + 1;
+
+            while (strlen($nextId) < 4) {
+                $nextId = '0'.$nextId;
+            }
+            $id_code = 'H' . substr(date('Y'),-2) . date('m') . $nextId . rand(0,9);
+
+            $request->merge([
+                'id_code'=>$id_code
+            ]);
+
             $user = User::create($request->all());
             $user->roles()->attach(Role::where('name', 'user')->first());
-            $id = $user->id;
-            while (strlen($id) < 4) {
-                $id = '0'.$id;
-            }
-            $id_code = 'H' . substr(date('Y'),-2) . date('m') . $id . rand(0,9);
-            $user->update(['id_code'=>$id_code]);
         } catch (\Throwable $th) {
             return response($th);
         }
