@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+//登入的使用者------------------------
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
@@ -24,10 +25,14 @@ Route::group([
     Route::post('me', 'AuthController@me');
     Route::post('myAccount','MemberController@myAccount');
     Route::post('updateAccount','MemberController@updateAccount');
-
+    Route::post('uploadImage','AuthController@uploadImage');
 });
 
+
+//管理員------------------------
 Route::group(['middleware' => ['admin']], function () {
+
+    //MemberController
     Route::get('get-members','MemberController@getMembers');
     Route::get('search-member','MemberController@searchMember');
     Route::post('changePayStatus','MemberController@changePayStatus');
@@ -35,36 +40,35 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid');
-    
     Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::post('deleteGroupMember','MemberController@deleteGroupMember');
 });
 
-Route::get('inviterCheck','MemberController@inviterCheck');
-Route::post('extendMemberShip','MemberController@extendMemberShip');
-Route::post('member/join','MemberController@store');
+//Guest 使用者------------------------
 
+    //MemberController
+    Route::get('inviterCheck','MemberController@inviterCheck');
+    Route::post('extendMemberShip','MemberController@extendMemberShip');
+    Route::post('member/join','MemberController@store');
 
+    //活動類別
+    Route::apiresource('category','CategoryController');
 
+    //活動
+    Route::apiresource('event','EventController');
+    Route::post('joinevent/{slug}','EventController@JoinEvent');
+    Route::post('cancelevent/{slug}','EventController@CancelEVent');
+    Route::post('myevent','EventController@MyEvent');
+    Route::get('eventguests/{slug}','EventController@EventGuests');
+    Route::get('district','EventController@GetDistrict');
+    Route::get('which_category_event/{name}','EventController@which_category_event');
 
+    //交易
+    Route::post('transaction','TransactionController@transaction');
+    Route::get('trans-history/{id}','TransactionController@show');
 
-Route::apiresource('category','CategoryController');
-Route::get('which_category_event/{name}','EventController@which_category_event');
-
-Route::apiresource('event','EventController');
-Route::post('joinevent/{slug}','EventController@JoinEvent');
-Route::post('cancelevent/{slug}','EventController@CancelEVent');
-Route::post('myevent','EventController@MyEvent');
-Route::get('eventguests/{slug}','EventController@EventGuests');
-Route::get('district','EventController@GetDistrict');
-
-
-
-Route::post('transaction','TransactionController@transaction');
-Route::post('uploadImage','AuthController@uploadImage');
-Route::get('trans-history/{id}','TransactionController@show');
-
-Route::post('couponcode/exchange','PromocodeController@exchange');
+    //折扣兌換卷
+    Route::post('couponcode/exchange','PromocodeController@exchange');
 
 

@@ -60,10 +60,10 @@ class CategoryController extends Controller
         $category= Category::where('slug',$slug)->first();
         //-----------------------------------------------------------------是否有登入
        if($category){
-        return response()->json([
-            's'=>1,
-            'category'=>$category,
-        ]);
+            return response()->json([
+                's'=>1,
+                'category'=>$category,
+            ]);
        }else{
             return response()->json([
                 's'=>0,
