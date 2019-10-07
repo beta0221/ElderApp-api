@@ -68,6 +68,7 @@ export default {
       edit_mode:false,
       file:'',
       eventCat:[],
+      eventCatDic:{},
       district:[],
       event_date:"",
       event_time:"",
@@ -98,6 +99,9 @@ export default {
     },
     dead_time(val){
       this.form.deadline = this.dead_date + ' ' + val+":00";
+    },
+    'form.dateTime':function(val){
+      // alert(val);
     }
   },
   created() {
@@ -117,8 +121,12 @@ export default {
         if(res.data.s==1){
           let event = res.data.event;
           this.form.title = event.title;
+          this.form.category = this.eventCatDic[event.category_id];
+          this.form.district_id = event.district_id;
           this.form.location = event.location;
           this.form.body = event.body;
+          this.form.dateTime = event.dateTime;
+          this.form.deadline = event.deadline;
         }
       })
       .catch(err => {
@@ -142,6 +150,10 @@ export default {
       axios.get("/api/category")
         .then(res => {
           this.eventCat = res.data
+          
+          for(let i of res.data){
+            this.eventCatDic[i.id] = i.name;
+          }
         })
         .catch(err => {
           console.error(err);

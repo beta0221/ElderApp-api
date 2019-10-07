@@ -2675,6 +2675,7 @@ __webpack_require__.r(__webpack_exports__);
       edit_mode: false,
       file: '',
       eventCat: [],
+      eventCatDic: {},
       district: [],
       event_date: "",
       event_time: "",
@@ -2703,6 +2704,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     dead_time: function dead_time(val) {
       this.form.deadline = this.dead_date + ' ' + val + ":00";
+    },
+    'form.dateTime': function formDateTime(val) {// alert(val);
     }
   },
   created: function created() {
@@ -2722,8 +2725,12 @@ __webpack_require__.r(__webpack_exports__);
         if (res.data.s == 1) {
           var event = res.data.event;
           _this.form.title = event.title;
+          _this.form.category = _this.eventCatDic[event.category_id];
+          _this.form.district_id = event.district_id;
           _this.form.location = event.location;
           _this.form.body = event.body;
+          _this.form.dateTime = event.dateTime;
+          _this.form.deadline = event.deadline;
         }
       })["catch"](function (err) {
         console.error(err);
@@ -2746,6 +2753,29 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("/api/category").then(function (res) {
         _this3.eventCat = res.data;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var i = _step.value;
+            _this3.eventCatDic[i.id] = i.name;
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
       })["catch"](function (err) {
         console.error(err);
       });
