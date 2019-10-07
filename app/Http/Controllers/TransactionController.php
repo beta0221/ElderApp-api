@@ -26,7 +26,7 @@ class TransactionController extends Controller
         if ($give_user->email == $req->give_email && $take_user->email == $req->take_email) {
             
             if($give_user->wallet < $req->amount){
-                return response('insufficient',400);
+                return response('insufficient');
             }
 
             $give_user->updateWallet(false,$req->amount);
