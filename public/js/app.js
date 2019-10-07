@@ -1772,6 +1772,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1805,6 +1808,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "截止日期",
         value: "deadline"
+      }, {
+        text: "-"
       }]
     };
   },
@@ -1825,6 +1830,11 @@ __webpack_require__.r(__webpack_exports__);
     this.getDistrict();
   },
   methods: {
+    editEvent: function editEvent(id) {
+      this.$router.push({
+        path: '/editEvent/' + id
+      });
+    },
     newEvent: function newEvent() {
       this.newEventDialog = true;
     },
@@ -2659,8 +2669,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['event_slug'],
   data: function data() {
     return {
+      edit_mode: false,
       file: '',
       eventCat: [],
       district: [],
@@ -2696,36 +2708,55 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.getCat();
     this.getDistrict();
+
+    if (this.event_slug) {
+      this.edit_mode = true;
+      this.loadEvent();
+    }
   },
   methods: {
+    loadEvent: function loadEvent() {
+      var _this = this;
+
+      axios.get("/api/event/".concat(this.event_slug)).then(function (res) {
+        if (res.data.s == 1) {
+          var event = res.data.event;
+          _this.form.title = event.title;
+          _this.form.location = event.location;
+          _this.form.body = event.body;
+        }
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
     onChangeFileUpload: function onChangeFileUpload() {
       this.file = this.$refs.file.files[0];
     },
     getDistrict: function getDistrict() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('/api/district').then(function (res) {
-        _this.district = res.data;
+        _this2.district = res.data;
       })["catch"](function (err) {
         console.error(err);
       });
     },
     getCat: function getCat() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("/api/category").then(function (res) {
-        _this2.eventCat = res.data;
+        _this3.eventCat = res.data;
       })["catch"](function (err) {
         console.error(err);
       });
     },
     submitForm: function submitForm() {
-      var _this3 = this;
+      var _this4 = this;
 
       var formData = new FormData();
       formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
-        return formData.append(key, _this3.form[key]);
+        return formData.append(key, _this4.form[key]);
       });
       axios.post("/api/event", formData, {
         headers: {
@@ -2733,7 +2764,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this3.$router.push({
+          _this4.$router.push({
             name: "event"
           });
         } else {
@@ -57665,7 +57696,26 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.dateTime))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(props.item.deadline))])
+                  _c("td", [_vm._v(_vm._s(props.item.deadline))]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "info" },
+                          on: {
+                            click: function($event) {
+                              return _vm.editEvent(props.item.slug)
+                            }
+                          }
+                        },
+                        [_vm._v("編輯")]
+                      )
+                    ],
+                    1
+                  )
                 ]
               }
             }
@@ -100230,6 +100280,10 @@ var routes = [{
 }, {
   path: '/newEvent',
   component: _components_newEventForm__WEBPACK_IMPORTED_MODULE_4__["default"]
+}, {
+  path: '/editEvent/:event_slug',
+  component: _components_newEventForm__WEBPACK_IMPORTED_MODULE_4__["default"],
+  props: true
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: routes,
@@ -100259,8 +100313,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

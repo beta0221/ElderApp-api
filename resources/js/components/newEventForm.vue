@@ -62,8 +62,10 @@
 
 <script>
 export default {
+  props:['event_slug'],
   data() {
     return {
+      edit_mode:false,
       file:'',
       eventCat:[],
       district:[],
@@ -101,8 +103,29 @@ export default {
   created() {
     this.getCat();
     this.getDistrict();
+    if(this.event_slug){
+      this.edit_mode = true;
+      this.loadEvent();
+    }
+    
   },
   methods: {
+    loadEvent(){
+      
+      axios.get(`/api/event/${this.event_slug}`)
+      .then(res => {
+        if(res.data.s==1){
+          let event = res.data.event;
+          this.form.title = event.title;
+          this.form.location = event.location;
+          this.form.body = event.body;
+        }
+      })
+      .catch(err => {
+        console.error(err); 
+      })
+
+    },
     onChangeFileUpload(){
         this.file = this.$refs.file.files[0];
     },
