@@ -17,7 +17,7 @@ class TransactionController extends Controller
             'take_id' => 'required|integer',
             'take_email' => 'required',
             'amount' =>'required|integer|min:1',
-            'event' => 'required',
+            // 'event' => 'required',
         ]);
         
         $give_user = User::find($req->give_id);
