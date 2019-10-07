@@ -25,23 +25,23 @@ class TransactionController extends Controller
 
         if ($give_user->email == $req->give_email && $take_user->email == $req->take_email) {
             
+            if($give_user->wallet < $req->amount){
+                return response('insufficient',400);
+            }
+
             $give_user->updateWallet(false,$req->amount);
             $take_user->updateWallet(true,$req->amount);
             
-            // $give_user_name = $give_user->name;
-            // $take_user_name = $take_user->name;
-
-            // $req->merge([
-            //     'giver_user_name'=>$give_user_name,
-            //     'take_user_name'=>$take_user_name
-            // ]);
-
             $store = $this->store($req);
             if ($store) {
                 return response('success',200);
             }
 
             return response($store,400);
+
+
+
+
         }
         
         return response('data uncorrect',400);
