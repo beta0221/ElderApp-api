@@ -78,6 +78,7 @@ export default {
       event_time:"",
       dead_date: "",
       dead_time: "",
+      slug:"",
       form: {
         title: "",
         category: "",
@@ -98,7 +99,7 @@ export default {
     event_time(val){
       this.form.dateTime = this.event_date + ' ' + val+":00";
     },
-    dead_datet(val){
+    dead_date(val){
       this.form.deadline = val + ' ' + this.dead_time+":00";
     },
     dead_time(val){
@@ -139,6 +140,7 @@ export default {
           this.form.body = event.body;
           this.form.dateTime = event.dateTime;
           this.form.deadline = event.deadline;
+          this.slug = event.slug;
         }
       })
       .catch(err => {
@@ -178,8 +180,13 @@ export default {
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
 
       if(this.edit_mode){
-
+        this.updateRequest(formData);
       }else{
+        this.storeRequest(formData);
+      }
+      
+    },
+    storeRequest(formData){
         axios.post("/api/event", formData,{
           headers:{
             'content-type': 'multipart/form-data',
@@ -196,11 +203,28 @@ export default {
           console.log(error);
           alert('系統錯誤');
         })
-      }
-      
-
-
+    },
+    updateRequest(formData){
+      formData.append('_method','PUT');
+      axios.post("/api/event/"+ this.slug, formData,{
+          headers:{
+            'content-type': 'multipart/form-data',
+          }
+        })
+        .then(res =>{
+          
+          if(res.data.s == 1){
+            this.$router.push({name:"event"});
+          }else{
+            alert(res.data.m);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert('系統錯誤');
+        })
     }
+
   }
 };
 </script>

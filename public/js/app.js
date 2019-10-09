@@ -2685,6 +2685,7 @@ __webpack_require__.r(__webpack_exports__);
       event_time: "",
       dead_date: "",
       dead_time: "",
+      slug: "",
       form: {
         title: "",
         category: "",
@@ -2703,7 +2704,7 @@ __webpack_require__.r(__webpack_exports__);
     event_time: function event_time(val) {
       this.form.dateTime = this.event_date + ' ' + val + ":00";
     },
-    dead_datet: function dead_datet(val) {
+    dead_date: function dead_date(val) {
       this.form.deadline = val + ' ' + this.dead_time + ":00";
     },
     dead_time: function dead_time(val) {
@@ -2743,6 +2744,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.form.body = event.body;
           _this.form.dateTime = event.dateTime;
           _this.form.deadline = event.deadline;
+          _this.slug = event.slug;
         }
       })["catch"](function (err) {
         console.error(err);
@@ -2801,24 +2803,52 @@ __webpack_require__.r(__webpack_exports__);
         return formData.append(key, _this4.form[key]);
       });
 
-      if (this.edit_mode) {} else {
-        axios.post("/api/event", formData, {
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        }).then(function (res) {
-          if (res.data.s == 1) {
-            _this4.$router.push({
-              name: "event"
-            });
-          } else {
-            alert(res.data.m);
-          }
-        })["catch"](function (error) {
-          console.log(error);
-          alert('系統錯誤');
-        });
+      if (this.edit_mode) {
+        this.updateRequest(formData);
+      } else {
+        this.storeRequest(formData);
       }
+    },
+    storeRequest: function storeRequest(formData) {
+      var _this5 = this;
+
+      axios.post("/api/event", formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this5.$router.push({
+            name: "event"
+          });
+        } else {
+          alert(res.data.m);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        alert('系統錯誤');
+      });
+    },
+    updateRequest: function updateRequest(formData) {
+      var _this6 = this;
+
+      formData.append('_method', 'PUT');
+      axios.post("/api/event/" + this.slug, formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this6.$router.push({
+            name: "event"
+          });
+        } else {
+          alert(res.data.m);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        alert('系統錯誤');
+      });
     }
   }
 });
@@ -100391,8 +100421,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

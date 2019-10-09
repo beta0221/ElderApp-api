@@ -193,52 +193,43 @@ class EventController extends Controller
     {
         
         $event=Event::where('slug',$slug)->first();
+        
         if($event){
-            if($request['dateTime']){
-                unset($request['dateTime']);
-            }
-            if($request['deadline']){
-                $unixNow=time();
-                $unixDeadline=strtotime($request['deadline']);
-                $unixDateTime=strtotime($event->dateTime);
-                if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
-                {
-                    return response()->json([
-                        's'=>0,
-                        'm'=>'活動時間與截止期限設定錯誤!'
-                    ]);
-                }
-                $event->update(['deadline'=>$request->deadline]);
-            }
-            if($request['title']){
-                $event->update(['title'=>$request->title]);
-            }
-            if($request['body']){
-                $event->update(['body'=>$request->body]);
+            
+            $unixNow=time();
+            $unixDeadline=strtotime($request['deadline']);
+            $unixDateTime=strtotime($request->dateTime);
+
+            if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
+            {
+                return response()->json([
+                    's'=>0,
+                    'm'=>'活動時間與截止期限設定錯誤!'
+                ]);
             }
             
-            if($request['location']){
-                $event->update(['location'=>$request->location]);
-            }
-            
-            if($request['category']){
-                $name=$request['category'];
+            $category=Category::where('name',$request->category)->first();
+            if(!$category){
+                return response()->json([
+                    's'=>0,
+                    'm'=>'Category not found!'
+                ]);
+            }else{
+                $request->merge(['category_id'=>$category->id]);
                 unset($request['category']);
-                $category=Category::where('name',$name)->first();
-                if($category){
-                    $event->update(['category_id'=>$category->id]);
-                }else{
-                    return response()->json([
-                        's'=>0,
-                        'm'=>'Category not found!'
-                    ]);
-                }
-                
             }
-            // $event=Event::where('slug',$slug)->first();
+
+
+
+            try {
+                $event->update($request->except('file'));
+            } catch (\Throwable $th) {
+                return response($th);
+            }            
+
             return response()->json([
                 's'=>1,
-                'event'=>$event,
+                // 'event'=>$event,
                 'm'=>'update success!'
             ]);
             
