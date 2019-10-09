@@ -2,17 +2,20 @@
   <!-- dialog -->
   <div>
     <v-card>
-      <v-card-title class="headline">新增活動</v-card-title>
-
-      
 
         
+        <router-link to='/event' class="grey--text " style="text-decoration:none;"><v-btn color="warning">返回</v-btn></router-link>
+        <v-card-title class="headline">{{(edit_mode)?'編輯活動':'新增活動'}}</v-card-title>
+      
 
       <div style="padding:0 24px 24px 24px;">
 
+
+        <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+        <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn> 
+        
         <v-col cols="12" sm="6" md="3">
-          <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
-          <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn> 
+          
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -53,7 +56,8 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-btn block color="success" @click="submitForm">新增</v-btn>
+          <v-btn v-show="!edit_mode" block color="success" @click="submitForm">新增</v-btn>
+          <v-btn v-show="edit_mode" block color="info" @click="submitForm">確定送出</v-btn>
         </v-col>
       </div>
     </v-card>
@@ -101,8 +105,16 @@ export default {
       this.form.deadline = this.dead_date + ' ' + val+":00";
     },
     'form.dateTime':function(val){
-      // alert(val);
+      let a = val.split(" ");
+      this.event_date = a[0];
+      this.event_time = a[1].substr(0,5);
+    },
+    'form.deadline':function(val){
+      let a = val.split(" ");
+      this.dead_date = a[0];
+      this.dead_time = a[1].substr(0,5);
     }
+
   },
   created() {
     this.getCat();
@@ -165,22 +177,29 @@ export default {
       formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
 
-      axios.post("/api/event", formData,{
-        headers:{
-          'content-type': 'multipart/form-data',
-        }
-      })
-      .then(res =>{
-        if(res.data.s == 1){
-          this.$router.push({name:"event"});
-        }else{
-          alert(res.data.m);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        alert('系統錯誤');
-      })
+      if(this.edit_mode){
+
+      }else{
+        axios.post("/api/event", formData,{
+          headers:{
+            'content-type': 'multipart/form-data',
+          }
+        })
+        .then(res =>{
+          if(res.data.s == 1){
+            this.$router.push({name:"event"});
+          }else{
+            alert(res.data.m);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert('系統錯誤');
+        })
+      }
+      
+
+
     }
   }
 };

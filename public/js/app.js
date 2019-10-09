@@ -2668,6 +2668,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
@@ -2705,7 +2709,15 @@ __webpack_require__.r(__webpack_exports__);
     dead_time: function dead_time(val) {
       this.form.deadline = this.dead_date + ' ' + val + ":00";
     },
-    'form.dateTime': function formDateTime(val) {// alert(val);
+    'form.dateTime': function formDateTime(val) {
+      var a = val.split(" ");
+      this.event_date = a[0];
+      this.event_time = a[1].substr(0, 5);
+    },
+    'form.deadline': function formDeadline(val) {
+      var a = val.split(" ");
+      this.dead_date = a[0];
+      this.dead_time = a[1].substr(0, 5);
     }
   },
   created: function created() {
@@ -2788,22 +2800,25 @@ __webpack_require__.r(__webpack_exports__);
       Object.keys(this.form).forEach(function (key) {
         return formData.append(key, _this4.form[key]);
       });
-      axios.post("/api/event", formData, {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      }).then(function (res) {
-        if (res.data.s == 1) {
-          _this4.$router.push({
-            name: "event"
-          });
-        } else {
-          alert(res.data.m);
-        }
-      })["catch"](function (error) {
-        console.log(error);
-        alert('系統錯誤');
-      });
+
+      if (this.edit_mode) {} else {
+        axios.post("/api/event", formData, {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }).then(function (res) {
+          if (res.data.s == 1) {
+            _this4.$router.push({
+              name: "event"
+            });
+          } else {
+            alert(res.data.m);
+          }
+        })["catch"](function (error) {
+          console.log(error);
+          alert('系統錯誤');
+        });
+      }
     }
   }
 });
@@ -58372,42 +58387,50 @@ var render = function() {
       _c(
         "v-card",
         [
-          _c("v-card-title", { staticClass: "headline" }, [_vm._v("新增活動")]),
+          _c(
+            "router-link",
+            {
+              staticClass: "grey--text ",
+              staticStyle: { "text-decoration": "none" },
+              attrs: { to: "/event" }
+            },
+            [_c("v-btn", { attrs: { color: "warning" } }, [_vm._v("返回")])],
+            1
+          ),
+          _vm._v(" "),
+          _c("v-card-title", { staticClass: "headline" }, [
+            _vm._v(_vm._s(_vm.edit_mode ? "編輯活動" : "新增活動"))
+          ]),
           _vm._v(" "),
           _c(
             "div",
             { staticStyle: { padding: "0 24px 24px 24px" } },
             [
+              _c("input", {
+                ref: "file",
+                staticStyle: { display: "none" },
+                attrs: { type: "file", id: "file" },
+                on: {
+                  change: function($event) {
+                    return _vm.onChangeFileUpload()
+                  }
+                }
+              }),
+              _vm._v(" "),
               _c(
-                "v-col",
-                { attrs: { cols: "12", sm: "6", md: "3" } },
-                [
-                  _c("input", {
-                    ref: "file",
-                    staticStyle: { display: "none" },
-                    attrs: { type: "file", id: "file" },
-                    on: {
-                      change: function($event) {
-                        return _vm.onChangeFileUpload()
-                      }
+                "v-btn",
+                {
+                  attrs: { color: "success" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$refs.file.click()
                     }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "success" },
-                      on: {
-                        click: function($event) {
-                          return _vm.$refs.file.click()
-                        }
-                      }
-                    },
-                    [_vm._v("上傳圖片")]
-                  )
-                ],
-                1
+                  }
+                },
+                [_vm._v("上傳圖片")]
               ),
+              _vm._v(" "),
+              _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }),
               _vm._v(" "),
               _c(
                 "v-col",
@@ -58587,10 +58610,35 @@ var render = function() {
                   _c(
                     "v-btn",
                     {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: !_vm.edit_mode,
+                          expression: "!edit_mode"
+                        }
+                      ],
                       attrs: { block: "", color: "success" },
                       on: { click: _vm.submitForm }
                     },
                     [_vm._v("新增")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.edit_mode,
+                          expression: "edit_mode"
+                        }
+                      ],
+                      attrs: { block: "", color: "info" },
+                      on: { click: _vm.submitForm }
+                    },
+                    [_vm._v("確定送出")]
                   )
                 ],
                 1
