@@ -85,8 +85,14 @@ class EventController extends Controller
                 $query->where('district_id',$request->district);
             }
 
-
         })->orderBy('created_at','desc')->get();
+
+        //加入人數
+        foreach($events as $event){
+            $numberOfPeople = $event->numberOfPeople();
+            $event['numberOfPeople'] = $numberOfPeople;
+        }
+
 
         return $events;
     }
