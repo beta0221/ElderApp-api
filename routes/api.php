@@ -57,6 +57,7 @@ Route::group(['middleware' => ['admin']], function () {
 
     //活動
     Route::apiresource('event','EventController');
+    Route::get('getEvents','EventController@getEvents');
     Route::post('joinevent/{slug}','EventController@JoinEvent');
     Route::post('cancelevent/{slug}','EventController@CancelEVent');
     Route::post('myevent','EventController@MyEvent');

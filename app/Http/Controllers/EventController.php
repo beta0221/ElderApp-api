@@ -72,6 +72,24 @@ class EventController extends Controller
         }
         
     }
+
+    //手機
+    public function getEvents(Request $request){
+        $events = Event::where(function($query)use($request){
+
+            if($request->category){
+                $query->where('category_id',$request->category);
+            }
+
+            if($request->district){
+                $query->where('district_id',$request->district);
+            }
+
+
+        })->orderBy('created_at','desc')->get();
+
+        return $events;
+    }
  
     /**
      * Store a newly created resource in storage.
