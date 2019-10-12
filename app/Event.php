@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Event extends Model
 {
@@ -17,5 +18,9 @@ class Event extends Model
     }
     public function category(){
         return $this->belongsTo('App\Category');
+    }
+
+    public function numberOfPeople(){
+        return DB::table('event_users')->where('event_id',$this->id)->count();
     }
 }

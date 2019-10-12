@@ -30,6 +30,7 @@
         <td>{{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
         <td>{{props.item.deadline}}</td>
+        <td>{{props.item.maximum}}</td>
         <td>
           <v-btn color="info" @click="editEvent(props.item.slug)">編輯</v-btn>
         </td>
@@ -62,6 +63,7 @@ export default {
         { text: "地點", value: "location" },
         { text: "活動時間", value: "dateTime" },
         { text: "截止日期", value: "deadline" },
+        { text: "人數上限", value: "maximum" },
         { text: "-"}
       ],
       

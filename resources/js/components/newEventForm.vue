@@ -37,6 +37,12 @@
           <v-text-field label="Solo" placeholder="地點" solo v-model="form.location"></v-text-field>
         </v-col>
 
+        <v-col cols="6" sm="6" md="3">
+
+          <v-btn @click="form.maximum++">+</v-btn>
+          <v-text-field class="d-inline-block" label="人數上限" v-model="form.maximum"></v-text-field>
+          <v-btn @click="form.maximum--">-</v-btn>
+        </v-col>
         
         <v-col cols="12" sm="6" md="3">
           <div>
@@ -62,6 +68,7 @@
           <v-btn v-show="!edit_mode" block color="success" @click="submitForm">新增</v-btn>
           <v-btn v-show="edit_mode" block color="info" @click="submitForm">確定送出</v-btn>
         </v-col>
+        
       </div>
     </v-card>
   </div>
@@ -88,6 +95,7 @@ export default {
         category: "",
         district_id:"",
         location: "",
+        maximum:"20",
         dateTime:"",
         deadline:"",
         body: ""
@@ -141,6 +149,7 @@ export default {
           this.form.category = this.eventCatDic[event.category_id];
           this.form.district_id = event.district_id;
           this.form.location = event.location;
+          this.form.maximum = event.maximum;
           this.form.body = event.body;
           this.form.dateTime = event.dateTime;
           this.form.deadline = event.deadline;

@@ -1775,6 +1775,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1808,6 +1809,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "截止日期",
         value: "deadline"
+      }, {
+        text: "人數上限",
+        value: "maximum"
       }, {
         text: "-"
       }]
@@ -2675,6 +2679,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
@@ -2695,6 +2706,7 @@ __webpack_require__.r(__webpack_exports__);
         category: "",
         district_id: "",
         location: "",
+        maximum: "20",
         dateTime: "",
         deadline: "",
         body: ""
@@ -2745,6 +2757,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.form.category = _this.eventCatDic[event.category_id];
           _this.form.district_id = event.district_id;
           _this.form.location = event.location;
+          _this.form.maximum = event.maximum;
           _this.form.body = event.body;
           _this.form.dateTime = event.dateTime;
           _this.form.deadline = event.deadline;
@@ -57782,6 +57795,8 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.deadline))]),
                   _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.maximum))]),
+                  _vm._v(" "),
                   _c(
                     "td",
                     [
@@ -58565,6 +58580,49 @@ var render = function() {
                       expression: "form.location"
                     }
                   })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "6", sm: "6", md: "3" } },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.form.maximum++
+                        }
+                      }
+                    },
+                    [_vm._v("+")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    staticClass: "d-inline-block",
+                    attrs: { label: "人數上限" },
+                    model: {
+                      value: _vm.form.maximum,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "maximum", $$v)
+                      },
+                      expression: "form.maximum"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.form.maximum--
+                        }
+                      }
+                    },
+                    [_vm._v("-")]
+                  )
                 ],
                 1
               ),

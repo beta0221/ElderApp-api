@@ -87,6 +87,7 @@ class EventController extends Controller
                 'body'=>'required',
                 'dateTime'=>'required',
                 'location'=>'required',
+                'maximum'=>'required|min:1|integer',
                 'deadline'=>'required',
                 'category'=>'required',
                 'district_id'=>'required',
@@ -230,7 +231,6 @@ class EventController extends Controller
             }
 
             if($request->hasFile('file')){
-                
                 $filename = $this->imageHandler($request->file('file'),$event->slug );
                 if($filename){
                     $request->merge(['image'=>$filename]);
@@ -240,6 +240,10 @@ class EventController extends Controller
                         'm'=>'檔案無法儲存',
                     ]);
                 }   
+            }
+
+            if($event->maximum > $request->maximum){
+                unset($request['maximum']);
             }
 
 
@@ -325,6 +329,13 @@ class EventController extends Controller
 
         $event=Event::where('slug',$slug)->first();
 
+        if(!$event){
+            return response()->json([
+                's'=>0,
+                'm'=>'Event not found!'
+            ]);
+        }
+
         $unixDeadline=strtotime($event->deadline);
         $unixNow=time();
         if($unixNow>$unixDeadline){
@@ -332,34 +343,31 @@ class EventController extends Controller
                 's'=>0,
                 'm'=>'報名已截止!'
             ]);
-        }else{
-            if($event){
-                $user=User::where('id',$request->id)->first();
-                if(!$user->go_events()->find($event->id)){
-                    $user->go_events()->attach($event->id);
-                    return response()->json([
-                        's'=>1,
-                        'm'=>'加入成功!'
-                    ]);
-                }else{
-                    return response()->json([
-                        's'=>0,
-                        'm'=>'已經加入'
-                    ]);
-                }
-                
-            }
-            else{
-                return response()->json([
-                    's'=>0,
-                    'm'=>'Event not found!'
-                ]);
-            }
         }
 
-        
+        if($event->maximum <= $event->numberOfPeople()){
+            return response()->json([
+                's'=>0,
+                'm'=>'此活動已達人數上限。'
+            ]);
+        }
 
+        $user=User::where('id',$request->id)->first();
+        if(!$user->go_events()->find($event->id)){
+            $user->go_events()->attach($event->id);
+            return response()->json([
+                's'=>1,
+                'm'=>'加入成功!'
+            ]);
+        }else{
+            return response()->json([
+                's'=>0,
+                'm'=>'已經加入'
+            ]);
+        }
+         
     }
+
     public function CancelEvent(Request $request,$slug){
 
         $event=Event::where('slug',$slug)->first();
