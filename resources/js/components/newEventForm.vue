@@ -10,12 +10,15 @@
 
       <div style="padding:0 24px 24px 24px;">
 
-
-        <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
-        <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn> 
         
+
         <v-col cols="12" sm="6" md="3">
-          
+          <img v-if="(event_image)?true:false" :src="event_image"/><br>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+          <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+          <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -70,14 +73,15 @@ export default {
   data() {
     return {
       edit_mode:false,
+      event_image:null,
       file:'',
       eventCat:[],
       eventCatDic:{},
       district:[],
       event_date:"",
-      event_time:"",
+      event_time:"00:00:00",
       dead_date: "",
-      dead_time: "",
+      dead_time: "00:00:00",
       slug:"",
       form: {
         title: "",
@@ -141,6 +145,10 @@ export default {
           this.form.dateTime = event.dateTime;
           this.form.deadline = event.deadline;
           this.slug = event.slug;
+          if(event.image){
+            this.event_image = `/images/events/${event.slug}/${event.image}`;
+          }
+          
         }
       })
       .catch(err => {
@@ -150,6 +158,7 @@ export default {
     },
     onChangeFileUpload(){
         this.file = this.$refs.file.files[0];
+        this.event_image = URL.createObjectURL(this.$refs.file.files[0]);
     },
     getDistrict(){
       axios.get('/api/district')

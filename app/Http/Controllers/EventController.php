@@ -113,30 +113,19 @@ class EventController extends Controller
         }
 
 
-        try {
-            if($request->hasFile('file')){
-                $file = $request->file('file');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $request->merge(['image'=>$filename]);
-                $path = "/images/events/" . $event_slug . "/";
-                
-                if(!Storage::disk('local')->exists($path)){
-                    
-                    if(!Storage::disk('local')->put($path . $filename,File::get($file))){
-                        return response()->json([
-                            's'=>0,
-                            'm'=>'檔案無法儲存',
-                        ]);    
-                    }
-                    
-                }
-                
-            }
-        } catch (\Throwable $th) {
-            return response()->json($th);
-        }
         
-
+        if($request->hasFile('file')){
+            $filename = $this->imageHandler($request->file('file'),$event_slug);
+            
+            if($filename){
+                $request->merge(['image'=>$filename]);
+            }else{
+                return response()->json([
+                    's'=>0,
+                    'm'=>'檔案無法儲存',
+                ]);
+            }   
+        }
 
         $category=Category::where('name',$name)->first();
         if($category){
@@ -157,6 +146,27 @@ class EventController extends Controller
         }
         
     }
+
+
+    
+    private function imageHandler($file,$event_slug){
+        
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $path = "/images/events/" . $event_slug . "/";
+        
+        if(Storage::disk('local')->exists($path)){
+            $result = Storage::deleteDirectory($path);
+            if(!$result){
+                return false;
+            }
+        }
+        
+        if(!Storage::disk('local')->put($path . $filename,File::get($file))){
+            return false;//失敗:回傳false
+        }
+        return $filename;//成功：回傳檔名
+    }
+
 
     /**
      * Display the specified resource.
@@ -219,6 +229,18 @@ class EventController extends Controller
                 unset($request['category']);
             }
 
+            if($request->hasFile('file')){
+                
+                $filename = $this->imageHandler($request->file('file'),$event->slug );
+                if($filename){
+                    $request->merge(['image'=>$filename]);
+                }else{
+                    return response()->json([
+                        's'=>0,
+                        'm'=>'檔案無法儲存',
+                    ]);
+                }   
+            }
 
 
             try {
@@ -233,13 +255,12 @@ class EventController extends Controller
                 'm'=>'update success!'
             ]);
             
-        }else{
-            return response()->json([
-                's'=>0,
-                'm'=>'Event not found!'
-            ]);
         }
-        
+
+        return response()->json([
+            's'=>0,
+            'm'=>'Event not found!'
+        ]);
         
         
     }

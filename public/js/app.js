@@ -2672,19 +2672,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
     return {
       edit_mode: false,
+      event_image: null,
       file: '',
       eventCat: [],
       eventCatDic: {},
       district: [],
       event_date: "",
-      event_time: "",
+      event_time: "00:00:00",
       dead_date: "",
-      dead_time: "",
+      dead_time: "00:00:00",
       slug: "",
       form: {
         title: "",
@@ -2745,6 +2749,10 @@ __webpack_require__.r(__webpack_exports__);
           _this.form.dateTime = event.dateTime;
           _this.form.deadline = event.deadline;
           _this.slug = event.slug;
+
+          if (event.image) {
+            _this.event_image = "/images/events/".concat(event.slug, "/").concat(event.image);
+          }
         }
       })["catch"](function (err) {
         console.error(err);
@@ -2752,6 +2760,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     onChangeFileUpload: function onChangeFileUpload() {
       this.file = this.$refs.file.files[0];
+      this.event_image = URL.createObjectURL(this.$refs.file.files[0]);
     },
     getDistrict: function getDistrict() {
       var _this2 = this;
@@ -58436,31 +58445,45 @@ var render = function() {
             "div",
             { staticStyle: { padding: "0 24px 24px 24px" } },
             [
-              _c("input", {
-                ref: "file",
-                staticStyle: { display: "none" },
-                attrs: { type: "file", id: "file" },
-                on: {
-                  change: function($event) {
-                    return _vm.onChangeFileUpload()
-                  }
-                }
-              }),
+              _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }, [
+                (_vm.event_image
+                ? true
+                : false)
+                  ? _c("img", { attrs: { src: _vm.event_image } })
+                  : _vm._e(),
+                _c("br")
+              ]),
               _vm._v(" "),
               _c(
-                "v-btn",
-                {
-                  attrs: { color: "success" },
-                  on: {
-                    click: function($event) {
-                      return _vm.$refs.file.click()
+                "v-col",
+                { attrs: { cols: "12", sm: "6", md: "3" } },
+                [
+                  _c("input", {
+                    ref: "file",
+                    staticStyle: { display: "none" },
+                    attrs: { type: "file", id: "file" },
+                    on: {
+                      change: function($event) {
+                        return _vm.onChangeFileUpload()
+                      }
                     }
-                  }
-                },
-                [_vm._v("上傳圖片")]
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "success" },
+                      on: {
+                        click: function($event) {
+                          return _vm.$refs.file.click()
+                        }
+                      }
+                    },
+                    [_vm._v("上傳圖片")]
+                  )
+                ],
+                1
               ),
-              _vm._v(" "),
-              _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }),
               _vm._v(" "),
               _c(
                 "v-col",
