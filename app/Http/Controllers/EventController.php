@@ -93,10 +93,16 @@ class EventController extends Controller
 
         })->orderBy('created_at','desc')->get();
 
-        //加入人數
+        //加入人數 & 使用者是否加入
+        $user_id = (Auth::user())?Auth::user()->id:null;
         foreach($events as $event){
             $numberOfPeople = $event->numberOfPeople();
             $event['numberOfPeople'] = $numberOfPeople;
+            if($user_id){
+                $event['participate'] =  $event->isParticipated($user_id);
+            }else{
+                $event['participate'] = false;
+            }
         }
 
 

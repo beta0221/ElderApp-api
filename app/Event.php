@@ -23,4 +23,12 @@ class Event extends Model
     public function numberOfPeople(){
         return DB::table('event_users')->where('event_id',$this->id)->count();
     }
+
+    public function isParticipated($user_id){
+        $result = DB::table('event_users')->where('event_id',$this->id)->where('user_id',$user_id)->first();
+        if($result){
+            return true;
+        }
+        return false;
+    }
 }
