@@ -33,6 +33,7 @@
   </div>
   <!-- table -->
   <div>
+    <member-detail :some="123"></member-detail>
     <v-data-table
       :headers="headers"
       :items="eventArray"
@@ -66,7 +67,11 @@
 </template>
 
 <script>
+import MemberDetail from "./MemberDetail";
 export default {
+  components:{
+    MemberDetail,
+  },
   data() {
     return {
       dialog: false,
