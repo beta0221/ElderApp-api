@@ -11,6 +11,26 @@
       
   </div>
 
+
+  <div>
+    <v-dialog v-model="dialog" max-width="480px">
+        <v-card>
+          <v-card-title class="headline">活動：{{dialogName}}</v-card-title>
+
+          <span style="padding:2px 16px" v-if="eventGuests.length == 0">目前無人參加此活動。</span>
+          <div style="padding:2px 16px" v-for="guest in eventGuests" v-bind:key="guest.id">
+            <span :class="gender[guest.gender]">{{guest.name}}</span>
+            <span>手機:{{guest.phone}}</span>
+            <span>家電:{{guest.tel}}</span>
+          </div>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+  </div>
   <!-- table -->
   <div>
     <v-data-table
@@ -25,6 +45,9 @@
       <template v-slot:items="props">
         <td>{{props.index + 1}}</td>
         <td>{{eventCat[props.item.category_id]}}</td>
+        <td>
+          <v-icon @click="showEventMembers(props.item.slug,props.item.title)">account_circle</v-icon>
+        </td>
         <td>{{props.item.title}}</td>
         <td>{{district[props.item.district_id]}}</td>
         <td>{{props.item.location}}</td>
@@ -46,9 +69,11 @@
 export default {
   data() {
     return {
-      newEventDialog:false,
+      dialog: false,
+      dialogName: "",
+      eventGuests:[],
 
-
+      gender: { 1: "blue--text", 0: "red--text" },
       pagination: { sortBy: "id", descending: true },
       totalEvent: 0,
       loading: true,
@@ -58,13 +83,14 @@ export default {
       headers: [
         { text:'#'},
         { text: "類別", value: "category_id" },
+        { text: "成員"},
         { text: "活動", value: "title" },
         { text: "地區", value: "district_id" },
         { text: "地點", value: "location" },
         { text: "活動時間", value: "dateTime" },
         { text: "截止日期", value: "deadline" },
         { text: "人數上限", value: "maximum" },
-        { text: "-"}
+        { text: "-"},
       ],
       
     };
@@ -84,11 +110,22 @@ export default {
     this.getDistrict();
   },
   methods:{
+    showEventMembers(event_slug,event_name){
+      this.dialog = true;
+      this.dialogName = event_name;
+      axios.get(`/api/eventguests/${event_slug}`)
+      .then(res => {
+        if(res.data.s == 1){
+          this.eventGuests = res.data.guests;
+        }
+        console.log(res)
+      })
+      .catch(err => {
+        console.error(err); 
+      })
+    },
     editEvent(id){
       this.$router.push({path:'/editEvent/'+id})
-    },
-    newEvent(){
-      this.newEventDialog = true;
     },
     getDistrict(){
       axios.get('/api/district')

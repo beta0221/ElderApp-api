@@ -1776,10 +1776,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      newEventDialog: false,
+      dialog: false,
+      dialogName: "",
+      eventGuests: [],
+      gender: {
+        1: "blue--text",
+        0: "red--text"
+      },
       pagination: {
         sortBy: "id",
         descending: true
@@ -1794,6 +1823,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "類別",
         value: "category_id"
+      }, {
+        text: "成員"
       }, {
         text: "活動",
         value: "title"
@@ -1834,16 +1865,28 @@ __webpack_require__.r(__webpack_exports__);
     this.getDistrict();
   },
   methods: {
+    showEventMembers: function showEventMembers(event_slug, event_name) {
+      var _this2 = this;
+
+      this.dialog = true;
+      this.dialogName = event_name;
+      axios.get("/api/eventguests/".concat(event_slug)).then(function (res) {
+        if (res.data.s == 1) {
+          _this2.eventGuests = res.data.guests;
+        }
+
+        console.log(res);
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
     editEvent: function editEvent(id) {
       this.$router.push({
         path: '/editEvent/' + id
       });
     },
-    newEvent: function newEvent() {
-      this.newEventDialog = true;
-    },
     getDistrict: function getDistrict() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('/api/district').then(function (res) {
         var _iteratorNormalCompletion = true;
@@ -1853,7 +1896,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var data = _step.value;
-            _this2.district[data.id] = data.name;
+            _this3.district[data.id] = data.name;
           }
         } catch (err) {
           _didIteratorError = true;
@@ -1874,7 +1917,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getCat: function getCat() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/api/category').then(function (res) {
         var _iteratorNormalCompletion2 = true;
@@ -1884,7 +1927,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator2 = res.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var data = _step2.value;
-            _this3.eventCat[data.id] = data.name;
+            _this4.eventCat[data.id] = data.name;
           }
         } catch (err) {
           _didIteratorError2 = true;
@@ -1905,22 +1948,22 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getDataFromApi: function getDataFromApi() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this4$pagination = _this4.pagination,
-            sortBy = _this4$pagination.sortBy,
-            descending = _this4$pagination.descending,
-            page = _this4$pagination.page,
-            rowsPerPage = _this4$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this5$pagination = _this5.pagination,
+            sortBy = _this5$pagination.sortBy,
+            descending = _this5$pagination.descending,
+            page = _this5$pagination.page,
+            rowsPerPage = _this5$pagination.rowsPerPage; // console.log(this.pagination);
 
         axios.get("/api/event", {
           params: {
-            page: _this4.pagination.page,
-            rowsPerPage: _this4.pagination.rowsPerPage,
-            descending: _this4.pagination.descending,
-            sortBy: _this4.pagination.sortBy
+            page: _this5.pagination.page,
+            rowsPerPage: _this5.pagination.rowsPerPage,
+            descending: _this5.pagination.descending,
+            sortBy: _this5.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data);
@@ -1928,7 +1971,7 @@ __webpack_require__.r(__webpack_exports__);
           var items = res.data.events;
           var total = res.data.total;
 
-          if (_this4.pagination.sortBy) {
+          if (_this5.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -1946,7 +1989,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this4.loading = false;
+            _this5.loading = false;
             resolve({
               items: items,
               total: total
@@ -57757,6 +57800,81 @@ var render = function() {
     _c(
       "div",
       [
+        _c(
+          "v-dialog",
+          {
+            attrs: { "max-width": "480px" },
+            model: {
+              value: _vm.dialog,
+              callback: function($$v) {
+                _vm.dialog = $$v
+              },
+              expression: "dialog"
+            }
+          },
+          [
+            _c(
+              "v-card",
+              [
+                _c("v-card-title", { staticClass: "headline" }, [
+                  _vm._v("活動：" + _vm._s(_vm.dialogName))
+                ]),
+                _vm._v(" "),
+                _vm.eventGuests.length == 0
+                  ? _c("span", { staticStyle: { padding: "2px 16px" } }, [
+                      _vm._v("目前無人參加此活動。")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.eventGuests, function(guest) {
+                  return _c(
+                    "div",
+                    { key: guest.id, staticStyle: { padding: "2px 16px" } },
+                    [
+                      _c("span", { class: _vm.gender[guest.gender] }, [
+                        _vm._v(_vm._s(guest.name))
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("手機:" + _vm._s(guest.phone))]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("家電:" + _vm._s(guest.tel))])
+                    ]
+                  )
+                }),
+                _vm._v(" "),
+                _c(
+                  "v-card-actions",
+                  [
+                    _c("v-spacer"),
+                    _vm._v(" "),
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "green darken-1", flat: "flat" },
+                        on: {
+                          click: function($event) {
+                            _vm.dialog = false
+                          }
+                        }
+                      },
+                      [_vm._v("關閉")]
+                    )
+                  ],
+                  1
+                )
+              ],
+              2
+            )
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
         _c("v-data-table", {
           staticClass: "elevation-1",
           attrs: {
@@ -57782,6 +57900,27 @@ var render = function() {
                   _c("td", [
                     _vm._v(_vm._s(_vm.eventCat[props.item.category_id]))
                   ]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-icon",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.showEventMembers(
+                                props.item.slug,
+                                props.item.title
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("account_circle")]
+                      )
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.title))]),
                   _vm._v(" "),
@@ -100502,8 +100641,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),
