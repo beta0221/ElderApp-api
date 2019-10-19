@@ -54,27 +54,7 @@ class EventController extends Controller
 
         }else{
             //手機
-            
-            $events = Event::where(function($query)use($request){
-
-                if($request->category){
-                    $query->where('category_id',$request->category);
-                }
-
-                if($request->district){
-                    $query->where('district_id',$request->district);
-                }
-
-
-            })->orderBy('created_at','desc')->get();
-
-            //加入人數
-            foreach($events as $event){
-                $numberOfPeople = $event->numberOfPeople();
-                $event['numberOfPeople'] = $numberOfPeople;
-            }
-
-            return $events;
+            $this->getEvents($request);
         }
         
     }
@@ -117,6 +97,7 @@ class EventController extends Controller
                 'title'=>'required',
                 'body'=>'required',
                 'dateTime'=>'required',
+                'dateTime_2'=>'required',
                 'location'=>'required',
                 'maximum'=>'required|min:1|integer',
                 'deadline'=>'required',
@@ -386,6 +367,7 @@ class EventController extends Controller
         $user=User::where('id',$request->id)->first();
         if(!$user->go_events()->find($event->id)){
             $user->go_events()->attach($event->id);
+            $event->peopleIncrease();
             return response()->json([
                 's'=>1,
                 'm'=>'加入成功!'
@@ -406,6 +388,7 @@ class EventController extends Controller
             $user=User::where('id',$request->id)->first();
             if($user->go_events()->find($event->id)){
                 $user->go_events()->detach($event->id);
+                $event->peopleDecrease();
                 return response()->json([
                     's'=>1,
                     'm'=>'Cancel event success!'

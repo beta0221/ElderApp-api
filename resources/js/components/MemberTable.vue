@@ -1,5 +1,8 @@
 <template>
   <div>
+
+    <member-detail></member-detail>
+
     <div>
       <v-btn color="info" @click="executeExpired">執行效期檢查</v-btn>
 
@@ -118,7 +121,11 @@
 
 
 <script>
+import MemberDetail from "./MemberDetail";
 export default {
+  components:{
+    MemberDetail,
+  },
   data() {
     return {
       dialog: false,
@@ -297,30 +304,8 @@ export default {
         });
     },
     getMemberDetail(id, name) {
-      this.dialog = true;
-      this.dialogName = name;
-      axios
-        .get(`/api/getMemberDetail/${id}`)
-        .then(res => {
-          if (res.data.length != 0) {
-            let text = "";
-            text += "身分證：" + res.data.id_number + "<br>";
-            text += "生日：" + res.data.birthdate + "<br>";
-            text += "住家電話：" + res.data.tel + "<br>";
-            text += "手機：" + res.data.phone + "<br>";
-            text += "紅包餘額：" + res.data.wallet + "<br>";
-            text += "地址：" + res.data.address + "<br>";
-            text += "地區：" + res.data.district_id + "<br>";
-            text += "緊急聯絡人：" + res.data.emg_contact + "<br>";
-            text += "緊急聯絡電話：" + res.data.emg_phone + "<br>";
-
-            this.dialogText = text;
-          }
-          console.log(res);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      let user = {'id':id,'name':name};
+      EventBus.$emit('showMemberDetail',user);
     },
     getPayHistory(id, name) {
       this.dialog = true;

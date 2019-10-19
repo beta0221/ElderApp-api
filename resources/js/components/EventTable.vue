@@ -46,15 +46,17 @@
       <template v-slot:items="props">
         <td>{{props.index + 1}}</td>
         <td>{{eventCat[props.item.category_id]}}</td>
-        <td>
-          <v-icon @click="showEventMembers(props.item.slug,props.item.title)">account_circle</v-icon>
-        </td>
+        
         <td>{{props.item.title}}</td>
         <td>{{district[props.item.district_id]}}</td>
         <td>{{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
+        <td>{{props.item.dateTime_2}}</td>
         <td>{{props.item.deadline}}</td>
-        <td>{{props.item.maximum}}</td>
+        <td>{{props.item.people}}/{{props.item.maximum}}</td>
+        <td>
+          <v-icon @click="showEventMembers(props.item.slug,props.item.title)">account_circle</v-icon>
+        </td>
         <td>
           <v-btn color="info" @click="editEvent(props.item.slug)">編輯</v-btn>
         </td>
@@ -88,13 +90,15 @@ export default {
       headers: [
         { text:'#'},
         { text: "類別", value: "category_id" },
-        { text: "成員"},
+        
         { text: "活動", value: "title" },
         { text: "地區", value: "district_id" },
         { text: "地點", value: "location" },
         { text: "活動時間", value: "dateTime" },
+        { text: "結束時間", value: "dateTime_2" },
         { text: "截止日期", value: "deadline" },
         { text: "人數上限", value: "maximum" },
+        { text: "成員"},
         { text: "-"},
       ],
       
@@ -116,6 +120,7 @@ export default {
   },
   methods:{
     showEventMembers(event_slug,event_name){
+      
       this.dialog = true;
       this.dialogName = event_name;
       axios.get(`/api/eventguests/${event_slug}`)

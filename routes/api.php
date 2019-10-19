@@ -43,6 +43,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::post('deleteGroupMember','MemberController@deleteGroupMember');
+    Route::post('updateMemberAccount','MemberController@updateMemberAccount');
 });
 
 //Guest 使用者------------------------

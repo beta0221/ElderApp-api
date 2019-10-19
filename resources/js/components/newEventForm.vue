@@ -30,6 +30,10 @@
         </v-col>
 
         <v-col class="d-flex" cols="12" sm="6">
+          <v-select :items="rewardLevel" item-text="reward" item-value="id" label="獎勵等級" solo v-model="form.reward_level_id"></v-select>
+        </v-col>
+
+        <v-col class="d-flex" cols="12" sm="6">
           <v-select :items="district" item-text="name" item-value="id" label="地區" solo v-model="form.district_id"></v-select>
         </v-col>
 
@@ -49,6 +53,8 @@
             <h3 class="grey--text">活動時間</h3>
             <v-date-picker v-model="event_date"></v-date-picker>
             <v-time-picker v-model="event_time"></v-time-picker>
+            <v-date-picker v-model="event_date_2"></v-date-picker>
+            <v-time-picker v-model="event_time_2"></v-time-picker>
           </div>
         </v-col>
 
@@ -84,9 +90,13 @@ export default {
       file:'',
       eventCat:[],
       eventCatDic:{},
+      rewardLevelDic:{},
+      rewardLevel:[{'id':1,'reward':300}],
       district:[],
       event_date:"",
       event_time:"00:00:00",
+      event_date_2:"",
+      event_time_2:"00:00:00",
       dead_date: "",
       dead_time: "00:00:00",
       slug:"",
@@ -94,9 +104,11 @@ export default {
         title: "",
         category: "",
         district_id:"",
+        reward_level_id:1,
         location: "",
         maximum:"20",
         dateTime:"",
+        dateTime_2:"",
         deadline:"",
         body: ""
       },
@@ -111,6 +123,12 @@ export default {
     event_time(val){
       this.form.dateTime = this.event_date + ' ' + val+":00";
     },
+    event_date_2(val){
+      this.form.dateTime_2 = val + ' ' + this.event_time_2+":00";
+    },
+    event_time_2(val){
+      this.form.dateTime_2 = this.event_date_2 + ' ' + val+":00";
+    },
     dead_date(val){
       this.form.deadline = val + ' ' + this.dead_time+":00";
     },
@@ -121,6 +139,11 @@ export default {
       let a = val.split(" ");
       this.event_date = a[0];
       this.event_time = a[1].substr(0,5);
+    },
+    'form.dateTime_2':function(val){
+      let a = val.split(" ");
+      this.event_date_2 = a[0];
+      this.event_time_2 = a[1].substr(0,5);
     },
     'form.deadline':function(val){
       let a = val.split(" ");
@@ -152,6 +175,7 @@ export default {
           this.form.maximum = event.maximum;
           this.form.body = event.body;
           this.form.dateTime = event.dateTime;
+          this.form.dateTime_2 = event.dateTime_2;
           this.form.deadline = event.deadline;
           this.slug = event.slug;
           if(event.image){

@@ -31,4 +31,14 @@ class Event extends Model
         }
         return false;
     }
+
+    public function peopleIncrease(){
+        
+        $this->people += 1;
+        $this->save();
+    }
+    public function peopleDecrease(){
+        $this->people -= 1;
+        $this->save();
+    }
 }

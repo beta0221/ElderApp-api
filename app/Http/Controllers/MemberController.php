@@ -321,14 +321,44 @@ class MemberController extends Controller
     public function updateAccount(Request $request){
         $user = User::find(Auth::user()->id);
 
-        if($user){
-            $user->name = $request->name;
-            $user->phone = $request->phone;
-            $user->tel = $request->tel;
-            $user->address = $request->address;
-            $user->id_number = $request->id_number;
-            $user->save();
+        if(!$user){
+            return response()->json([
+                's'=>0,
+                'm'=>'身份驗證失敗請重新登入',
+            ]);
         }
+
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->tel = $request->tel;
+        $user->address = $request->address;
+        $user->id_number = $request->id_number;
+        $user->save();
+
+        return response()->json([
+            's'=>1,
+            'm'=>'成功更新資料',
+        ]);
+    }
+
+    public function updateMemberAccount(Request $request){
+        $user = User::find($request->id);
+
+        if(!$user){
+            return response()->json([
+                's'=>0,
+                'm'=>'使用者不存在',
+            ]);
+        }
+
+        $user->name = $request->name;
+        $user->id_number = $request->id_number;
+        $user->birthdate = $request->birthdate;
+        $user->phone = $request->phone;
+        $user->tel = $request->tel;
+        $user->address = $request->address;
+        
+        $user->save();
 
         return response()->json([
             's'=>1,
