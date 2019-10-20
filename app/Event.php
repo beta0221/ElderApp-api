@@ -41,4 +41,23 @@ class Event extends Model
         $this->people -= 1;
         $this->save();
     }
+
+    public function rewardAmount(){
+        $reward_level = DB::table('reward_level')->where('id',$this->reward_level_id)->first();
+        return $reward_level->reward;
+    }
+
+    public function isRewardDrawed($user_id){
+        $row = DB::table('event_users')->where('user_id',$user_id)->first();
+        return $row->reward_drawed;
+    }
+
+    public function drawReward($user_id){
+        DB::table('event_users')->where('user_id',$user_id)->update([
+            'reward_drawed'=>1,
+        ]);
+    }
+
+
+
 }

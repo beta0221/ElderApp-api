@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('admin');
 });
 
+Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
+
 Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
 Route::get('/member/welcome','MemberController@welcome');

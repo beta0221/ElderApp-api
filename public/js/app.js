@@ -1958,6 +1958,10 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
+    showRewardQrcode: function showRewardQrcode(slug) {
+      var win = window.open("/event_reward_qrcode/".concat(slug), '_blank');
+      win.focus();
+    },
     getDataFromApi: function getDataFromApi() {
       var _this5 = this;
 
@@ -58116,7 +58120,17 @@ var render = function() {
                     _vm._v(_vm._s(_vm.eventCat[props.item.category_id]))
                   ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(props.item.title))]),
+                  _c(
+                    "td",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.showRewardQrcode(props.item.slug)
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(props.item.title))]
+                  ),
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(_vm._s(_vm.district[props.item.district_id]))

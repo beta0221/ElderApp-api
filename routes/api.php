@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use Illuminate\Http\Request;
 
 /*
@@ -59,12 +60,13 @@ Route::group(['middleware' => ['admin']], function () {
     //活動
     Route::apiresource('event','EventController');
     Route::get('getEvents','EventController@getEvents');
-    Route::post('joinevent/{slug}','EventController@JoinEvent');
-    Route::post('cancelevent/{slug}','EventController@CancelEVent');
-    Route::post('myevent','EventController@MyEvent');
+    Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later
+    Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later
+    Route::post('myevent','EventController@MyEvent');//should be auth later
     Route::get('eventguests/{slug}','EventController@EventGuests');
     Route::get('district','EventController@GetDistrict');
     Route::get('which_category_event/{name}','EventController@which_category_event');
+    Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later
 
     //交易
     Route::post('transaction','TransactionController@transaction');

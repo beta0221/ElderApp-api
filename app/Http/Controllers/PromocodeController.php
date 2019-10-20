@@ -54,10 +54,7 @@ class PromocodeController extends Controller
         //使用者加錢
         $user = User::find($request->user_id);
         if($user){
-            $wallet = $user->wallet;
-            $wallet += $promocode->amount;
-            $user->wallet = $wallet;
-            $user->save();
+            $user->updateWallet(true,$promocode->amount);
         }else{
             return response('error');
         }

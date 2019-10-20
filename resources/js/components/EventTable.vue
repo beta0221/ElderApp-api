@@ -47,7 +47,7 @@
         <td>{{props.index + 1}}</td>
         <td>{{eventCat[props.item.category_id]}}</td>
         
-        <td>{{props.item.title}}</td>
+        <td @click="showRewardQrcode(props.item.slug)">{{props.item.title}}</td>
         <td>{{district[props.item.district_id]}}</td>
         <td>{{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
@@ -90,7 +90,6 @@ export default {
       headers: [
         { text:'#'},
         { text: "類別", value: "category_id" },
-        
         { text: "活動", value: "title" },
         { text: "地區", value: "district_id" },
         { text: "地點", value: "location" },
@@ -160,6 +159,10 @@ export default {
       .catch(err => {
         console.error(err); 
       })
+    },
+    showRewardQrcode(slug){
+      var win = window.open(`/event_reward_qrcode/${slug}`,'_blank');
+      win.focus();
     },
     getDataFromApi() {
       this.loading = true;

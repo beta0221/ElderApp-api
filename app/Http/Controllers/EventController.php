@@ -6,6 +6,7 @@ use App\Event;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use App\Transaction;
 use App\User;
 use App\Category;
 use Illuminate\Support\Facades\Storage;
@@ -423,13 +424,84 @@ class EventController extends Controller
         }
     }
 
+    public function rewardQrCode($slug){
+        $event = Event::where('slug',$slug)->first();
+        if($event){
+            return view('event.qrcode',[
+                'event'=>$event,
+            ]);
+        }else{
+            return response('活動不存在');
+        }
 
-//----------------district-----------------
-public function GetDistrict(){
 
-    $districts = DB::table('districts')->get();
+    }
 
-    return response()->json($districts);
-}
+
+    public function drawEventReward(Request $request,$slug){
+
+        // $user = Auth::user();
+        $event = Event::where('slug',$slug)->first();
+        if(!$event){
+            return response()->json([
+                's'=>0,
+                'm'=>'Event not found!'
+            ]);
+        }
+
+
+        if(!$event->isParticipated($request->user_id)){
+            return response()->json([
+                's'=>0,
+                'm'=>'非常抱歉，您不在此活動的參加人員名單中'
+            ]);
+        }
+
+        if($event->isRewardDrawed($request->user_id)){
+            return response()->json([
+                's'=>0,
+                'm'=>'獎勵已領取。'
+            ]);
+        }
+
+        try {
+            //使用者加錢
+            $user = User::find($request->user_id);
+            $rewardAmount = $event->rewardAmount();
+            $user->updateWallet(true,$rewardAmount);
+
+            //註記已領取
+            $event->drawReward($request->user_id);
+
+            //新增交際紀錄
+            Transaction::create([
+                'tran_id'=>time() . rand(10,99),
+                'user_id'=>$user->id,
+                'event' =>'活動獎勵' . $event->title,
+                'amount'=>$rewardAmount,
+                'target_id'=>0,
+                'give_take'=>true,
+            ]);
+        } catch (\Throwable $th) {
+            return response($th);
+        }
+
+        return response()->json([
+            's'=>1,
+            'm'=>'您已成功領取活動參與獎勵。'
+        ]);
+
+    }
+
+
+
+
+    //----------------district-----------------
+    public function GetDistrict(){
+
+        $districts = DB::table('districts')->get();
+
+        return response()->json($districts);
+    }
 
 }
