@@ -17,6 +17,7 @@ class CreateEventUsersTable extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id');
             $table->integer('event_id');
+            $table->boolean('reward_drawed')->default(0);
             $table->timestamps();
         });
     }

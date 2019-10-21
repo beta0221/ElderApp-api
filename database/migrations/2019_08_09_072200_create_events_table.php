@@ -15,11 +15,21 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('category_id');
+            $table->integer('district_id');
+            $table->string('slug');
             $table->string('title');
-            $table->string('body');
+            $table->mediumText('body')->nullable();
             $table->dateTime('dateTime');
+            $table->dateTime('dateTime_2');
             $table->string('location');
+            $table->string('image')->nullable();
             $table->dateTime('deadline');
+            $table->integer('reward_level_id')->default(1);
+            $table->integer('maximum')->default(20);
+            $table->integer('people')->default(0);
+            
+
             $table->timestamps();
         });
     }
