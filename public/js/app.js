@@ -2359,6 +2359,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2430,6 +2434,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "職務",
         value: "org_rank"
+      }, {
+        text: "組織",
+        value: ""
       }, {
         text: "姓名",
         value: "name"
@@ -58947,6 +58954,13 @@ var render = function() {
                           _vm._v(_vm._s(_vm.org_rank[props.item.org_rank]))
                         ])
                       ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "text-xs-left" },
+                      [_c("v-icon", [_vm._v("supervised_user_circle")])],
                       1
                     ),
                     _vm._v(" "),

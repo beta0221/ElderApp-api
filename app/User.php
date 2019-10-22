@@ -30,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'id_number',
         'district_id',
         'district_name',
+        'inviter_id',
         'inviter',
         'inviter_phone',
         'pay_status',
@@ -117,10 +118,10 @@ class User extends Authenticatable implements JWTSubject
         
     }
 
-    public function groupUsers()
-    {
-        return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
-    }
+    // public function groupUsers()
+    // {
+    //     return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
+    // }
 
     public function payHistory()
     {

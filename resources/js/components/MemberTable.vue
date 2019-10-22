@@ -86,6 +86,9 @@
           >
             <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
           </td>
+          <td class="text-xs-left">
+            <v-icon>supervised_user_circle</v-icon>
+          </td>
           <td
             class="text-xs-left name"
             @click="getMemberDetail(props.item.id,props.item.name)"
@@ -113,6 +116,7 @@
               :color="status[props.item.pay_status].color"
             >{{status[props.item.pay_status].text}}</v-btn>
           </td>
+          
         </template>
       </v-data-table>
     </div>
@@ -168,6 +172,7 @@ export default {
       headers: [
         { text: "#", value: "id" },
         { text: "職務", value: "org_rank" },
+        { text: "組織", value: "" },
         { text: "姓名", value: "name" },
         { text: "信箱", value: "email" },
         { text: "身分證", value: "id_number" },
@@ -178,7 +183,8 @@ export default {
         { text: "入會日期", value: "created_at" },
         { text: "上次付款日", value: "last_pay_date" },
         { text: "效期", value: "valid" },
-        { text: "會員狀態", value: "pay_status" }
+        { text: "會員狀態", value: "pay_status" },
+        
       ]
     };
   },
