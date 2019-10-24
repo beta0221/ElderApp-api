@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -122,6 +123,16 @@ class User extends Authenticatable implements JWTSubject
     // {
     //     return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
     // }
+
+    public function getGroupUsers()
+    {
+        $group_id = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()->group_id;
+
+        $group_users = DB::table('user_group')->where('group_id',$group_id)->orderBy('level','desc')->get();
+
+        return $group_users;
+
+    }
 
     public function payHistory()
     {

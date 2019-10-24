@@ -20,6 +20,7 @@ Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
 Route::get('/member/welcome','MemberController@welcome');
+Route::get('/member_tree/{id_code}','MemberController@memberTree');
 // Route::get('/member/cacu','MemberController@cacu');
 Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_generate');
 

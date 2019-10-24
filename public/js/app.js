@@ -2343,26 +2343,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2374,9 +2354,8 @@ __webpack_require__.r(__webpack_exports__);
       dialogUserId: "",
       dialogName: "",
       dialogText: "",
-      group_member_dialog: false,
-      group_members: [],
-      addAcount: "",
+      group_tree_dialog: false,
+      tree_src: '',
       searchText: "",
       searchColumn: "",
       totalDesserts: 0,
@@ -2562,39 +2541,44 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    deleteGroupMember: function deleteGroupMember(deleteAccountId, index) {
-      var _this5 = this;
-
-      axios.post("/api/deleteGroupMember", {
-        leaderId: this.dialogUserId,
-        deleteAccountId: deleteAccountId
-      }).then(function (res) {
-        if (res.data.s == 1) {
-          _this5.group_members.splice(index, 1);
-        }
-
-        console.log(res);
-      })["catch"](function (err) {
-        console.error(err);
-      });
+    showGroupTree: function showGroupTree(id_code) {
+      this.group_tree_dialog = true;
+      this.tree_src = '/member_tree/' + id_code;
     },
-    getMemberGroupMembers: function getMemberGroupMembers(id, name) {
-      var _this6 = this;
-
-      this.group_member_dialog = true;
-      this.dialogName = name;
-      this.dialogUserId = id;
-      this.addAcount = "";
-      axios.get("/api/getMemberGroupMembers/".concat(id)).then(function (res) {
-        if (res.data.s == 1) {
-          // console.log(res.data.groupMembers);
-          _this6.group_members = res.data.groupMembers;
-        } // console.log(res);
-
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
+    // deleteGroupMember(deleteAccountId, index) {
+    //   axios
+    //     .post("/api/deleteGroupMember", {
+    //       leaderId: this.dialogUserId,
+    //       deleteAccountId: deleteAccountId
+    //     })
+    //     .then(res => {
+    //       if (res.data.s == 1) {
+    //         this.group_members.splice(index, 1);
+    //       }
+    //       console.log(res);
+    //     })
+    //     .catch(err => {
+    //       console.error(err);
+    //     });
+    // },
+    // getMemberGroupMembers(id, name) {
+    //   this.group_member_dialog = true;
+    //   this.dialogName = name;
+    //   this.dialogUserId = id;
+    //   this.addAcount = "";
+    //   axios
+    //     .get(`/api/getMemberGroupMembers/${id}`)
+    //     .then(res => {
+    //       if (res.data.s == 1) {
+    //         // console.log(res.data.groupMembers);
+    //         this.group_members = res.data.groupMembers;
+    //       }
+    //       // console.log(res);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
     getMemberDetail: function getMemberDetail(id, name) {
       var user = {
         'id': id,
@@ -2603,11 +2587,11 @@ __webpack_require__.r(__webpack_exports__);
       EventBus.$emit('showMemberDetail', user);
     },
     getPayHistory: function getPayHistory(id, name) {
-      var _this7 = this;
+      var _this5 = this;
 
       this.dialog = true;
       axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
-        _this7.dialogName = name;
+        _this5.dialogName = name;
 
         if (res.data.length != 0) {
           var text = "";
@@ -2616,9 +2600,9 @@ __webpack_require__.r(__webpack_exports__);
             text += res.data[i]["created_at"].substring(0, 10) + "<br>"; // console.log(res.data[i]['created_at']);
           }
 
-          _this7.dialogText = text;
+          _this5.dialogText = text;
         } else {
-          _this7.dialogText = "";
+          _this5.dialogText = "";
         } // console.log(res);
 
       })["catch"](function (error) {
@@ -2626,13 +2610,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     executeExpired: function executeExpired() {
-      var _this8 = this;
+      var _this6 = this;
 
       axios.post("/api/executeExpired", {}).then(function (res) {
         if (res.data.s == 1) {
-          _this8.getDataFromApi().then(function (data) {
-            _this8.desserts = data.items;
-            _this8.totalDesserts = data.total;
+          _this6.getDataFromApi().then(function (data) {
+            _this6.desserts = data.items;
+            _this6.totalDesserts = data.total;
           });
         } else {
           alert("系統錯誤，未正常運作。");
@@ -2642,7 +2626,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this9 = this;
+      var _this7 = this;
 
       if (this.desserts[index]["pay_status"] < 3) {
         axios.post("/api/changePayStatus", {
@@ -2650,12 +2634,12 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (res) {
           // console.log(res);
           if (res.data.s == 1) {
-            _this9.desserts[index]["pay_status"]++;
+            _this7.desserts[index]["pay_status"]++;
           }
 
-          if (_this9.desserts[index]["pay_status"] == 3) {
-            _this9.desserts[index]["last_pay_date"] = res.data.d;
-            _this9.desserts[index]["valid"] = 1;
+          if (_this7.desserts[index]["pay_status"] == 3) {
+            _this7.desserts[index]["last_pay_date"] = res.data.d;
+            _this7.desserts[index]["valid"] = 1;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -2663,22 +2647,22 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this10 = this;
+      var _this8 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this10$pagination = _this10.pagination,
-            sortBy = _this10$pagination.sortBy,
-            descending = _this10$pagination.descending,
-            page = _this10$pagination.page,
-            rowsPerPage = _this10$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this8$pagination = _this8.pagination,
+            sortBy = _this8$pagination.sortBy,
+            descending = _this8$pagination.descending,
+            page = _this8$pagination.page,
+            rowsPerPage = _this8$pagination.rowsPerPage; // console.log(this.pagination);
 
         axios.get("/api/get-members", {
           params: {
-            page: _this10.pagination.page,
-            rowsPerPage: _this10.pagination.rowsPerPage,
-            descending: _this10.pagination.descending,
-            sortBy: _this10.pagination.sortBy
+            page: _this8.pagination.page,
+            rowsPerPage: _this8.pagination.rowsPerPage,
+            descending: _this8.pagination.descending,
+            sortBy: _this8.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data.users);
@@ -2687,7 +2671,7 @@ __webpack_require__.r(__webpack_exports__);
 
           var total = res.data.total;
 
-          if (_this10.pagination.sortBy) {
+          if (_this8.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2705,7 +2689,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this10.loading = false;
+            _this8.loading = false;
             resolve({
               items: items,
               total: total
@@ -58802,104 +58786,26 @@ var render = function() {
             {
               attrs: { "max-width": "480px" },
               model: {
-                value: _vm.group_member_dialog,
+                value: _vm.group_tree_dialog,
                 callback: function($$v) {
-                  _vm.group_member_dialog = $$v
+                  _vm.group_tree_dialog = $$v
                 },
-                expression: "group_member_dialog"
+                expression: "group_tree_dialog"
               }
             },
             [
-              _c(
-                "v-card",
-                [
-                  _c("v-card-title", { staticClass: "headline" }, [
-                    _vm._v("姓名：" + _vm._s(_vm.dialogName))
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.group_members, function(member, index) {
-                    return _c(
-                      "div",
-                      { key: member.id, staticStyle: { padding: "2px 16px" } },
-                      [
-                        _c("span", [
-                          _vm._v(
-                            _vm._s(member.name) + "-" + _vm._s(member.email)
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "v-btn",
-                          {
-                            attrs: { color: "error" },
-                            on: {
-                              click: function($event) {
-                                return _vm.deleteGroupMember(member.id, index)
-                              }
-                            }
-                          },
-                          [_c("v-icon", [_vm._v("delete")])],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticStyle: { padding: "16px" } },
-                    [
-                      _c("v-text-field", {
-                        attrs: {
-                          label: "會員帳號",
-                          "single-line": "",
-                          outlined: ""
-                        },
-                        model: {
-                          value: _vm.addAcount,
-                          callback: function($$v) {
-                            _vm.addAcount = $$v
-                          },
-                          expression: "addAcount"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-card-actions",
-                    [
-                      _c("v-spacer"),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: { color: "blue darken-1", flat: "flat" },
-                          on: { click: _vm.addGroupMember }
-                        },
-                        [_vm._v("新增")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: { color: "green darken-1", flat: "flat" },
-                          on: {
-                            click: function($event) {
-                              _vm.group_member_dialog = false
-                            }
-                          }
-                        },
-                        [_vm._v("關閉")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                2
-              )
+              _c("v-card", [
+                _vm.group_tree_dialog
+                  ? _c("iframe", {
+                      attrs: {
+                        src: _vm.tree_src,
+                        frameborder: "0",
+                        width: "480px",
+                        height: "400px"
+                      }
+                    })
+                  : _vm._e()
+              ])
             ],
             1
           )
@@ -58959,7 +58865,14 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "td",
-                      { staticClass: "text-xs-left" },
+                      {
+                        staticClass: "text-xs-left",
+                        on: {
+                          click: function($event) {
+                            return _vm.showGroupTree(props.item.id_code)
+                          }
+                        }
+                      },
                       [_c("v-icon", [_vm._v("supervised_user_circle")])],
                       1
                     ),

@@ -17,7 +17,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree']]);
     }
 
 
@@ -46,7 +46,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number')
+            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number','id_code')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
@@ -419,6 +419,23 @@ class MemberController extends Controller
         } catch (\Throwable $th) {
             return response($th);
         }
+    }
+
+    public function memberTree($id_code){
+        $user = User::where('id_code',$id_code)->firstOrFail();
+
+        $group_users = $user->getGroupUsers();
+        $dic=[];
+        foreach ($group_users as  $g_user) {
+            $name = User::select('name')->where('id',$g_user->user_id)->first()->name;
+            $dic[$g_user->user_id] = $name;
+        }
+
+        return view('member.tree',[
+            'group_users'=>$group_users,
+            'name_dic'=>json_encode($dic)
+        ]);
+
     }
 
     public function welcome(){
