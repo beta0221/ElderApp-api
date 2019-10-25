@@ -17,7 +17,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree']]);
     }
 
 
@@ -46,7 +46,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number')
+            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number','id_code')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
@@ -98,7 +98,6 @@ class MemberController extends Controller
     //註冊新會員
     public function store(Request $request)
     {
-        // $request->flash();
         $request->validate([
             'email' => 'required|unique:users',
             'password' => 'required',
@@ -112,49 +111,72 @@ class MemberController extends Controller
         ]);
 
         if($request->pay_method == 1){
-            $inviter = User::where('id_code',$request->inviter_id_code)->first();
-            if(!$inviter){
-                $inviter = User::where('phone',$request->inviter_id_code)->firstOrFail();
-            }
+            $inviter = User::where('phone',$request->inviter_id_code)->orWhere('id_code',$request->inviter_id_code)->firstOrFail();
             $request->merge([
+                'inviter_id'=>$inviter->id,
                 'inviter'=>$inviter->name,
                 'inviter_phone'=>$inviter->phone,
             ]);    
         }
         
         $request->merge(['pay_status'=>1,]);
+        $id_code = $this->generateIdCode();
+        $request->merge([
+            'id_code'=>$id_code
+        ]);
         
         try {
-            
-            $lastId = User::select('id')->orderBy('id','desc')->first()->id;
-            if(!$lastId){
-                $lastId = 0;
-            }
-            $nextId = $lastId + 1;
-
-            while (strlen($nextId) < 4) {
-                $nextId = '0'.$nextId;
-            }
-            $id_code = 'H' . substr(date('Y'),-2) . date('m') . $nextId . rand(0,9);
-
-            $request->merge([
-                'id_code'=>$id_code
-            ]);
-
             $user = User::create($request->all());
-            $user->roles()->attach(Role::where('name', 'user')->first());
+            
         } catch (\Throwable $th) {
             return response($th);
         }
+
+
+        if($request->pay_method == 1){
+            try {
+                $row = DB::table('user_group')->where('user_id',$inviter->id)->first();
+                
+                DB::table('user_group')->insert([
+                    'group_id'=>$row->group_id,
+                    'user_id'=>$user->id,
+                    'level'=>1,
+                    'lv_1'=>$user->id,
+                    'lv_2'=>$row->lv_2,
+                    'lv_3'=>$row->lv_3,
+                    'lv_4'=>$row->lv_4,
+                    'lv_5'=>$row->lv_5,
+                ]);
+            } catch (\Throwable $th) {
+                return response($th);
+            }
+        }
+
 
         if($request->app){
             return response()->json([
                 's'=>1,
                 'user'=>$request,
             ]);
+        }else{
+            return view('member.welcome',['id_code'=>$id_code]);
         }
 
-        return view('member.welcome',['id_code'=>$id_code]);
+        
+    }
+
+
+    private function generateIdCode(){
+        $lastId = User::select('id')->orderBy('id','desc')->first()->id;
+        if(!$lastId){
+            $lastId = 0;
+        }
+        $nextId = $lastId + 1;
+        while (strlen($nextId) < 4) {
+            $nextId = '0'.$nextId;
+        }
+        $id_code = 'H' . substr(date('Y'),-2) . date('m') . $nextId . rand(0,9);
+        return $id_code;
     }
 
     //更新會員付款狀態
@@ -233,84 +255,84 @@ class MemberController extends Controller
     }
 
     //大天使小天使取得自己組織的成員
-    public function getMemberGroupMembers($id){
-        $user = User::find($id);
-        if($user->org_rank==2){
-            $groupMembers = $user->groupUsers()->get();
-        }elseif($user->org_rank==1){
-            $groupMembers = $user->groupUsers()->get();
-        }
+    // public function getMemberGroupMembers($id){
+    //     $user = User::find($id);
+    //     if($user->org_rank==2){
+    //         $groupMembers = $user->groupUsers()->get();
+    //     }elseif($user->org_rank==1){
+    //         $groupMembers = $user->groupUsers()->get();
+    //     }
 
-        return response()->json([
-            's'=>1,
-            'groupMembers'=>$groupMembers,
-        ]);
-    }
+    //     return response()->json([
+    //         's'=>1,
+    //         'groupMembers'=>$groupMembers,
+    //     ]);
+    // }
 
     //大天使小天使加入組織請求
-    public function addGroupMember(Request $request){
-        $leader = User::find($request->leaderId);
-        $addUser = User::where('email',$request->addAccount)->first();
+    // public function addGroupMember(Request $request){
+    //     $leader = User::find($request->leaderId);
+    //     $addUser = User::where('email',$request->addAccount)->first();
 
-        if($addUser){
-            try {
-                if ($leader->org_rank==2) {
-                    if($addUser->org_rank!=1){
-                        return response()->json([
-                            's'=>-1,
-                            'm'=>'會員階級不符合'
-                        ]);
-                    }
-                }
+    //     if($addUser){
+    //         try {
+    //             if ($leader->org_rank==2) {
+    //                 if($addUser->org_rank!=1){
+    //                     return response()->json([
+    //                         's'=>-1,
+    //                         'm'=>'會員階級不符合'
+    //                     ]);
+    //                 }
+    //             }
 
-                if($leader->org_rank==1){
-                    if($addUser->org_rank>=1){
-                        return response()->json([
-                            's'=>-1,
-                            'm'=>'會員階級不符合'
-                        ]);
-                    }
-                }
+    //             if($leader->org_rank==1){
+    //                 if($addUser->org_rank>=1){
+    //                     return response()->json([
+    //                         's'=>-1,
+    //                         'm'=>'會員階級不符合'
+    //                     ]);
+    //                 }
+    //             }
 
-                if(!$leader->groupUsers()->find($addUser->id)){
-                    $leader->groupUsers()->attach($addUser->id);
-                    return response()->json([
-                        's'=>1,
-                        'addUser'=>$addUser,
-                    ]);
-                }else{
-                    return response()->json([
-                        's'=>-1,
-                        'm'=>'會員帳號已經存在該組織',
-                    ]);
-                }
+    //             if(!$leader->groupUsers()->find($addUser->id)){
+    //                 $leader->groupUsers()->attach($addUser->id);
+    //                 return response()->json([
+    //                     's'=>1,
+    //                     'addUser'=>$addUser,
+    //                 ]);
+    //             }else{
+    //                 return response()->json([
+    //                     's'=>-1,
+    //                     'm'=>'會員帳號已經存在該組織',
+    //                 ]);
+    //             }
                 
-            } catch (\Throwable $th) {
-                return response($th);
-            }
+    //         } catch (\Throwable $th) {
+    //             return response($th);
+    //         }
     
-        }else{
-            return response()->json([
-                's'=>0,
-                'm'=>'會員帳號不存在',
-            ]);
-        }
-    }
+    //     }else{
+    //         return response()->json([
+    //             's'=>0,
+    //             'm'=>'會員帳號不存在',
+    //         ]);
+    //     }
+    // }
 
-    public function deleteGroupMember(Request $request){
-        $leader = User::find($request->leaderId);
-        $deleteUser = User::find($request->deleteAccountId);
+    // public function deleteGroupMember(Request $request){
+    //     $leader = User::find($request->leaderId);
+    //     $deleteUser = User::find($request->deleteAccountId);
 
-        if($leader != null && $deleteUser != null){
-            $leader->groupUsers()->detach($deleteUser->id);
-        }
+    //     if($leader != null && $deleteUser != null){
+    //         $leader->groupUsers()->detach($deleteUser->id);
+    //     }
 
-        return response()->json([
-            's'=>1,
-            'addUser'=>$deleteUser,
-        ]);
+    //     return response()->json([
+    //         's'=>1,
+    //         'addUser'=>$deleteUser,
+    //     ]);
 
-    }
+    // }
 
     //App 的 AccountPage OnAppearing 請求
     public function myAccount(){
@@ -397,6 +419,23 @@ class MemberController extends Controller
         } catch (\Throwable $th) {
             return response($th);
         }
+    }
+
+    public function memberTree($id_code){
+        $user = User::where('id_code',$id_code)->firstOrFail();
+
+        $group_users = $user->getGroupUsers();
+        $dic=[];
+        foreach ($group_users as  $g_user) {
+            $name = User::select('name')->where('id',$g_user->user_id)->first()->name;
+            $dic[$g_user->user_id] = $name;
+        }
+
+        return view('member.tree',[
+            'group_users'=>$group_users,
+            'name_dic'=>json_encode($dic)
+        ]);
+
     }
 
     public function welcome(){

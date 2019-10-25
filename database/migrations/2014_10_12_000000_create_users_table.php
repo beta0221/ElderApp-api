@@ -39,7 +39,7 @@ class CreateUsersTable extends Migration
             $table->string('district_id')->nullable();
             $table->string('district_name')->nullable();
             
-
+            $table->integer('inviter_id')->nullable();
             $table->string('inviter')->nullable();
             $table->string('inviter_phone')->nullable();
             $table->string('emg_contact')->nullable();

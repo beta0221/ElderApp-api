@@ -40,32 +40,12 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="group_member_dialog" max-width="480px">
+      <v-dialog v-model="group_tree_dialog" max-width="480px">
         <v-card>
-          <v-card-title class="headline">姓名：{{dialogName}}</v-card-title>
-
-          <div
-            style="padding:2px 16px"
-            v-for="(member,index) in group_members"
-            v-bind:key="member.id"
-          >
-            <span>{{member.name}}-{{member.email}}</span>
-            <v-btn color="error" @click="deleteGroupMember(member.id,index)">
-              <v-icon>delete</v-icon>
-            </v-btn>
-          </div>
-
-          <div style="padding:16px;">
-            <v-text-field v-model="addAcount" label="會員帳號" single-line outlined></v-text-field>
-          </div>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat="flat" @click="addGroupMember">新增</v-btn>
-            <v-btn color="green darken-1" flat="flat" @click="group_member_dialog = false">關閉</v-btn>
-          </v-card-actions>
+          <iframe v-if="group_tree_dialog" :src="tree_src" frameborder="0" width="480px" height="400px"/>
         </v-card>
       </v-dialog>
+
     </div>
 
     <div>
@@ -86,6 +66,9 @@
           >
             <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
           </td>
+          <td class="text-xs-left" @click="showGroupTree(props.item.id_code)">
+            <v-icon>supervised_user_circle</v-icon>
+          </td>
           <td
             class="text-xs-left name"
             @click="getMemberDetail(props.item.id,props.item.name)"
@@ -94,9 +77,9 @@
           <td class="text-xs-left">{{ props.item.email }}</td>
           <td class="text-xs-left">{{ props.item.id_number }}</td>
           <td class="text-xs-left">{{ props.item.birthdate }}</td>
-          <!-- <td class="text-xs-left">{{ rank[props.item.rank] }}</td> -->
+          
           <td class="text-xs-left">{{ props.item.inviter }}</td>
-          <!-- <td class="text-xs-left">{{ props.item.inviter_phone }}</td> -->
+          
           <td class="text-xs-left">{{ (props.item.created_at).substring(0,10) }}</td>
           <td
             class="text-xs-left history"
@@ -113,6 +96,7 @@
               :color="status[props.item.pay_status].color"
             >{{status[props.item.pay_status].text}}</v-btn>
           </td>
+          
         </template>
       </v-data-table>
     </div>
@@ -133,9 +117,8 @@ export default {
       dialogName: "",
       dialogText: "",
 
-      group_member_dialog: false,
-      group_members: [],
-      addAcount: "",
+      group_tree_dialog: false,
+      tree_src:'',
 
       searchText: "",
       searchColumn:"",
@@ -168,6 +151,7 @@ export default {
       headers: [
         { text: "#", value: "id" },
         { text: "職務", value: "org_rank" },
+        { text: "組織", value: "" },
         { text: "姓名", value: "name" },
         { text: "信箱", value: "email" },
         { text: "身分證", value: "id_number" },
@@ -178,7 +162,8 @@ export default {
         { text: "入會日期", value: "created_at" },
         { text: "上次付款日", value: "last_pay_date" },
         { text: "效期", value: "valid" },
-        { text: "會員狀態", value: "pay_status" }
+        { text: "會員狀態", value: "pay_status" },
+        
       ]
     };
   },
@@ -269,40 +254,44 @@ export default {
           console.error(err);
         });
     },
-    deleteGroupMember(deleteAccountId, index) {
-      axios
-        .post("/api/deleteGroupMember", {
-          leaderId: this.dialogUserId,
-          deleteAccountId: deleteAccountId
-        })
-        .then(res => {
-          if (res.data.s == 1) {
-            this.group_members.splice(index, 1);
-          }
-          console.log(res);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    showGroupTree(id_code){
+        this.group_tree_dialog = true;
+        this.tree_src = '/member_tree/'+id_code;
     },
-    getMemberGroupMembers(id, name) {
-      this.group_member_dialog = true;
-      this.dialogName = name;
-      this.dialogUserId = id;
-      this.addAcount = "";
-      axios
-        .get(`/api/getMemberGroupMembers/${id}`)
-        .then(res => {
-          if (res.data.s == 1) {
-            // console.log(res.data.groupMembers);
-            this.group_members = res.data.groupMembers;
-          }
-          // console.log(res);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    // deleteGroupMember(deleteAccountId, index) {
+    //   axios
+    //     .post("/api/deleteGroupMember", {
+    //       leaderId: this.dialogUserId,
+    //       deleteAccountId: deleteAccountId
+    //     })
+    //     .then(res => {
+    //       if (res.data.s == 1) {
+    //         this.group_members.splice(index, 1);
+    //       }
+    //       console.log(res);
+    //     })
+    //     .catch(err => {
+    //       console.error(err);
+    //     });
+    // },
+    // getMemberGroupMembers(id, name) {
+    //   this.group_member_dialog = true;
+    //   this.dialogName = name;
+    //   this.dialogUserId = id;
+    //   this.addAcount = "";
+    //   axios
+    //     .get(`/api/getMemberGroupMembers/${id}`)
+    //     .then(res => {
+    //       if (res.data.s == 1) {
+    //         // console.log(res.data.groupMembers);
+    //         this.group_members = res.data.groupMembers;
+    //       }
+    //       // console.log(res);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
     getMemberDetail(id, name) {
       let user = {'id':id,'name':name};
       EventBus.$emit('showMemberDetail',user);
