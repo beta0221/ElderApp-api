@@ -17,7 +17,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','updateMemberLevel']]);
     }
 
 
@@ -432,10 +432,70 @@ class MemberController extends Controller
         }
 
         return view('member.tree',[
-            'group_users'=>$group_users,
+            'group_users'=>json_encode($group_users),
             'name_dic'=>json_encode($dic)
         ]);
 
+    }
+
+    public function updateMemberLevel(Request $request){
+
+        $this->validate($request,[
+            'user_id'=>'required',
+            'level'=>'required|numeric|min:1|max:5'
+        ]);
+
+        $row = DB::table('user_group')->where('user_id',$request->user_id)->select('group_id','level')->first();
+        if(!$row){
+            return response()->json([
+                's'=>0,
+                'm'=>'使用者不存在'
+            ]);
+        }
+
+        $old_level = $row->level;
+        $old_lv = "lv_" .  $row->level;
+
+        if($old_level == 5){
+            return response()->json([
+                's'=>0,
+                'm'=>'無法更改此用戶等級。'
+            ]);
+        }
+
+        $lv = "lv_" . $request->level;
+
+        try {
+            DB::table('user_group')->where('user_id',$request->user_id)->update([
+                'level'=>$request->level,
+                $lv => $request->user_id
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                's'=>0,
+                'm'=>'系統錯誤',
+            ]);
+        }
+
+        try {
+            DB::table('user_group')->where('group_id',$row->group_id)->where($old_lv,$request->user_id)->update([
+                $old_lv=>null
+            ]);
+        } catch (\Throwable $th) {
+            DB::table('user_group')->where('user_id',$request->user_id)->update([
+                'level'=>$old_level,
+                $lv => null
+            ]);
+            return response()->json([
+                's'=>0,
+                'm'=>'系統錯誤.error code : 2781',
+            ]);
+        }
+
+        return response()->json([
+            's'=>1,
+            'm'=>'更新成功'
+        ]);
     }
 
     public function welcome(){
@@ -443,3 +503,5 @@ class MemberController extends Controller
     }
     
 }
+
+

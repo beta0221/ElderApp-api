@@ -126,9 +126,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function getGroupUsers()
     {
-        $group_id = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()->group_id;
+        if(!$row = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()){
+            return [];
+        }
 
-        $group_users = DB::table('user_group')->where('group_id',$group_id)->orderBy('level','desc')->get();
+        $group_users = DB::table('user_group')->where('group_id',$row->group_id)->orderBy('level','desc')->get();
 
         return $group_users;
 
