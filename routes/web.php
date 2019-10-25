@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('admin');
 });
 
+Route::get('play',function(){
+    return view('playground');
+});
+
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
 Route::get('/member/join','MemberController@create');
