@@ -427,6 +427,11 @@ class MemberController extends Controller
             return response('此使用者會員編號不存在');
         }
         $group_users = $user->getGroupUsers();
+        if(count($group_users)<=0){
+            return response('此使用者並無所屬組織。');
+        }
+
+
         $dic=[];
         foreach ($group_users as  $g_user) {
             $name = User::select('name')->where('id',$g_user->user_id)->first()->name;
