@@ -439,6 +439,7 @@ class MemberController extends Controller
         }
 
         return view('member.tree',[
+            'user_id'=>$user->id,
             'group_users'=>json_encode($group_users),
             'name_dic'=>json_encode($dic)
         ]);

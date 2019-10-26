@@ -96,6 +96,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>
+    var UserId = {{$user_id}};
     var group_users = {!!$group_users!!};
     var name_dic = {!!$name_dic!!};
     console.log(group_users);
@@ -205,6 +206,9 @@
             let width = 80 * dic[key];
             $(`.user_${key}`).css('width', `${width}px`);
         });
+
+        //給主角顏色
+        $('.cell-user.user_'+UserId).css({'background':'#2196f3','color':'#fff'});
 
     });
 </script>
