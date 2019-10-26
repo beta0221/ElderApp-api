@@ -422,8 +422,10 @@ class MemberController extends Controller
     }
 
     public function memberTree($id_code){
-        $user = User::where('id_code',$id_code)->firstOrFail();
-
+        $user = User::where('id_code',$id_code)->first();
+        if(!$user){
+            return response('此使用者會員編號不存在');
+        }
         $group_users = $user->getGroupUsers();
         $dic=[];
         foreach ($group_users as  $g_user) {
