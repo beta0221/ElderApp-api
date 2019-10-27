@@ -136,17 +136,19 @@ class MemberController extends Controller
         if($request->pay_method == 1){
             try {
                 $row = DB::table('user_group')->where('user_id',$inviter->id)->first();
+                if($row){
+                    DB::table('user_group')->insert([
+                        'group_id'=>$row->group_id,
+                        'user_id'=>$user->id,
+                        'level'=>1,
+                        'lv_1'=>$user->id,
+                        'lv_2'=>$row->lv_2,
+                        'lv_3'=>$row->lv_3,
+                        'lv_4'=>$row->lv_4,
+                        'lv_5'=>$row->lv_5,
+                    ]);
+                }
                 
-                DB::table('user_group')->insert([
-                    'group_id'=>$row->group_id,
-                    'user_id'=>$user->id,
-                    'level'=>1,
-                    'lv_1'=>$user->id,
-                    'lv_2'=>$row->lv_2,
-                    'lv_3'=>$row->lv_3,
-                    'lv_4'=>$row->lv_4,
-                    'lv_5'=>$row->lv_5,
-                ]);
             } catch (\Throwable $th) {
                 return response($th);
             }
