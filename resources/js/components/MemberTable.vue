@@ -2,6 +2,7 @@
   <div>
 
     <member-detail></member-detail>
+    <member-tree></member-tree>
 
     <div>
       <v-btn color="info" @click="executeExpired">執行效期檢查</v-btn>
@@ -40,11 +41,7 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="group_tree_dialog" max-width="480px">
-        <v-card>
-          <iframe v-if="group_tree_dialog" :src="tree_src" frameborder="0" width="480px" height="400px"/>
-        </v-card>
-      </v-dialog>
+      
 
     </div>
 
@@ -106,9 +103,11 @@
 
 <script>
 import MemberDetail from "./MemberDetail";
+import MemberTree from "./MemberTree";
 export default {
   components:{
     MemberDetail,
+    MemberTree,
   },
   data() {
     return {
@@ -116,9 +115,6 @@ export default {
       dialogUserId: "",
       dialogName: "",
       dialogText: "",
-
-      group_tree_dialog: false,
-      tree_src:'',
 
       searchText: "",
       searchColumn:"",
@@ -255,43 +251,8 @@ export default {
         });
     },
     showGroupTree(id_code){
-        this.group_tree_dialog = true;
-        this.tree_src = '/member_tree/'+id_code;
+        EventBus.$emit("showMemberTree",id_code);
     },
-    // deleteGroupMember(deleteAccountId, index) {
-    //   axios
-    //     .post("/api/deleteGroupMember", {
-    //       leaderId: this.dialogUserId,
-    //       deleteAccountId: deleteAccountId
-    //     })
-    //     .then(res => {
-    //       if (res.data.s == 1) {
-    //         this.group_members.splice(index, 1);
-    //       }
-    //       console.log(res);
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //     });
-    // },
-    // getMemberGroupMembers(id, name) {
-    //   this.group_member_dialog = true;
-    //   this.dialogName = name;
-    //   this.dialogUserId = id;
-    //   this.addAcount = "";
-    //   axios
-    //     .get(`/api/getMemberGroupMembers/${id}`)
-    //     .then(res => {
-    //       if (res.data.s == 1) {
-    //         // console.log(res.data.groupMembers);
-    //         this.group_members = res.data.groupMembers;
-    //       }
-    //       // console.log(res);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // },
     getMemberDetail(id, name) {
       let user = {'id':id,'name':name};
       EventBus.$emit('showMemberDetail',user);

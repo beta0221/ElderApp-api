@@ -67,7 +67,7 @@
 
 <script>
 export default {
-  props: ["some"],
+  
   created() {
     EventBus.$on("showMemberDetail", user => {
       this.dialog = true;

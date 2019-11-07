@@ -25,9 +25,11 @@ class MemberController extends Controller
     public function searchMember(Request $request)
     {
         $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
-        $user = User::where($searchColumn,$request->searchText)->get();
-        if(count($user)<=0){
+        
+        if($request->searchColumn = 'name' && !empty($request->searchText)){
             $user = User::where('name','like',"%$request->searchText%")->get();
+        }else{
+            $user = User::where($searchColumn,$request->searchText)->get();
         }
         return response()->json($user);
     }
