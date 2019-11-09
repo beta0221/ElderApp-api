@@ -15,7 +15,8 @@
                     <input class="search-bar" type="text" placeholder="搜尋" v-model.lazy="search_text" @change="searchUser"/>
                     <div class="devider"></div>
                     <div class="border search-box">
-                        <div class="member-cell" 
+                        <div class="member-cell"
+                        :class="(select_user==user.id)?'select-cell':''"
                         @click="selectUser(user.id)"
                         v-for="user in search_result" 
                         v-bind:key="user.id">
@@ -24,7 +25,13 @@
                     </div>
                     <div class="devider"></div>
                     <div class="border level-box">
-                        <div class="level-cell border" v-for="l in level_array" v-bind:key="l.level">{{l.name}}</div>
+                        <div class="level-cell border"
+                        :class="(l.level <= select_user_level)?'green-cell':''"
+                        v-for="l in level_array" 
+                        v-bind:key="l.level"
+                        @click="joinByLevel(l.level)">
+                        {{l.name}}
+                        </div>
                     </div>
 
                 </div>
@@ -41,18 +48,21 @@
 <script>
 export default {
     created(){
-        EventBus.$on("showMemberTree",id_code=>{
+        EventBus.$on("showMemberTree",user=>{
             this.group_tree_dialog = true;
-            this.tree_src = '/member_tree/'+id_code;
+            this.tree_src = '/member_tree/'+user.id_code;
+            this.current_user_id = user.id;
         })
     },
     data(){
         return{
+            current_user_id:'',
+            select_user:'',
+            select_user_level:0,
             group_tree_dialog: false,
             tree_src:'',
             search_text:'',
             search_result:[],
-            select_user:{},
             level_array:[
                 {'level':5,'name':'長老天使'},
                 {'level':4,'name':'領航天使'},
@@ -65,6 +75,13 @@ export default {
     methods:{
         selectUser(user_id){
             this.select_user = user_id;
+            axios.get(`/api/getUserLevel/${user_id}`)
+            .then(res=>{
+                this.select_user_level = res.data;
+            })
+            .catch(error=>{
+                console.log(error);
+            })
         },
         searchUser(){
             axios.get('/api/search-member', {
@@ -80,6 +97,23 @@ export default {
                 console.log(error);
             })
         },
+        joinByLevel(level){
+            axios.post('/api/addGroupMember', {
+                'leader_id':this.select_user,
+                'user_id':this.current_user_id,
+                'level':level,
+            })
+            .then(res=>{
+                console.log(res.data);
+                alert(res.data.m);
+                if(res.data.s == 1){
+                    document.getElementById('tree-frame').contentWindow.location.reload(true);
+                }
+            })
+            .catch(error=>{
+                console.log(error);
+            })
+        }
     }
 }
 </script>
@@ -130,8 +164,16 @@ export default {
     border-radius: 0.2rem;
     height: 32px;
     padding: 0 12px;
-    background-color: #fff;
     line-height: 30px;
+    cursor: pointer;
+}
+.member-cell:hover{
+    background-color: lightgray;
+    color:#fff;
+}
+.select-cell{
+    background-color: gray!important;
+    color:#fff;
 }
 .level-box{
     height: calc(50% - 16px);
@@ -144,6 +186,15 @@ export default {
     height: 32px;
     padding: 0 12px;
     line-height: 30px;
+}
+.green-cell{
+    background-color: limegreen;
+    border-color:limegreen;
+    color:#fff;
     cursor: pointer;
+}
+.green-cell:hover{
+    background-color:green;
+    border-color: green;
 }
 </style>

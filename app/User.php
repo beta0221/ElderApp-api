@@ -98,12 +98,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class);
     }
 
-    // public function mainRole()
-    // {
-    //     $roles = $this->roles()->get();
-    //     return $roles->last();
-    // }
-
     public function isAdmin()
     {
         $roles = $this->roles()->get();
@@ -119,10 +113,46 @@ class User extends Authenticatable implements JWTSubject
         
     }
 
+
     // public function groupUsers()
     // {
     //     return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
     // }
+
+    public function joinToGroup($leader_id,$level){
+        $row = DB::table('user_group')->where('user_id',$leader_id)->first();
+        if($row){
+
+            $insert = [
+                'group_id'=>$row->group_id,
+                'user_id'=>$this->id,
+                'level'=>$level,
+            ];
+
+            for($i=1;$i<=5;$i++){
+                if($i == $level){
+                    $insert["lv_$i"] = $this->id;
+                }else{
+                    $str = "lv_$i";
+                    $insert["lv_$i"] = $row->$str;
+                }
+            }
+            try {
+                DB::table('user_group')->insert($insert);
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        }
+    }
+
+    public function groupLevel(){
+        
+        if($row = DB::table('user_group')->select('level')->where('user_id',$this->id)->first()){
+            return $row->level;
+        }
+        return 0;
+
+    }
 
     public function getGroupUsers()
     {

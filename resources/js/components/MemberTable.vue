@@ -63,7 +63,7 @@
           >
             <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
           </td>
-          <td class="text-xs-left" @click="showGroupTree(props.item.id_code)">
+          <td class="text-xs-left tree-icon" @click="showGroupTree(props.item.id,props.item.id_code)">
             <v-icon>supervised_user_circle</v-icon>
           </td>
           <td
@@ -250,8 +250,9 @@ export default {
           console.error(err);
         });
     },
-    showGroupTree(id_code){
-        EventBus.$emit("showMemberTree",id_code);
+    showGroupTree(id,id_code){
+      let user = {'id_code':id_code,'id':id};
+        EventBus.$emit("showMemberTree",user);
     },
     getMemberDetail(id, name) {
       let user = {'id':id,'name':name};
@@ -378,12 +379,14 @@ export default {
 </script>
 
 <style>
+.tree-icon,
 .history,
 .valid,
 .name,
 .org_rank {
   cursor: pointer;
 }
+.tree-icon:hover,
 .history:hover,
 .valid:hover,
 .name:hover,

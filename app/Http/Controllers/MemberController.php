@@ -274,54 +274,68 @@ class MemberController extends Controller
     // }
 
     //大天使小天使加入組織請求
-    // public function addGroupMember(Request $request){
-    //     $leader = User::find($request->leaderId);
-    //     $addUser = User::where('email',$request->addAccount)->first();
+    public function addGroupMember(Request $request){
 
-    //     if($addUser){
-    //         try {
-    //             if ($leader->org_rank==2) {
-    //                 if($addUser->org_rank!=1){
-    //                     return response()->json([
-    //                         's'=>-1,
-    //                         'm'=>'會員階級不符合'
-    //                     ]);
-    //                 }
-    //             }
+        // leader_id
+        //user_id
+        //level
 
-    //             if($leader->org_rank==1){
-    //                 if($addUser->org_rank>=1){
-    //                     return response()->json([
-    //                         's'=>-1,
-    //                         'm'=>'會員階級不符合'
-    //                     ]);
-    //                 }
-    //             }
+        $leader = User::find($request->leader_id);
+        $addUser = User::find($request->user_id);
 
-    //             if(!$leader->groupUsers()->find($addUser->id)){
-    //                 $leader->groupUsers()->attach($addUser->id);
-    //                 return response()->json([
-    //                     's'=>1,
-    //                     'addUser'=>$addUser,
-    //                 ]);
-    //             }else{
-    //                 return response()->json([
-    //                     's'=>-1,
-    //                     'm'=>'會員帳號已經存在該組織',
-    //                 ]);
-    //             }
-                
-    //         } catch (\Throwable $th) {
-    //             return response($th);
-    //         }
-    
-    //     }else{
-    //         return response()->json([
-    //             's'=>0,
-    //             'm'=>'會員帳號不存在',
-    //         ]);
-    //     }
-    // }
+        if(!$addUser || !$leader){
+            return response()->json([
+                's'=>0,
+                'm'=>'會員帳號不存在',
+            ]);
+        }
+
+        if($request->leader_id == $request->user_id){
+            return response()->json([
+                's'=>0,
+                'm'=>'無效的操作',
+            ]);
+        }
+
+        if($addUser->groupLevel() > 0){
+            return response()->json([
+                's'=>0,
+                'm'=>'此會員已經存在所屬組織。',
+            ]);
+        }
+
+        $leader_level = $leader->groupLevel();
+        if($leader_level <= 0){
+            return response()->json([
+                's'=>0,
+                'm'=>'所選的使用者無所屬組織。',
+            ]);
+        }
+
+        if($request->level > $leader_level){
+            return response()->json([
+                's'=>0,
+                'm'=>'所選等級不能高於使用者等級',
+            ]);
+        }
+
+        $addUser->joinToGroup($leader->id,$request->level);
+
+        return response()->json([
+            's'=>1,
+            'm'=>'新增成功',
+        ]);
+
+    }
+
+    public function getUserLevel($user_id){
+
+        if($user = User::find($user_id)){
+            return response()->json($user->groupLevel());
+        }
+        return 0;
+    }
+
 
     // public function deleteGroupMember(Request $request){
     //     $leader = User::find($request->leaderId);

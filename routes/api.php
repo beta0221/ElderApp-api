@@ -42,7 +42,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid');
     // Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
-    // Route::post('addGroupMember','MemberController@addGroupMember');
+    Route::post('addGroupMember','MemberController@addGroupMember');
+    Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');
     // Route::post('deleteGroupMember','MemberController@deleteGroupMember');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
 });

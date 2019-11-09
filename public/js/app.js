@@ -2538,8 +2538,12 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    showGroupTree: function showGroupTree(id_code) {
-      EventBus.$emit("showMemberTree", id_code);
+    showGroupTree: function showGroupTree(id, id_code) {
+      var user = {
+        'id_code': id_code,
+        'id': id
+      };
+      EventBus.$emit("showMemberTree", user);
     },
     getMemberDetail: function getMemberDetail(id, name) {
       var user = {
@@ -2717,22 +2721,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
 
-    EventBus.$on("showMemberTree", function (id_code) {
+    EventBus.$on("showMemberTree", function (user) {
       _this.group_tree_dialog = true;
-      _this.tree_src = '/member_tree/' + id_code;
+      _this.tree_src = '/member_tree/' + user.id_code;
+      _this.current_user_id = user.id;
     });
   },
   data: function data() {
     return {
+      current_user_id: '',
+      select_user: '',
+      select_user_level: 0,
       group_tree_dialog: false,
       tree_src: '',
       search_text: '',
       search_result: [],
-      select_user: {},
       level_array: [{
         'level': 5,
         'name': '長老天使'
@@ -2753,10 +2767,17 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     selectUser: function selectUser(user_id) {
+      var _this2 = this;
+
       this.select_user = user_id;
+      axios.get("/api/getUserLevel/".concat(user_id)).then(function (res) {
+        _this2.select_user_level = res.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     searchUser: function searchUser() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('/api/search-member', {
         params: {
@@ -2764,7 +2785,23 @@ __webpack_require__.r(__webpack_exports__);
           searchText: this.search_text
         }
       }).then(function (res) {
-        _this2.search_result = res.data;
+        _this3.search_result = res.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    joinByLevel: function joinByLevel(level) {
+      axios.post('/api/addGroupMember', {
+        'leader_id': this.select_user,
+        'user_id': this.current_user_id,
+        'level': level
+      }).then(function (res) {
+        console.log(res.data);
+        alert(res.data.m);
+
+        if (res.data.s == 1) {
+          document.getElementById('tree-frame').contentWindow.location.reload(true);
+        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -21629,7 +21666,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.history,\n.valid,\n.name,\n.org_rank {\n  cursor: pointer;\n}\n.history:hover,\n.valid:hover,\n.name:hover,\n.org_rank:hover {\n  background-color: lightgrey;\n  color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.tree-icon,\n.history,\n.valid,\n.name,\n.org_rank {\n  cursor: pointer;\n}\n.tree-icon:hover,\n.history:hover,\n.valid:hover,\n.name:hover,\n.org_rank:hover {\n  background-color: lightgrey;\n  color: #fff;\n}\n", ""]);
 
 // exports
 
@@ -21648,7 +21685,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.border{\n    border:1px solid gray;\n    border-radius: .3rem;\n}\n.fill{\n    width: 100%;\n    height: 100%;\n}\n#left-panel{\n    width:calc(60% - 2px);\n    height: 600px;\n    display: inline-block;\n    padding: 8px;\n}\n#right-panel{\n    display: inline-block;\n    vertical-align: top;\n    height: 600px;\n    width:calc(40% - 2px);\n    padding: 8px;\n}\n.member-tree input{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    background-color: #fff;\n}\n.search-bar{\n    height: 24px;\n}\n.devider{\n    height: 8px;\n}\n.search-box{\n    height: calc(50% - 32px);\n    overflow-y: scroll;\n}\n.search-box .member-cell{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    background-color: #fff;\n    line-height: 30px;\n}\n.level-box{\n    height: calc(50% - 16px);\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-around;\n}\n.level-cell{\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.border{\n    border:1px solid gray;\n    border-radius: .3rem;\n}\n.fill{\n    width: 100%;\n    height: 100%;\n}\n#left-panel{\n    width:calc(60% - 2px);\n    height: 600px;\n    display: inline-block;\n    padding: 8px;\n}\n#right-panel{\n    display: inline-block;\n    vertical-align: top;\n    height: 600px;\n    width:calc(40% - 2px);\n    padding: 8px;\n}\n.member-tree input{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    background-color: #fff;\n}\n.search-bar{\n    height: 24px;\n}\n.devider{\n    height: 8px;\n}\n.search-box{\n    height: calc(50% - 32px);\n    overflow-y: scroll;\n}\n.search-box .member-cell{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n    cursor: pointer;\n}\n.member-cell:hover{\n    background-color: lightgray;\n    color:#fff;\n}\n.select-cell{\n    background-color: gray!important;\n    color:#fff;\n}\n.level-box{\n    height: calc(50% - 16px);\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-around;\n}\n.level-cell{\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n}\n.green-cell{\n    background-color: limegreen;\n    border-color:limegreen;\n    color:#fff;\n    cursor: pointer;\n}\n.green-cell:hover{\n    background-color:green;\n    border-color: green;\n}\n", ""]);
 
 // exports
 
@@ -58956,10 +58993,13 @@ var render = function() {
                     _c(
                       "td",
                       {
-                        staticClass: "text-xs-left",
+                        staticClass: "text-xs-left tree-icon",
                         on: {
                           click: function($event) {
-                            return _vm.showGroupTree(props.item.id_code)
+                            return _vm.showGroupTree(
+                              props.item.id,
+                              props.item.id_code
+                            )
                           }
                         }
                       },
@@ -59163,6 +59203,7 @@ var render = function() {
                       {
                         key: user.id,
                         staticClass: "member-cell",
+                        class: _vm.select_user == user.id ? "select-cell" : "",
                         on: {
                           click: function($event) {
                             return _vm.selectUser(user.id)
@@ -59189,8 +59230,24 @@ var render = function() {
                   _vm._l(_vm.level_array, function(l) {
                     return _c(
                       "div",
-                      { key: l.level, staticClass: "level-cell border" },
-                      [_vm._v(_vm._s(l.name))]
+                      {
+                        key: l.level,
+                        staticClass: "level-cell border",
+                        class:
+                          l.level <= _vm.select_user_level ? "green-cell" : "",
+                        on: {
+                          click: function($event) {
+                            return _vm.joinByLevel(l.level)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                      " +
+                            _vm._s(l.name) +
+                            "\n                      "
+                        )
+                      ]
                     )
                   }),
                   0
