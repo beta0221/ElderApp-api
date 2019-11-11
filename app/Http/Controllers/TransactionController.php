@@ -19,7 +19,11 @@ class TransactionController extends Controller
             'amount' =>'required|integer|min:1',
             // 'event' => 'required',
         ]);
-        
+
+        if($req->give_id == $req->take_id){
+            return response('insufficient');
+        }
+
         $give_user = User::find($req->give_id);
         $take_user = User::find($req->take_id);
 
