@@ -440,7 +440,15 @@ class EventController extends Controller
 
     public function drawEventReward(Request $request,$slug){
 
-        // $user = Auth::user();
+        //兩個平台的參數不一，在這邊暫時統一，之後還是要使用 Auth
+        $user_id = 0;
+        if($request->id){
+            $user_id = $request->id;
+        }else if($request->user_id){
+            $user_id = $request->user_id;
+        }
+
+
         $event = Event::where('slug',$slug)->first();
         if(!$event){
             return response()->json([
@@ -450,14 +458,14 @@ class EventController extends Controller
         }
 
 
-        if(!$event->isParticipated($request->user_id)){
+        if(!$event->isParticipated($user_id)){
             return response()->json([
                 's'=>0,
                 'm'=>'非常抱歉，您不在此活動的參加人員名單中'
             ]);
         }
 
-        if($event->isRewardDrawed($request->user_id)){
+        if($event->isRewardDrawed($user_id)){
             return response()->json([
                 's'=>0,
                 'm'=>'獎勵已領取。'
@@ -466,12 +474,12 @@ class EventController extends Controller
 
         try {
             //使用者加錢
-            $user = User::find($request->user_id);
+            $user = User::find($user_id);
             $rewardAmount = $event->rewardAmount();
             $user->updateWallet(true,$rewardAmount);
 
             //註記已領取
-            $event->drawReward($request->user_id);
+            $event->drawReward($user_id);
 
             //新增交際紀錄
             Transaction::create([
