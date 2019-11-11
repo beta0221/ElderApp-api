@@ -48,8 +48,10 @@ class Event extends Model
     }
 
     public function isRewardDrawed($user_id){
-        $row = DB::table('event_users')->where('user_id',$user_id)->first();
-        return $row->reward_drawed;
+        if($row = DB::table('event_users')->where('event_id',$this->id)->where('user_id',$user_id)->first()){
+            return $row->reward_drawed;
+        }
+        return true;
     }
 
     public function drawReward($user_id){
