@@ -21,7 +21,7 @@ class TransactionController extends Controller
         ]);
 
         if($req->give_id == $req->take_id){
-            return response('insufficient');
+            return response('無效操作');
         }
 
         $give_user = User::find($req->give_id);
