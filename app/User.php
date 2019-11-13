@@ -36,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
         'inviter_phone',
         'pay_status',
         'pay_method',
-        'last_pay_date',
+        'expiry_date',
         'valid',
     ];
 

@@ -2434,8 +2434,8 @@ __webpack_require__.r(__webpack_exports__);
         text: "入會日期",
         value: "created_at"
       }, {
-        text: "上次付款日",
-        value: "last_pay_date"
+        text: "效期到期日",
+        value: "expiry_date"
       }, {
         text: "效期",
         value: "valid"
@@ -2505,13 +2505,13 @@ __webpack_require__.r(__webpack_exports__);
     toValid: function toValid(id, index) {
       var _this3 = this;
 
-      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["last_pay_date"] != null) {
+      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios.post("/api/toValid", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
             _this3.desserts[index]["valid"] = 1;
-            _this3.desserts[index]["last_pay_date"] = res.data.d;
+            _this3.desserts[index]["expiry_date"] = res.data.d;
           }
 
           console.log(res);
@@ -2604,7 +2604,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           if (_this7.desserts[index]["pay_status"] == 3) {
-            _this7.desserts[index]["last_pay_date"] = res.data.d;
+            _this7.desserts[index]["expiry_date"] = res.data.d;
             _this7.desserts[index]["valid"] = 1;
           }
         })["catch"](function (error) {
@@ -59057,7 +59057,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v(_vm._s(props.item.last_pay_date))]
+                      [_vm._v(_vm._s(props.item.expiry_date))]
                     ),
                     _vm._v(" "),
                     _c(

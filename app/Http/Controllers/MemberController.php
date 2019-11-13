@@ -48,7 +48,7 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
         $users = DB::table('users')
-            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'last_pay_date','valid','birthdate','id_number','id_code')
+            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'expiry_date','valid','birthdate','id_number','id_code')
             ->orderBy($orderBy, $ascOrdesc)
             ->skip($skip)
             ->take($rows)
@@ -184,6 +184,7 @@ class MemberController extends Controller
 
     //更新會員付款狀態
     public function changePayStatus(Request $request){
+        date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         $p = $user->pay_status;
         if ($p < 3) {
@@ -192,12 +193,12 @@ class MemberController extends Controller
         }
 
         if($p == 3){
-            $user->last_pay_date = date('Y-m-d');
+            $user->expiry_date = date('Y-m-d', strtotime('+1 years'));
             $user->valid = 1;
             PayDate::create(['user_id'=>$request->id]);
         }
         $user->save();
-        return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d')],Response::HTTP_ACCEPTED);
+        return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d', strtotime('+1 years'))],Response::HTTP_ACCEPTED);
     }
 
     //取得會員付款歷史紀錄
@@ -214,17 +215,20 @@ class MemberController extends Controller
 
     //檢查所有會員把過期的會員效期變成過期
     public function executeExpired(Request $request){
-        DB::update('update users set valid = 0 WHERE last_pay_date < DATE_SUB(NOW(),INTERVAL 1 YEAR)');
+        date_default_timezone_set('Asia/Taipei');
+        $now = strtotime(date('Y-m-d'));
+        DB::update("update users set valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now");
         return response(['s'=>1,'m'=>'Updated'],Response::HTTP_ACCEPTED);
     }
 
     //更新會員資格（無效會員變成有效會員）
     public function toValid(Request $request){
+        date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
-        if($user->valid == 0 && $user->last_pay_date != null){
+        if($user->valid == 0 && $user->expiry_date != null){
             $user->update([
                 'valid'=>1,
-                'last_pay_date'=>date('Y-m-d'),
+                'expiry_date'=>date('Y-m-d',strtotime('+1 years')),
                 ]);
             PayDate::create(['user_id'=>$request->id]);
             return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d')],Response::HTTP_ACCEPTED);

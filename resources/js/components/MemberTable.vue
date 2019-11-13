@@ -81,7 +81,7 @@
           <td
             class="text-xs-left history"
             @click="getPayHistory(props.item.id,props.item.name)"
-          >{{ props.item.last_pay_date }}</td>
+          >{{ props.item.expiry_date }}</td>
           <td
             class="text-xs-left valid"
             @click="toValid(props.item.id,props.index)"
@@ -156,7 +156,7 @@ export default {
         { text: "推薦人", value: "inviter" },
         // { text: "推薦人電話", value: "inviter_phone" },
         { text: "入會日期", value: "created_at" },
-        { text: "上次付款日", value: "last_pay_date" },
+        { text: "效期到期日", value: "expiry_date" },
         { text: "效期", value: "valid" },
         { text: "會員狀態", value: "pay_status" },
         
@@ -214,7 +214,7 @@ export default {
     toValid(id, index) {
       if (
         this.desserts[index]["valid"] == 0 &&
-        this.desserts[index]["last_pay_date"] != null
+        this.desserts[index]["expiry_date"] != null
       ) {
         axios
           .post("/api/toValid", {
@@ -223,7 +223,7 @@ export default {
           .then(res => {
             if (res.data.s == 1) {
               this.desserts[index]["valid"] = 1;
-              this.desserts[index]["last_pay_date"] = res.data.d;
+              this.desserts[index]["expiry_date"] = res.data.d;
             }
             console.log(res);
           })
@@ -312,7 +312,7 @@ export default {
             }
 
             if (this.desserts[index]["pay_status"] == 3) {
-              this.desserts[index]["last_pay_date"] = res.data.d;
+              this.desserts[index]["expiry_date"] = res.data.d;
               this.desserts[index]["valid"] = 1;
             }
           })

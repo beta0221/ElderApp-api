@@ -48,7 +48,7 @@ class CreateUsersTable extends Migration
             $table->integer('pay_status')->default(0);
             $table->integer('pay_method')->nullable();
             $table->date('join_date')->nullable();
-            $table->date('last_pay_date')->nullable();
+            $table->date('expiry_date')->nullable();
             $table->boolean('valid')->default(false);
 
             $table->timestamps();
