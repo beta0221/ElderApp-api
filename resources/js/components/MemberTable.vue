@@ -175,7 +175,9 @@ export default {
   },
   created() {
     if (!User.loggedIn()) {
-      this.$router.push({ name: "login" });
+      let from_url = window.location.pathname;
+      this.$router.push({ name: "login",params:{'from_url':from_url}});
+      // this.$router.push({path:'/member'});
     }
   },
   methods: {

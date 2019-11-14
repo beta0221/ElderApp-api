@@ -37,6 +37,7 @@
 
 <script>
 export default {
+    props:['from_url'],
     data(){
         return{
             form:{

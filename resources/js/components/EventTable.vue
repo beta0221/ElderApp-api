@@ -33,7 +33,7 @@
   </div>
   <!-- table -->
   <div>
-    <member-detail :some="123"></member-detail>
+    <member-detail></member-detail>
     <v-data-table
       :headers="headers"
       :items="eventArray"

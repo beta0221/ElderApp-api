@@ -5,7 +5,7 @@ class User {
     login(data){
         axios.post('/api/auth/login', data)
             .then(res=>this.responseAfterLogin(res))
-            .catch(error => console.log(error.response.data))
+            .catch(error => console.log(error))
     }
 
     responseAfterLogin(res){
@@ -13,7 +13,6 @@ class User {
         const username = res.data.name;
         if (Token.isValid(access_token)) {
             AppStorage.store(username,access_token);
-            window.location = '/';
         }
     }
 
@@ -32,7 +31,8 @@ class User {
 
     logout(){
         AppStorage.clear();
-        window.location = '/';
+        // window.location = '/';
+        this.$router.push({name:"login"});
     }
 
     name(){

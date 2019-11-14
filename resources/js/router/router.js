@@ -13,7 +13,7 @@ import Login from '../components/Login/Login'
 const routes = [
     {path:'/member', component: MemberTable},
     {path:'/event',name:'event', component: EventTable},
-    {path:'/login',name:'login',component: Login},
+    {path:'/login',name:'login',component: Login,props:true},
     {path:'/newEvent',component:newEventForm},
     {path:'/editEvent/:event_slug',component:newEventForm,props:true},
 ]

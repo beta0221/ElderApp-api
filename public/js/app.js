@@ -2067,6 +2067,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['from_url'],
   data: function data() {
     return {
       form: {
@@ -2459,9 +2460,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     if (!User.loggedIn()) {
+      var from_url = window.location.pathname;
       this.$router.push({
-        name: "login"
-      });
+        name: "login",
+        params: {
+          'from_url': from_url
+        }
+      }); // this.$router.push({path:'/member'});
     }
   },
   methods: {
@@ -58237,7 +58242,7 @@ var render = function() {
     _c(
       "div",
       [
-        _c("member-detail", { attrs: { some: 123 } }),
+        _c("member-detail"),
         _vm._v(" "),
         _c("v-data-table", {
           staticClass: "elevation-1",
@@ -100786,7 +100791,7 @@ function () {
       axios.post('/api/auth/login', data).then(function (res) {
         return _this.responseAfterLogin(res);
       })["catch"](function (error) {
-        return console.log(error.response.data);
+        return console.log(error);
       });
     }
   }, {
@@ -100797,7 +100802,6 @@ function () {
 
       if (_Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(access_token)) {
         _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].store(username, access_token);
-        window.location = '/';
       }
     }
   }, {
@@ -100819,8 +100823,11 @@ function () {
   }, {
     key: "logout",
     value: function logout() {
-      _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].clear();
-      window.location = '/';
+      _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].clear(); // window.location = '/';
+
+      this.$router.push({
+        name: "login"
+      });
     }
   }, {
     key: "name",
@@ -101634,7 +101641,8 @@ var routes = [{
 }, {
   path: '/login',
   name: 'login',
-  component: _components_Login_Login__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _components_Login_Login__WEBPACK_IMPORTED_MODULE_5__["default"],
+  props: true
 }, {
   path: '/newEvent',
   component: _components_newEventForm__WEBPACK_IMPORTED_MODULE_4__["default"]
