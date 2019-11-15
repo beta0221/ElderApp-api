@@ -371,8 +371,9 @@ export default {
             }, 300);
           })
           .catch(error => {
+            console.log(error);
             Exception.handle(error);
-            User.logout();
+            // User.logout();
           })
       });
     }

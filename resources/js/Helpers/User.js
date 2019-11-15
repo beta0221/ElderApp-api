@@ -1,18 +1,22 @@
 import Token from "./Token";
 import AppStorage from "./AppStorage";
+import router from "../router/router.js";
 
 class User {
-    login(data){
+    login(data,from_url){
         axios.post('/api/auth/login', data)
-            .then(res=>this.responseAfterLogin(res))
+            .then(res=>this.responseAfterLogin(res,from_url))
             .catch(error => console.log(error))
     }
 
-    responseAfterLogin(res){
+    responseAfterLogin(res,from_url){
         const access_token = res.data.access_token;
         const username = res.data.name;
         if (Token.isValid(access_token)) {
             AppStorage.store(username,access_token);
+            let token = `Bearer ${localStorage.getItem('token')}`;
+            window.axios.defaults.headers.common['Authorization'] = token;
+            router.push({path:from_url});
         }
     }
 
@@ -32,7 +36,7 @@ class User {
     logout(){
         AppStorage.clear();
         // window.location = '/';
-        this.$router.push({name:"login"});
+        router.push({name:"login"});
     }
 
     name(){

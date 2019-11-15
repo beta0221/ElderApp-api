@@ -2085,7 +2085,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     login: function login() {
-      User.login(this.form);
+      User.login(this.form, this.from_url);
     }
   }
 });
@@ -2667,8 +2667,8 @@ __webpack_require__.r(__webpack_exports__);
             });
           }, 300);
         })["catch"](function (error) {
-          Exception.handle(error);
-          User.logout();
+          console.log(error);
+          Exception.handle(error); // User.logout();
         });
       });
     }
@@ -100767,11 +100767,13 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Token__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Token */ "./resources/js/Helpers/Token.js");
 /* harmony import */ var _AppStorage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AppStorage */ "./resources/js/Helpers/AppStorage.js");
+/* harmony import */ var _router_router_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../router/router.js */ "./resources/js/router/router.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -100785,23 +100787,28 @@ function () {
 
   _createClass(User, [{
     key: "login",
-    value: function login(data) {
+    value: function login(data, from_url) {
       var _this = this;
 
       axios.post('/api/auth/login', data).then(function (res) {
-        return _this.responseAfterLogin(res);
+        return _this.responseAfterLogin(res, from_url);
       })["catch"](function (error) {
         return console.log(error);
       });
     }
   }, {
     key: "responseAfterLogin",
-    value: function responseAfterLogin(res) {
+    value: function responseAfterLogin(res, from_url) {
       var access_token = res.data.access_token;
       var username = res.data.name;
 
       if (_Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(access_token)) {
         _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].store(username, access_token);
+        var token = "Bearer ".concat(localStorage.getItem('token'));
+        window.axios.defaults.headers.common['Authorization'] = token;
+        _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
+          path: from_url
+        });
       }
     }
   }, {
@@ -100825,7 +100832,7 @@ function () {
     value: function logout() {
       _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].clear(); // window.location = '/';
 
-      this.$router.push({
+      _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
         name: "login"
       });
     }
@@ -101679,8 +101686,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),
