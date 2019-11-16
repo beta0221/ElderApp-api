@@ -2667,8 +2667,9 @@ __webpack_require__.r(__webpack_exports__);
             });
           }, 300);
         })["catch"](function (error) {
-          console.log(error);
-          Exception.handle(error); // User.logout();
+          Exception.handle(error);
+          var from_url = window.location.pathname;
+          User.logout(from_url);
         });
       });
     }
@@ -59239,7 +59240,7 @@ var render = function() {
                         key: l.level,
                         staticClass: "level-cell border",
                         class:
-                          l.level <= _vm.select_user_level ? "green-cell" : "",
+                          l.level < _vm.select_user_level ? "green-cell" : "",
                         on: {
                           click: function($event) {
                             return _vm.joinByLevel(l.level)
@@ -100806,8 +100807,15 @@ function () {
         _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].store(username, access_token);
         var token = "Bearer ".concat(localStorage.getItem('token'));
         window.axios.defaults.headers.common['Authorization'] = token;
+
+        if (from_url) {
+          _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
+            path: from_url
+          });
+        }
+
         _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
-          path: from_url
+          path: '/member'
         });
       }
     }
@@ -100829,8 +100837,17 @@ function () {
     }
   }, {
     key: "logout",
-    value: function logout() {
+    value: function logout(from_url) {
       _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].clear(); // window.location = '/';
+
+      if (from_url) {
+        _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
+          name: "login",
+          params: {
+            'from_url': from_url
+          }
+        });
+      }
 
       _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
         name: "login"
@@ -101686,8 +101703,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

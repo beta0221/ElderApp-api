@@ -16,7 +16,10 @@ class User {
             AppStorage.store(username,access_token);
             let token = `Bearer ${localStorage.getItem('token')}`;
             window.axios.defaults.headers.common['Authorization'] = token;
-            router.push({path:from_url});
+            if(from_url){
+                router.push({path:from_url});
+            }
+            router.push({path:'/member'});
         }
     }
 
@@ -33,9 +36,13 @@ class User {
         return this.hasToken();
     }
 
-    logout(){
+    logout(from_url){
         AppStorage.clear();
         // window.location = '/';
+        if(from_url){
+            router.push({ name: "login",params:{'from_url':from_url}});
+        }
+
         router.push({name:"login"});
     }
 

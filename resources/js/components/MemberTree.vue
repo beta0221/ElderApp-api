@@ -26,7 +26,7 @@
                     <div class="devider"></div>
                     <div class="border level-box">
                         <div class="level-cell border"
-                        :class="(l.level <= select_user_level)?'green-cell':''"
+                        :class="(l.level < select_user_level)?'green-cell':''"
                         v-for="l in level_array" 
                         v-bind:key="l.level"
                         @click="joinByLevel(l.level)">

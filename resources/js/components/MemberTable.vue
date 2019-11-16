@@ -371,9 +371,9 @@ export default {
             }, 300);
           })
           .catch(error => {
-            console.log(error);
             Exception.handle(error);
-            // User.logout();
+            let from_url = window.location.pathname;
+            User.logout(from_url);
           })
       });
     }

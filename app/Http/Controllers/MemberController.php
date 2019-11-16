@@ -315,7 +315,7 @@ class MemberController extends Controller
             ]);
         }
 
-        if($request->level > $leader_level){
+        if($request->level >= $leader_level){
             return response()->json([
                 's'=>0,
                 'm'=>'所選等級不能高於使用者等級',

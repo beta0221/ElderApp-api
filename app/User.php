@@ -132,6 +132,8 @@ class User extends Authenticatable implements JWTSubject
             for($i=1;$i<=5;$i++){
                 if($i == $level){
                     $insert["lv_$i"] = $this->id;
+                }else if($i == $row->level){
+                    $insert["lv_$i"] = $row->user_id;
                 }else{
                     $str = "lv_$i";
                     $insert["lv_$i"] = $row->$str;
