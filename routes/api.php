@@ -69,7 +69,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('district','EventController@GetDistrict');
     Route::get('which_category_event/{name}','EventController@which_category_event');
     Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later
-
+    Route::post('arriveEvent/{slug}','EventController@arriveEvent');
+    
     //交易
     Route::post('transaction','TransactionController@transaction');
     Route::get('trans-history/{id}','TransactionController@show');

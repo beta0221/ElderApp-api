@@ -437,6 +437,40 @@ class EventController extends Controller
 
     }
 
+    public function arriveEvent(Request $request,$slug){
+
+        $user_id = Auth::user()->id;
+
+        $event = Event::where('slug',$slug)->first();
+        if(!$event){
+            return response()->json([
+                's'=>0,
+                'm'=>'Event not found!'
+            ]);
+        }
+
+        if(!$event->isParticipated($user_id)){
+            return response()->json([
+                's'=>0,
+                'm'=>'非常抱歉，您不在此活動的參加人員名單中'
+            ]);
+        }
+
+        if($event->isArrived($user_id)){
+            return response()->json([
+                's'=>1,
+                'm'=>'已完成報到'
+            ]);
+        }
+
+        $event->arrive($user_id);
+        return response()->json([
+            's'=>1,
+            'm'=>'已完成報到'
+        ]);
+
+
+    }
 
     public function drawEventReward(Request $request,$slug){
 

@@ -54,6 +54,20 @@ class Event extends Model
         return true;
     }
 
+    public function isArrived($user_id){
+        if($row = DB::table('event_users')->where('event_id',$this->id)->where('user_id',$user_id)->first()){
+            return $row->arrive;
+        }
+        return true;
+    }
+
+    public function arrive($user_id){
+        DB::table('event_users')->where('event_id',$this->id)->update([
+            'arrive'=>true
+        ]);
+    }
+
+
     public function drawReward($user_id){
         DB::table('event_users')->where('user_id',$user_id)->update([
             'reward_drawed'=>1,

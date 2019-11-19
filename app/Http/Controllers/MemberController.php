@@ -362,8 +362,8 @@ class MemberController extends Controller
 
     //App首頁更新基本資料
     public function updateAccount(Request $request){
-        $user = User::find(Auth::user()->id);
-
+        $user = Auth::user();
+        
         if(!$user){
             return response()->json([
                 's'=>0,
