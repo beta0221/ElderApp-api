@@ -492,14 +492,16 @@ class EventController extends Controller
         if($event->isArrived($user_id)){
             return response()->json([
                 's'=>1,
-                'm'=>'已完成報到'
+                'm'=>'已完成報到',
+                'name'=>$event->title
             ]);
         }
 
         $event->arrive($user_id);
         return response()->json([
             's'=>1,
-            'm'=>'已完成報到'
+            'm'=>'已完成報到',
+            'name'=>$event->title
         ]);
 
 
