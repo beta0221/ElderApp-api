@@ -518,7 +518,7 @@ class EventController extends Controller
         }
 
         //修正舊版手機程式
-        if(strops($slug,',') !== false){
+        if(strpos($slug,',') !== false){
             $str = explode(',',$slug);
             $slug = $str[1];
         }
