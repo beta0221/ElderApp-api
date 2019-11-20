@@ -517,6 +517,12 @@ class EventController extends Controller
             $user_id = $request->user_id;
         }
 
+        //修正舊版手機程式
+        if(strops($slug,',') !== false){
+            $str = explode(',',$slug);
+            $slug = $str[1];
+        }
+
 
         $event = Event::where('slug',$slug)->first();
         if(!$event){
