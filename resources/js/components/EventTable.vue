@@ -116,6 +116,7 @@ export default {
   created(){
     this.getCat();
     this.getDistrict();
+    User.adminOnly();
   },
   methods:{
     showEventMembers(event_slug,event_name){

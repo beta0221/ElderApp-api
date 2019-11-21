@@ -3,10 +3,18 @@ import AppStorage from "./AppStorage";
 import router from "../router/router.js";
 
 class User {
+
+    adminOnly(){
+        if (!this.loggedIn()) {
+            let from_url = window.location.pathname;
+            router.push({ name: "login",params:{'from_url':from_url}});
+        }
+    }
+
     login(data,from_url){
         axios.post('/api/auth/login', data)
             .then(res=>this.responseAfterLogin(res,from_url))
-            .catch(error => console.log(error))
+            .catch(error => console.log(error)) 
     }
 
     responseAfterLogin(res,from_url){
@@ -18,8 +26,10 @@ class User {
             window.axios.defaults.headers.common['Authorization'] = token;
             if(from_url){
                 router.push({path:from_url});
+            }else{
+                router.push({path:'/member'});
             }
-            router.push({path:'/member'});
+            
         }
     }
 

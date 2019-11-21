@@ -1874,6 +1874,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.getCat();
     this.getDistrict();
+    User.adminOnly();
   },
   methods: {
     showEventMembers: function showEventMembers(event_slug, event_name) {
@@ -2459,15 +2460,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    if (!User.loggedIn()) {
-      var from_url = window.location.pathname;
-      this.$router.push({
-        name: "login",
-        params: {
-          'from_url': from_url
-        }
-      }); // this.$router.push({path:'/member'});
-    }
+    User.adminOnly();
   },
   methods: {
     search: function search() {
@@ -100787,6 +100780,19 @@ function () {
   }
 
   _createClass(User, [{
+    key: "adminOnly",
+    value: function adminOnly() {
+      if (!this.loggedIn()) {
+        var from_url = window.location.pathname;
+        _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
+          name: "login",
+          params: {
+            'from_url': from_url
+          }
+        });
+      }
+    }
+  }, {
     key: "login",
     value: function login(data, from_url) {
       var _this = this;
@@ -100812,11 +100818,11 @@ function () {
           _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
             path: from_url
           });
+        } else {
+          _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
+            path: '/member'
+          });
         }
-
-        _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
-          path: '/member'
-        });
       }
     }
   }, {
@@ -101660,7 +101666,6 @@ var routes = [{
   component: _components_MemberTable__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
   path: '/event',
-  name: 'event',
   component: _components_EventTable__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
   path: '/login',
