@@ -139,6 +139,8 @@ class EventController extends Controller
                     'm'=>'檔案無法儲存',
                 ]);
             }   
+        }else{
+            $request->merge(['image'=>""]);
         }
 
         $category=Category::where('name',$name)->first();

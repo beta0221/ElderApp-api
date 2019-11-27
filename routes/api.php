@@ -79,4 +79,7 @@ Route::group(['middleware' => ['admin']], function () {
     //折扣兌換卷
     Route::post('couponcode/exchange','PromocodeController@exchange');
 
+    //產品
+    Route::apiresource('product','ProductController');
+
 
