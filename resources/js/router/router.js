@@ -8,6 +8,8 @@ import MemberTable from '../components/MemberTable'
 import EventTable from '../components/EventTable'
 import newEventForm from '../components/newEventForm'
 import Login from '../components/Login/Login'
+import ProductTable from '../components/ProductTable'
+import ProductDetailForm from '../components/ProductDetailForm'
 
 
 const routes = [
@@ -16,6 +18,8 @@ const routes = [
     {path:'/login',name:'login',component: Login,props:true},
     {path:'/newEvent',component:newEventForm},
     {path:'/editEvent/:event_slug',component:newEventForm,props:true},
+    {path:'/product', component: ProductTable},
+    {path:'/productForm/:product_slug', component: ProductDetailForm,props:true},
 ]
 
 

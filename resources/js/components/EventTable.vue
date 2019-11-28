@@ -209,7 +209,7 @@ export default {
                 items,
                 total
               });
-            }, 300);
+            }, 200);
           })
           .catch(error => {
             Exception.handle(error);
