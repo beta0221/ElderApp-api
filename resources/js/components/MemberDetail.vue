@@ -142,7 +142,8 @@ export default {
       this.user = JSON.parse(JSON.stringify(this.user_temp));
     },
     editPassword(){
-      this.editPasswordMode=!this.editPasswordMode;
+      this.editPasswordMode=true;
+      this.user_temp = JSON.parse(JSON.stringify(this.user));
     },
     editPasswordRequest(){
       axios.post('/api/updateMemberPassword/'+this.user.id_code, {

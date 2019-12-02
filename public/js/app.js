@@ -2247,7 +2247,8 @@ __webpack_require__.r(__webpack_exports__);
       this.user = JSON.parse(JSON.stringify(this.user_temp));
     },
     editPassword: function editPassword() {
-      this.editPasswordMode = !this.editPasswordMode;
+      this.editPasswordMode = true;
+      this.user_temp = JSON.parse(JSON.stringify(this.user));
     },
     editPasswordRequest: function editPasswordRequest() {
       var _this4 = this;
