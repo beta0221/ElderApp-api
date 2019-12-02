@@ -55,6 +55,10 @@
       </div>
 
       <div class="data-row" v-if="editPasswordMode">
+        <hr style="margin:20px 0">
+      </div>
+
+      <div class="data-row" v-if="editPasswordMode">
         <span>密碼</span>
         <input type="text" v-model="password"/>
       </div>

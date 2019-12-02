@@ -2182,6 +2182,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -58983,6 +58987,12 @@ var render = function() {
               }
             })
           ]),
+          _vm._v(" "),
+          _vm.editPasswordMode
+            ? _c("div", { staticClass: "data-row" }, [
+                _c("hr", { staticStyle: { margin: "20px 0" } })
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _vm.editPasswordMode
             ? _c("div", { staticClass: "data-row" }, [
