@@ -368,6 +368,16 @@ class EventController extends Controller
         }
 
         $user=User::where('id',$request->id)->first();
+
+        if(!$user->valid){
+            return response()->json([
+                's'=>0,
+                'm'=>'非常抱歉，您目前尚未成為付費會員。請聯繫管理員'
+            ]);
+        }
+
+
+
         if(!$user->go_events()->find($event->id)){
             $user->go_events()->attach($event->id);
             $event->peopleIncrease();
