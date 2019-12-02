@@ -46,6 +46,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');
     // Route::post('deleteGroupMember','MemberController@deleteGroupMember');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
+    Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
 });
 
 //Guest 使用者------------------------

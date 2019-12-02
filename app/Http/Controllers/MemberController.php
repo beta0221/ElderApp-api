@@ -409,6 +409,23 @@ class MemberController extends Controller
         ]);
     }
 
+    public function updateMemberPassword(Request $request,$id_code){
+        
+        if($request->adminCode == 'ji3g4ej03xu3m06'){
+
+            $user = User::where('id_code',$id_code)->firstOrFail();
+            $user->update([
+                'password'=>$request->password
+            ]);
+
+            return response('success',200);
+        }
+        return response('權限不足',400);
+
+
+        
+    }
+
     //會員續會申請
     public function extendMemberShip(Request $request){
         $user = User::find($request->user_id);

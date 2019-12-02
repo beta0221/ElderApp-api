@@ -2169,6 +2169,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -2186,7 +2199,10 @@ __webpack_require__.r(__webpack_exports__);
       isReadMode: true,
       dialog: false,
       user: {},
-      user_temp: {}
+      user_temp: {},
+      editPasswordMode: false,
+      password: '',
+      adminCode: ''
     };
   },
   methods: {
@@ -2221,7 +2237,31 @@ __webpack_require__.r(__webpack_exports__);
     },
     cancelEditMode: function cancelEditMode() {
       this.isReadMode = true;
+      this.editPasswordMode = false;
       this.user = JSON.parse(JSON.stringify(this.user_temp));
+    },
+    editPassword: function editPassword() {
+      this.editPasswordMode = !this.editPasswordMode;
+    },
+    editPasswordRequest: function editPasswordRequest() {
+      var _this4 = this;
+
+      axios.post('/api/updateMemberPassword/' + this.user.id_code, {
+        'password': this.password,
+        'adminCode': this.adminCode
+      }).then(function (res) {
+        if (res.status == 200) {
+          alert('成功');
+          _this4.password = '';
+          _this4.adminCode = '';
+          _this4.isReadMode = true;
+          _this4.editPasswordMode = false;
+        }
+
+        console.log(res);
+      })["catch"](function (error) {
+        alert(error);
+      });
     }
   }
 });
@@ -21870,7 +21910,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n#member-detail-dialog .data-row {\n  padding: 0 16px;\n  margin-bottom: 4px;\n}\n#member-detail-dialog input {\n  width: 100%;\n  border: 1px solid lightgray;\n  border-radius: 0.2rem;\n  height: 32px;\n  padding: 0 12px;\n  background-color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.valid{\n  color:green\n}\n.un-valid{\n  color:#f44336;\n}\n#member-detail-dialog .data-row {\n  padding: 0 16px;\n  margin-bottom: 4px;\n}\n#member-detail-dialog input {\n  width: 100%;\n  border: 1px solid lightgray;\n  border-radius: 0.2rem;\n  height: 32px;\n  padding: 0 12px;\n  background-color: #fff;\n}\n", ""]);
 
 // exports
 
@@ -58685,7 +58725,11 @@ var render = function() {
         },
         [
           _c("v-card-title", { staticClass: "headline" }, [
-            _vm._v("姓名：" + _vm._s(_vm.user.name))
+            _vm._v("姓名：" + _vm._s(_vm.user.name) + " - ("),
+            _c("span", { class: _vm.user.valid ? "valid" : "un-valid" }, [
+              _vm._v(_vm._s(_vm.user.valid ? "有效會員" : "待付款"))
+            ]),
+            _vm._v(")")
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "data-row" }, [
@@ -58775,7 +58819,7 @@ var render = function() {
                   expression: "user.email"
                 }
               ],
-              attrs: { type: "text", disabled: _vm.isReadMode },
+              attrs: { type: "text", disabled: "" },
               domProps: { value: _vm.user.email },
               on: {
                 input: function($event) {
@@ -58938,12 +58982,66 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
+          _vm.editPasswordMode
+            ? _c("div", { staticClass: "data-row" }, [
+                _c("span", [_vm._v("密碼")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.password,
+                      expression: "password"
+                    }
+                  ],
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.password = $event.target.value
+                    }
+                  }
+                })
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.editPasswordMode
+            ? _c("div", { staticClass: "data-row" }, [
+                _c("span", [_vm._v("管理員驗證碼")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.adminCode,
+                      expression: "adminCode"
+                    }
+                  ],
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.adminCode },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.adminCode = $event.target.value
+                    }
+                  }
+                })
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c(
             "v-card-actions",
             [
               _c("v-spacer"),
               _vm._v(" "),
-              !_vm.isReadMode
+              !_vm.isReadMode || _vm.editPasswordMode
                 ? _c(
                     "v-btn",
                     {
@@ -58965,7 +59063,29 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm.isReadMode
+              _vm.editPasswordMode
+                ? _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "red darken-1", flat: "flat" },
+                      on: { click: _vm.editPasswordRequest }
+                    },
+                    [_vm._v("確定修改")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.editPasswordMode && _vm.isReadMode
+                ? _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "red darken-1", flat: "flat" },
+                      on: { click: _vm.editPassword }
+                    },
+                    [_vm._v("改密碼")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.isReadMode && !_vm.editPasswordMode
                 ? _c(
                     "v-btn",
                     {
@@ -58976,7 +59096,7 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm.isReadMode
+              _vm.isReadMode && !_vm.editPasswordMode
                 ? _c(
                     "v-btn",
                     {
@@ -102410,8 +102530,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

@@ -347,7 +347,7 @@ class EventController extends Controller
         if(!$event){
             return response()->json([
                 's'=>0,
-                'm'=>'Event not found!'
+                'm'=>'此活動不存在。'
             ]);
         }
 
@@ -372,7 +372,7 @@ class EventController extends Controller
         if(!$user->valid){
             return response()->json([
                 's'=>0,
-                'm'=>'非常抱歉，您目前尚未成為付費會員。請聯繫管理員'
+                'm'=>'非常抱歉，活動報名僅限為"有效會員"，您為"待付費會員"無法報名參與。'
             ]);
         }
 
@@ -404,12 +404,12 @@ class EventController extends Controller
                 $event->peopleDecrease();
                 return response()->json([
                     's'=>1,
-                    'm'=>'Cancel event success!'
+                    'm'=>'成功取消參加活動'
                 ]);
             }else{
                 return response()->json([
                     's'=>0,
-                    'm'=>'Already cancel'
+                    'm'=>'成功取消參加活動'
                 ]);
             }
             
@@ -417,7 +417,7 @@ class EventController extends Controller
         else{
             return response()->json([
                 's'=>0,
-                'm'=>'Event not found!'
+                'm'=>'此活動不存在。'
             ]);
         }
 

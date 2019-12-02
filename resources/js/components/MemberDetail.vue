@@ -1,8 +1,9 @@
 <template>
+
   <v-dialog v-model="dialog" max-width="480px">
     <v-card id="member-detail-dialog" :class="(!isReadMode)?'blue lighten-5':'21'">
-      <v-card-title class="headline">姓名：{{user.name}}</v-card-title>
-
+      <v-card-title class="headline">姓名：{{user.name}} - (<span :class="(user.valid)?'valid':'un-valid'">{{(user.valid)?'有效會員':'待付款'}}</span>)</v-card-title>
+      
       <div class="data-row">
         <span>姓名</span>
         <input type="text" v-model="user.name" :disabled="isReadMode" />
@@ -20,7 +21,7 @@
 
       <div class="data-row">
         <span>帳號</span>
-        <input type="text" v-model="user.email" :disabled="isReadMode" />
+        <input type="text" v-model="user.email" disabled/>
       </div>
 
       <div class="data-row">
@@ -53,13 +54,25 @@
         <input type="text" v-model="user.inviter_phone" :disabled="isReadMode" />
       </div>
 
+      <div class="data-row" v-if="editPasswordMode">
+        <span>密碼</span>
+        <input type="text" v-model="password"/>
+      </div>
+
+      <div class="data-row" v-if="editPasswordMode">
+        <span>管理員驗證碼</span>
+        <input type="text" v-model="adminCode"/>
+      </div>
+
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn v-if="!isReadMode" color="gray darken-1" flat="flat" @click="cancelEditMode">取消</v-btn>
+        <v-btn v-if="!isReadMode || editPasswordMode" color="gray darken-1" flat="flat" @click="cancelEditMode">取消</v-btn>
         <v-btn v-if="!isReadMode" color="green darken-1" flat="flat" @click="editMemberDetailRequest">更新</v-btn>
+        <v-btn v-if="editPasswordMode" color="red darken-1" flat="flat" @click="editPasswordRequest">確定修改</v-btn>
 
-        <v-btn v-if="isReadMode" color="blue darken-1" flat="flat" @click="editMode">編輯</v-btn>
-        <v-btn v-if="isReadMode" color="gray darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
+        <v-btn v-if="!editPasswordMode && isReadMode" color="red darken-1" flat="flat" @click="editPassword">改密碼</v-btn>
+        <v-btn v-if="isReadMode && !editPasswordMode" color="blue darken-1" flat="flat" @click="editMode">編輯</v-btn>
+        <v-btn v-if="isReadMode && !editPasswordMode" color="gray darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -80,7 +93,10 @@ export default {
       isReadMode: true,
       dialog: false,
       user: {},
-      user_temp: {}
+      user_temp: {},
+      editPasswordMode:false,
+      password:'',
+      adminCode:'',
     };
   },
   methods: {
@@ -116,13 +132,42 @@ export default {
     },
     cancelEditMode(){
       this.isReadMode = true;
+      this.editPasswordMode=false;
       this.user = JSON.parse(JSON.stringify(this.user_temp));
+    },
+    editPassword(){
+      this.editPasswordMode=!this.editPasswordMode;
+    },
+    editPasswordRequest(){
+      axios.post('/api/updateMemberPassword/'+this.user.id_code, {
+        'password':this.password,
+        'adminCode':this.adminCode
+      })
+      .then(res=>{
+        if(res.status==200){
+          alert('成功');
+          this.password='';
+          this.adminCode='';
+          this.isReadMode=true;
+          this.editPasswordMode=false;
+        }
+        console.log(res);
+      })
+      .catch(error=>{
+        alert(error);
+      });
     }
   }
 };
 </script>
 
 <style>
+.valid{
+  color:green
+}
+.un-valid{
+  color:#f44336;
+}
 #member-detail-dialog .data-row {
   padding: 0 16px;
   margin-bottom: 4px;
