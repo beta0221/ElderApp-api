@@ -82,5 +82,6 @@ Route::group(['middleware' => ['admin']], function () {
 
     //產品
     Route::apiresource('product','ProductController');
+    Route::get('product-category','ProductController@productCategory');
 
 

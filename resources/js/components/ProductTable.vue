@@ -1,5 +1,18 @@
 <template>
   <div>
+
+    <div>
+    
+      <router-link class="white--text" to="/productForm" style="text-decoration:none;">
+        <v-btn color="success">
+          新增產品
+        </v-btn>
+      </router-link>
+      
+  </div>
+
+
+
     <div>
       
       <v-data-table
@@ -18,6 +31,9 @@
           <td>{{props.item.price}}</td>
           <td>{{props.item.img}}</td>
           <td>{{props.item.quantity}}</td>
+          <td>
+              <v-btn color="info" @click="editProduct(props.item.slug)">編輯</v-btn>
+          </td>
           
         </template>
       </v-data-table>
@@ -40,6 +56,7 @@ export default {
                 { text: "價錢", value: "price" },
                 { text: "圖片", value: "img" },
                 { text: "庫存", value: "quantity" },
+                { text: "-"},
             ],
         }
     },
@@ -57,6 +74,9 @@ export default {
 
     },
     methods:{
+        editProduct(slug){
+            this.$router.push({path:'/productForm/'+slug})
+        },
         getDataFromApi() {
             this.loading = true;
             return new Promise((resolve, reject) => {

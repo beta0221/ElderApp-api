@@ -2866,6 +2866,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
 //
 //
 //
@@ -2927,33 +2930,81 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['product_slug'],
+  props: ["product_slug"],
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       edit_mode: false,
       product_image: null,
+      product_category: [],
       slug: "",
       form: {
         name: "",
         product_category_id: "",
         price: "",
-        quantity: 0
+        quantity: 0,
+        info: ""
       }
-    };
+    }, _defineProperty(_ref, "product_image", null), _defineProperty(_ref, "file", ''), _ref;
   },
   created: function created() {
     if (this.product_slug) {
       this.edit_mode = true;
       this.loadProduct();
     }
+
+    this.getCategory();
   },
   methods: {
-    loadProduct: function loadProduct() {
-      axios.get("/api/product/".concat(this.product_slug)).then(function (res) {
-        if (res.status == 200) {}
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.file = this.$refs.file.files[0];
+      this.product_image = URL.createObjectURL(this.$refs.file.files[0]);
+    },
+    getCategory: function getCategory() {
+      var _this = this;
+
+      axios.get("/api/product-category/").then(function (res) {
+        if (res.status == 200) {
+          _this.product_category = res.data;
+        }
       })["catch"](function (err) {
         console.error(err);
       });
+    },
+    loadProduct: function loadProduct() {
+      var _this2 = this;
+
+      axios.get("/api/product/".concat(this.product_slug)).then(function (res) {
+        if (res.status == 200) {
+          _this2.form.name = res.data.name;
+          _this2.form.product_category_id = res.data.product_category_id;
+          _this2.form.price = res.data.price;
+          _this2.form.quantity = res.data.quantity;
+          _this2.form.info = res.data.info;
+        }
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    submitForm: function submitForm() {
+      var _this3 = this;
+
+      var formData = new FormData();
+      formData.append('img', this.file);
+      Object.keys(this.form).forEach(function (key) {
+        return formData.append(key, _this3.form[key]);
+      });
+
+      if (this.edit_mode) {
+        this.updateRequest(formData);
+      } else {
+        this.storeRequest(formData);
+      }
+    },
+    storeRequest: function storeRequest(formData) {},
+    updateRequest: function updateRequest(formData) {
+      formData.append('_method', 'PUT');
     }
   }
 });
@@ -2969,6 +3020,22 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3023,6 +3090,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "庫存",
         value: "quantity"
+      }, {
+        text: "-"
       }]
     };
   },
@@ -3040,6 +3109,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {},
   methods: {
+    editProduct: function editProduct(slug) {
+      this.$router.push({
+        path: '/productForm/' + slug
+      });
+    },
     getDataFromApi: function getDataFromApi() {
       var _this2 = this;
 
@@ -59648,9 +59722,9 @@ var render = function() {
           _c(
             "router-link",
             {
-              staticClass: "grey--text ",
+              staticClass: "grey--text",
               staticStyle: { "text-decoration": "none" },
-              attrs: { to: "/event" }
+              attrs: { to: "/product" }
             },
             [_c("v-btn", { attrs: { color: "warning" } }, [_vm._v("返回")])],
             1
@@ -59665,11 +59739,12 @@ var render = function() {
             { staticStyle: { padding: "0 24px 24px 24px" } },
             [
               _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }, [
-                (_vm.event_image
+                (_vm.product_image
                 ? true
                 : false)
-                  ? _c("img", { attrs: { src: _vm.event_image } })
+                  ? _c("img", { attrs: { src: _vm.product_image } })
                   : _vm._e(),
+                _vm._v(" "),
                 _c("br")
               ]),
               _vm._v(" "),
@@ -59709,13 +59784,13 @@ var render = function() {
                 { attrs: { cols: "12", sm: "6", md: "3" } },
                 [
                   _c("v-text-field", {
-                    attrs: { label: "Solo", placeholder: "活動標題", solo: "" },
+                    attrs: { label: "Solo", placeholder: "產品名稱", solo: "" },
                     model: {
-                      value: _vm.form.title,
+                      value: _vm.form.name,
                       callback: function($$v) {
-                        _vm.$set(_vm.form, "title", $$v)
+                        _vm.$set(_vm.form, "name", $$v)
                       },
-                      expression: "form.title"
+                      expression: "form.name"
                     }
                   })
                 ],
@@ -59728,66 +59803,18 @@ var render = function() {
                 [
                   _c("v-select", {
                     attrs: {
-                      items: _vm.eventCat,
-                      "item-text": "name",
-                      "item-value": "name",
-                      label: "活動類別",
-                      solo: ""
-                    },
-                    model: {
-                      value: _vm.form.category,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "category", $$v)
-                      },
-                      expression: "form.category"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-col",
-                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
-                [
-                  _c("v-select", {
-                    attrs: {
-                      items: _vm.rewardLevel,
-                      "item-text": "reward",
-                      "item-value": "id",
-                      label: "獎勵等級",
-                      solo: ""
-                    },
-                    model: {
-                      value: _vm.form.reward_level_id,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "reward_level_id", $$v)
-                      },
-                      expression: "form.reward_level_id"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-col",
-                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
-                [
-                  _c("v-select", {
-                    attrs: {
-                      items: _vm.district,
+                      items: _vm.product_category,
                       "item-text": "name",
                       "item-value": "id",
-                      label: "地區",
+                      label: "產品類別",
                       solo: ""
                     },
                     model: {
-                      value: _vm.form.district_id,
+                      value: _vm.form.product_category_id,
                       callback: function($$v) {
-                        _vm.$set(_vm.form, "district_id", $$v)
+                        _vm.$set(_vm.form, "product_category_id", $$v)
                       },
-                      expression: "form.district_id"
+                      expression: "form.product_category_id"
                     }
                   })
                 ],
@@ -59796,16 +59823,34 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-col",
-                { attrs: { cols: "12", sm: "6", md: "3" } },
+                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
                 [
                   _c("v-text-field", {
-                    attrs: { label: "Solo", placeholder: "地點", solo: "" },
+                    attrs: { label: "Solo", placeholder: "價格", solo: "" },
                     model: {
-                      value: _vm.form.location,
+                      value: _vm.form.price,
                       callback: function($$v) {
-                        _vm.$set(_vm.form, "location", $$v)
+                        _vm.$set(_vm.form, "price", $$v)
                       },
-                      expression: "form.location"
+                      expression: "form.price"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
+                [
+                  _c("v-text-field", {
+                    attrs: { label: "Solo", placeholder: "庫存數量", solo: "" },
+                    model: {
+                      value: _vm.form.quantity,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "quantity", $$v)
+                      },
+                      expression: "form.quantity"
                     }
                   })
                 ],
@@ -59818,11 +59863,11 @@ var render = function() {
                 [
                   _c("markdown-editor", {
                     model: {
-                      value: _vm.form.body,
+                      value: _vm.form.info,
                       callback: function($$v) {
-                        _vm.$set(_vm.form, "body", $$v)
+                        _vm.$set(_vm.form, "info", $$v)
                       },
-                      expression: "form.body"
+                      expression: "form.info"
                     }
                   })
                 ],
@@ -59905,6 +59950,27 @@ var render = function() {
     _c(
       "div",
       [
+        _c(
+          "router-link",
+          {
+            staticClass: "white--text",
+            staticStyle: { "text-decoration": "none" },
+            attrs: { to: "/productForm" }
+          },
+          [
+            _c("v-btn", { attrs: { color: "success" } }, [
+              _vm._v("\n        新增產品\n      ")
+            ])
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
         _c("v-data-table", {
           staticClass: "elevation-1",
           attrs: {
@@ -59935,7 +60001,26 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.img))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(props.item.quantity))])
+                  _c("td", [_vm._v(_vm._s(props.item.quantity))]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "info" },
+                          on: {
+                            click: function($event) {
+                              return _vm.editProduct(props.item.slug)
+                            }
+                          }
+                        },
+                        [_vm._v("編輯")]
+                      )
+                    ],
+                    1
+                  )
                 ]
               }
             }
@@ -102510,6 +102595,9 @@ var routes = [{
 }, {
   path: '/product',
   component: _components_ProductTable__WEBPACK_IMPORTED_MODULE_6__["default"]
+}, {
+  path: '/productForm',
+  component: _components_ProductDetailForm__WEBPACK_IMPORTED_MODULE_7__["default"]
 }, {
   path: '/productForm/:product_slug',
   component: _components_ProductDetailForm__WEBPACK_IMPORTED_MODULE_7__["default"],

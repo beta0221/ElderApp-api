@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\ProductCategory;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -68,7 +69,6 @@ class ProductController extends Controller
         }
 
         return response($request);
-        
 
     }
 
@@ -116,4 +116,14 @@ class ProductController extends Controller
     {
         //
     }
+
+
+    //--------------------------------------------------------------------------
+
+    public function productCategory(){
+        return response(ProductCategory::all());
+    }
+
+
+
 }

@@ -19,6 +19,7 @@ const routes = [
     {path:'/newEvent',component:newEventForm},
     {path:'/editEvent/:event_slug',component:newEventForm,props:true},
     {path:'/product', component: ProductTable},
+    {path:'/productForm', component: ProductDetailForm},
     {path:'/productForm/:product_slug', component: ProductDetailForm,props:true},
 ]
 
