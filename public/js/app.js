@@ -2224,6 +2224,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/api/updateMemberAccount", this.user).then(function (res) {
         if (res.data.s == 1) {
           _this3.isReadMode = true;
+        } else {
+          alert(res.data.m);
         }
 
         console.log(res);
@@ -58819,7 +58821,7 @@ var render = function() {
                   expression: "user.email"
                 }
               ],
-              attrs: { type: "text", disabled: "" },
+              attrs: { type: "text", disabled: _vm.isReadMode },
               domProps: { value: _vm.user.email },
               on: {
                 input: function($event) {

@@ -21,7 +21,7 @@
 
       <div class="data-row">
         <span>帳號</span>
-        <input type="text" v-model="user.email" disabled/>
+        <input type="text" v-model="user.email" :disabled="isReadMode"/>
       </div>
 
       <div class="data-row">
@@ -119,6 +119,8 @@ export default {
         .then(res => {
           if(res.data.s==1){
             this.isReadMode = true;
+          }else{
+            alert(res.data.m);
           }
           console.log(res);
         })
