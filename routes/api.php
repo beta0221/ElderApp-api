@@ -48,10 +48,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
     Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
 
-    Route::get('git-pull',function(){
-        $output = shell_exec('./opt/scripts/gitpull');
-        return response($output);
-    });
+    
 });
 
 //Guest 使用者------------------------
@@ -90,3 +87,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('product-category','ProductController@productCategory');
 
 
+    Route::get('git-pull',function(){
+        $output = shell_exec('./opt/scripts/gitpull');
+        return response($output);
+    });
