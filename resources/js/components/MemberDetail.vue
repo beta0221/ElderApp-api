@@ -116,7 +116,6 @@ export default {
           if (res.data.length != 0) {
             this.user = res.data;
           }
-          // console.log(res);
         })
         .catch(error => {
           console.log(error);
@@ -128,6 +127,12 @@ export default {
         .then(res => {
           if(res.data.s==1){
             this.isReadMode = true;
+            if(this.user.valid){
+              this.user.valid = 1;
+            }else{
+              this.user.valid = 0;
+            }
+            EventBus.$emit("updateMemberSuccess",this.user);
           }else{
             alert(res.data.m);
           }

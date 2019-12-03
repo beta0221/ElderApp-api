@@ -411,7 +411,7 @@ class MemberController extends Controller
         $user->phone = $request->phone;
         $user->tel = $request->tel;
         $user->address = $request->address;
-        
+        $user->valid = $request->valid;
         $user->save();
 
         return response()->json([

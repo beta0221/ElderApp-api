@@ -2221,8 +2221,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("/api/getMemberDetail/".concat(id)).then(function (res) {
         if (res.data.length != 0) {
           _this2.user = res.data;
-        } // console.log(res);
-
+        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2233,6 +2232,14 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/api/updateMemberAccount", this.user).then(function (res) {
         if (res.data.s == 1) {
           _this3.isReadMode = true;
+
+          if (_this3.user.valid) {
+            _this3.user.valid = 1;
+          } else {
+            _this3.user.valid = 0;
+          }
+
+          EventBus.$emit("updateMemberSuccess", _this3.user);
         } else {
           alert(res.data.m);
         }
@@ -2407,6 +2414,7 @@ __webpack_require__.r(__webpack_exports__);
       dialogUserId: "",
       dialogName: "",
       dialogText: "",
+      editingIndex: null,
       searchText: "",
       searchColumn: "",
       totalDesserts: 0,
@@ -2479,12 +2487,10 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "生日",
         value: "birthdate"
-      }, // { text: "位階", value: "rank" },
-      {
+      }, {
         text: "推薦人",
         value: "inviter"
-      }, // { text: "推薦人電話", value: "inviter_phone" },
-      {
+      }, {
         text: "入會日期",
         value: "created_at"
       }, {
@@ -2512,16 +2518,21 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    var _this2 = this;
+
     User.adminOnly();
+    EventBus.$on("updateMemberSuccess", function (user) {
+      _this2.$set(_this2.desserts, _this2.editingIndex, user);
+    });
   },
   methods: {
     search: function search() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.searchText) {
         this.getDataFromApi().then(function (data) {
-          _this2.desserts = data.items;
-          _this2.totalDesserts = data.total;
+          _this3.desserts = data.items;
+          _this3.totalDesserts = data.total;
         });
       } else {
         axios.get("/api/search-member", {
@@ -2531,10 +2542,10 @@ __webpack_require__.r(__webpack_exports__);
           }
         }).then(function (res) {
           console.log(res);
-          _this2.loading = true;
+          _this3.loading = true;
           setTimeout(function () {
-            _this2.loading = false;
-            _this2.desserts = res.data;
+            _this3.loading = false;
+            _this3.desserts = res.data;
           }, 300);
         })["catch"](function (error) {
           console.log(error);
@@ -2553,15 +2564,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toValid: function toValid(id, index) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios.post("/api/toValid", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
-            _this3.desserts[index]["valid"] = 1;
-            _this3.desserts[index]["expiry_date"] = res.data.d;
+            _this4.desserts[index]["valid"] = 1;
+            _this4.desserts[index]["expiry_date"] = res.data.d;
           }
 
           console.log(res);
@@ -2571,14 +2582,14 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     addGroupMember: function addGroupMember() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.post("/api/addGroupMember", {
         leaderId: this.dialogUserId,
         addAccount: this.addAcount
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this4.group_members.push(res.data.addUser);
+          _this5.group_members.push(res.data.addUser);
         } else {
           alert(res.data.m);
         }
@@ -2595,7 +2606,8 @@ __webpack_require__.r(__webpack_exports__);
       };
       EventBus.$emit("showMemberTree", user);
     },
-    getMemberDetail: function getMemberDetail(id, name) {
+    getMemberDetail: function getMemberDetail(index, id, name) {
+      this.editingIndex = index;
       var user = {
         'id': id,
         'name': name
@@ -2603,36 +2615,35 @@ __webpack_require__.r(__webpack_exports__);
       EventBus.$emit('showMemberDetail', user);
     },
     getPayHistory: function getPayHistory(id, name) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.dialog = true;
       axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
-        _this5.dialogName = name;
+        _this6.dialogName = name;
 
         if (res.data.length != 0) {
           var text = "";
 
           for (var i in res.data) {
-            text += res.data[i]["created_at"].substring(0, 10) + "<br>"; // console.log(res.data[i]['created_at']);
+            text += res.data[i]["created_at"].substring(0, 10) + "<br>";
           }
 
-          _this5.dialogText = text;
+          _this6.dialogText = text;
         } else {
-          _this5.dialogText = "";
-        } // console.log(res);
-
+          _this6.dialogText = "";
+        }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     executeExpired: function executeExpired() {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.post("/api/executeExpired", {}).then(function (res) {
         if (res.data.s == 1) {
-          _this6.getDataFromApi().then(function (data) {
-            _this6.desserts = data.items;
-            _this6.totalDesserts = data.total;
+          _this7.getDataFromApi().then(function (data) {
+            _this7.desserts = data.items;
+            _this7.totalDesserts = data.total;
           });
         } else {
           alert("系統錯誤，未正常運作。");
@@ -2642,20 +2653,19 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this7 = this;
+      var _this8 = this;
 
       if (this.desserts[index]["pay_status"] < 3) {
         axios.post("/api/changePayStatus", {
           id: id
         }).then(function (res) {
-          // console.log(res);
           if (res.data.s == 1) {
-            _this7.desserts[index]["pay_status"]++;
+            _this8.desserts[index]["pay_status"]++;
           }
 
-          if (_this7.desserts[index]["pay_status"] == 3) {
-            _this7.desserts[index]["expiry_date"] = res.data.d;
-            _this7.desserts[index]["valid"] = 1;
+          if (_this8.desserts[index]["pay_status"] == 3) {
+            _this8.desserts[index]["expiry_date"] = res.data.d;
+            _this8.desserts[index]["valid"] = 1;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -2663,31 +2673,27 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this8 = this;
+      var _this9 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this8$pagination = _this8.pagination,
-            sortBy = _this8$pagination.sortBy,
-            descending = _this8$pagination.descending,
-            page = _this8$pagination.page,
-            rowsPerPage = _this8$pagination.rowsPerPage; // console.log(this.pagination);
-
+        var _this9$pagination = _this9.pagination,
+            sortBy = _this9$pagination.sortBy,
+            descending = _this9$pagination.descending,
+            page = _this9$pagination.page,
+            rowsPerPage = _this9$pagination.rowsPerPage;
         axios.get("/api/get-members", {
           params: {
-            page: _this8.pagination.page,
-            rowsPerPage: _this8.pagination.rowsPerPage,
-            descending: _this8.pagination.descending,
-            sortBy: _this8.pagination.sortBy
+            page: _this9.pagination.page,
+            rowsPerPage: _this9.pagination.rowsPerPage,
+            descending: _this9.pagination.descending,
+            sortBy: _this9.pagination.sortBy
           }
         }).then(function (res) {
-          // console.log(res.data.users);
-          // console.log(res.data.total);
-          var items = res.data.users; // const total = items.length
-
+          var items = res.data.users;
           var total = res.data.total;
 
-          if (_this8.pagination.sortBy) {
+          if (_this9.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2705,7 +2711,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this8.loading = false;
+            _this9.loading = false;
             resolve({
               items: items,
               total: total
@@ -59496,6 +59502,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             return _vm.getMemberDetail(
+                              props.index,
                               props.item.id,
                               props.item.name
                             )

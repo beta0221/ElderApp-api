@@ -68,7 +68,7 @@
           </td>
           <td
             class="text-xs-left name"
-            @click="getMemberDetail(props.item.id,props.item.name)"
+            @click="getMemberDetail(props.index,props.item.id,props.item.name)"
             :class="gender[props.item.gender]"
           >{{ props.item.name }}</td>
           <td class="text-xs-left">{{ props.item.email }}</td>
@@ -115,6 +115,7 @@ export default {
       dialogUserId: "",
       dialogName: "",
       dialogText: "",
+      editingIndex:null,
 
       searchText: "",
       searchColumn:"",
@@ -126,7 +127,7 @@ export default {
       gender: { 1: "blue--text", 0: "red--text" },
       valid: {
         0: { text: "無效", color: "red--text" },
-        1: { text: "有效", color: "green--text" }
+        1: { text: "有效", color: "green--text" },
       },
       status: {
         "0": { text: "免費", color: "grey" },
@@ -152,9 +153,7 @@ export default {
         { text: "信箱", value: "email" },
         { text: "身分證", value: "id_number" },
         { text: "生日", value: "birthdate" },
-        // { text: "位階", value: "rank" },
         { text: "推薦人", value: "inviter" },
-        // { text: "推薦人電話", value: "inviter_phone" },
         { text: "入會日期", value: "created_at" },
         { text: "效期到期日", value: "expiry_date" },
         { text: "效期", value: "valid" },
@@ -175,6 +174,9 @@ export default {
   },
   created() {
     User.adminOnly();
+    EventBus.$on("updateMemberSuccess", user => {
+      this.$set(this.desserts,this.editingIndex,user);
+    });
   },
   methods: {
     search() {
@@ -252,7 +254,8 @@ export default {
       let user = {'id_code':id_code,'id':id};
         EventBus.$emit("showMemberTree",user);
     },
-    getMemberDetail(id, name) {
+    getMemberDetail(index,id, name) {
+      this.editingIndex = index;
       let user = {'id':id,'name':name};
       EventBus.$emit('showMemberDetail',user);
     },
@@ -267,14 +270,11 @@ export default {
             let text = "";
             for (let i in res.data) {
               text += res.data[i]["created_at"].substring(0, 10) + "<br>";
-              // console.log(res.data[i]['created_at']);
             }
             this.dialogText = text;
           } else {
             this.dialogText = "";
           }
-
-          // console.log(res);
         })
         .catch(error => {
           console.log(error);
@@ -304,7 +304,6 @@ export default {
             id: id
           })
           .then(res => {
-            // console.log(res);
             if (res.data.s == 1) {
               this.desserts[index]["pay_status"]++;
             }
@@ -324,7 +323,6 @@ export default {
       return new Promise((resolve, reject) => {
         const { sortBy, descending, page, rowsPerPage } = this.pagination;
 
-        // console.log(this.pagination);
         axios
           .get("/api/get-members", {
             params: {
@@ -335,10 +333,7 @@ export default {
             }
           })
           .then(res => {
-            // console.log(res.data.users);
-            // console.log(res.data.total);
             let items = res.data.users;
-            // const total = items.length
             const total = res.data.total;
 
             if (this.pagination.sortBy) {
