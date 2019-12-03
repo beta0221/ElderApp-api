@@ -10,6 +10,11 @@
       </div>
 
       <div class="data-row">
+        <span :class="(user.valid)?'valid':'un-valid'">{{(user.valid)?'有效會員':'待付款'}}</span>
+        <input type="checkbox" v-model="user.valid" :disabled="isReadMode">
+      </div>
+
+      <div class="data-row">
         <span>身分證</span>
         <input type="text" v-model="user.id_number" :disabled="isReadMode" />
       </div>

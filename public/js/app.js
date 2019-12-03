@@ -2186,6 +2186,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -58833,6 +58838,52 @@ var render = function() {
                     return
                   }
                   _vm.$set(_vm.user, "name", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "data-row" }, [
+            _c("span", { class: _vm.user.valid ? "valid" : "un-valid" }, [
+              _vm._v(_vm._s(_vm.user.valid ? "有效會員" : "待付款"))
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.valid,
+                  expression: "user.valid"
+                }
+              ],
+              attrs: { type: "checkbox", disabled: _vm.isReadMode },
+              domProps: {
+                checked: Array.isArray(_vm.user.valid)
+                  ? _vm._i(_vm.user.valid, null) > -1
+                  : _vm.user.valid
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.user.valid,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = null,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && _vm.$set(_vm.user, "valid", $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        _vm.$set(
+                          _vm.user,
+                          "valid",
+                          $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                        )
+                    }
+                  } else {
+                    _vm.$set(_vm.user, "valid", $$c)
+                  }
                 }
               }
             })
