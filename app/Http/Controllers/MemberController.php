@@ -394,15 +394,18 @@ class MemberController extends Controller
             ]);
         }
 
-        if(User::where('email',$request->email)->first()){
-            return response()->json([
-                's'=>0,
-                'm'=>'帳號已存在',
-            ]);
+        if($user->email != $request->email){
+            if(User::where('email',$request->email)->first()){
+                return response()->json([
+                    's'=>0,
+                    'm'=>'帳號已存在',
+                ]);
+            }
+            $user->email = $request->email;
         }
+        
 
         $user->name = $request->name;
-        $user->email = $request->email;
         $user->id_number = $request->id_number;
         $user->birthdate = $request->birthdate;
         $user->phone = $request->phone;
