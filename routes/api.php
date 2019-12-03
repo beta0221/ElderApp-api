@@ -86,8 +86,11 @@ Route::group(['middleware' => ['admin']], function () {
     Route::apiresource('product','ProductController');
     Route::get('product-category','ProductController@productCategory');
 
-
+    //test for git pull
     Route::get('git-pull',function(){
         $output = shell_exec('./opt/scripts/gitpull');
         return response($output);
     });
+
+
+    
