@@ -88,7 +88,7 @@ Route::group(['middleware' => ['admin']], function () {
 
     //test for git pull
     Route::get('git-pull',function(){
-        $output = shell_exec('./opt/scripts/gitpull');
+        $output = shell_exec('. /opt/scripts/gitpull');
         return response($output);
     });
 
