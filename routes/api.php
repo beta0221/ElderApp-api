@@ -47,6 +47,11 @@ Route::group(['middleware' => ['admin']], function () {
     // Route::post('deleteGroupMember','MemberController@deleteGroupMember');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
     Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
+
+    Route::get('git-pull',function(){
+        $output = shell_exec('./opt/scripts/gitpull');
+        return response($output);
+    });
 });
 
 //Guest 使用者------------------------
