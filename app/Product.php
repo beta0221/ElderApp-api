@@ -10,14 +10,6 @@ class Product extends Model
     public $timestamps=false;
     protected $guarded=[];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function($product){
-            $product->slug = 'P'.time();
-        });
-    }
 
     public function getRouteKeyName()
     {

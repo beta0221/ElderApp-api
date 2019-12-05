@@ -236,7 +236,7 @@ export default {
         })
         .then(res =>{
           if(res.data.s == 1){
-            this.$router.push({name:"event"});
+            this.$router.push({path:"event"});
           }else{
             alert(res.data.m);
           }

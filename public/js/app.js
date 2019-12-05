@@ -2953,7 +2953,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       form: {
         name: "",
         product_category_id: "",
-        price: "",
+        price: 0,
         quantity: 0,
         info: ""
       }
@@ -3002,7 +3002,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this3 = this;
 
       var formData = new FormData();
-      formData.append('img', this.file);
+      formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
         return formData.append(key, _this3.form[key]);
       });
@@ -3013,7 +3013,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.storeRequest(formData);
       }
     },
-    storeRequest: function storeRequest(formData) {},
+    storeRequest: function storeRequest(formData) {
+      var _this4 = this;
+
+      axios.post("/api/product", formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (res) {
+        if (res.status == 202) {
+          _this4.$router.push({
+            path: "product"
+          });
+        } else {
+          alert(res.data);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        alert('系統錯誤');
+      });
+    },
     updateRequest: function updateRequest(formData) {
       formData.append('_method', 'PUT');
     }
@@ -3503,7 +3522,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         if (res.data.s == 1) {
           _this5.$router.push({
-            name: "event"
+            path: "event"
           });
         } else {
           alert(res.data.m);

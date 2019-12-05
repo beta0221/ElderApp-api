@@ -58,17 +58,34 @@ class ProductController extends Controller
             'name'=>'required',
             'product_category_id'=>'required',
             'price'=>'required',
-            'img'=>'required',
+            'file'=>'sometimes|nullable|image',
             'quantity'=>'required|integer',
         ]);
+        
+        
+        $slug = 'P'.time();
+        $request->merge(['slug'=>$slug]);
+        if($request->hasFile('file')){
+            $filename = $this->imageHandler($request->file('file'),$slug);
+            
+            if($filename){
+                $request->merge(['img'=>$filename]);
+            }else{
+                return response('檔案無法儲存',500);
+            }   
+        }
+
+
 
         try {
-            Product::create($request->all());
+            $product = Product::create($request->except('file'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
 
-        return response($request);
+        
+
+        return response($request,202);
 
     }
 
@@ -124,6 +141,23 @@ class ProductController extends Controller
         return response(ProductCategory::all());
     }
 
-
+    private function imageHandler($file,$product_slug){
+        
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $path = "/images/products/" . $product_slug . "/";
+        
+        if(Storage::disk('local')->exists($path)){
+            $result = Storage::deleteDirectory($path);
+            if(!$result){
+                return false;
+            }
+        }
+        
+        if(!Storage::disk('local')->put($path . $filename,File::get($file))){
+            return false;//失敗:回傳false
+        }
+        
+        return $filename;//成功：回傳檔名
+    }
 
 }

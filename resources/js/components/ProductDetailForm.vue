@@ -71,7 +71,7 @@ export default {
       form: {
         name: "",
         product_category_id: "",
-        price: "",
+        price: 0,
         quantity: 0,
         info:"",
       },
@@ -122,7 +122,7 @@ export default {
     submitForm(){
 
       let formData = new FormData();
-      formData.append('img', this.file);
+      formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
 
       if(this.edit_mode){
@@ -132,7 +132,22 @@ export default {
       }
     },
     storeRequest(formData){
-      
+      axios.post("/api/product", formData,{
+          headers:{
+            'content-type': 'multipart/form-data',
+          }
+        })
+        .then(res =>{
+          if(res.status == 202){
+            this.$router.push({path:"product"});
+          }else{
+            alert(res.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert('系統錯誤');
+        })
     },
     updateRequest(formData){
       formData.append('_method','PUT');
