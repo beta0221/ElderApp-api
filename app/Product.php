@@ -42,4 +42,17 @@ class Product extends Model
 
     }
 
+    public function minusOneQuantity($location_id){
+        if($row = DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->first()){
+            if($row->quantity <= 0){
+                return false;
+            }
+            $q = $row->quantity -= 1;
+            DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->update(['quantity'=>$q]);
+            return true;
+        }
+        return false;
+    }
+
+
 }

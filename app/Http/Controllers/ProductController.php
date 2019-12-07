@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderDetail;
 use App\Product;
 use App\ProductCategory;
+use App\Transaction;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -216,6 +218,53 @@ class ProductController extends Controller
         }
         
         return $filename;//成功：回傳檔名
+    }
+
+    public function purchase(Request $request, $product_slug){
+
+        $this->validate($request,[
+            'location_id'=>'required',
+        ]);
+
+        if(!$product = Product::where('slug',$product_slug)->first()){
+            return response('產品不存在',400);
+        }
+
+        //檢查user樂幣是否足夠
+        $user = Auth::user();
+        if($user->wallet < $product->price){
+            return response('樂必餘額不足，無法兌換',400);
+        }
+
+        //檢查產品庫存 if 足夠 => 扣庫存
+        if(!$product->minusOneQuantity($request->location_id)){
+            return response('非常抱歉，此據點目前庫存已兌換完畢。',400);
+        }
+
+        //user 扣款
+        $user->updateWallet(false,$product->price);
+        
+        //新增訂單購買紀錄
+        OrderDetail::create([
+            'user_id'=>$user->id,
+            'product_id'=>$product->id,
+            'location_id'=>$request->location_id,
+        ]);
+
+        //增加transaction 紀錄
+        $tran_id = time() . rand(10,99);
+        Transaction::create([
+            'tran_id'=>$tran_id,
+            'user_id'=>$user->id,
+            'event' =>'兌換-'.$product->name,
+            'amount'=>$product->price,
+            'target_id'=>0,
+            'give_take'=>false,
+        ]);
+
+        return response('success',200);
+
+
     }
 
 }
