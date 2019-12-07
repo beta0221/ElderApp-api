@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -19,4 +20,26 @@ class Product extends Model
     public function category(){
         return $this->belongsTo('App\ProductCategory','product_category_id','id');
     }
+
+    public function locations(){
+        return $this->belongsToMany('App\Location','product_location','product_id','location_id');
+    }
+
+    public function getLocationAndQuantity(){
+        return DB::table('product_location')->where('product_id',$this->id)->get();
+    }
+
+    public function updateQuantity($location_id,$quantity){
+        
+        try {
+            DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
+                'quantity'=>(int)$quantity,
+            ]);
+        } catch (\Throwable $th) {
+            return $th;
+        }
+        return true;
+
+    }
+
 }

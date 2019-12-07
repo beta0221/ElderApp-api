@@ -26,11 +26,12 @@
       >
         <template v-slot:items="props">
           <td>{{props.index + 1}}</td>
-          <td>{{props.item.product_category_id}}</td>
+          <td class="column-img">
+            <img :src="getImagePath(props.item.slug,props.item.img)">
+          </td>
+          <td>{{product_category[props.item.product_category_id]}}</td>
           <td>{{props.item.name}}</td>
           <td>{{props.item.price}}</td>
-          <td>{{props.item.img}}</td>
-          <td>{{props.item.quantity}}</td>
           <td>
               <v-btn color="info" @click="editProduct(props.item.slug)">編輯</v-btn>
           </td>
@@ -45,17 +46,17 @@
 export default {
     data(){
         return{
+          product_category:{},
             pagination: { sortBy: "id", descending: true },
             totalProduct: 0,
             productAray:[],
             loading: true,
             headers: [
                 { text:'#'},
+                { text: "圖片", value: "img" },
                 { text: "類別", value: "product_category_id" },
                 { text: "名稱", value: "name" },
                 { text: "價錢", value: "price" },
-                { text: "圖片", value: "img" },
-                { text: "庫存", value: "quantity" },
                 { text: "-"},
             ],
         }
@@ -71,9 +72,27 @@ export default {
         }
     },
     created(){
-
+      this.getCategory();
     },
     methods:{
+      getCategory() {
+      axios
+        .get(`/api/product-category/`)
+        .then(res => {
+          if (res.status == 200) {
+            res.data.forEach(cat => {
+              this.product_category[cat.id] = cat.name;
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+      getImagePath(slug,img){
+        let imagePath = `/images/products/${slug}/${img}`;
+        return imagePath;
+      },
         editProduct(slug){
             this.$router.push({path:'/productForm/'+slug})
         },
@@ -114,4 +133,7 @@ export default {
 </script>
 
 <style>
+.column-img img{
+  max-height: 80px;
+}
 </style>

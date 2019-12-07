@@ -265,7 +265,7 @@ class EventController extends Controller
             try {
                 $event->update($request->except('file'));
             } catch (\Throwable $th) {
-                return response($th);
+                return response($th,500);
             }            
 
             return response()->json([

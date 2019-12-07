@@ -59,7 +59,6 @@ class ProductController extends Controller
             'product_category_id'=>'required',
             'price'=>'required',
             'file'=>'sometimes|nullable|image',
-            'quantity'=>'required|integer',
         ]);
         
         
@@ -78,14 +77,31 @@ class ProductController extends Controller
 
 
         try {
-            $product = Product::create($request->except('file'));
+            $product = Product::create($request->except('file','select_location','quantity'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
 
+        if(!empty($request->select_location)){
+            $location = explode(",",$request->select_location);
+            $product->locations()->sync($location);
+            $result = true;
+            if(is_array($quantity = json_decode($request->quantity,true))){
+
+                foreach ($quantity as $key => $value) {
+                    $updated = $product->updateQuantity((int)$key,(int)$value);
+                    if($updated != true){
+                        $result = false;
+                    }
+                }
+                if(!$result){
+                    return response('數量更新錯誤',500);
+                }
+            }
+        }
         
 
-        return response($request,202);
+        return response($request,200);
 
     }
 
@@ -97,6 +113,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        
+        $location = $product->getLocationAndQuantity();
+        $product['location'] = $location;
         return response($product);
     }
 
@@ -120,7 +139,46 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        if($request->hasFile('file')){
+            $filename = $this->imageHandler($request->file('file'),$product->slug);
+            if($filename){
+                $request->merge(['img'=>$filename]);
+            }else{
+                return response('系統錯誤',500);
+            }
+        }
+
+        
+
+        try {
+            $product->update($request->except('file','select_location','quantity'));
+        } catch (\Throwable $th) {
+            return response($th,500);
+        }
+
+        if(!empty($request->select_location)){
+            $location = explode(",",$request->select_location);
+            $product->locations()->sync($location);
+        }else{
+            $product->locations()->sync([]);
+        }
+
+        $result = true;
+        if(is_array($quantity = json_decode($request->quantity,true))){
+
+            foreach ($quantity as $key => $value) {
+                $updated = $product->updateQuantity((int)$key,(int)$value);
+                if($updated != true){
+                    $result = false;
+                }
+            }
+            if(!$result){
+                return response('數量更新錯誤',500);
+            }
+        }
+
+        return response('success',200);
+        
     }
 
     /**

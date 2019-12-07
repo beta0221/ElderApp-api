@@ -27,6 +27,24 @@
           <v-text-field label="Solo" placeholder="產品名稱" solo v-model="form.name"></v-text-field>
         </v-col>
 
+        <v-col>
+          <v-select
+            v-model="form.select_location"
+            :items="location"
+            item-text="name"
+            item-value="id"
+            chips
+            label="經銷據點"
+            multiple
+            solo
+          ></v-select>
+        </v-col>
+
+        <div v-for="(l,index) in location" v-bind:key="index" v-show="isSelected(l.id)">
+          <span>{{l.name}}：</span>
+          <v-text-field class="d-inline-block" label="Solo" placeholder="庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
+        </div>
+
         <v-col class="d-flex" cols="12" sm="6">
           <v-select
             :items="product_category"
@@ -42,9 +60,6 @@
           <v-text-field label="Solo" placeholder="價格" solo v-model="form.price"></v-text-field>
         </v-col>
 
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-text-field label="Solo" placeholder="庫存數量" solo v-model="form.quantity"></v-text-field>
-        </v-col>
 
         <v-col cols="12" sm="6" md="3">
           <markdown-editor v-model="form.info"></markdown-editor>
@@ -71,12 +86,15 @@ export default {
       form: {
         name: "",
         product_category_id: "",
+        select_location:[],
         price: 0,
-        quantity: 0,
         info:"",
       },
       product_image:null,
       file:'',
+
+      location:[],
+      quantityDic:{},
     };
   },
   created() {
@@ -85,11 +103,31 @@ export default {
       this.loadProduct();
     }
     this.getCategory();
+    this.getLocation();
   },
   methods: {
+    isSelected(id){
+      if(this.form.select_location.includes(id)){
+        return true;
+      }else{
+        return false;
+      }
+    },
     onChangeFileUpload(){
         this.file = this.$refs.file.files[0];
         this.product_image = URL.createObjectURL(this.$refs.file.files[0]);
+    },
+    getLocation(){
+      axios
+        .get(`/api/location/`)
+        .then(res => {
+          if (res.status == 200) {
+            this.location = res.data;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
     getCategory() {
       axios
@@ -111,8 +149,16 @@ export default {
             this.form.name = res.data.name;
             this.form.product_category_id = res.data.product_category_id;
             this.form.price = res.data.price;
-            this.form.quantity = res.data.quantity;
             this.form.info = res.data.info;
+            if(res.data.img){
+              this.product_image = `/images/products/${res.data.slug}/${res.data.img}`;
+            }
+            if(res.data.location){
+              res.data.location.forEach((item)=>{
+                this.form.select_location.push(item.location_id);
+                this.quantityDic[item.location_id] = item.quantity;
+              });
+            }
           }
         })
         .catch(err => {
@@ -122,9 +168,10 @@ export default {
     submitForm(){
 
       let formData = new FormData();
+      
       formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
-
+      formData.append('quantity',JSON.stringify(this.quantityDic));
       if(this.edit_mode){
         this.updateRequest(formData);
       }else{
@@ -138,7 +185,7 @@ export default {
           }
         })
         .then(res =>{
-          if(res.status == 202){
+          if(res.status == 200){
             this.$router.push({path:"product"});
           }else{
             alert(res.data);
@@ -151,6 +198,23 @@ export default {
     },
     updateRequest(formData){
       formData.append('_method','PUT');
+      axios.post("/api/product/"+ this.product_slug, formData,{
+          headers:{
+            'content-type': 'multipart/form-data',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res =>{
+          if(res.status == 200){
+            this.$router.push({path:"/product"});
+          }else{
+            alert(res.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert('系統錯誤');
+        })
     },
     
 

@@ -86,7 +86,12 @@ Route::group(['middleware' => ['admin']], function () {
     Route::apiresource('product','ProductController');
     Route::get('product-category','ProductController@productCategory');
 
-    Route::get('git-pull',function(){
-        $output = shell_exec('. /opt/scripts/gitpull');
-        return response($output);
-    });
+
+    //經銷據點
+    Route::apiresource('location','LocationController');
+
+    // Route::get('git-pull',function(){
+    //     $output = shell_exec('. /opt/scripts/gitpull');
+    //     return response($output);
+    // });
+    
