@@ -28,6 +28,13 @@ Route::get('/member_tree/{id_code}','MemberController@memberTree');
 // Route::get('/member/cacu','MemberController@cacu');
 Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_generate');
 
+//商品兌換據點網頁
+Route::get('/order-list/location/{slug}','LocationController@orderListPage');
+
+//訂單
+    //目前還沒有登入驗證所以傳四個參數提高一點安全性
+Route::post('/order-detail/receive','OrderDetailController@receiveOrder');
+
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');
 

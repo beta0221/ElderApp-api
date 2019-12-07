@@ -82,4 +82,22 @@ class OrderDetailController extends Controller
     {
         //
     }
+
+    public function receiveOrder(Request $req){
+        
+        $this->validate($req,[
+            'id'=>'required',
+            'user_id'=>'required',
+            'product_id'=>'required',
+            'location_id'=>'required',
+        ]);
+
+        // $id,$user_id,$product_id,$location_id
+        $row = OrderDetail::where('id',$req->id)->where('user_id',$req->user_id)->where('product_id',$req->product_id)->where('location_id',$req->location_id)->firstOrFail();
+        $row->receive = true;
+        $row->save();
+        
+        return response()->json('success');
+    }
+
 }

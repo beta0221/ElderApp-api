@@ -90,6 +90,9 @@ Route::group(['middleware' => ['admin']], function () {
 
     //經銷據點
     Route::apiresource('location','LocationController');
+    Route::get('/order-list/location/{location_id}/{product_id}','LocationController@orderList');
+
+    
 
     // Route::get('git-pull',function(){
     //     $output = shell_exec('. /opt/scripts/gitpull');
