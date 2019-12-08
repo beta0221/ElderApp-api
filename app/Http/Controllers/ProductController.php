@@ -45,7 +45,6 @@ class ProductController extends Controller
             'total' => $total,
         ]);
     }
-
    
 
     /**
@@ -264,6 +263,17 @@ class ProductController extends Controller
 
         return response('success',200);
 
+    }
+
+    public function getAllProduct(){
+        
+        $products = Product::all();
+        $cats = ProductCategory::all();
+
+        return response([
+            'products'=>$products,
+            'cats'=>$cats,
+        ],200);
 
     }
 

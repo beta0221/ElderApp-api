@@ -86,7 +86,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::apiresource('product','ProductController');
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');
-
+    Route::get('getAllProduct','ProductController@getAllProduct');
 
     //經銷據點
     Route::apiresource('location','LocationController');
