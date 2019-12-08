@@ -92,6 +92,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::apiresource('location','LocationController');
     Route::get('/order-list/location/{location_id}/{product_id}','LocationController@orderList');
 
+    //訂單
+    Route::get('/my-order-list','OrderDetailController@myOrderList');
     
 
     // Route::get('git-pull',function(){

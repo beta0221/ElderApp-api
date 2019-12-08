@@ -54,5 +54,20 @@ class Product extends Model
         return false;
     }
 
+    public static function getProductDictionary(){
+
+        $products = DB::table('products')->select(['id','name','slug','img'])->get();
+        $productDictionary=[];
+        foreach ($products as $row) {
+            $p = [];
+            $p['name'] = $row->name;
+            $slug = $row->slug;
+            $img = $row->img;
+            $p['img'] = "/images/products/$slug/$img";
+            $productDictionary[$row->id] = $p;
+        }
+        return $productDictionary;
+    }
+
 
 }

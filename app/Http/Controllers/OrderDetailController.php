@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\OrderDetail;
+use App\Product;
+use App\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderDetailController extends Controller
 {
@@ -98,6 +101,36 @@ class OrderDetailController extends Controller
         $row->save();
         
         return response()->json('success');
+    }
+
+    public function myOrderList(){
+
+
+
+        if(!$user = Auth::user()){
+            return response('使用者權限錯誤',400);
+        }
+
+        $productDic = Product::getProductDictionary();
+        $locationDic = Location::getLocationDictionary();
+
+        $orders = OrderDetail::where('user_id',$user->id)->orderBy('id','desc')->take(20)->get();
+        foreach ($orders as $order) {
+            if($p = $productDic[$order->product_id]){
+                $order['product'] = $p['name'];
+                $order['img'] =  $p['img'];
+            }
+            if($l = $locationDic[$order->location_id]){
+                $order['location'] = $l['name'];
+                $order['address'] = $l['address'];
+            }
+            unset($order['id']);
+            unset($order['user_id']);
+            unset($order['product_id']);
+        }
+
+        return response($orders,200);
+
     }
 
 }
