@@ -57,7 +57,7 @@
         </v-col>
 
         <v-col class="d-flex" cols="12" sm="6">
-          <v-text-field label="Solo" placeholder="價格" solo v-model="form.price"></v-text-field>
+          <v-text-field label="所需樂幣" placeholder="所需樂幣" solo v-model="form.price"></v-text-field>
         </v-col>
 
 
@@ -87,7 +87,7 @@ export default {
         name: "",
         product_category_id: "",
         select_location:[],
-        price: 0,
+        price: null,
         info:"",
       },
       product_image:null,

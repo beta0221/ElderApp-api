@@ -2969,7 +2969,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: "",
         product_category_id: "",
         select_location: [],
-        price: 0,
+        price: null,
         info: ""
       }
     }, _defineProperty(_ref, "product_image", null), _defineProperty(_ref, "file", ''), _defineProperty(_ref, "location", []), _defineProperty(_ref, "quantityDic", {}), _ref;
@@ -60097,7 +60097,11 @@ var render = function() {
                 { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
                 [
                   _c("v-text-field", {
-                    attrs: { label: "Solo", placeholder: "價格", solo: "" },
+                    attrs: {
+                      label: "所需樂幣",
+                      placeholder: "所需樂幣",
+                      solo: ""
+                    },
                     model: {
                       value: _vm.form.price,
                       callback: function($$v) {
