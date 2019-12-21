@@ -120,6 +120,12 @@ class ProductController extends Controller
         return response($product);
     }
 
+    public function getLocationAndQuantity($slug){
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $location = $product->getLocationAndQuantity();
+        return response($location);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
