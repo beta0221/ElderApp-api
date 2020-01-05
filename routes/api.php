@@ -31,7 +31,7 @@ Route::group([
 
 
 //管理員------------------------
-Route::group(['middleware' => ['admin']], function () {
+Route::group(['middleware' => ['auth','admin']], function () {
 
     //MemberController
     Route::get('get-members','MemberController@getMembers');
@@ -47,7 +47,6 @@ Route::group(['middleware' => ['admin']], function () {
     // Route::post('deleteGroupMember','MemberController@deleteGroupMember');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
     Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
-
     
 });
 

@@ -91,7 +91,9 @@ export default {
       eventCat:[],
       eventCatDic:{},
       rewardLevelDic:{},
-      rewardLevel:[{'id':1,'reward':300}],
+      rewardLevel:[
+        {'id':1,'reward':10},
+      ],
       district:[],
       event_date:"",
       event_time:"00:00:00",
