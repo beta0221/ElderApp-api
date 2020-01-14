@@ -2073,7 +2073,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       form: {
         email: null,
-        password: null
+        password: null,
+        hasRole: true
       }
     };
   },
@@ -2102,6 +2103,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3441,7 +3447,7 @@ __webpack_require__.r(__webpack_exports__);
       rewardLevelDic: {},
       rewardLevel: [{
         'id': 1,
-        'reward': 300
+        'reward': 10
       }],
       district: [],
       event_date: "",
@@ -59271,6 +59277,31 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
+          _c("div", { staticClass: "data-row" }, [
+            _c("span", [_vm._v("發票號碼")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.invoice,
+                  expression: "user.invoice"
+                }
+              ],
+              attrs: { type: "text", disabled: _vm.isReadMode },
+              domProps: { value: _vm.user.invoice },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "invoice", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
           _vm.editPasswordMode
             ? _c("div", { staticClass: "data-row" }, [
                 _c("hr", { staticStyle: { margin: "20px 0" } })
@@ -101645,10 +101676,19 @@ function () {
       localStorage.setItem('user', user);
     }
   }, {
+    key: "storeRole",
+    value: function storeRole(role) {
+      localStorage.setItem('role', role);
+    }
+  }, {
     key: "store",
-    value: function store(user, token) {
+    value: function store(user, token, role) {
       this.storeToken(token);
       this.storeUser(user);
+
+      if (role) {
+        this.storeRole(role);
+      }
     }
   }, {
     key: "clear",
@@ -101665,6 +101705,11 @@ function () {
     key: "getUser",
     value: function getUser() {
       return localStorage.getItem('user');
+    }
+  }, {
+    key: "getRole",
+    value: function getRole() {
+      return localStorage.getItem('role');
     }
   }]);
 
@@ -101821,6 +101866,7 @@ function () {
     key: "adminOnly",
     value: function adminOnly() {
       if (!this.loggedIn()) {
+        // if(!this.hasRole('admin')){
         var from_url = window.location.pathname;
         _router_router_js__WEBPACK_IMPORTED_MODULE_2__["default"].push({
           name: "login",
@@ -101846,9 +101892,10 @@ function () {
     value: function responseAfterLogin(res, from_url) {
       var access_token = res.data.access_token;
       var username = res.data.name;
+      var role = res.data.role;
 
       if (_Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(access_token)) {
-        _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].store(username, access_token);
+        _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].store(username, access_token, role);
         var token = "Bearer ".concat(localStorage.getItem('token'));
         window.axios.defaults.headers.common['Authorization'] = token;
 
@@ -101862,6 +101909,15 @@ function () {
           });
         }
       }
+    }
+  }, {
+    key: "hasRole",
+    value: function hasRole(role) {
+      if (role == _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].getRole()) {
+        return true;
+      }
+
+      return false;
     }
   }, {
     key: "hasToken",

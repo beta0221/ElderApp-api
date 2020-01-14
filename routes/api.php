@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
-
     Route::post('login', 'AuthController@login');
     Route::post('signup', 'AuthController@signup');
     Route::post('logout', 'AuthController@logout');
@@ -40,7 +39,7 @@ Route::group(['middleware' => ['auth','admin']], function () {
     Route::post('executeExpired','MemberController@executeExpired');
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
-    Route::post('toValid','MemberController@toValid');
+    Route::post('toValid','MemberController@toValid')->middleware('role:admin');
     // Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');

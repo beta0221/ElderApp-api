@@ -32,8 +32,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
-        // return response('hello');
+        $hasRole = (request('hasRole'))?true:false;
+
+        return $this->respondWithToken($token,$hasRole);
     }
 
 
@@ -100,13 +101,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$hasRole)
     {
 
-        
         $user = auth()->user();
-
-        return response()->json([
+        $result = [
             'access_token' => $token,
             'user_id'=>$user->id,
             'id_code'=>$user->id_code,
@@ -117,7 +116,17 @@ class AuthController extends Controller
             'img'=>$user->img,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-        ]);
+        ];
+
+        if($hasRole){
+            $roleName = null;
+            if($role = $user->roles()->first()){
+                $roleName = $role->name;
+            }
+            $result['role'] = $roleName;
+        }
+
+        return response()->json($result);
 
     }
 

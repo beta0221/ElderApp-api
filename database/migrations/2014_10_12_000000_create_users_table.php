@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
 
-            $table->integer('wallet')->default(10000);
+            $table->integer('wallet')->default(0);
             $table->integer('rank')->default(1);
             
 
@@ -50,6 +50,7 @@ class CreateUsersTable extends Migration
             $table->date('join_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->boolean('valid')->default(false);
+            $table->string('invoice')->nullable();
 
             $table->timestamps();
         });

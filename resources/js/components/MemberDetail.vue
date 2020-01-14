@@ -59,6 +59,11 @@
         <input type="text" v-model="user.inviter_phone" :disabled="isReadMode" />
       </div>
 
+      <div class="data-row">
+        <span>發票號碼</span>
+        <input type="text" v-model="user.invoice" :disabled="isReadMode">
+      </div>
+
       <div class="data-row" v-if="editPasswordMode">
         <hr style="margin:20px 0">
       </div>

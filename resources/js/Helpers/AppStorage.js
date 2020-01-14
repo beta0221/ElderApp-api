@@ -9,9 +9,16 @@ class AppStorage{
         localStorage.setItem('user',user);
     }
 
-    store(user,token){
+    storeRole(role){
+        localStorage.setItem('role',role);
+    }
+
+    store(user,token,role){
         this.storeToken(token);
         this.storeUser(user);
+        if(role){
+            this.storeRole(role);
+        }
     }
 
     clear(){
@@ -25,6 +32,10 @@ class AppStorage{
 
     getUser(){
         return localStorage.getItem('user');
+    }
+
+    getRole(){
+        return localStorage.getItem('role');
     }
 
 }

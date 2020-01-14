@@ -16,7 +16,7 @@ class RoleMiddleware
     public function handle($request, Closure $next,$role)
     {
         if(!$request->user()->hasRole($role)){
-            return response('Employee only',400);
+            return response('權限不足。',400);
         }
         return $next($request);
     }

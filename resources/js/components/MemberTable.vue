@@ -212,10 +212,7 @@ export default {
       return items.filter(row => filter(row["type"], search));
     },
     toValid(id, index) {
-      if (
-        this.desserts[index]["valid"] == 0 &&
-        this.desserts[index]["expiry_date"] != null
-      ) {
+      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios
           .post("/api/toValid", {
             id: id

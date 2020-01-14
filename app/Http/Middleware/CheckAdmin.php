@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 
 class CheckAdmin
 {
@@ -16,8 +15,8 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()->isAdmin()){
-            return response('admin only',400);
+        if($request->user()->roles()->count() == 0){
+            return response('權限不足。',400);
         }
 
         return $next($request);

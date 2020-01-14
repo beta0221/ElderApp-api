@@ -412,6 +412,7 @@ class MemberController extends Controller
         $user->tel = $request->tel;
         $user->address = $request->address;
         $user->valid = $request->valid;
+        $user->invoice = $request->invoice;
         $user->save();
 
         return response()->json([

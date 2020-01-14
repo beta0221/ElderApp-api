@@ -6,6 +6,7 @@ class User {
 
     adminOnly(){
         if (!this.loggedIn()) {
+        // if(!this.hasRole('admin')){
             let from_url = window.location.pathname;
             router.push({ name: "login",params:{'from_url':from_url}});
         }
@@ -20,8 +21,9 @@ class User {
     responseAfterLogin(res,from_url){
         const access_token = res.data.access_token;
         const username = res.data.name;
+        const role = res.data.role;
         if (Token.isValid(access_token)) {
-            AppStorage.store(username,access_token);
+            AppStorage.store(username,access_token,role);
             let token = `Bearer ${localStorage.getItem('token')}`;
             window.axios.defaults.headers.common['Authorization'] = token;
             if(from_url){
@@ -29,8 +31,14 @@ class User {
             }else{
                 router.push({path:'/member'});
             }
-            
         }
+    }
+
+    hasRole(role){
+        if(role == AppStorage.getRole()){
+            return true;
+        }
+        return false;
     }
 
     hasToken(){
