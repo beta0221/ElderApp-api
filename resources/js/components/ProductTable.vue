@@ -29,6 +29,11 @@
           <td class="column-img">
             <img :src="getImagePath(props.item.slug,props.item.img)">
           </td>
+          <td>
+            <span :class="(props.item.public)?'green--text':'red--text'">
+              {{(props.item.public)?'上架':'下架'}}
+            </span>
+          </td>
           <td>{{product_category[props.item.product_category_id]}}</td>
           <td>{{props.item.name}}</td>
           <td>{{props.item.price}}</td>
@@ -54,6 +59,7 @@ export default {
             headers: [
                 { text:'#'},
                 { text: "圖片", value: "img" },
+                { text: "狀態", value: "public" },
                 { text: "類別", value: "product_category_id" },
                 { text: "名稱", value: "name" },
                 { text: "價錢", value: "price" },

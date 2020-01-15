@@ -2961,8 +2961,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["product_slug"],
+  watch: {
+    "public": function _public(value) {
+      if (value) {
+        this.form["public"] = 1;
+      } else {
+        this.form["public"] = 0;
+      }
+    }
+  },
   data: function data() {
     var _ref;
 
@@ -2971,8 +2989,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       product_image: null,
       product_category: [],
       slug: "",
+      "public": false,
       form: {
         name: "",
+        "public": null,
         product_category_id: "",
         select_location: [],
         price: null,
@@ -3029,6 +3049,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       axios.get("/api/product/".concat(this.product_slug)).then(function (res) {
         if (res.status == 200) {
           _this3.form.name = res.data.name;
+          _this3["public"] = res.data["public"];
+          _this3.form["public"] = res.data["public"];
           _this3.form.product_category_id = res.data.product_category_id;
           _this3.form.price = res.data.price;
           _this3.form.info = res.data.info;
@@ -3165,6 +3187,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3181,6 +3208,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "圖片",
         value: "img"
+      }, {
+        text: "狀態",
+        value: "public"
       }, {
         text: "類別",
         value: "product_category_id"
@@ -60020,6 +60050,27 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
+                "div",
+                [
+                  _c("v-switch", {
+                    staticClass: "mx-2",
+                    attrs: {
+                      color: "green",
+                      label: _vm.public ? "上架" : "下架"
+                    },
+                    model: {
+                      value: _vm.public,
+                      callback: function($$v) {
+                        _vm.public = $$v
+                      },
+                      expression: "public"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
                 "v-col",
                 { attrs: { cols: "12", sm: "6", md: "3" } },
                 [
@@ -60287,6 +60338,22 @@ var render = function() {
                         src: _vm.getImagePath(props.item.slug, props.item.img)
                       }
                     })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "span",
+                      {
+                        class: props.item.public ? "green--text" : "red--text"
+                      },
+                      [
+                        _vm._v(
+                          "\n            " +
+                            _vm._s(props.item.public ? "上架" : "下架") +
+                            "\n          "
+                        )
+                      ]
+                    )
                   ]),
                   _vm._v(" "),
                   _c("td", [

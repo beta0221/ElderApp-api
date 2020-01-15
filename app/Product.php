@@ -17,6 +17,7 @@ class Product extends Model
         return 'slug';
     }
 
+    //relations
     public function category(){
         return $this->belongsTo('App\ProductCategory','product_category_id','id');
     }
@@ -24,6 +25,8 @@ class Product extends Model
     public function locations(){
         return $this->belongsToMany('App\Location','product_location','product_id','location_id');
     }
+    //relations
+
 
     public function getLocationAndQuantity(){
         return DB::table('product_location')->where('product_id',$this->id)->get();
@@ -69,5 +72,8 @@ class Product extends Model
         return $productDictionary;
     }
 
+    public static function allAvailable(){
+        return DB::table('products')->where('public',1)->get();
+    }
 
 }

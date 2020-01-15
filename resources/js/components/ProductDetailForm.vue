@@ -23,6 +23,15 @@
           <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn>
         </v-col>
 
+        <div>
+          <v-switch
+            class="mx-2"
+            color="green"
+            v-model="public"
+            :label="(public)?'上架':'下架'"
+          ></v-switch>
+        </div>
+
         <v-col cols="12" sm="6" md="3">
           <v-text-field label="Solo" placeholder="產品名稱" solo v-model="form.name"></v-text-field>
         </v-col>
@@ -77,14 +86,25 @@
 <script>
 export default {
   props: ["product_slug"],
+  watch:{
+    public(value){
+      if(value){
+        this.form.public = 1;
+      }else{
+        this.form.public = 0;
+      }
+    }
+  },
   data() {
     return {
       edit_mode: false,
       product_image: null,
       product_category: [],
       slug: "",
+      public:false,
       form: {
         name: "",
+        public:null,
         product_category_id: "",
         select_location:[],
         price: null,
@@ -147,6 +167,8 @@ export default {
         .then(res => {
           if (res.status == 200) {
             this.form.name = res.data.name;
+            this.public = res.data.public;
+            this.form.public = res.data.public;
             this.form.product_category_id = res.data.product_category_id;
             this.form.price = res.data.price;
             this.form.info = res.data.info;

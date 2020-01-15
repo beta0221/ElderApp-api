@@ -273,7 +273,7 @@ class ProductController extends Controller
 
     public function getAllProduct(){
         
-        $products = Product::all();
+        $products = Product::allAvailable();
         $cats = ProductCategory::all();
 
         return response([
