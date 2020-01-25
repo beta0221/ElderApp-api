@@ -18,6 +18,7 @@ class CreateEventsTable extends Migration
             $table->integer('category_id');
             $table->integer('district_id');
             $table->integer('owner_id')->nullable();
+            $table->integer('reward_level_id')->default(1);
             $table->string('slug');
             $table->string('title');
             $table->mediumText('body')->nullable();
@@ -26,7 +27,6 @@ class CreateEventsTable extends Migration
             $table->string('location');
             $table->string('image')->nullable();
             $table->dateTime('deadline');
-            $table->integer('reward_level_id')->default(1);
             $table->integer('maximum')->default(20);
             $table->integer('people')->default(0);
             
