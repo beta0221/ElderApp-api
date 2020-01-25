@@ -34,6 +34,9 @@
             min-width: 80px;
         }
 
+        .lv_1,.lv_2,.lv_3,.lv_4,.lv_5{
+            height: 56px;
+        }
         .lv_1 .cell {
             width: 80px;
         }
@@ -97,6 +100,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>
+
     var UserId = {{$user_id}};
     var group_users = {!!$group_users!!};
     var name_dic = {!!$name_dic!!};
@@ -111,7 +115,7 @@
 
             //把結構放進html
             for (let i = 5; i > 0; i--) {
-
+                
                 if (item.level == 5) {
                     var target = $(`div.lv_${i}`);
                     let cell = document.createElement('div');
@@ -123,22 +127,38 @@
                     }
                     target.append(cell);
                 } else {
-                    var l = item.level + 1
-                    while (item[`lv_${l}`] == null || l > 5) {
-                        l++;
-                    }
-                    var target = $(`.lv_${i} .user_${item['lv_' + l]}`);
 
-                    if (i <= item.level) {
-                        console.log({ 'lv_i': i, 'l': l });
-                        let cell = document.createElement('div');
-                        $(cell).addClass('cell');
-                        $(cell).addClass(`user_${item.user_id}`)
-                        if (item.level == i) {
-                            $(cell).html(`${name_dic[item.user_id]}`);
-                            $(cell).addClass('cell-user');
+                    for(let l = item.level +1;l<=5;l++){
+
+                        if(item[`lv_${l}`] != null){
+                            var target = $(`.lv_${i} .user_${item['lv_' + l]}`);
+
+                            if (i <= item.level) {
+                                console.log({ 'lv_i': i, 'l': l });
+                                let cell = document.createElement('div');
+                                $(cell).addClass('cell');
+                                $(cell).addClass(`user_${item.user_id}`);
+                                if (item.level == i) {
+                                    $(cell).html(`${name_dic[item.user_id]}`);
+                                    $(cell).addClass('cell-user');
+                                }
+                                target.append(cell);
+                            }
+                            break;
                         }
-                        target.append(cell);
+                        if(l == 5 && item['lv_5'] == null){
+                            if (item.level >= i) {
+                                var target = $(`div.lv_${i}`);
+                                let cell = document.createElement('div');
+                                $(cell).addClass('cell');
+                                $(cell).addClass(`user_${item.user_id}`);
+                                if(item.level == i){
+                                    $(cell).html(`${name_dic[item.user_id]}`);
+                                    $(cell).addClass('cell-user');
+                                }
+                                target.append(cell);
+                            }
+                        }
                     }
 
                 }
@@ -212,6 +232,7 @@
         $('.cell-user.user_'+UserId).css({'background':'#2196f3','color':'#fff'});
 
     });
+    
 </script>
 
 </html>
