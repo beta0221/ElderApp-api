@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['JWT','admin'], ['only' => ['index','store','destroy','update']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
