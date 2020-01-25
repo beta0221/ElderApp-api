@@ -17,6 +17,7 @@ class CreateEventsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('category_id');
             $table->integer('district_id');
+            $table->integer('owner_id')->nullable();
             $table->string('slug');
             $table->string('title');
             $table->mediumText('body')->nullable();

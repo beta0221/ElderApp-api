@@ -78,6 +78,7 @@ export default {
         }
     },
     created(){
+      User.authOnly();
       this.getCategory();
     },
     methods:{

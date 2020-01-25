@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\File;
 
 class EventController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('JWT', ['except' => 'index']);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -27,37 +27,35 @@ class EventController extends Controller
     public function index(Request $request)
     {
         
-        if($request->page){
-            //管理後台
-            $page = $request->page;
-            $rows = $request->rowsPerPage;
-            $skip = ($page - 1) * $rows;
-            if ($request->descending == null || $request->descending == 'false') {
-                $ascOrdesc = 'asc';
-            } else {
-                $ascOrdesc = 'desc';
-            }
-            $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
-
-            $events = DB::table('events')
-            ->select('*')
-            ->orderBy($orderBy, $ascOrdesc)
-            ->skip($skip)
-            ->take($rows)
-            ->get();
-
-            $total = DB::table('events')->count();
-
-            return response()->json([
-                'events' => $events,
-                'total' => $total,
-            ]);
-
-        }else{
-            //手機
-            $this->getEvents($request);
+        $page = $request->page;
+        $rows = $request->rowsPerPage;
+        $skip = ($page - 1) * $rows;
+        if ($request->descending == null || $request->descending == 'false') {
+            $ascOrdesc = 'asc';
+        } else {
+            $ascOrdesc = 'desc';
         }
-        
+        $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+
+        $events = DB::table('events')
+        ->select('*')
+        ->orderBy($orderBy, $ascOrdesc)
+        ->where(function($query){
+            if(Auth::user()->hasRole('teacher')){
+                $query->where('owner_id',Auth::user()->id);
+            }
+        })
+        ->skip($skip)
+        ->take($rows)
+        ->get();
+
+        $total = DB::table('events')->count();
+
+        return response()->json([
+            'events' => $events,
+            'total' => $total,
+        ]);
+
     }
 
     //手機
@@ -108,6 +106,10 @@ class EventController extends Controller
             ]);
         }catch(Exception $e){
             return response($e);
+        }
+
+        if(Auth::user()->hasRole('teacher')){
+            $request['owner_id'] = Auth::user()->id;
         }
 
         $event_slug='A'.time();
@@ -222,6 +224,15 @@ class EventController extends Controller
         
         if($event){
             
+            if(Auth::user()->hasRole('teacher')){
+                if($event->owner_id != Auth::user()->id){
+                    return response()->json([
+                        's'=>0,
+                        'm'=>'Event not found!'
+                    ]);
+                }
+            }
+
             $unixNow=time();
             $unixDeadline=strtotime($request['deadline']);
             $unixDateTime=strtotime($request->dateTime);

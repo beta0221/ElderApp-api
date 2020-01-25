@@ -4,7 +4,7 @@ import router from "../router/router.js";
 
 class User {
 
-    adminOnly(){
+    authOnly(){
         if (!this.loggedIn()) {
         // if(!this.hasRole('admin')){
             let from_url = window.location.pathname;

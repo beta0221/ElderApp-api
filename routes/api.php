@@ -30,7 +30,7 @@ Route::group([
 
 
 //管理員------------------------
-Route::group(['middleware' => ['auth','admin']], function () {
+Route::group(['middleware' => ['JWT','admin']], function () {
 
     //MemberController
     Route::get('get-members','MemberController@getMembers');
@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth','admin']], function () {
     Route::post('couponcode/exchange','PromocodeController@exchange');
 
     //產品
-    Route::apiresource('product','ProductController');
+    Route::apiresource('product','ProductController')->middleware(['JWT','admin']);
     Route::get('getLocationAndQuantity/{slug}','ProductController@getLocationAndQuantity');
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');

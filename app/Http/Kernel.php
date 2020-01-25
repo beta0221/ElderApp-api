@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'JWT' => \App\Http\Middleware\JWT::class,
         'admin' => \App\Http\Middleware\CheckAdmin::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'BCP' => \App\Http\Middleware\BackendControlPanel::class,
     ];
 
     /**

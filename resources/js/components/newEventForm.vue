@@ -29,9 +29,13 @@
           <v-select :items="eventCat" item-text="name" item-value="name" label="活動類別" solo v-model="form.category"></v-select>
         </v-col>
 
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-select :items="rewardLevel" item-text="reward" item-value="id" label="獎勵等級" solo v-model="form.reward_level_id"></v-select>
-        </v-col>
+          <div>
+            <h4 class="grey--text">獎勵等級</h4>
+          </div>
+          <div>
+            <v-select :items="rewardLevel" item-text="reward" item-value="id" label="獎勵等級" solo v-model="form.reward_level_id"></v-select>
+          </div>
+        
 
         <v-col class="d-flex" cols="12" sm="6">
           <v-select :items="district" item-text="name" item-value="id" label="地區" solo v-model="form.district_id"></v-select>
@@ -50,14 +54,19 @@
         
         <v-col cols="12" sm="6" md="3">
           <div>
-            <h3 class="grey--text">活動時間</h3>
+            <h3 class="grey--text">活動開始時間</h3>
             <v-date-picker v-model="event_date"></v-date-picker>
             <v-time-picker v-model="event_time"></v-time-picker>
-            <v-date-picker v-model="event_date_2"></v-date-picker>
-            <v-time-picker v-model="event_time_2"></v-time-picker>
           </div>
         </v-col>
 
+        <div>
+          <h3 class="grey--text">結束時間</h3>
+          <v-date-picker v-model="event_date_2"></v-date-picker>
+          <v-time-picker v-model="event_time_2"></v-time-picker>
+        </div>
+
+        <hr class="mt-4">
         <v-col cols="12" sm="6" md="3">
           <div class="mt-4 mb-4">
             <h3 class="grey--text">報名截止間</h3>

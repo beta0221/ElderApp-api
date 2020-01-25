@@ -271,6 +271,7 @@ class ProductController extends Controller
 
     }
 
+    //for users
     public function getAllProduct(){
         
         $products = Product::allAvailable();

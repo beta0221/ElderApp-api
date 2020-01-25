@@ -4,10 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckAdmin
+class BackendControlPanel
 {
-
-    private $adminGroup = ['admin','employee'];
     /**
      * Handle an incoming request.
      *
@@ -17,19 +15,9 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        
-        $roles = $request->user()->roles()->get();
-        $isAdmin = false;
-        foreach ($roles as $role) {
-            if(in_array($role->name,$this->adminGroup)){
-                $isAdmin = true;
-            }
-        }
-
-        if(!$isAdmin){
+        if($request->user()->roles()->count() == 0){
             return response('admin only',400);
         }
-
         return $next($request);
     }
 }

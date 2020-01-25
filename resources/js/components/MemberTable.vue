@@ -173,7 +173,7 @@ export default {
     }
   },
   created() {
-    User.adminOnly();
+    User.authOnly();
     EventBus.$on("updateMemberSuccess", user => {
       this.$set(this.desserts,this.editingIndex,user);
     });
@@ -360,8 +360,6 @@ export default {
           })
           .catch(error => {
             Exception.handle(error);
-            let from_url = window.location.pathname;
-            User.logout(from_url);
           })
       });
     }

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="event-table">
   <!-- title bar -->
   <div>
     
@@ -47,7 +47,7 @@
         <td>{{props.index + 1}}</td>
         <td>{{eventCat[props.item.category_id]}}</td>
         
-        <td @click="showRewardQrcode(props.item.slug)">{{props.item.title}}</td>
+        <td class="title-column" @click="showRewardQrcode(props.item.slug)">{{props.item.title}}</td>
         <td>{{district[props.item.district_id]}}</td>
         <td>{{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
@@ -116,7 +116,7 @@ export default {
   created(){
     this.getCat();
     this.getDistrict();
-    User.adminOnly();
+    User.authOnly();
   },
   methods:{
     showEventMembers(event_slug,event_name){
@@ -225,4 +225,11 @@ export default {
 </script>
 
 <style>
+.event-table .title-column{
+  cursor: pointer;
+}
+.event-table .title-column:hover{
+  background: gray;
+  color: #fff;
+}
 </style>
