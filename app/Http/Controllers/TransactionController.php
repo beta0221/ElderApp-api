@@ -106,7 +106,7 @@ class TransactionController extends Controller
         $to = $request->to;
         $event = $request->event;
         $amount = $request->amount;
-        $users = User::where('valid',1)->where('id','>',$from)->where('id','<',$to)->get();
+        $users = User::where('valid',1)->where('id','>=',$from)->where('id','<=',$to)->get();
         foreach ($users as $user) {
             $this->dispatch(new SendMoney($user,$amount,$event));
         }
