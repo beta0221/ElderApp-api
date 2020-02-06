@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMoney;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
@@ -91,6 +92,27 @@ class TransactionController extends Controller
         
     }
 
+
+    public function sendMoney(Request $request){
+
+        $this->validate($request,[
+            'from' => 'required|integer',
+            'to' => 'required|integer',
+            'event' => 'required',
+            'amount' =>'required|integer|min:1',
+        ]);
+
+        $from = $request->from;
+        $to = $request->to;
+        $event = $request->event;
+        $amount = $request->amount;
+        $users = User::where('valid',1)->where('id','>',$from)->where('id','<',$to)->get();
+        foreach ($users as $user) {
+            $this->dispatch(new SendMoney($user,$amount,$event));
+        }
+        
+        return response('success');
+    }
 
 
     /**
