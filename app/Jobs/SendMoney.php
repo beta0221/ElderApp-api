@@ -37,7 +37,7 @@ class SendMoney implements ShouldQueue
      */
     public function handle()
     {
-        sleep(3);
+        sleep(5);
         $this->user->updateWallet(true,$this->amount);
 
         $tran_id = time() . rand(10,99);
