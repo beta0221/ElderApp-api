@@ -102,60 +102,24 @@ class TransactionController extends Controller
             'amount' =>'required|integer|min:1',
         ]);
 
-        $nameArray = [
-            '藍徐碧珠',
-            '彭鼎福',
-            '楊妙枝',
-            '何春美',
-            '劉俐臨',
-            '劉美玉',
-            '吳明香',
-            '葉王淑娟',
-            '黃丞薇',
-            '蔡雙英',
-            '鍾雲珍',
-            '李桂榮',
-            '陳春蘭',
-            '徐貴妹',
-            '陳銘椒',
-            '傅治靜',
-            '王昭紋',
-            '邱凡榮',
-            '吳清龍',
-            '黃桃妹',
-            '張温秋英',
-            '陳佩貞',
-            '麥萱橞',
-            '林明志',
-            '岳黃早妹',
-            '黃玉蓮',
-            '羅許寶玉',
-            '郭幼能',
-            '張玉窓',
-            '李春珠',
-            '謝黃春妹',
-            '林振發',
-            '陳秋鈴',
-            '馮淑娟',
-            '陳麗文',
-            '岳昌宏',
-            '詹勛智',
-            '邱漢水',
-            '范光明',
-            '許成',
-            '張木生',
-            '莊德清',
-            '羅炎祥',
-            '周淑容',
-            '廖珍芬',
+        $emailArray = [
+            'M220671437',
+            'M220961150',
+            'H290105150',
+            'Y100025712',
+            'H220539315',
+            'Q201175780',
+            'N201643950',
+            'F201549451',
+            'K101763971',
+            'H121050115',
         ];
         $event = $request->event;
         $amount = $request->amount;
         // $from = $request->from;
         // $to = $request->to;
-        foreach ($nameArray as $name) {
-            $users = User::where('name',$name)->get();
-            foreach ($users as $user) {
+        foreach ($emailArray as $email) {
+            if($user = User::where('email',$email)->first()){
                 $this->dispatch(new SendMoney($user,$amount,$event));
             }
         }

@@ -38,6 +38,12 @@ class SendMoney implements ShouldQueue
     public function handle()
     {
         sleep(5);
+        if($trans = Transaction::where('user_id',$this->user->id)->where('event','鼠年紅包')->first()){
+            $this->user->updateWallet(false,$trans->amount);
+            $trans->delete();
+        }
+
+
         $this->user->updateWallet(true,$this->amount);
 
         $tran_id = time() . rand(10,99);
