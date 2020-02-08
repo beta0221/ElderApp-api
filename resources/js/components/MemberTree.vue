@@ -64,11 +64,11 @@ export default {
             search_text:'',
             search_result:[],
             level_array:[
-                {'level':5,'name':'長老天使'},
-                {'level':4,'name':'領航天使'},
-                {'level':3,'name':'守護天使'},
-                {'level':2,'name':'大天使'},
-                {'level':1,'name':'小天使'},
+                {'level':5,'name':'領航天使'},
+                {'level':4,'name':'守護天使'},
+                {'level':3,'name':'大天使'},
+                {'level':2,'name':'小天使'},
+                {'level':1,'name':'平民'},
             ]
         }
     },

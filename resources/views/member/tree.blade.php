@@ -42,14 +42,6 @@
         }
 
         .lv_5::before {
-            content: '長老天使';
-            position: absolute;
-            left: -8px;
-            top: 50%;
-            transform: translate(-100%, -50%);
-        }
-
-        .lv_4::before {
             content: '領航天使';
             position: absolute;
             left: -8px;
@@ -57,7 +49,7 @@
             transform: translate(-100%, -50%);
         }
 
-        .lv_3::before {
+        .lv_4::before {
             content: '守護天使';
             position: absolute;
             left: -8px;
@@ -65,7 +57,7 @@
             transform: translate(-100%, -50%);
         }
 
-        .lv_2::before {
+        .lv_3::before {
             content: '大天使';
             position: absolute;
             left: -8px;
@@ -73,8 +65,16 @@
             transform: translate(-100%, -50%);
         }
 
-        .lv_1::before {
+        .lv_2::before {
             content: '小天使';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translate(-100%, -50%);
+        }
+
+        .lv_1::before {
+            content: '平民';
             position: absolute;
             left: -8px;
             top: 50%;
