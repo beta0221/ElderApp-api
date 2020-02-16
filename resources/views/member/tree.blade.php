@@ -104,8 +104,8 @@
     var UserId = {{$user_id}};
     var group_users = {!!$group_users!!};
     var name_dic = {!!$name_dic!!};
-    console.log(group_users);
-    console.log(name_dic);
+    //console.log(group_users);
+    //console.log(name_dic);
     var temp = {};
     var dic = {};
     $(document).ready(function () {
@@ -134,7 +134,7 @@
                             var target = $(`.lv_${i} .user_${item['lv_' + l]}`);
 
                             if (i <= item.level) {
-                                console.log({ 'lv_i': i, 'l': l });
+                                //console.log({ 'lv_i': i, 'l': l });
                                 let cell = document.createElement('div');
                                 $(cell).addClass('cell');
                                 $(cell).addClass(`user_${item.user_id}`);
@@ -165,73 +165,46 @@
 
             }
 
-
-            //計算寬度
-            group_users.forEach(function (row, index) {
-
-                var key = '';
-                for (let j = row.level; j <= item.level; j++) {
-
-                    let lv = `lv_${j}`;
-                    if (row[lv]) {
-                        if (!key) {
-                            key = key + row[lv];
-                        } else {
-                            key = key + '-' + row[lv];
-                        }
-                    } else {
-                        if (!key) {
-                            key = key + '0';
-                        } else {
-                            key = key + '-' + '0';
-                        }
-                    }
-                }
-
-                if (key) {
-                    var k_array = key.split('-');
-                    if (k_array[k_array.length - 1] == item.user_id) {
-
-                        if (k_array.length != 1) {
-
-                            var new_array = [];
-                            for (let z = 1; z < k_array.length; z++) {
-                                new_array.push(k_array[z]);//拿掉最前面一個
-                            }
-                            new_array = new_array.join('-');
-
-                        } else {
-                            new_array = key;
-                        }
-
-                        if (!temp[new_array]) {
-                            if (dic[item.user_id]) {
-                                dic[item.user_id] += 1;
-                            } else {
-                                dic[item.user_id] = 1;
-                            }
-                        }
-
-                        temp[key] = true;
-                        temp[new_array] = true;
-                    }
-
-                }
-
-            });
-
         });
+
+        //計算寬度
+        group_users.forEach(function (row, index) {
+            let id = row.user_id;
+            $('.user_'+id).each(function(index,element){
+
+                var count = getChildrenLength($(this));
+                if(!dic['user_'+id] || dic['user_'+id] < count){
+                    dic['user_'+id] = count;
+                }
+            });
+        });
+
 
         //照著dic把寬度放進html
         Object.keys(dic).forEach(function (key) {
-            let width = 80 * dic[key];
-            $(`.user_${key}`).css('width', `${width}px`);
+            var width = 80;
+            if(dic[key] > 0){
+                width = 80 * dic[key];
+            }
+            $(`.${key}`).css('width', `${width}px`);
         });
 
         //給主角顏色
         $('.cell-user.user_'+UserId).css({'background':'#2196f3','color':'#fff'});
 
     });
+
+    function getChildrenLength(element){
+        var count = 0
+        if($(element).children().length == 0){
+            return 1;
+        }else{
+            $(element).children().each(function(index,value){
+                count += getChildrenLength(value);
+            });
+            return count;
+        }
+    }
     
 </script>
 

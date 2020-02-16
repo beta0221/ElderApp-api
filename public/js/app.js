@@ -2422,7 +2422,7 @@ __webpack_require__.r(__webpack_exports__);
       dialogText: "",
       editingIndex: null,
       searchText: "",
-      searchColumn: "",
+      searchColumn: "name",
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -59585,7 +59585,7 @@ var render = function() {
               _c("v-text-field", {
                 attrs: {
                   "append-icon": "search",
-                  label: "搜尋",
+                  label: "搜尋姓名",
                   "single-line": "",
                   "hide-details": ""
                 },
@@ -59606,31 +59606,6 @@ var render = function() {
                     _vm.searchText = $$v
                   },
                   expression: "searchText"
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticStyle: {
-                display: "inline-block",
-                width: "240px",
-                float: "right",
-                margin: "0 20px"
-              }
-            },
-            [
-              _c("v-select", {
-                attrs: { items: _vm.headers, label: "欄位" },
-                model: {
-                  value: _vm.searchColumn,
-                  callback: function($$v) {
-                    _vm.searchColumn = $$v
-                  },
-                  expression: "searchColumn"
                 }
               })
             ],

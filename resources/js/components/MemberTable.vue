@@ -12,15 +12,15 @@
           v-model.lazy="searchText"
           @keyup.native.enter="search"
           append-icon="search"
-          label="搜尋"
+          label="搜尋姓名"
           single-line
           hide-details
         ></v-text-field>
       </div>
 
-      <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
+      <!-- <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
         <v-select v-model="searchColumn" :items="headers" label="欄位"></v-select>
-      </div>
+      </div> -->
 
     </div>
 
@@ -118,7 +118,7 @@ export default {
       editingIndex:null,
 
       searchText: "",
-      searchColumn:"",
+      searchColumn:"name",
       totalDesserts: 0,
       desserts: [],
       loading: true,
