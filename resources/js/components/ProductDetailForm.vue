@@ -104,7 +104,7 @@ export default {
       public:false,
       form: {
         name: "",
-        public:null,
+        public:0,
         product_category_id: "",
         select_location:[],
         price: null,
