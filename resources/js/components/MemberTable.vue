@@ -18,9 +18,9 @@
         ></v-text-field>
       </div>
 
-      <!-- <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
-        <v-select v-model="searchColumn" :items="headers" label="欄位"></v-select>
-      </div> -->
+      <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
+        <v-select v-model="searchLevel" :items="level" item-value="value" label="搜尋職位"></v-select>
+      </div>
 
     </div>
 
@@ -71,9 +71,9 @@
             @click="getMemberDetail(props.index,props.item.id,props.item.name)"
             :class="gender[props.item.gender]"
           >{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.email }}</td>
+          <!-- <td class="text-xs-left">{{ props.item.email }}</td>
           <td class="text-xs-left">{{ props.item.id_number }}</td>
-          <td class="text-xs-left">{{ props.item.birthdate }}</td>
+          <td class="text-xs-left">{{ props.item.birthdate }}</td> -->
           
           <td class="text-xs-left">{{ props.item.inviter }}</td>
           
@@ -118,6 +118,7 @@ export default {
       editingIndex:null,
 
       searchText: "",
+      searchLevel:null,
       searchColumn:"name",
       totalDesserts: 0,
       desserts: [],
@@ -150,15 +151,21 @@ export default {
         { text: "職務", value: "org_rank" },
         { text: "組織", value: "" },
         { text: "姓名", value: "name" },
-        { text: "信箱", value: "email" },
-        { text: "身分證", value: "id_number" },
-        { text: "生日", value: "birthdate" },
+        // { text: "信箱", value: "email" },
+        // { text: "身分證", value: "id_number" },
+        // { text: "生日", value: "birthdate" },
         { text: "推薦人", value: "inviter" },
         { text: "入會日期", value: "created_at" },
         { text: "效期到期日", value: "expiry_date" },
         { text: "效期", value: "valid" },
         { text: "會員狀態", value: "pay_status" },
-        
+      ],
+      level:[
+        {text:'搜尋職位',value:null},
+        {text:'小天使',value:2},
+        {text:'大天使',value:3},
+        {text:'守護天使',value:4},
+        {text:'領航天使',value:5},
       ]
     };
   },
@@ -170,6 +177,17 @@ export default {
           this.totalDesserts = data.total;
         });
       }
+    },
+    searchLevel(val){
+      if(!val){
+        this.searchColumn = 'name';
+        this.searchText = '';
+        this.search();
+        return;
+      }
+      this.searchColumn = 'org_rank';
+      this.searchText = val;
+      this.search();
     }
   },
   created() {

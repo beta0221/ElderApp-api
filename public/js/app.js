@@ -2422,6 +2422,7 @@ __webpack_require__.r(__webpack_exports__);
       dialogText: "",
       editingIndex: null,
       searchText: "",
+      searchLevel: null,
       searchColumn: "name",
       totalDesserts: 0,
       desserts: [],
@@ -2484,16 +2485,10 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "姓名",
         value: "name"
-      }, {
-        text: "信箱",
-        value: "email"
-      }, {
-        text: "身分證",
-        value: "id_number"
-      }, {
-        text: "生日",
-        value: "birthdate"
-      }, {
+      }, // { text: "信箱", value: "email" },
+      // { text: "身分證", value: "id_number" },
+      // { text: "生日", value: "birthdate" },
+      {
         text: "推薦人",
         value: "inviter"
       }, {
@@ -2508,6 +2503,22 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "會員狀態",
         value: "pay_status"
+      }],
+      level: [{
+        text: '搜尋職位',
+        value: null
+      }, {
+        text: '小天使',
+        value: 2
+      }, {
+        text: '大天使',
+        value: 3
+      }, {
+        text: '守護天使',
+        value: 4
+      }, {
+        text: '領航天使',
+        value: 5
       }]
     };
   },
@@ -2521,6 +2532,18 @@ __webpack_require__.r(__webpack_exports__);
           _this.totalDesserts = data.total;
         });
       }
+    },
+    searchLevel: function searchLevel(val) {
+      if (!val) {
+        this.searchColumn = 'name';
+        this.searchText = '';
+        this.search();
+        return;
+      }
+
+      this.searchColumn = 'org_rank';
+      this.searchText = val;
+      this.search();
     }
   },
   created: function created() {
@@ -2990,7 +3013,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       "public": false,
       form: {
         name: "",
-        "public": null,
+        "public": 0,
         product_category_id: "",
         select_location: [],
         price: null,
@@ -59610,6 +59633,35 @@ var render = function() {
               })
             ],
             1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticStyle: {
+                display: "inline-block",
+                width: "240px",
+                float: "right",
+                margin: "0 20px"
+              }
+            },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.level,
+                  "item-value": "value",
+                  label: "搜尋職位"
+                },
+                model: {
+                  value: _vm.searchLevel,
+                  callback: function($$v) {
+                    _vm.searchLevel = $$v
+                  },
+                  expression: "searchLevel"
+                }
+              })
+            ],
+            1
           )
         ],
         1
@@ -59756,18 +59808,6 @@ var render = function() {
                       },
                       [_vm._v(_vm._s(props.item.name))]
                     ),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-xs-left" }, [
-                      _vm._v(_vm._s(props.item.email))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-xs-left" }, [
-                      _vm._v(_vm._s(props.item.id_number))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-xs-left" }, [
-                      _vm._v(_vm._s(props.item.birthdate))
-                    ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "text-xs-left" }, [
                       _vm._v(_vm._s(props.item.inviter))

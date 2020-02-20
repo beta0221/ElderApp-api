@@ -26,7 +26,7 @@ class MemberController extends Controller
     {
         $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
         
-        if($request->searchColumn = 'name' && !empty($request->searchText)){
+        if($request->searchColumn == 'name' && !empty($request->searchText)){
             $user = User::where('name','like',"%$request->searchText%")->get();
         }else{
             $user = User::where($searchColumn,$request->searchText)->get();
