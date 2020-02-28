@@ -73,7 +73,7 @@ class Product extends Model
     }
 
     public static function allAvailable(){
-        return DB::table('products')->where('public',1)->get();
+        return DB::table('products')->where('public',1)->orderBy('id','desc')->get();
     }
 
 }
