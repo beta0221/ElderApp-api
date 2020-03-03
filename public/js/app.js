@@ -2690,11 +2690,15 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (res) {
           if (res.data.s == 1) {
             _this8.desserts[index]["pay_status"]++;
+
+            if (_this8.desserts[index]["pay_status"] == 3) {
+              _this8.desserts[index]["expiry_date"] = res.data.d;
+              _this8.desserts[index]["valid"] = 1;
+            }
           }
 
-          if (_this8.desserts[index]["pay_status"] == 3) {
-            _this8.desserts[index]["expiry_date"] = res.data.d;
-            _this8.desserts[index]["valid"] = 1;
+          if (res.data.s == 0) {
+            alert(res.data.m);
           }
         })["catch"](function (error) {
           console.log(error);
