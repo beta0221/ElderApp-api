@@ -187,6 +187,16 @@ class MemberController extends Controller
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         $p = $user->pay_status;
+
+        if($p == 2){
+            if(!Auth::user()->hasRole('admin')){
+                return response([
+                    's'=>0,
+                    'm'=>'權限不足'
+                ]);
+            }
+        }
+
         if ($p < 3) {
             $p++;
             $user->pay_status =$p;

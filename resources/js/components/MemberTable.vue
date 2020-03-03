@@ -321,12 +321,16 @@ export default {
           .then(res => {
             if (res.data.s == 1) {
               this.desserts[index]["pay_status"]++;
+              if (this.desserts[index]["pay_status"] == 3) {
+                this.desserts[index]["expiry_date"] = res.data.d;
+                this.desserts[index]["valid"] = 1;
+              }
             }
 
-            if (this.desserts[index]["pay_status"] == 3) {
-              this.desserts[index]["expiry_date"] = res.data.d;
-              this.desserts[index]["valid"] = 1;
+            if(res.data.s == 0){
+              alert(res.data.m);
             }
+            
           })
           .catch(error => {
             console.log(error);
