@@ -116,8 +116,8 @@ class User extends Authenticatable implements JWTSubject
     // }
 
     public function joinToGroup($leader_id,$level){
-        $row = DB::table('user_group')->where('user_id',$leader_id)->first();
-        if($row){
+
+        if($row = DB::table('user_group')->where('user_id',$leader_id)->first()){
 
             $insert = [
                 'group_id'=>$row->group_id,
@@ -137,10 +137,17 @@ class User extends Authenticatable implements JWTSubject
             }
             try {
                 DB::table('user_group')->insert($insert);
+                $this->org_rank = $level;
+                $this->save();
             } catch (\Throwable $th) {
-                throw $th;
+                return false;
+                //log here $th
             }
+
+            return true;
         }
+
+        return false;
     }
 
     public function groupLevel(){

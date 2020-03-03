@@ -57,11 +57,8 @@
       >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.index + 1 }}</td>
-          <td
-            class="text-xs-left org_rank"
-            @click="(props.item.org_rank>=1)?getMemberGroupMembers(props.item.id,props.item.name):''"
-          >
-            <v-icon>{{ org_rank[props.item.org_rank]}}</v-icon>
+          <td class="text-xs-left org_rank">
+            {{ (org_rank[props.item.org_rank])?org_rank[props.item.org_rank]:'無'}}
           </td>
           <td class="text-xs-left tree-icon" @click="showGroupTree(props.item.id,props.item.id_code)">
             <v-icon>supervised_user_circle</v-icon>
@@ -142,9 +139,10 @@ export default {
         "3": "理事"
       },
       org_rank: {
-        "0": "",
-        "1": "supervised_user_circle",
-        "2": "stars"
+        "2": "小天使",
+        "3": "大天使",
+        "4": "守護天使",
+        "5": "領航天使",
       },
       headers: [
         { text: "#", value: "id" },

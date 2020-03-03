@@ -2404,9 +2404,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2469,9 +2466,10 @@ __webpack_require__.r(__webpack_exports__);
         "3": "理事"
       },
       org_rank: {
-        "0": "",
-        "1": "supervised_user_circle",
-        "2": "stars"
+        "2": "小天使",
+        "3": "大天使",
+        "4": "守護天使",
+        "5": "領航天使"
       },
       headers: [{
         text: "#",
@@ -59755,28 +59753,17 @@ var render = function() {
                       _vm._v(_vm._s(props.index + 1))
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "td",
-                      {
-                        staticClass: "text-xs-left org_rank",
-                        on: {
-                          click: function($event) {
-                            props.item.org_rank >= 1
-                              ? _vm.getMemberGroupMembers(
-                                  props.item.id,
-                                  props.item.name
-                                )
-                              : ""
-                          }
-                        }
-                      },
-                      [
-                        _c("v-icon", [
-                          _vm._v(_vm._s(_vm.org_rank[props.item.org_rank]))
-                        ])
-                      ],
-                      1
-                    ),
+                    _c("td", { staticClass: "text-xs-left org_rank" }, [
+                      _vm._v(
+                        "\n          " +
+                          _vm._s(
+                            _vm.org_rank[props.item.org_rank]
+                              ? _vm.org_rank[props.item.org_rank]
+                              : "無"
+                          ) +
+                          "\n        "
+                      )
+                    ]),
                     _vm._v(" "),
                     _c(
                       "td",

@@ -332,7 +332,13 @@ class MemberController extends Controller
             ]);
         }
 
-        $addUser->joinToGroup($leader->id,$request->level);
+        if(!$result = $addUser->joinToGroup($leader->id,$request->level)){
+            return response()->json([
+                's'=>0,
+                'm'=>'系統錯誤',
+            ]);
+        }
+
 
         return response()->json([
             's'=>1,
