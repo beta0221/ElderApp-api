@@ -189,10 +189,10 @@ class MemberController extends Controller
         $p = $user->pay_status;
 
         if($p == 2){
-            if(!Auth::user()->hasRole('admin')){
+            if(!Auth::user()->hasRole('accountant')){
                 return response([
                     's'=>0,
-                    'm'=>'權限不足'
+                    'm'=>'權限不足，此操作限會計人員。'
                 ]);
             }
         }

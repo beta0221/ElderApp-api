@@ -7,7 +7,7 @@ use Closure;
 class CheckAdmin
 {
 
-    private $adminGroup = ['admin','employee'];
+    private $adminGroup = ['admin','employee','accountant'];
     /**
      * Handle an incoming request.
      *

@@ -39,7 +39,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('executeExpired','MemberController@executeExpired');
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
-    Route::post('toValid','MemberController@toValid')->middleware('role:admin');
+    Route::post('toValid','MemberController@toValid')->middleware('role:accountant');
     // Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');
