@@ -2418,9 +2418,8 @@ __webpack_require__.r(__webpack_exports__);
       dialogName: "",
       dialogText: "",
       editingIndex: null,
-      searchText: "",
-      searchLevel: null,
-      searchColumn: "name",
+      searchColumn: null,
+      searchValue: null,
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -2483,10 +2482,7 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "姓名",
         value: "name"
-      }, // { text: "信箱", value: "email" },
-      // { text: "身分證", value: "id_number" },
-      // { text: "生日", value: "birthdate" },
-      {
+      }, {
         text: "推薦人",
         value: "inviter"
       }, {
@@ -2502,8 +2498,24 @@ __webpack_require__.r(__webpack_exports__);
         text: "會員狀態",
         value: "pay_status"
       }],
+      columns: [{
+        text: '欄位',
+        value: null
+      }, {
+        text: '職務',
+        value: 'org_rank'
+      }, {
+        text: '姓名',
+        value: 'name'
+      }, {
+        text: '會員狀態',
+        value: 'pay_status'
+      }],
+      show_level: false,
+      show_payStatus: false,
+      show_name: false,
       level: [{
-        text: '搜尋職位',
+        text: '職位',
         value: null
       }, {
         text: '小天使',
@@ -2517,6 +2529,22 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: '領航天使',
         value: 5
+      }],
+      payStatus: [{
+        text: '狀態',
+        value: null
+      }, {
+        text: '免費',
+        value: 0
+      }, {
+        text: '申請中',
+        value: 1
+      }, {
+        text: '已繳清',
+        value: 2
+      }, {
+        text: '完成',
+        value: 3
       }]
     };
   },
@@ -2531,17 +2559,28 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    searchLevel: function searchLevel(val) {
-      if (!val) {
-        this.searchColumn = 'name';
-        this.searchText = '';
-        this.search();
-        return;
-      }
+    searchColumn: function searchColumn(val) {
+      this.show_level = false;
+      this.show_payStatus = false;
+      this.show_name = false;
+      this.searchValue = null;
 
-      this.searchColumn = 'org_rank';
-      this.searchText = val;
-      this.search();
+      switch (val) {
+        case 'org_rank':
+          this.show_level = true;
+          break;
+
+        case 'pay_status':
+          this.show_payStatus = true;
+          break;
+
+        case 'name':
+          this.show_name = true;
+          break;
+
+        default:
+          this.search();
+      }
     }
   },
   created: function created() {
@@ -2556,38 +2595,9 @@ __webpack_require__.r(__webpack_exports__);
     search: function search() {
       var _this3 = this;
 
-      if (!this.searchText) {
-        this.getDataFromApi().then(function (data) {
-          _this3.desserts = data.items;
-          _this3.totalDesserts = data.total;
-        });
-      } else {
-        axios.get("/api/search-member", {
-          params: {
-            searchColumn: this.searchColumn,
-            searchText: this.searchText
-          }
-        }).then(function (res) {
-          console.log(res);
-          _this3.loading = true;
-          setTimeout(function () {
-            _this3.loading = false;
-            _this3.desserts = res.data;
-          }, 300);
-        })["catch"](function (error) {
-          console.log(error);
-        });
-      }
-    },
-    customFilter: function customFilter(items, search, filter) {
-      console.log({
-        items: items,
-        search: search,
-        filter: filter
-      });
-      search = search.toString().toLowerCase();
-      return items.filter(function (row) {
-        return filter(row["type"], search);
+      this.getDataFromApi().then(function (data) {
+        _this3.desserts = data.items;
+        _this3.totalDesserts = data.total;
       });
     },
     toValid: function toValid(id, index) {
@@ -2663,35 +2673,19 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    executeExpired: function executeExpired() {
-      var _this7 = this;
-
-      axios.post("/api/executeExpired", {}).then(function (res) {
-        if (res.data.s == 1) {
-          _this7.getDataFromApi().then(function (data) {
-            _this7.desserts = data.items;
-            _this7.totalDesserts = data.total;
-          });
-        } else {
-          alert("系統錯誤，未正常運作。");
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this8 = this;
+      var _this7 = this;
 
       if (this.desserts[index]["pay_status"] < 3) {
         axios.post("/api/changePayStatus", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
-            _this8.desserts[index]["pay_status"]++;
+            _this7.desserts[index]["pay_status"]++;
 
-            if (_this8.desserts[index]["pay_status"] == 3) {
-              _this8.desserts[index]["expiry_date"] = res.data.d;
-              _this8.desserts[index]["valid"] = 1;
+            if (_this7.desserts[index]["pay_status"] == 3) {
+              _this7.desserts[index]["expiry_date"] = res.data.d;
+              _this7.desserts[index]["valid"] = 1;
             }
           }
 
@@ -2704,27 +2698,29 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this9 = this;
+      var _this8 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this9$pagination = _this9.pagination,
-            sortBy = _this9$pagination.sortBy,
-            descending = _this9$pagination.descending,
-            page = _this9$pagination.page,
-            rowsPerPage = _this9$pagination.rowsPerPage;
+        var _this8$pagination = _this8.pagination,
+            sortBy = _this8$pagination.sortBy,
+            descending = _this8$pagination.descending,
+            page = _this8$pagination.page,
+            rowsPerPage = _this8$pagination.rowsPerPage;
         axios.get("/api/get-members", {
           params: {
-            page: _this9.pagination.page,
-            rowsPerPage: _this9.pagination.rowsPerPage,
-            descending: _this9.pagination.descending,
-            sortBy: _this9.pagination.sortBy
+            page: _this8.pagination.page,
+            rowsPerPage: _this8.pagination.rowsPerPage,
+            descending: _this8.pagination.descending,
+            sortBy: _this8.pagination.sortBy,
+            column: _this8.searchColumn,
+            value: _this8.searchValue
           }
         }).then(function (res) {
           var items = res.data.users;
           var total = res.data.total;
 
-          if (_this9.pagination.sortBy) {
+          if (_this8.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2742,7 +2738,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this9.loading = false;
+            _this8.loading = false;
             resolve({
               items: items,
               total: total
@@ -59588,86 +59584,153 @@ var render = function() {
       _vm._v(" "),
       _c("member-tree"),
       _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c(
-            "v-btn",
-            { attrs: { color: "info" }, on: { click: _vm.executeExpired } },
-            [_vm._v("執行效期檢查")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticStyle: {
-                display: "inline-block",
-                width: "240px",
-                float: "right"
-              }
-            },
-            [
-              _c("v-text-field", {
-                attrs: {
-                  "append-icon": "search",
-                  label: "搜尋姓名",
-                  "single-line": "",
-                  "hide-details": ""
+      _c("div", [
+        _c(
+          "div",
+          {
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: {
+                items: _vm.columns,
+                "item-value": "value",
+                label: "搜尋欄位"
+              },
+              model: {
+                value: _vm.searchColumn,
+                callback: function($$v) {
+                  _vm.searchColumn = $$v
                 },
-                nativeOn: {
-                  keyup: function($event) {
-                    if (
-                      !$event.type.indexOf("key") &&
-                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                    ) {
-                      return null
-                    }
-                    return _vm.search($event)
+                expression: "searchColumn"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.show_level,
+                expression: "show_level"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: { items: _vm.level, "item-value": "value", label: "職位" },
+              on: { change: _vm.search },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.show_payStatus,
+                expression: "show_payStatus"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: {
+                items: _vm.payStatus,
+                "item-value": "value",
+                label: "狀態"
+              },
+              on: { change: _vm.search },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.show_name,
+                expression: "show_name"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-text-field", {
+              attrs: {
+                "append-icon": "search",
+                label: "姓名",
+                "single-line": "",
+                "hide-details": ""
+              },
+              nativeOn: {
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
                   }
-                },
-                model: {
-                  value: _vm.searchText,
-                  callback: function($$v) {
-                    _vm.searchText = $$v
-                  },
-                  expression: "searchText"
+                  return _vm.search($event)
                 }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticStyle: {
-                display: "inline-block",
-                width: "240px",
-                float: "right",
-                margin: "0 20px"
+              },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
               }
-            },
-            [
-              _c("v-select", {
-                attrs: {
-                  items: _vm.level,
-                  "item-value": "value",
-                  label: "搜尋職位"
-                },
-                model: {
-                  value: _vm.searchLevel,
-                  callback: function($$v) {
-                    _vm.searchLevel = $$v
-                  },
-                  expression: "searchLevel"
-                }
-              })
-            ],
-            1
-          )
-        ],
-        1
-      ),
+            })
+          ],
+          1
+        )
+      ]),
       _vm._v(" "),
       _c(
         "div",

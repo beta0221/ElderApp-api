@@ -5,23 +5,26 @@
     <member-tree></member-tree>
 
     <div>
-      <v-btn color="info" @click="executeExpired">執行效期檢查</v-btn>
-
-      <div style="display:inline-block;width:240px;float:right;">
+      
+      <div style="display:inline-block;width:160px;margin-left:20px;">
+        <v-select v-model="searchColumn" :items="columns" item-value="value" label="搜尋欄位"></v-select>
+      </div>
+      <div v-show="show_level" style="display:inline-block;width:160px;margin-left:20px;">
+        <v-select v-model="searchValue" :items="level" item-value="value" label="職位" @change="search"></v-select>
+      </div>
+      <div v-show="show_payStatus" style="display:inline-block;width:160px;margin-left:20px;">
+        <v-select v-model="searchValue" :items="payStatus" item-value="value" label="狀態" @change="search"></v-select>
+      </div>
+      <div v-show="show_name" style="display:inline-block;width:160px;margin-left:20px;">
         <v-text-field
-          v-model.lazy="searchText"
+          v-model.lazy="searchValue"
           @keyup.native.enter="search"
           append-icon="search"
-          label="搜尋姓名"
+          label="姓名"
           single-line
           hide-details
         ></v-text-field>
       </div>
-
-      <div style="display:inline-block;width:240px;float:right;margin:0 20px;">
-        <v-select v-model="searchLevel" :items="level" item-value="value" label="搜尋職位"></v-select>
-      </div>
-
     </div>
 
 
@@ -68,9 +71,6 @@
             @click="getMemberDetail(props.index,props.item.id,props.item.name)"
             :class="gender[props.item.gender]"
           >{{ props.item.name }}</td>
-          <!-- <td class="text-xs-left">{{ props.item.email }}</td>
-          <td class="text-xs-left">{{ props.item.id_number }}</td>
-          <td class="text-xs-left">{{ props.item.birthdate }}</td> -->
           
           <td class="text-xs-left">{{ props.item.inviter }}</td>
           
@@ -114,9 +114,8 @@ export default {
       dialogText: "",
       editingIndex:null,
 
-      searchText: "",
-      searchLevel:null,
-      searchColumn:"name",
+      searchColumn:null,
+      searchValue:null,
       totalDesserts: 0,
       desserts: [],
       loading: true,
@@ -149,22 +148,35 @@ export default {
         { text: "職務", value: "org_rank" },
         { text: "組織", value: "" },
         { text: "姓名", value: "name" },
-        // { text: "信箱", value: "email" },
-        // { text: "身分證", value: "id_number" },
-        // { text: "生日", value: "birthdate" },
         { text: "推薦人", value: "inviter" },
         { text: "入會日期", value: "created_at" },
         { text: "效期到期日", value: "expiry_date" },
         { text: "效期", value: "valid" },
         { text: "會員狀態", value: "pay_status" },
       ],
+      columns:[
+        {text:'欄位',value:null},
+        {text:'職務',value:'org_rank'},
+        {text:'姓名',value:'name'},
+        {text:'會員狀態',value:'pay_status'},
+      ],
+      show_level:false,
+      show_payStatus:false,
+      show_name:false,
       level:[
-        {text:'搜尋職位',value:null},
+        {text:'職位',value:null},
         {text:'小天使',value:2},
         {text:'大天使',value:3},
         {text:'守護天使',value:4},
         {text:'領航天使',value:5},
-      ]
+      ],
+      payStatus:[
+        {text:'狀態',value:null},
+        {text:'免費',value:0},
+        {text:'申請中',value:1},
+        {text:'已繳清',value:2},
+        {text:'完成',value:3},
+      ],
     };
   },
   watch: {
@@ -176,16 +188,24 @@ export default {
         });
       }
     },
-    searchLevel(val){
-      if(!val){
-        this.searchColumn = 'name';
-        this.searchText = '';
-        this.search();
-        return;
+    searchColumn(val){
+      this.show_level = false;
+      this.show_payStatus = false;
+      this.show_name = false;
+      this.searchValue = null;
+      switch (val) {
+        case 'org_rank':
+          this.show_level = true;
+          break;
+        case 'pay_status':
+          this.show_payStatus = true;
+          break;
+        case 'name':
+          this.show_name = true;
+          break;
+        default:
+          this.search();
       }
-      this.searchColumn = 'org_rank';
-      this.searchText = val;
-      this.search();
     }
   },
   created() {
@@ -196,37 +216,12 @@ export default {
   },
   methods: {
     search() {
-      if (!this.searchText) {
-        this.getDataFromApi().then(data => {
+      this.getDataFromApi().then(data => {
           this.desserts = data.items;
           this.totalDesserts = data.total;
-        });
-      } else {
-        axios
-          .get("/api/search-member", {
-            params: {
-              searchColumn:this.searchColumn,
-              searchText: this.searchText
-            }
-          })
-          .then(res => {
-            console.log(res);
-            this.loading = true;
-            setTimeout(() => {
-              this.loading = false;
-              this.desserts = res.data;
-            }, 300);
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
+      });
     },
-    customFilter(items, search, filter) {
-      console.log({ items: items, search: search, filter: filter });
-      search = search.toString().toLowerCase();
-      return items.filter(row => filter(row["type"], search));
-    },
+    
     toValid(id, index) {
       if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios
@@ -293,23 +288,6 @@ export default {
           console.log(error);
         });
     },
-    executeExpired() {
-      axios
-        .post("/api/executeExpired", {})
-        .then(res => {
-          if (res.data.s == 1) {
-            this.getDataFromApi().then(data => {
-              this.desserts = data.items;
-              this.totalDesserts = data.total;
-            });
-          } else {
-            alert("系統錯誤，未正常運作。");
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
     clickPayStatus(id, index) {
       if (this.desserts[index]["pay_status"] < 3) {
         axios
@@ -324,11 +302,9 @@ export default {
                 this.desserts[index]["valid"] = 1;
               }
             }
-
             if(res.data.s == 0){
               alert(res.data.m);
             }
-            
           })
           .catch(error => {
             console.log(error);
@@ -339,14 +315,15 @@ export default {
       this.loading = true;
       return new Promise((resolve, reject) => {
         const { sortBy, descending, page, rowsPerPage } = this.pagination;
-
         axios
           .get("/api/get-members", {
             params: {
               page: this.pagination.page,
               rowsPerPage: this.pagination.rowsPerPage,
               descending: this.pagination.descending,
-              sortBy: this.pagination.sortBy
+              sortBy: this.pagination.sortBy,
+              column:this.searchColumn,
+              value:this.searchValue
             }
           })
           .then(res => {

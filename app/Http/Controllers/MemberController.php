@@ -20,41 +20,33 @@ class MemberController extends Controller
         $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','updateMemberLevel']]);
     }
 
-
-    //管理後台的搜尋會員請求
-    public function searchMember(Request $request)
-    {
-        $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
-        
-        if($request->searchColumn == 'name' && !empty($request->searchText)){
-            $user = User::where('name','like',"%$request->searchText%")->get();
-        }else{
-            $user = User::where($searchColumn,$request->searchText)->get();
-        }
-        return response()->json($user);
-    }
-
     //管理後台使用的請求
     public function getMembers(Request $request)
     {
+
         $page = $request->page;
         $rows = $request->rowsPerPage;
         $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
         if ($request->descending == null || $request->descending == 'false') {
             $ascOrdesc = 'asc';
-        } else {
-            $ascOrdesc = 'desc';
         }
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+        $column = ($request->column) ? $request->column : null;
+        $value = (isset($request->value)) ? $request->value : null;
 
-        $users = DB::table('users')
-            ->select('id', 'name','org_rank','email','tel','phone','gender', 'rank', 'inviter', 'inviter_phone', 'pay_status', 'created_at', 'expiry_date','valid','birthdate','id_number','id_code')
-            ->orderBy($orderBy, $ascOrdesc)
-            ->skip($skip)
-            ->take($rows)
-            ->get();
+        $query = DB::table('users')
+            ->select('id','name','org_rank','email','tel','phone','gender','rank','inviter','inviter_phone','pay_status','created_at','expiry_date','valid','birthdate','id_number','id_code')
+            ->orderBy($orderBy, $ascOrdesc);
+        $count = DB::table('users');
 
-        $total = DB::table('users')->count();
+        if($column != null && $value != null){
+            $query->where($column,$value);
+            $count->where($column,$value);
+        }    
+
+        $users = $query->skip($skip)->take($rows)->get();
+        $total = $count->count();
 
         return response()->json([
             'users' => $users,
