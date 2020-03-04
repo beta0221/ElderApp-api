@@ -20,6 +20,20 @@ class MemberController extends Controller
         $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','updateMemberLevel']]);
     }
 
+    //管理後台的搜尋會員請求
+    public function searchMember(Request $request)
+    {
+        $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
+        
+        if($request->searchColumn == 'name' && !empty($request->searchText)){
+            $user = User::where('name','like',"%$request->searchText%")->get();
+        }else{
+            $user = User::where($searchColumn,$request->searchText)->get();
+        }
+        return response()->json($user);
+    }
+
+
     //管理後台使用的請求
     public function getMembers(Request $request)
     {
