@@ -1,11 +1,28 @@
 <template>
-  <v-dialog v-model="group_tree_dialog" max-width="1000px">
+  <v-dialog v-model="group_tree_dialog" max-width="90%">
         <v-card class="member-tree">
 
           <div>
 
+              <div id="left-panel">
+                <div class="border fill left-container" style="padding:8px">
+                    <div class="left-container-item">
+                        <div style="width:100%;height:100%;font-size:24px;">
+                            指派職務為
+                        </div>
+                    </div>
+                    <div class="left-container-item"
+                        v-for="l in level_array" 
+                        v-bind:key="l.level">
+                        <v-btn>
+                            {{l.name}}
+                        </v-btn>
+                        
+                    </div>
+                </div>
+              </div>
             
-            <div id="left-panel">
+            <div id="middle-panel">
                 <iframe id="tree-frame" class="border fill" v-if="group_tree_dialog" :src="tree_src" frameborder="0"/>
             </div>
 
@@ -128,17 +145,35 @@ export default {
     height: 100%;
 }
 #left-panel{
-    width:calc(60% - 2px);
+    width:calc(20% - 3px);
+    vertical-align: top;
     height: 600px;
     display: inline-block;
-    padding: 8px;
+    padding: 8px 4px;
+}
+#middle-panel{
+    width:calc(60% - 3px);
+    vertical-align: top;
+    height: 600px;
+    display: inline-block;
+    padding: 8px 4px;
 }
 #right-panel{
     display: inline-block;
     vertical-align: top;
     height: 600px;
-    width:calc(40% - 2px);
-    padding: 8px;
+    width:calc(20% - 3px);
+    padding: 8px 4px;
+}
+.left-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+.left-container-item{
+    flex: 1;
+    text-align: center;
 }
 .member-tree input{
     width: 100%;
@@ -188,13 +223,13 @@ export default {
     line-height: 30px;
 }
 .green-cell{
-    background-color: limegreen;
-    border-color:limegreen;
+    background-color: #5cb85c;
+    border-color:#5cb85c;
     color:#fff;
     cursor: pointer;
 }
 .green-cell:hover{
-    background-color:green;
-    border-color: green;
+    background-color:#449d44;
+    border-color: #449d44;
 }
 </style>

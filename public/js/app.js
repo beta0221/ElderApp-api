@@ -2810,6 +2810,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -22226,7 +22243,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.border{\n    border:1px solid gray;\n    border-radius: .3rem;\n}\n.fill{\n    width: 100%;\n    height: 100%;\n}\n#left-panel{\n    width:calc(60% - 2px);\n    height: 600px;\n    display: inline-block;\n    padding: 8px;\n}\n#right-panel{\n    display: inline-block;\n    vertical-align: top;\n    height: 600px;\n    width:calc(40% - 2px);\n    padding: 8px;\n}\n.member-tree input{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    background-color: #fff;\n}\n.search-bar{\n    height: 24px;\n}\n.devider{\n    height: 8px;\n}\n.search-box{\n    height: calc(50% - 32px);\n    overflow-y: scroll;\n}\n.search-box .member-cell{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n    cursor: pointer;\n}\n.member-cell:hover{\n    background-color: lightgray;\n    color:#fff;\n}\n.select-cell{\n    background-color: gray!important;\n    color:#fff;\n}\n.level-box{\n    height: calc(50% - 16px);\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-around;\n}\n.level-cell{\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n}\n.green-cell{\n    background-color: limegreen;\n    border-color:limegreen;\n    color:#fff;\n    cursor: pointer;\n}\n.green-cell:hover{\n    background-color:green;\n    border-color: green;\n}\n", ""]);
+exports.push([module.i, "\n.border{\n    border:1px solid gray;\n    border-radius: .3rem;\n}\n.fill{\n    width: 100%;\n    height: 100%;\n}\n#left-panel{\n    width:calc(20% - 3px);\n    vertical-align: top;\n    height: 600px;\n    display: inline-block;\n    padding: 8px 4px;\n}\n#middle-panel{\n    width:calc(60% - 3px);\n    vertical-align: top;\n    height: 600px;\n    display: inline-block;\n    padding: 8px 4px;\n}\n#right-panel{\n    display: inline-block;\n    vertical-align: top;\n    height: 600px;\n    width:calc(20% - 3px);\n    padding: 8px 4px;\n}\n.left-container{\n    display: flex;\n    flex-direction: column;\n    flex-wrap: nowrap;\n    align-items: stretch;\n}\n.left-container-item{\n    flex: 1;\n    text-align: center;\n}\n.member-tree input{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    background-color: #fff;\n}\n.search-bar{\n    height: 24px;\n}\n.devider{\n    height: 8px;\n}\n.search-box{\n    height: calc(50% - 32px);\n    overflow-y: scroll;\n}\n.search-box .member-cell{\n    width: 100%;\n    border: 1px solid lightgray;\n    border-radius: 0.2rem;\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n    cursor: pointer;\n}\n.member-cell:hover{\n    background-color: lightgray;\n    color:#fff;\n}\n.select-cell{\n    background-color: gray!important;\n    color:#fff;\n}\n.level-box{\n    height: calc(50% - 16px);\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-around;\n}\n.level-cell{\n    height: 32px;\n    padding: 0 12px;\n    line-height: 30px;\n}\n.green-cell{\n    background-color: #5cb85c;\n    border-color:#5cb85c;\n    color:#fff;\n    cursor: pointer;\n}\n.green-cell:hover{\n    background-color:#449d44;\n    border-color: #449d44;\n}\n", ""]);
 
 // exports
 
@@ -59966,7 +59983,7 @@ var render = function() {
   return _c(
     "v-dialog",
     {
-      attrs: { "max-width": "1000px" },
+      attrs: { "max-width": "90%" },
       model: {
         value: _vm.group_tree_dialog,
         callback: function($$v) {
@@ -59979,6 +59996,53 @@ var render = function() {
       _c("v-card", { staticClass: "member-tree" }, [
         _c("div", [
           _c("div", { attrs: { id: "left-panel" } }, [
+            _c(
+              "div",
+              {
+                staticClass: "border fill left-container",
+                staticStyle: { padding: "8px" }
+              },
+              [
+                _c("div", { staticClass: "left-container-item" }, [
+                  _c(
+                    "div",
+                    {
+                      staticStyle: {
+                        width: "100%",
+                        height: "100%",
+                        "font-size": "24px"
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                          指派職務為\n                      "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.level_array, function(l) {
+                  return _c(
+                    "div",
+                    { key: l.level, staticClass: "left-container-item" },
+                    [
+                      _c("v-btn", [
+                        _vm._v(
+                          "\n                          " +
+                            _vm._s(l.name) +
+                            "\n                      "
+                        )
+                      ])
+                    ],
+                    1
+                  )
+                })
+              ],
+              2
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { attrs: { id: "middle-panel" } }, [
             _vm.group_tree_dialog
               ? _c("iframe", {
                   staticClass: "border fill",
