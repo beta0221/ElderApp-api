@@ -2861,6 +2861,16 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         'level': 1,
         'name': '平民'
+      }],
+      org_rank_array: [{
+        'level': 5,
+        'name': '領航天使'
+      }, {
+        'level': 4,
+        'name': '守護天使'
+      }, {
+        'level': 3,
+        'name': '大天使'
       }]
     };
   },
@@ -60021,7 +60031,7 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._l(_vm.level_array, function(l) {
+                _vm._l(_vm.org_rank_array, function(l) {
                   return _c(
                     "div",
                     { key: l.level, staticClass: "left-container-item" },

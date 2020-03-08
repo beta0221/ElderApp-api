@@ -12,7 +12,7 @@
                         </div>
                     </div>
                     <div class="left-container-item"
-                        v-for="l in level_array" 
+                        v-for="l in org_rank_array" 
                         v-bind:key="l.level">
                         <v-btn>
                             {{l.name}}
@@ -86,7 +86,12 @@ export default {
                 {'level':3,'name':'大天使'},
                 {'level':2,'name':'小天使'},
                 {'level':1,'name':'平民'},
-            ]
+            ],
+            org_rank_array:[
+                {'level':5,'name':'領航天使'},
+                {'level':4,'name':'守護天使'},
+                {'level':3,'name':'大天使'},
+            ],
         }
     },
     methods:{

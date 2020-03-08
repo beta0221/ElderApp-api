@@ -505,15 +505,19 @@ class MemberController extends Controller
 
 
         $dic=[];
+        $validDic=[];
         foreach ($group_users as  $g_user) {
-            $name = User::select('name')->where('id',$g_user->user_id)->first()->name;
-            $dic[$g_user->user_id] = $name;
+            if($_user = User::select('name','valid')->where('id',$g_user->user_id)->first()){
+                $dic[$g_user->user_id] = $_user->name;
+                $validDic[$g_user->user_id] = $_user->valid;
+            }
         }
 
         return view('member.tree',[
             'user_id'=>$user->id,
             'group_users'=>json_encode($group_users),
-            'name_dic'=>json_encode($dic)
+            'name_dic'=>json_encode($dic),
+            'valid_dic'=>json_encode($validDic)
         ]);
 
     }

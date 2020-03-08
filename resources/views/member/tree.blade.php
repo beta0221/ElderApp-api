@@ -104,8 +104,7 @@
     var UserId = {{$user_id}};
     var group_users = {!!$group_users!!};
     var name_dic = {!!$name_dic!!};
-    //console.log(group_users);
-    //console.log(name_dic);
+    var valid_dic = {!!$valid_dic!!};
     var temp = {};
     var dic = {};
     $(document).ready(function () {
@@ -191,6 +190,12 @@
 
         //給主角顏色
         $('.cell-user.user_'+UserId).css({'background':'#2196f3','color':'#fff'});
+        //效期顏色
+        Object.keys(valid_dic).forEach(function(key){
+            if(valid_dic[key] != 1){
+                $('.cell-user.user_'+key).css({'color':'Red'});
+            }
+        });
 
     });
 
