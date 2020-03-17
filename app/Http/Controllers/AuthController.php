@@ -67,6 +67,7 @@ class AuthController extends Controller
             'name'=>$user->name,
             'wallet'=>$user->wallet,
             'rank'=>$user->rank,
+            'org_rank'=>$user->org_rank,
         ]);
     }
 

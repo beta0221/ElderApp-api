@@ -500,7 +500,7 @@ class MemberController extends Controller
         }
         $group_users = $user->getGroupUsers();
         if(count($group_users)<=0){
-            return response('此使用者並無所屬組織。');
+            return response('使用者並無所屬組織。');
         }
 
 
