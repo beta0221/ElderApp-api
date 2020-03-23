@@ -12,6 +12,10 @@ class Event extends Model
     public $timestamps=true;
 
     protected $guarded=[];    
+
+    const TYPE_ONETIME = 1;
+    const TYPE_FREQUENTLY = 2;
+    const MIN_DAYS = 8;
     
     public function guests(){
         return $this->belongsToMany('App\User','event_users','event_id','user_id');

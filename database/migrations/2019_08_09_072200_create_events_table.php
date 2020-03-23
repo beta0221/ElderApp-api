@@ -22,11 +22,11 @@ class CreateEventsTable extends Migration
             $table->string('slug');
             $table->string('title');
             $table->mediumText('body')->nullable();
-            $table->dateTime('dateTime');
-            $table->dateTime('dateTime_2');
+            $table->dateTime('dateTime')->nullable();
+            $table->dateTime('dateTime_2')->nullable();
             $table->string('location');
             $table->string('image')->nullable();
-            $table->dateTime('deadline');
+            $table->dateTime('deadline')->nullable();
             $table->integer('maximum')->default(20);
             $table->integer('people')->default(0);
             

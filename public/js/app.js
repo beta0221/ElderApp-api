@@ -3521,6 +3521,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
@@ -3529,6 +3540,13 @@ __webpack_require__.r(__webpack_exports__);
       event_image: null,
       file: '',
       eventCat: [],
+      eventType: [{
+        'key': 1,
+        'value': '一次性'
+      }, {
+        'key': 2,
+        'value': '經常性'
+      }],
       eventCatDic: {},
       rewardLevelDic: {},
       rewardLevel: [{
@@ -3545,7 +3563,8 @@ __webpack_require__.r(__webpack_exports__);
       slug: "",
       form: {
         title: "",
-        category: "",
+        event_type: 1,
+        category_id: "",
         district_id: "",
         reward_level_id: 1,
         location: "",
@@ -3553,11 +3572,22 @@ __webpack_require__.r(__webpack_exports__);
         dateTime: "",
         dateTime_2: "",
         deadline: "",
+        days: "8",
         body: ""
       }
     };
   },
   watch: {
+    'form.maximum': function formMaximum(val) {
+      if (val < 0) {
+        this.form.maximum = 0;
+      }
+    },
+    'form.days': function formDays(val) {
+      if (val < 8) {
+        this.form.days = 8;
+      }
+    },
     event_date: function event_date(val) {
       this.form.dateTime = val + ' ' + this.event_time + ":00";
     },
@@ -3577,19 +3607,25 @@ __webpack_require__.r(__webpack_exports__);
       this.form.deadline = this.dead_date + ' ' + val + ":00";
     },
     'form.dateTime': function formDateTime(val) {
-      var a = val.split(" ");
-      this.event_date = a[0];
-      this.event_time = a[1].substr(0, 5);
+      if (val) {
+        var a = val.split(" ");
+        this.event_date = a[0];
+        this.event_time = a[1].substr(0, 5);
+      }
     },
     'form.dateTime_2': function formDateTime_2(val) {
-      var a = val.split(" ");
-      this.event_date_2 = a[0];
-      this.event_time_2 = a[1].substr(0, 5);
+      if (val) {
+        var a = val.split(" ");
+        this.event_date_2 = a[0];
+        this.event_time_2 = a[1].substr(0, 5);
+      }
     },
     'form.deadline': function formDeadline(val) {
-      var a = val.split(" ");
-      this.dead_date = a[0];
-      this.dead_time = a[1].substr(0, 5);
+      if (val) {
+        var a = val.split(" ");
+        this.dead_date = a[0];
+        this.dead_time = a[1].substr(0, 5);
+      }
     }
   },
   created: function created() {
@@ -3609,7 +3645,8 @@ __webpack_require__.r(__webpack_exports__);
         if (res.data.s == 1) {
           var event = res.data.event;
           _this.form.title = event.title;
-          _this.form.category = _this.eventCatDic[event.category_id];
+          _this.form.event_type = event.event_type;
+          _this.form.category_id = event.category_id;
           _this.form.district_id = event.district_id;
           _this.form.location = event.location;
           _this.form.maximum = event.maximum;
@@ -3617,6 +3654,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.form.dateTime = event.dateTime;
           _this.form.dateTime_2 = event.dateTime_2;
           _this.form.deadline = event.deadline;
+          _this.form.days = event.days;
           _this.slug = event.slug;
 
           if (event.image) {
@@ -3697,7 +3735,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         if (res.data.s == 1) {
           _this5.$router.push({
-            path: "event"
+            path: "/event"
           });
         } else {
           alert(res.data.m);
@@ -3718,7 +3756,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         if (res.data.s == 1) {
           _this6.$router.push({
-            name: "event"
+            path: "/event"
           });
         } else {
           alert(res.data.m);
@@ -60805,6 +60843,29 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
+                "div",
+                [
+                  _c("v-select", {
+                    attrs: {
+                      items: _vm.eventType,
+                      "item-text": "value",
+                      "item-value": "key",
+                      label: "活動週期",
+                      solo: ""
+                    },
+                    model: {
+                      value: _vm.form.event_type,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "event_type", $$v)
+                      },
+                      expression: "form.event_type"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
                 "v-col",
                 { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
                 [
@@ -60812,16 +60873,16 @@ var render = function() {
                     attrs: {
                       items: _vm.eventCat,
                       "item-text": "name",
-                      "item-value": "name",
+                      "item-value": "id",
                       label: "活動類別",
                       solo: ""
                     },
                     model: {
-                      value: _vm.form.category,
+                      value: _vm.form.category_id,
                       callback: function($$v) {
-                        _vm.$set(_vm.form, "category", $$v)
+                        _vm.$set(_vm.form, "category_id", $$v)
                       },
-                      expression: "form.category"
+                      expression: "form.category_id"
                     }
                   })
                 ],
@@ -60906,11 +60967,11 @@ var render = function() {
                     {
                       on: {
                         click: function($event) {
-                          _vm.form.maximum++
+                          _vm.form.maximum--
                         }
                       }
                     },
-                    [_vm._v("+")]
+                    [_vm._v("-")]
                   ),
                   _vm._v(" "),
                   _c("v-text-field", {
@@ -60930,11 +60991,11 @@ var render = function() {
                     {
                       on: {
                         click: function($event) {
-                          _vm.form.maximum--
+                          _vm.form.maximum++
                         }
                       }
                     },
-                    [_vm._v("-")]
+                    [_vm._v("+")]
                   )
                 ],
                 1
@@ -60943,6 +61004,16 @@ var render = function() {
               _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }, [
                 _c(
                   "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.form.event_type == 1 ? true : false,
+                        expression: "(form.event_type==1)?true:false"
+                      }
+                    ]
+                  },
                   [
                     _c("h3", { staticClass: "grey--text" }, [
                       _vm._v("活動開始時間")
@@ -60974,6 +61045,16 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.form.event_type == 1 ? true : false,
+                      expression: "(form.event_type==1)?true:false"
+                    }
+                  ]
+                },
                 [
                   _c("h3", { staticClass: "grey--text" }, [_vm._v("結束時間")]),
                   _vm._v(" "),
@@ -61000,45 +61081,113 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("hr", { staticClass: "mt-4" }),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.form.event_type == 1 ? true : false,
+                      expression: "(form.event_type==1)?true:false"
+                    }
+                  ]
+                },
+                [
+                  _c("hr", { staticClass: "mt-4" }),
+                  _vm._v(" "),
+                  _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }, [
+                    _c(
+                      "div",
+                      { staticClass: "mt-4 mb-4" },
+                      [
+                        _c("h3", { staticClass: "grey--text" }, [
+                          _vm._v("報名截止間")
+                        ]),
+                        _vm._v(" "),
+                        _c("v-date-picker", {
+                          attrs: { color: "red lighten-1" },
+                          model: {
+                            value: _vm.dead_date,
+                            callback: function($$v) {
+                              _vm.dead_date = $$v
+                            },
+                            expression: "dead_date"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("v-time-picker", {
+                          attrs: {
+                            "ampm-in-title": "true",
+                            color: "red lighten-1"
+                          },
+                          model: {
+                            value: _vm.dead_time,
+                            callback: function($$v) {
+                              _vm.dead_time = $$v
+                            },
+                            expression: "dead_time"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ])
+                ],
+                1
+              ),
               _vm._v(" "),
-              _c("v-col", { attrs: { cols: "12", sm: "6", md: "3" } }, [
-                _c(
-                  "div",
-                  { staticClass: "mt-4 mb-4" },
-                  [
-                    _c("h3", { staticClass: "grey--text" }, [
-                      _vm._v("報名截止間")
-                    ]),
-                    _vm._v(" "),
-                    _c("v-date-picker", {
-                      attrs: { color: "red lighten-1" },
-                      model: {
-                        value: _vm.dead_date,
-                        callback: function($$v) {
-                          _vm.dead_date = $$v
-                        },
-                        expression: "dead_date"
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.form.event_type == 1 ? false : true,
+                      expression: "(form.event_type==1)?false:true"
+                    }
+                  ]
+                },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.form.days--
+                        }
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("v-time-picker", {
-                      attrs: {
-                        "ampm-in-title": "true",
-                        color: "red lighten-1"
+                    },
+                    [_vm._v("-")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    staticClass: "d-inline-block",
+                    attrs: { label: "開課天數" },
+                    model: {
+                      value: _vm.form.days,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "days", $$v)
                       },
-                      model: {
-                        value: _vm.dead_time,
-                        callback: function($$v) {
-                          _vm.dead_time = $$v
-                        },
-                        expression: "dead_time"
+                      expression: "form.days"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.form.days++
+                        }
                       }
-                    })
-                  ],
-                  1
-                )
-              ]),
+                    },
+                    [_vm._v("+")]
+                  )
+                ],
+                1
+              ),
               _vm._v(" "),
               _c(
                 "v-col",

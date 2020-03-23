@@ -25,8 +25,12 @@
           <v-text-field label="Solo" placeholder="活動標題" solo v-model="form.title"></v-text-field>
         </v-col>
 
+        <div>
+          <v-select :items="eventType" item-text="value" item-value="key" label="活動週期" solo v-model="form.event_type"></v-select>
+        </div>
+
         <v-col class="d-flex" cols="12" sm="6">
-          <v-select :items="eventCat" item-text="name" item-value="name" label="活動類別" solo v-model="form.category"></v-select>
+          <v-select :items="eventCat" item-text="name" item-value="id" label="活動類別" solo v-model="form.category_id"></v-select>
         </v-col>
 
           <div>
@@ -46,34 +50,41 @@
         </v-col>
 
         <v-col cols="6" sm="6" md="3">
-
+          <v-btn @click="form.maximum--">-</v-btn>          
+            <v-text-field class="d-inline-block" label="人數上限" v-model="form.maximum"></v-text-field>
           <v-btn @click="form.maximum++">+</v-btn>
-          <v-text-field class="d-inline-block" label="人數上限" v-model="form.maximum"></v-text-field>
-          <v-btn @click="form.maximum--">-</v-btn>
         </v-col>
         
         <v-col cols="12" sm="6" md="3">
-          <div>
+          <div v-show="(form.event_type==1)?true:false">
             <h3 class="grey--text">活動開始時間</h3>
             <v-date-picker v-model="event_date"></v-date-picker>
             <v-time-picker v-model="event_time"></v-time-picker>
           </div>
         </v-col>
 
-        <div>
+        <div v-show="(form.event_type==1)?true:false">
           <h3 class="grey--text">結束時間</h3>
           <v-date-picker v-model="event_date_2"></v-date-picker>
           <v-time-picker v-model="event_time_2"></v-time-picker>
         </div>
 
-        <hr class="mt-4">
-        <v-col cols="12" sm="6" md="3">
-          <div class="mt-4 mb-4">
-            <h3 class="grey--text">報名截止間</h3>
-            <v-date-picker color="red lighten-1" v-model="dead_date"></v-date-picker>
-            <v-time-picker ampm-in-title="true" color="red lighten-1" v-model="dead_time"></v-time-picker>
-          </div>
-        </v-col>
+        <div v-show="(form.event_type==1)?true:false">
+          <hr class="mt-4">
+          <v-col cols="12" sm="6" md="3">
+            <div class="mt-4 mb-4">
+              <h3 class="grey--text">報名截止間</h3>
+              <v-date-picker color="red lighten-1" v-model="dead_date"></v-date-picker>
+              <v-time-picker ampm-in-title="true" color="red lighten-1" v-model="dead_time"></v-time-picker>
+            </div>
+          </v-col>
+        </div>
+
+        <div v-show="(form.event_type==1)?false:true">
+          <v-btn @click="form.days--">-</v-btn>
+            <v-text-field class="d-inline-block" label="開課天數" v-model="form.days"></v-text-field>
+          <v-btn @click="form.days++">+</v-btn>
+        </div>
 
         <v-col cols="12" sm="6" md="3">
           <markdown-editor v-model="form.body"></markdown-editor>
@@ -98,6 +109,16 @@ export default {
       event_image:null,
       file:'',
       eventCat:[],
+      eventType:[
+        {
+          'key':1,
+          'value':'一次性'
+        },
+        {
+          'key':2,
+          'value':'經常性'
+        },
+      ],
       eventCatDic:{},
       rewardLevelDic:{},
       rewardLevel:[
@@ -113,7 +134,8 @@ export default {
       slug:"",
       form: {
         title: "",
-        category: "",
+        event_type:1,
+        category_id: "",
         district_id:"",
         reward_level_id:1,
         location: "",
@@ -121,6 +143,7 @@ export default {
         dateTime:"",
         dateTime_2:"",
         deadline:"",
+        days:"8",
         body: ""
       },
 
@@ -128,6 +151,16 @@ export default {
     };
   },
   watch:{
+    'form.maximum':function(val){
+      if(val < 0){
+        this.form.maximum = 0;
+      }
+    },
+    'form.days':function(val){
+      if(val < 8){
+        this.form.days = 8;
+      }
+    },
     event_date(val){
       this.form.dateTime = val + ' ' + this.event_time+":00";
     },
@@ -147,19 +180,25 @@ export default {
       this.form.deadline = this.dead_date + ' ' + val+":00";
     },
     'form.dateTime':function(val){
-      let a = val.split(" ");
-      this.event_date = a[0];
-      this.event_time = a[1].substr(0,5);
+      if(val){
+        let a = val.split(" ");
+        this.event_date = a[0];
+        this.event_time = a[1].substr(0,5);
+      }
     },
     'form.dateTime_2':function(val){
-      let a = val.split(" ");
-      this.event_date_2 = a[0];
-      this.event_time_2 = a[1].substr(0,5);
+      if(val){
+        let a = val.split(" ");
+        this.event_date_2 = a[0];
+        this.event_time_2 = a[1].substr(0,5);
+      }
     },
     'form.deadline':function(val){
-      let a = val.split(" ");
-      this.dead_date = a[0];
-      this.dead_time = a[1].substr(0,5);
+      if(val){
+        let a = val.split(" ");
+        this.dead_date = a[0];
+        this.dead_time = a[1].substr(0,5);
+      }
     }
 
   },
@@ -180,7 +219,8 @@ export default {
         if(res.data.s==1){
           let event = res.data.event;
           this.form.title = event.title;
-          this.form.category = this.eventCatDic[event.category_id];
+          this.form.event_type = event.event_type;
+          this.form.category_id = event.category_id;
           this.form.district_id = event.district_id;
           this.form.location = event.location;
           this.form.maximum = event.maximum;
@@ -188,6 +228,7 @@ export default {
           this.form.dateTime = event.dateTime;
           this.form.dateTime_2 = event.dateTime_2;
           this.form.deadline = event.deadline;
+          this.form.days = event.days;
           this.slug = event.slug;
           if(event.image){
             this.event_image = `/images/events/${event.slug}/${event.image}`;
@@ -247,7 +288,7 @@ export default {
         })
         .then(res =>{
           if(res.data.s == 1){
-            this.$router.push({path:"event"});
+            this.$router.push({path:"/event"});
           }else{
             alert(res.data.m);
           }
@@ -267,7 +308,7 @@ export default {
         .then(res =>{
           
           if(res.data.s == 1){
-            this.$router.push({name:"event"});
+            this.$router.push({path:"/event"});
           }else{
             alert(res.data.m);
           }

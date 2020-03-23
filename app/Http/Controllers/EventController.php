@@ -95,12 +95,9 @@ class EventController extends Controller
             $this->validate($request,[
                 'title'=>'required',
                 'body'=>'required',
-                'dateTime'=>'required',
-                'dateTime_2'=>'required',
                 'location'=>'required',
                 'maximum'=>'required|min:1|integer',
-                'deadline'=>'required',
-                'category'=>'required',
+                'category_id'=>'required',
                 'district_id'=>'required',
                 'file'=>'sometimes|nullable|image',
             ]);
@@ -114,54 +111,52 @@ class EventController extends Controller
 
         $event_slug='A'.time();
         $request['slug']=$event_slug;
-        $name=$request['category'];
-        unset($request['category']);
+        
 
-        $unixNow=time();
-        $unixDeadline=strtotime($request['deadline']);
-        $unixDateTime=strtotime($request['dateTime']);
-        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
-        {
-            return response()->json([
-                's'=>0,
-                'm'=>'活動時間與截止期限設定錯誤!'
-            ]);
+
+        switch ($request->event_type) {
+            case Event::TYPE_FREQUENTLY:
+                if(!isset($request->days) || $request->days < Event::MIN_DAYS){
+                    return response()->json([
+                        's'=>0,'m'=>'天數不可為空，且必須大於8天。'
+                    ]);
+                }
+                break;
+            case Event::TYPE_ONETIME;
+                if(!$this->isEventDateTimeAllGood($request)){
+                    return response()->json([
+                        's'=>0,'m'=>'活動時間與截止期限設定錯誤!'
+                    ]);
+                }
+                unset($request['days']);
+                break;
+            default:
+                break;
         }
-
-
         
         if($request->hasFile('file')){
-            $filename = $this->imageHandler($request->file('file'),$event_slug);
-            
-            if($filename){
-                $request->merge(['image'=>$filename]);
-            }else{
+            if(!$filename = $this->imageHandler($request->file('file'),$event_slug)){
                 return response()->json([
-                    's'=>0,
-                    'm'=>'檔案無法儲存',
+                    's'=>0,'m'=>'檔案無法儲存',
                 ]);
-            }   
+            }
+            $request->merge(['image'=>$filename]);   
         }else{
             $request->merge(['image'=>""]);
         }
 
-        $category=Category::where('name',$name)->first();
-        if($category){
-            $request['category_id']=$category->id;
-            //--------------------------------------------------
+
+        //--------------------------------------------------
+        try {
             $event=Event::create($request->except('file'));
-            //--------------------------------------------------
-            
-            return response()->json([
-                's'=>1,
-                'event'=>$event,
-            ]);
-        }else{
-            return response()->json([
-                's'=>0,
-                'm'=>'Category not found!'
-            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['s'=>0,'m'=>json_encode($th)]);
         }
+        //--------------------------------------------------
+        
+        return response()->json([
+            's'=>1,'event'=>$event,
+        ]);
         
     }
 
@@ -220,79 +215,86 @@ class EventController extends Controller
     public function update(Request $request, $slug)
     {
         
-        $event=Event::where('slug',$slug)->first();
-        
-        if($event){
-            
-            if(Auth::user()->hasRole('teacher')){
-                if($event->owner_id != Auth::user()->id){
-                    return response()->json([
-                        's'=>0,
-                        'm'=>'Event not found!'
-                    ]);
-                }
-            }
-
-            $unixNow=time();
-            $unixDeadline=strtotime($request['deadline']);
-            $unixDateTime=strtotime($request->dateTime);
-
-            if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
-            {
-                return response()->json([
-                    's'=>0,
-                    'm'=>'活動時間與截止期限設定錯誤!'
-                ]);
-            }
-            
-            $category=Category::where('name',$request->category)->first();
-            if(!$category){
-                return response()->json([
-                    's'=>0,
-                    'm'=>'Category not found!'
-                ]);
-            }else{
-                $request->merge(['category_id'=>$category->id]);
-                unset($request['category']);
-            }
-
-            if($request->hasFile('file')){
-                $filename = $this->imageHandler($request->file('file'),$event->slug );
-                if($filename){
-                    $request->merge(['image'=>$filename]);
-                }else{
-                    return response()->json([
-                        's'=>0,
-                        'm'=>'檔案無法儲存',
-                    ]);
-                }   
-            }
-
-            if($event->maximum > $request->maximum){
-                unset($request['maximum']);
-            }
-
-
-            try {
-                $event->update($request->except('file'));
-            } catch (\Throwable $th) {
-                return response($th,500);
-            }            
-
+        if(!$event=Event::where('slug',$slug)->first()){
             return response()->json([
-                's'=>1,
-                // 'event'=>$event,
-                'm'=>'update success!'
+                's'=>0,'m'=>'Event not found!'
             ]);
-            
+        }
+        
+        if(Auth::user()->hasRole('teacher')){
+            if($event->owner_id != Auth::user()->id){
+                return response()->json([
+                    's'=>0,'m'=>'Event not found!'
+                ]);
+            }
         }
 
+        switch ($request->event_type) {
+            case Event::TYPE_FREQUENTLY:
+                if(!isset($request->days) || $request->days < Event::MIN_DAYS){
+                    return response()->json([
+                        's'=>0,'m'=>'天數不可為空，且必須大於8天。'
+                    ]);
+                }
+                unset($request['deadline']);
+                unset($request['dateTime']);
+                unset($request['dateTime_2']);
+                break;
+            case Event::TYPE_ONETIME;
+                if(!$this->isEventDateTimeAllGood($request)){
+                    return response()->json([
+                        's'=>0,'m'=>'活動時間與截止期限設定錯誤!'
+                    ]);
+                }
+                unset($request['days']);
+                break;
+            default:
+                break;
+        }
+
+        
+        if($request->hasFile('file')){
+            if(!$filename = $this->imageHandler($request->file('file'),$event->slug )){
+                return response()->json([
+                    's'=>0,'m'=>'檔案無法儲存',
+                ]);
+            }
+            $request->merge(['image'=>$filename]);
+        }
+
+        if($event->maximum > $request->maximum){
+            unset($request['maximum']);
+        }
+
+
+        try {
+            $event->update($request->except('file'));
+        } catch (\Throwable $th) {
+            return response($th,500);
+        }            
+
         return response()->json([
-            's'=>0,
-            'm'=>'Event not found!'
+            's'=>1,'m'=>'update success!'
         ]);
         
         
+        
+    }
+
+    private function isEventDateTimeAllGood(Request $request){
+
+        if(empty($request->deadline)){return false;}
+        if(empty($request->dateTime)){return false;}
+        if(empty($request->dateTime_2)){return false;}
+
+        $unixNow=time();
+        $unixDeadline=strtotime($request->deadline);
+        $unixDateTime=strtotime($request->dateTime);
+        if($unixNow>$unixDeadline || $unixNow>$unixDateTime || $unixDeadline>$unixDateTime)
+        {
+            return false;
+        }
+        return true;
     }
 
     /**
