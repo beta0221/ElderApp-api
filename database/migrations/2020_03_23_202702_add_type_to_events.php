@@ -16,7 +16,8 @@ class AddTypeToEvents extends Migration
         Schema::table('events', function (Blueprint $table) {
             $table->integer('event_type')->default(1)->after('slug');
             $table->integer('days')->nullable()->after('people');
-            $table->integer('require_signup')->default(1)->after('days');
+            $table->integer('current_day')->nullable()->after('days');
+            $table->integer('require_signup')->default(1)->after('current_day');
             $table->integer('price')->nullable()->after('require_signup');
         });
     }
@@ -31,6 +32,7 @@ class AddTypeToEvents extends Migration
         Schema::table('events', function (Blueprint $table) {
             $table->dropColumn('price');
             $table->dropColumn('require_signup');
+            $table->dropColumn('current_day');
             $table->dropColumn('days');
             $table->dropColumn('event_type');
         });

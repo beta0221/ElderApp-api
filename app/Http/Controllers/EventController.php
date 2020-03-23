@@ -450,16 +450,63 @@ class EventController extends Controller
     }
 
     public function rewardQrCode($slug){
-        $event = Event::where('slug',$slug)->first();
-        if($event){
-            return view('event.qrcode',[
-                'event'=>$event,
-            ]);
-        }else{
+        if(!$event = Event::where('slug',$slug)->first()){
             return response('活動不存在');
+        }
+        switch ($event->event_type) {
+            case Event::TYPE_FREQUENTLY:
+                return view('event.days_qrcode',[
+                    'event'=>$event,
+                ]);
+                break;
+            case Event::TYPE_ONETIME:
+                return view('event.qrcode',[
+                    'event'=>$event,
+                ]);    
+                break;
+            default:
+                break;
         }
     }
 
+    public function updateEventCurrentDay(Request $request,$slug){
+        
+        if(!$event = Event::where('slug',$slug)->first()){
+            return response()->json([
+                's'=>0,'m'=>'活動不存在'
+            ]);
+        }
+
+        $upToDay = $request->upToDay;
+        if(!isset($upToDay) || empty($upToDay)){
+            return response()->json([
+                's'=>0,'m'=>'upToDay cannot be null or empty'
+            ]);
+        }
+
+        if($event->current_day >= $upToDay){
+            return response()->json([
+                's'=>0,'m'=>'not allow to go backward'
+            ]);
+        }
+
+        
+        try {
+            $event->update([
+                'current_day'=>$upToDay,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                's'=>0,'m'=>json_encode($th)
+            ]);
+        }
+
+        return response()->json([
+            's'=>1,'m'=>'success'
+        ]);
+
+
+    }
     
     public function isUserArrive($slug){
         $user_id = Auth::user()->id;

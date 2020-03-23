@@ -25,7 +25,7 @@
           <v-text-field label="Solo" placeholder="活動標題" solo v-model="form.title"></v-text-field>
         </v-col>
 
-        <div>
+        <div v-if="edit_mode==false">
           <v-select :items="eventType" item-text="value" item-value="key" label="活動週期" solo v-model="form.event_type"></v-select>
         </div>
 

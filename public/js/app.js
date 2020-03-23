@@ -60842,28 +60842,30 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c(
-                "div",
-                [
-                  _c("v-select", {
-                    attrs: {
-                      items: _vm.eventType,
-                      "item-text": "value",
-                      "item-value": "key",
-                      label: "活動週期",
-                      solo: ""
-                    },
-                    model: {
-                      value: _vm.form.event_type,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "event_type", $$v)
-                      },
-                      expression: "form.event_type"
-                    }
-                  })
-                ],
-                1
-              ),
+              _vm.edit_mode == false
+                ? _c(
+                    "div",
+                    [
+                      _c("v-select", {
+                        attrs: {
+                          items: _vm.eventType,
+                          "item-text": "value",
+                          "item-value": "key",
+                          label: "活動週期",
+                          solo: ""
+                        },
+                        model: {
+                          value: _vm.form.event_type,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "event_type", $$v)
+                          },
+                          expression: "form.event_type"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                : _vm._e(),
               _vm._v(" "),
               _c(
                 "v-col",

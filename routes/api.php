@@ -72,6 +72,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later
     Route::get('isUserArrive/{slug}','EventController@isUserArrive');
     Route::post('arriveEvent/{slug}','EventController@arriveEvent');
+    Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay')->middleware('role:teacher');
     
     //交易
     Route::post('transaction','TransactionController@transaction');
