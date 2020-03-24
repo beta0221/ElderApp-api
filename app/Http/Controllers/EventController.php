@@ -612,7 +612,11 @@ class EventController extends Controller
         switch ($event->event_type) {
             case Event::TYPE_FREQUENTLY:
                 
-                $current_day = $event->current_day;
+                if(!$current_day = $event->current_day){
+                    return response()->json([
+                        's'=>0,'m'=>'活動尚未開始。'
+                    ]);
+                }
 
                 if(FreqEventUser::isRewardDrawed($user_id,$current_day)){
                     return response()->json([
