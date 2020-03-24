@@ -79,9 +79,9 @@ class EventController extends Controller
             $numberOfPeople = $event->numberOfPeople();
             $event['numberOfPeople'] = $numberOfPeople;
             if($event->event_type==Event::TYPE_FREQUENTLY){
-                $event['dateTime'] = '';
-                $event['dateTime_2'] = '';
-                $event['deadline'] = '';
+                // $event['dateTime'] = '-';
+                // $event['dateTime_2'] = '-';
+                // $event['deadline'] = '-';
             }
         }
 
