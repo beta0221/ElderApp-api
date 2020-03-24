@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Transaction;
 use App\User;
 use App\Category;
+use App\FreqEventUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
@@ -595,16 +596,12 @@ class EventController extends Controller
             $slug = $str[1];
         }
 
-
-        $event = Event::where('slug',$slug)->first();
-        if(!$event){
+        if(!$event = Event::where('slug',$slug)->first()){
             return response()->json([
-                's'=>0,
-                'm'=>'Event not found!'
+                's'=>0,'m'=>'Event not found!'
             ]);
         }
-
-
+        
         if(!$event->isParticipated($user_id)){
             return response()->json([
                 's'=>0,
@@ -612,12 +609,34 @@ class EventController extends Controller
             ]);
         }
 
-        if($event->isRewardDrawed($user_id)){
-            return response()->json([
-                's'=>0,
-                'm'=>'獎勵已領取。'
-            ]);
+        switch ($event->event_type) {
+            case Event::TYPE_FREQUENTLY:
+                
+                $current_day = $event->current_day;
+
+                if(FreqEventUser::isRewardDrawed($user_id,$current_day)){
+                    return response()->json([
+                        's'=>0,'m'=>'獎勵已領取。'
+                    ]);
+                }
+
+                FreqEventUser::drawReward($user_id,$current_day,$event->id);
+                
+                break;
+            case Event::TYPE_ONETIME;
+
+                if($event->isRewardDrawed($user_id)){
+                    return response()->json([
+                        's'=>0,'m'=>'獎勵已領取。'
+                    ]);
+                }
+                
+                break;
+            default:
+                break;
         }
+
+
 
         try {
             //使用者加錢
@@ -632,7 +651,7 @@ class EventController extends Controller
             Transaction::create([
                 'tran_id'=>time() . rand(10,99),
                 'user_id'=>$user->id,
-                'event' =>'活動獎勵' . $event->title,
+                'event' =>'活動獎勵-' . $event->title,
                 'amount'=>$rewardAmount,
                 'target_id'=>0,
                 'give_take'=>true,
@@ -642,12 +661,13 @@ class EventController extends Controller
         }
 
         return response()->json([
-            's'=>1,
-            'm'=>'您已成功領取活動參與獎勵。'
+            's'=>1,'m'=>'您已成功領取活動參與獎勵。'
         ]);
 
     }
 
+
+    
 
 
 
