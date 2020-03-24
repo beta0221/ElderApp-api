@@ -356,23 +356,24 @@ class EventController extends Controller
 
     public function JoinEvent(Request $request,$slug){
 
-        $event=Event::where('slug',$slug)->first();
-
-        if(!$event){
+        if(!$event=Event::where('slug',$slug)->first()){
             return response()->json([
-                's'=>0,
-                'm'=>'此活動不存在。'
+                's'=>0,'m'=>'此活動不存在。'
             ]);
         }
 
-        $unixDeadline=strtotime($event->deadline);
-        $unixNow=time();
-        if($unixNow>$unixDeadline){
-            return response()->json([
-                's'=>0,
-                'm'=>'報名已截止!'
-            ]);
+        if($event->event_type == Event::TYPE_ONETIME){
+            $unixDeadline=strtotime($event->deadline);
+            $unixNow=time();
+            if($unixNow>$unixDeadline){
+                return response()->json([
+                    's'=>0,
+                    'm'=>'報名已截止!'
+                ]);
+            }
         }
+
+        
 
         if($event->maximum <= $event->numberOfPeople()){
             return response()->json([
@@ -385,8 +386,7 @@ class EventController extends Controller
 
         if(!$user->valid){
             return response()->json([
-                's'=>0,
-                'm'=>'非常抱歉，活動報名僅限為"有效會員"，您為"待付費會員"無法報名參與。'
+                's'=>0,'m'=>'非常抱歉，活動報名僅限為"有效會員"，您為"待付費會員"無法報名參與。'
             ]);
         }
 
