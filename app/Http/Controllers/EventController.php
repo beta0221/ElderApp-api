@@ -12,6 +12,7 @@ use App\Category;
 use App\FreqEventUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
