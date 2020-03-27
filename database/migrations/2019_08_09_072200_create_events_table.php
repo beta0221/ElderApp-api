@@ -15,6 +15,7 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->boolean('public')->default(0);
             $table->integer('category_id');
             $table->integer('district_id');
             $table->integer('owner_id')->nullable();

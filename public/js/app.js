@@ -1803,6 +1803,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1829,14 +1832,17 @@ __webpack_require__.r(__webpack_exports__);
       headers: [{
         text: '#'
       }, {
+        text: "-",
+        width: "1%"
+      }, {
         text: "類別",
         value: "category_id"
       }, {
+        text: "-",
+        value: "image"
+      }, {
         text: "活動",
         value: "title"
-      }, {
-        text: "地區",
-        value: "district_id"
       }, {
         text: "地點",
         value: "location"
@@ -1855,7 +1861,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "成員"
       }, {
-        text: "-"
+        text: "-",
+        width: "1%"
       }]
     };
   },
@@ -1877,14 +1884,29 @@ __webpack_require__.r(__webpack_exports__);
     User.authOnly();
   },
   methods: {
-    showEventMembers: function showEventMembers(event_slug, event_name) {
+    updateEventPublicStatus: function updateEventPublicStatus(index) {
       var _this2 = this;
+
+      var event = this.eventArray[index];
+      axios.post('/api/updateEventPublicStatus', {
+        event_id: event.id,
+        "public": !event["public"]
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this2.eventArray[index]["public"] = res.data["public"];
+        }
+      });
+    },
+    showEventMembers: function showEventMembers(event_slug, event_name) {
+      var _this3 = this;
 
       this.dialog = true;
       this.dialogName = event_name;
       axios.get("/api/eventguests/".concat(event_slug)).then(function (res) {
         if (res.data.s == 1) {
-          _this2.eventGuests = res.data.guests;
+          _this3.eventGuests = res.data.guests;
         }
 
         console.log(res);
@@ -1898,7 +1920,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getDistrict: function getDistrict() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/api/district').then(function (res) {
         var _iteratorNormalCompletion = true;
@@ -1908,7 +1930,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var data = _step.value;
-            _this3.district[data.id] = data.name;
+            _this4.district[data.id] = data.name;
           }
         } catch (err) {
           _didIteratorError = true;
@@ -1929,7 +1951,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getCat: function getCat() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get('/api/category').then(function (res) {
         var _iteratorNormalCompletion2 = true;
@@ -1939,7 +1961,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator2 = res.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var data = _step2.value;
-            _this4.eventCat[data.id] = data.name;
+            _this5.eventCat[data.id] = data.name;
           }
         } catch (err) {
           _didIteratorError2 = true;
@@ -1964,22 +1986,22 @@ __webpack_require__.r(__webpack_exports__);
       win.focus();
     },
     getDataFromApi: function getDataFromApi() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this5$pagination = _this5.pagination,
-            sortBy = _this5$pagination.sortBy,
-            descending = _this5$pagination.descending,
-            page = _this5$pagination.page,
-            rowsPerPage = _this5$pagination.rowsPerPage; // console.log(this.pagination);
+        var _this6$pagination = _this6.pagination,
+            sortBy = _this6$pagination.sortBy,
+            descending = _this6$pagination.descending,
+            page = _this6$pagination.page,
+            rowsPerPage = _this6$pagination.rowsPerPage; // console.log(this.pagination);
 
         axios.get("/api/event", {
           params: {
-            page: _this5.pagination.page,
-            rowsPerPage: _this5.pagination.rowsPerPage,
-            descending: _this5.pagination.descending,
-            sortBy: _this5.pagination.sortBy
+            page: _this6.pagination.page,
+            rowsPerPage: _this6.pagination.rowsPerPage,
+            descending: _this6.pagination.descending,
+            sortBy: _this6.pagination.sortBy
           }
         }).then(function (res) {
           // console.log(res.data);
@@ -1987,7 +2009,7 @@ __webpack_require__.r(__webpack_exports__);
           var items = res.data.events;
           var total = res.data.total;
 
-          if (_this5.pagination.sortBy) {
+          if (_this6.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2005,7 +2027,7 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           setTimeout(function () {
-            _this5.loading = false;
+            _this6.loading = false;
             resolve({
               items: items,
               total: total
@@ -22234,7 +22256,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.event-table .title-column{\n  cursor: pointer;\n}\n.event-table .title-column:hover{\n  background: gray;\n  color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.event-table td,.event-table th{\n  padding: 0 4px!important;\n}\n.event-table .title-column{\n  cursor: pointer;\n}\n.event-table .title-column:hover{\n  background: gray;\n  color: #fff;\n}\n.image-td{\n  width: 100px;\n}\n.image-td img{\n  max-width: 100%;\n  max-height: 100%;\n  height: auto;\n  width: auto;\n}\n", ""]);
 
 // exports
 
@@ -58946,8 +58968,42 @@ var render = function() {
                 return [
                   _c("td", [_vm._v(_vm._s(props.index + 1))]),
                   _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: props.item.public ? "success" : "warning"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.updateEventPublicStatus(props.index)
+                            }
+                          }
+                        },
+                        [_vm._v(_vm._s(props.item.public ? "上架" : "下架"))]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
                   _c("td", [
                     _vm._v(_vm._s(_vm.eventCat[props.item.category_id]))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "image-td" }, [
+                    _c("img", {
+                      attrs: {
+                        src:
+                          "/images/events/" +
+                          props.item.slug +
+                          "/" +
+                          props.item.image,
+                        alt: ""
+                      }
+                    })
                   ]),
                   _vm._v(" "),
                   _c(
@@ -58964,10 +59020,13 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _c("td", [
-                    _vm._v(_vm._s(_vm.district[props.item.district_id]))
+                    _vm._v(
+                      "(" +
+                        _vm._s(_vm.district[props.item.district_id]) +
+                        ")" +
+                        _vm._s(props.item.location)
+                    )
                   ]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(props.item.location))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.dateTime))]),
                   _vm._v(" "),

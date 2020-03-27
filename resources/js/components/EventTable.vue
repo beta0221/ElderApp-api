@@ -45,11 +45,14 @@
     >
       <template v-slot:items="props">
         <td>{{props.index + 1}}</td>
+        <td>
+          <v-btn @click="updateEventPublicStatus(props.index)"
+          :color="(props.item.public)?'success':'warning'">{{(props.item.public)?'上架':'下架'}}</v-btn>
+        </td>
         <td>{{eventCat[props.item.category_id]}}</td>
-        
+        <td class="image-td"><img :src="'/images/events/'+props.item.slug+'/'+props.item.image" alt=""></td>
         <td class="title-column" @click="showRewardQrcode(props.item.slug)">{{props.item.title}}</td>
-        <td>{{district[props.item.district_id]}}</td>
-        <td>{{props.item.location}}</td>
+        <td>({{district[props.item.district_id]}}){{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
         <td>{{props.item.dateTime_2}}</td>
         <td>{{props.item.deadline}}</td>
@@ -89,16 +92,17 @@ export default {
       district:{},
       headers: [
         { text:'#'},
+        { text: "-",width:"1%"},
         { text: "類別", value: "category_id" },
+        { text: "-", value: "image" },
         { text: "活動", value: "title" },
-        { text: "地區", value: "district_id" },
         { text: "地點", value: "location" },
         { text: "活動時間", value: "dateTime" },
         { text: "結束時間", value: "dateTime_2" },
         { text: "截止日期", value: "deadline" },
         { text: "人數上限", value: "maximum" },
         { text: "成員"},
-        { text: "-"},
+        { text: "-",width:"1%"},
       ],
       
     };
@@ -119,6 +123,20 @@ export default {
     User.authOnly();
   },
   methods:{
+    updateEventPublicStatus(index){
+      let event = this.eventArray[index];
+      axios.post('/api/updateEventPublicStatus', {
+        event_id:event.id,
+        public:!event.public,
+      })
+      .catch(error=> { console.log(error); })
+      .then(res=>{
+        if(res.data.s==1){
+          this.eventArray[index].public = res.data.public;
+        }
+      })
+      
+    },
     showEventMembers(event_slug,event_name){
       
       this.dialog = true;
@@ -225,11 +243,23 @@ export default {
 </script>
 
 <style>
+.event-table td,.event-table th{
+  padding: 0 4px!important;
+}
 .event-table .title-column{
   cursor: pointer;
 }
 .event-table .title-column:hover{
   background: gray;
   color: #fff;
+}
+.image-td{
+  width: 100px;
+}
+.image-td img{
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
 }
 </style>

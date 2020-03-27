@@ -674,7 +674,27 @@ class EventController extends Controller
     }
 
 
-    
+    public function updateEventPublicStatus(Request $request){
+        // $request->event_id
+        // $request->public
+        if(!$event = Event::find($request->event_id)){
+            return response()->json(['s'=>0,'m'=>'event not found']);
+        }
+
+        $user = Auth::user();
+        if($user->hasRole('teacher')){
+            if($event->owner_id != $user->id){
+                return response()->json(['s'=>0,'m'=>'權限不足']);
+            }
+        }
+
+        $event->public = $request->public;
+        $event->save();
+
+        return response()->json([
+            's'=>1,'public'=>$request->public
+        ]);
+    }
 
 
 

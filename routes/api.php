@@ -73,6 +73,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('isUserArrive/{slug}','EventController@isUserArrive');
     Route::post('arriveEvent/{slug}','EventController@arriveEvent');
     Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay')->middleware('BCP');
+    Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus')->middleware('BCP');
     
     //交易
     Route::post('transaction','TransactionController@transaction');
