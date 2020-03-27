@@ -62,7 +62,7 @@ class EventController extends Controller
 
     //手機
     public function getEvents(Request $request){
-        $events = Event::where(function($query)use($request){
+        $events = Event::where('public',1)->where(function($query)use($request){
 
             if($request->category){
                 $query->where('category_id',$request->category);
