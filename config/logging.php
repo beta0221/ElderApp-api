@@ -89,6 +89,16 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+        'eventlog'=>[
+            'driver' => 'single',
+            'path' => storage_path('logs/event/event.log'),
+            'level' => 'debug',
+        ],
+        'translog'=>[
+            'driver' => 'single',
+            'path' => storage_path('logs/trans/trans.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

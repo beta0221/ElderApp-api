@@ -393,6 +393,7 @@ class EventController extends Controller
 
 
         if(!$user->go_events()->find($event->id)){
+            Log::channel('eventlog')->info('user '.$user->id.' joine event '.$event->id);
             $user->go_events()->attach($event->id);
             $event->peopleIncrease();
             return response()->json([
@@ -414,6 +415,7 @@ class EventController extends Controller
         if($event){
             $user=User::where('id',$request->id)->first();
             if($user->go_events()->find($event->id)){
+                Log::channel('eventlog')->info('user '.$user->id.' cancel event '.$event->id);
                 $user->go_events()->detach($event->id);
                 $event->peopleDecrease();
                 return response()->json([
@@ -640,12 +642,11 @@ class EventController extends Controller
                 break;
         }
 
-
-
+        $user = User::find($user_id);
+        $rewardAmount = $event->rewardAmount();
+        Log::channel('translog')->info('user '.$user_id.' get money '.$rewardAmount);
         try {
             //使用者加錢
-            $user = User::find($user_id);
-            $rewardAmount = $event->rewardAmount();
             $user->updateWallet(true,$rewardAmount);
 
             //註記已領取
@@ -664,6 +665,7 @@ class EventController extends Controller
             return response($th);
         }
 
+        Log::channel('eventlog')->info('user '.$user_id.' draw event '.$event->id.' reward success');
         return response()->json([
             's'=>1,'m'=>'您已成功領取活動參與獎勵。'
         ]);
