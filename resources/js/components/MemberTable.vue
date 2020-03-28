@@ -15,6 +15,9 @@
       <div v-show="show_payStatus" style="display:inline-block;width:160px;margin-left:20px;">
         <v-select v-model="searchValue" :items="payStatus" item-value="value" label="狀態" @change="search"></v-select>
       </div>
+      <div v-show="show_role" style="display:inline-block;width:160px;margin-left:20px;">
+        <v-select v-model="searchValue" :items="role" item-value="value" label="身份" @change="search"></v-select>
+      </div>
       <div v-show="show_name" style="display:inline-block;width:160px;margin-left:20px;">
         <v-text-field
           v-model.lazy="searchValue"
@@ -159,10 +162,12 @@ export default {
         {text:'職務',value:'org_rank'},
         {text:'姓名',value:'name'},
         {text:'會員狀態',value:'pay_status'},
+        {text:'身份',value:'role'},
       ],
       show_level:false,
       show_payStatus:false,
       show_name:false,
+      show_role:false,
       level:[
         {text:'職位',value:null},
         {text:'小天使',value:2},
@@ -177,6 +182,10 @@ export default {
         {text:'已繳清',value:2},
         {text:'完成',value:3},
       ],
+      role:[
+        {text:'身份',value:null},
+        {text:'老師',value:4}
+      ]
     };
   },
   watch: {
@@ -192,6 +201,7 @@ export default {
       this.show_level = false;
       this.show_payStatus = false;
       this.show_name = false;
+      this.show_role = false;
       this.searchValue = null;
       switch (val) {
         case 'org_rank':
@@ -202,6 +212,9 @@ export default {
           break;
         case 'name':
           this.show_name = true;
+          break;
+        case 'role':
+          this.show_role = true;
           break;
         default:
           this.search();

@@ -14,10 +14,17 @@
                     <div class="left-container-item"
                         v-for="l in org_rank_array" 
                         v-bind:key="l.level">
-                        <v-btn>
+                        <v-btn @click="makeGroupLeader(l.level,l.name)">
                             {{l.name}}
                         </v-btn>
-                        
+                    </div>
+                    <div class="left-container-item">
+                        <div style="width:100%;height:100%;font-size:24px;">
+                            成為老師
+                        </div>
+                    </div>
+                    <div class="left-container-item">
+                        <v-btn @click="makeTeacher()">成為老師</v-btn>
                     </div>
                 </div>
               </div>
@@ -91,6 +98,7 @@ export default {
                 {'level':5,'name':'領航天使'},
                 {'level':4,'name':'守護天使'},
                 {'level':3,'name':'大天使'},
+                {'level':2,'name':'小天使'},
             ],
         }
     },
@@ -126,7 +134,6 @@ export default {
                 'level':level,
             })
             .then(res=>{
-                console.log(res.data);
                 alert(res.data.m);
                 if(res.data.s == 1){
                     document.getElementById('tree-frame').contentWindow.location.reload(true);
@@ -134,6 +141,34 @@ export default {
             })
             .catch(error=>{
                 console.log(error);
+            })
+        },
+        makeGroupLeader(level,name){
+            if(!confirm('確定指派為'+name)){
+                return;
+            }
+            axios.post('/api/makeGroupLeader', {
+                'user_id':this.current_user_id,
+                'level':level,
+            })
+            .catch(error=>{console.log(error);})
+            .then(res=>{
+                alert(res.data.m);
+                if(res.data.s == 1){
+                    document.getElementById('tree-frame').contentWindow.location.reload(true);
+                }
+            })
+        },
+        makeTeacher(){
+            if(!confirm('確定指派為老師')){
+                return;
+            }
+            axios.post('/api/makeTeacher', {
+                'user_id':this.current_user_id,
+            })
+            .catch(error=>{console.log(error);})
+            .then(res=>{
+                alert(res.data.m);
             })
         }
     }

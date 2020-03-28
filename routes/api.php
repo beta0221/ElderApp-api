@@ -40,13 +40,12 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid')->middleware('role:accountant');
-    // Route::get('getMemberGroupMembers/{id}','MemberController@getMemberGroupMembers');
     Route::post('addGroupMember','MemberController@addGroupMember');
     Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');
-    // Route::post('deleteGroupMember','MemberController@deleteGroupMember');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
     Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
-    
+    Route::post('makeGroupLeader','MemberController@makeGroupLeader');
+    Route::post('makeTeacher','MemberController@makeTeacher');
 });
 
 //Guest 使用者------------------------

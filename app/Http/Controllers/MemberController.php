@@ -277,20 +277,6 @@ class MemberController extends Controller
         }
     }
 
-    //大天使小天使取得自己組織的成員
-    // public function getMemberGroupMembers($id){
-    //     $user = User::find($id);
-    //     if($user->org_rank==2){
-    //         $groupMembers = $user->groupUsers()->get();
-    //     }elseif($user->org_rank==1){
-    //         $groupMembers = $user->groupUsers()->get();
-    //     }
-
-    //     return response()->json([
-    //         's'=>1,
-    //         'groupMembers'=>$groupMembers,
-    //     ]);
-    // }
 
     //大天使小天使加入組織請求
     public function addGroupMember(Request $request){
@@ -304,51 +290,56 @@ class MemberController extends Controller
 
         if(!$addUser || !$leader){
             return response()->json([
-                's'=>0,
-                'm'=>'會員帳號不存在',
+                's'=>0,'m'=>'會員帳號不存在',
             ]);
         }
 
         if($request->leader_id == $request->user_id){
             return response()->json([
-                's'=>0,
-                'm'=>'無效的操作',
-            ]);
-        }
-
-        if($addUser->groupLevel() > 0){
-            return response()->json([
-                's'=>0,
-                'm'=>'此會員已經存在所屬組織。',
+                's'=>0,'m'=>'無效的操作',
             ]);
         }
 
         $leader_level = $leader->groupLevel();
         if($leader_level <= 0){
             return response()->json([
-                's'=>0,
-                'm'=>'所選的使用者無所屬組織。',
+                's'=>0,'m'=>'所選的使用者無所屬組織。',
             ]);
         }
 
         if($request->level >= $leader_level){
             return response()->json([
-                's'=>0,
-                'm'=>'所選等級不能高於使用者等級',
+                's'=>0,'m'=>'所選等級不能高於使用者等級',
             ]);
         }
 
-        if(!$result = $addUser->joinToGroup($leader->id,$request->level)){
+        if($addUser->groupLevel() <= 0){
+            if(!$result = $addUser->joinToGroup($leader->id,$request->level)){
+                return response()->json([
+                    's'=>0,'m'=>'系統錯誤',
+                ]);
+            }
+        }else if($addUser->isLeaderOfGroup()){
+
+            if($addUser->groupLevel() != $request->level){
+                return response()->json([
+                    's'=>0,'m'=>'遷移組織只能指派為目前職位',
+                ]);
+            }
+
+            if(!$result = $addUser->mergeToGroup($leader->id)){
+                return response()->json([
+                    's'=>0,'m'=>'系統錯誤',
+                ]);
+            }
+        }else{
             return response()->json([
-                's'=>0,
-                'm'=>'系統錯誤',
+                's'=>0,'m'=>'此會員已經存在所屬組織。',
             ]);
         }
-
 
         return response()->json([
-            's'=>1,
-            'm'=>'新增成功',
+            's'=>1,'m'=>'新增成功',
         ]);
 
     }
@@ -361,21 +352,46 @@ class MemberController extends Controller
         return 0;
     }
 
+    public function makeGroupLeader(Request $request){
+        //user_id
+        //level
+        if(!$user = User::find($request->user_id)){
+            return response()->json([
+                's'=>0,'m'=>'查無使用者',
+            ]);
+        }
+        if($user->groupLevel() > 0){
+            return response()->json([
+                's'=>0,'m'=>'此使用者目前已存在職位。',
+            ]);
+        }
+        if(!$result = $user->makeGroupLeader($request->level)){
+            return response()->json([
+                's'=>0,'m'=>'系統錯誤',
+            ]);
+        }
+        return response()->json([
+            's'=>1,'m'=>'指派成功',
+        ]);
+    }
 
-    // public function deleteGroupMember(Request $request){
-    //     $leader = User::find($request->leaderId);
-    //     $deleteUser = User::find($request->deleteAccountId);
+    public function makeTeacher(Request $request){
+        //user_id
+        if(!$user = User::find($request->user_id)){
+            return response()->json([
+                's'=>0,'m'=>'查無使用者',
+            ]);
+        }
+        if(!$result = $user->becomeRole('teacher')){
+            return response()->json([
+                's'=>0,'m'=>'系統錯誤',
+            ]);
+        }
 
-    //     if($leader != null && $deleteUser != null){
-    //         $leader->groupUsers()->detach($deleteUser->id);
-    //     }
-
-    //     return response()->json([
-    //         's'=>1,
-    //         'addUser'=>$deleteUser,
-    //     ]);
-
-    // }
+        return response()->json([
+            's'=>1,'m'=>'指派成功',
+        ]);
+    }
 
     //App 的 AccountPage OnAppearing 請求
     public function myAccount(){

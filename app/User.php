@@ -150,6 +150,33 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
+    public function mergeToGroup($leader_id){
+
+        if(!$leaderRow = DB::table('user_group')->where('user_id',$leader_id)->first()){
+            return false;
+        }
+
+        $update = [
+            'group_id' => $leaderRow->group_id,
+        ];
+
+        $leader_level = $leaderRow->level;
+        for($i = $leader_level; $i <=5 ; $i++){
+            $lv = 'lv_'.$i;
+            $update[$lv] = $leaderRow->$lv;
+        }
+
+        try {
+            DB::table('user_group')->where('group_id',$this->id)->update($update);
+        } catch (\Throwable $th) {
+            return false;
+            //throw $th;
+        }
+        
+        return true;
+
+    }
+
     public function groupLevel(){
         
         if($row = DB::table('user_group')->select('level')->where('user_id',$this->id)->first()){
@@ -157,6 +184,35 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0;
 
+    }
+
+    public function isLeaderOfGroup(){
+        if(!$row = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()){
+            return false;
+        }
+        if($row->group_id != $this->id){
+            return false;
+        }
+        return true;
+    }
+
+    public function makeGroupLeader($level){
+        $insert = [
+            'group_id'=>$this->id,
+            'user_id'=>$this->id,
+            'level'=>$level,
+        ];
+        $lv = 'lv_'.$level;
+        $insert[$lv] = $this->id;
+        try {
+            DB::table('user_group')->insert($insert);
+            $this->org_rank = $level;
+            $this->save();
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getGroupUsers()
@@ -229,6 +285,29 @@ class User extends Authenticatable implements JWTSubject
 
     public function go_events(){
         return $this->belongsToMany('App\Event','event_users','user_id','event_id');
+    }
+
+    public function becomeRole($role_name){
+        if(!$role = DB::table('roles')->where('name',$role_name)->first()){
+            return false;
+        }
+
+        if($role_user = DB::table('role_user')->where('user_id',$this->id)->where('role_id',$role->id)->first()){
+            return true;
+        }
+
+        try {
+            DB::table('role_user')->insert([
+                'role_id'=>$role->id,
+                'user_id'=>$this->id
+            ]);
+            $this->role = $role->id;
+            $this->save();
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return true;
     }
 
 }

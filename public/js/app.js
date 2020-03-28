@@ -2426,6 +2426,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2532,10 +2535,14 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: '會員狀態',
         value: 'pay_status'
+      }, {
+        text: '身份',
+        value: 'role'
       }],
       show_level: false,
       show_payStatus: false,
       show_name: false,
+      show_role: false,
       level: [{
         text: '職位',
         value: null
@@ -2567,6 +2574,13 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: '完成',
         value: 3
+      }],
+      role: [{
+        text: '身份',
+        value: null
+      }, {
+        text: '老師',
+        value: 4
       }]
     };
   },
@@ -2585,6 +2599,7 @@ __webpack_require__.r(__webpack_exports__);
       this.show_level = false;
       this.show_payStatus = false;
       this.show_name = false;
+      this.show_role = false;
       this.searchValue = null;
 
       switch (val) {
@@ -2598,6 +2613,10 @@ __webpack_require__.r(__webpack_exports__);
 
         case 'name':
           this.show_name = true;
+          break;
+
+        case 'role':
+          this.show_role = true;
           break;
 
         default:
@@ -2849,6 +2868,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -2893,6 +2919,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         'level': 3,
         'name': '大天使'
+      }, {
+        'level': 2,
+        'name': '小天使'
       }]
     };
   },
@@ -2927,7 +2956,6 @@ __webpack_require__.r(__webpack_exports__);
         'user_id': this.current_user_id,
         'level': level
       }).then(function (res) {
-        console.log(res.data);
         alert(res.data.m);
 
         if (res.data.s == 1) {
@@ -2935,6 +2963,37 @@ __webpack_require__.r(__webpack_exports__);
         }
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    makeGroupLeader: function makeGroupLeader(level, name) {
+      if (!confirm('確定指派為' + name)) {
+        return;
+      }
+
+      axios.post('/api/makeGroupLeader', {
+        'user_id': this.current_user_id,
+        'level': level
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function (res) {
+        alert(res.data.m);
+
+        if (res.data.s == 1) {
+          document.getElementById('tree-frame').contentWindow.location.reload(true);
+        }
+      });
+    },
+    makeTeacher: function makeTeacher() {
+      if (!confirm('確定指派為老師')) {
+        return;
+      }
+
+      axios.post('/api/makeTeacher', {
+        'user_id': this.current_user_id
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function (res) {
+        alert(res.data.m);
       });
     }
   }
@@ -59814,6 +59873,39 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
+                value: _vm.show_role,
+                expression: "show_role"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: { items: _vm.role, "item-value": "value", label: "身份" },
+              on: { change: _vm.search },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
                 value: _vm.show_name,
                 expression: "show_name"
               }
@@ -60133,17 +60225,64 @@ var render = function() {
                     "div",
                     { key: l.level, staticClass: "left-container-item" },
                     [
-                      _c("v-btn", [
-                        _vm._v(
-                          "\n                          " +
-                            _vm._s(l.name) +
-                            "\n                      "
-                        )
-                      ])
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.makeGroupLeader(l.level, l.name)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                          " +
+                              _vm._s(l.name) +
+                              "\n                      "
+                          )
+                        ]
+                      )
                     ],
                     1
                   )
-                })
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "left-container-item" }, [
+                  _c(
+                    "div",
+                    {
+                      staticStyle: {
+                        width: "100%",
+                        height: "100%",
+                        "font-size": "24px"
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                          成為老師\n                      "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "left-container-item" },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        on: {
+                          click: function($event) {
+                            return _vm.makeTeacher()
+                          }
+                        }
+                      },
+                      [_vm._v("成為老師")]
+                    )
+                  ],
+                  1
+                )
               ],
               2
             )
