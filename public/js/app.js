@@ -2443,6 +2443,7 @@ __webpack_require__.r(__webpack_exports__);
       dialogName: "",
       dialogText: "",
       editingIndex: null,
+      blurSearch: false,
       searchColumn: null,
       searchValue: null,
       totalDesserts: 0,
@@ -2533,6 +2534,12 @@ __webpack_require__.r(__webpack_exports__);
         text: '姓名',
         value: 'name'
       }, {
+        text: '身分證',
+        value: 'id_number'
+      }, {
+        text: '手機號碼',
+        value: 'phone'
+      }, {
         text: '會員狀態',
         value: 'pay_status'
       }, {
@@ -2541,7 +2548,7 @@ __webpack_require__.r(__webpack_exports__);
       }],
       show_level: false,
       show_payStatus: false,
-      show_name: false,
+      show_searchText: false,
       show_role: false,
       level: [{
         text: '職位',
@@ -2596,9 +2603,10 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     searchColumn: function searchColumn(val) {
+      this.blurSearch = false;
       this.show_level = false;
       this.show_payStatus = false;
-      this.show_name = false;
+      this.show_searchText = false;
       this.show_role = false;
       this.searchValue = null;
 
@@ -2612,7 +2620,10 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case 'name':
-          this.show_name = true;
+        case 'id_number':
+        case 'phone':
+          this.show_searchText = true;
+          this.blurSearch = true;
           break;
 
         case 'role':
@@ -2755,7 +2766,8 @@ __webpack_require__.r(__webpack_exports__);
             descending: _this8.pagination.descending,
             sortBy: _this8.pagination.sortBy,
             column: _this8.searchColumn,
-            value: _this8.searchValue
+            value: _this8.searchValue,
+            blurSearch: _this8.blurSearch
           }
         }).then(function (res) {
           var items = res.data.users;
@@ -59906,8 +59918,8 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
-                value: _vm.show_name,
-                expression: "show_name"
+                value: _vm.show_searchText,
+                expression: "show_searchText"
               }
             ],
             staticStyle: {
@@ -59920,7 +59932,7 @@ var render = function() {
             _c("v-text-field", {
               attrs: {
                 "append-icon": "search",
-                label: "姓名",
+                label: "搜尋",
                 "single-line": "",
                 "hide-details": ""
               },
@@ -103637,8 +103649,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

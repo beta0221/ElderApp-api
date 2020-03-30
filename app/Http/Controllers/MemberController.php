@@ -48,19 +48,22 @@ class MemberController extends Controller
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
         $column = ($request->column) ? $request->column : null;
         $value = (isset($request->value)) ? $request->value : null;
+        $blurSearch = ($request->blurSearch) ? true : false;
 
         $query = DB::table('users')
             ->select('id','name','org_rank','email','tel','phone','gender','rank','inviter','inviter_phone','pay_status','created_at','expiry_date','valid','birthdate','id_number','id_code')
             ->orderBy($orderBy, $ascOrdesc);
-        $count = DB::table('users');
 
         if($column != null && $value != null){
-            $query->where($column,$value);
-            $count->where($column,$value);
+            if($blurSearch){
+                $query->where($column,'like','%'.$value.'%');
+            }else{
+                $query->where($column,$value);
+            }
         }    
 
         $users = $query->skip($skip)->take($rows)->get();
-        $total = $count->count();
+        $total = $query->count();
 
         return response()->json([
             'users' => $users,
@@ -372,6 +375,29 @@ class MemberController extends Controller
         }
         return response()->json([
             's'=>1,'m'=>'指派成功',
+        ]);
+    }
+
+    public function removeGroupLeader(Request $request){
+        //user_id
+        if(!$user = User::find($request->user_id)){
+            return response()->json([
+                's'=>0,'m'=>'查無使用者',
+            ]);
+        }
+        $user_level = $user->groupLevel();
+        if($user_level <= 0){
+            return response()->json([
+                's'=>0,'m'=>'此使用者無所屬職位。',
+            ]);
+        }
+        if(!$result = $user->removeGroupLeader($user_level)){
+            return response()->json([
+                's'=>0,'m'=>'系統錯誤',
+            ]);
+        }
+        return response()->json([
+            's'=>1,'m'=>'解除成功',
         ]);
     }
 

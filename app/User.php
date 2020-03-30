@@ -214,6 +214,17 @@ class User extends Authenticatable implements JWTSubject
 
         return true;
     }
+    public function removeGroupLeader($user_level){
+        $lv = 'lv_' . $user_level;
+        try {
+            DB::table('user_group')->where($lv,$this->id)->delete();
+            $this->org_rank = null;
+            $this->save();
+        } catch (\Throwable $th) {
+            return false;
+        }
+        return true;
+    }
 
     public function getGroupUsers()
     {
