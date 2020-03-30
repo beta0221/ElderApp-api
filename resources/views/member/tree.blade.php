@@ -24,6 +24,7 @@
         #tree .cell-user {
             border: 1px solid black;
             text-align: center;
+            cursor: pointer;
         }
 
         #tree .cell {
@@ -80,10 +81,49 @@
             top: 50%;
             transform: translate(-100%, -50%);
         }
+        #event-menu{
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            display: inline-block;
+            text-align: center;
+            border:1px solid gray;
+            width: 80px;
+            z-index: 3;
+        }
+        li.user-name{
+            background:teal;
+            color: #fff;
+        }
+        li.event{
+            cursor: pointer;
+            background: #fff;
+        }
+        li.event:hover{
+            background: lightgray;
+        }
+        ul{
+            padding: 0;
+            margin:0;
+        }
+        ul li{
+            list-style: none;
+            height: 32px;
+            line-height: 32px;
+            color: #000;
+        }
     </style>
 </head>
 
 <body>
+    {{-- <div id="event-menu">
+        <ul>
+            <li class="user-name"></li>
+            <li class="event">移動</li>
+            <li class="event">升遷</li>
+            <li class="event">降級</li>
+        </ul>
+    </div> --}}
     <div>
         <div id="tree">
             <div class="lv_5"></div>
@@ -123,6 +163,7 @@
                     if (item.level == i) {
                         $(cell).html(`${name_dic[item.user_id]}`);
                         $(cell).addClass('cell-user');
+                        $(cell).attr('user_id',item.user_id);
                     }
                     target.append(cell);
                 } else {
@@ -140,6 +181,7 @@
                                 if (item.level == i) {
                                     $(cell).html(`${name_dic[item.user_id]}`);
                                     $(cell).addClass('cell-user');
+                                    $(cell).attr('user_id',item.user_id);
                                 }
                                 target.append(cell);
                             }
@@ -154,6 +196,7 @@
                                 if(item.level == i){
                                     $(cell).html(`${name_dic[item.user_id]}`);
                                     $(cell).addClass('cell-user');
+                                    $(cell).attr('user_id',item.user_id);
                                 }
                                 target.append(cell);
                             }
@@ -210,6 +253,16 @@
             return count;
         }
     }
+
+    $(document).mousedown(function(event) {
+        $('#event-menu').remove();
+        var specificDiv= $(".cell-user");
+        if (specificDiv.is(event.target)){
+            let user_id = $(event.target).attr('user_id');
+            let user_name = name_dic[user_id];
+            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li class='event'>移動</li><li class='event'>升遷</li><li class='event'>降級</li></ul></div>");
+        }
+    });
     
 </script>
 
