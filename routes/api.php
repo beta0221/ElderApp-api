@@ -45,6 +45,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');
     Route::post('updateMemberPassword/{id_code}','MemberController@updateMemberPassword');
     Route::post('makeGroupLeader','MemberController@makeGroupLeader');
+    Route::post('removeGroupLeader','MemberController@removeGroupLeader');
     Route::post('makeTeacher','MemberController@makeTeacher');
 });
 

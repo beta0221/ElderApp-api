@@ -18,12 +18,12 @@
       <div v-show="show_role" style="display:inline-block;width:160px;margin-left:20px;">
         <v-select v-model="searchValue" :items="role" item-value="value" label="身份" @change="search"></v-select>
       </div>
-      <div v-show="show_name" style="display:inline-block;width:160px;margin-left:20px;">
+      <div v-show="show_searchText" style="display:inline-block;width:160px;margin-left:20px;">
         <v-text-field
           v-model.lazy="searchValue"
           @keyup.native.enter="search"
           append-icon="search"
-          label="姓名"
+          label="搜尋"
           single-line
           hide-details
         ></v-text-field>
@@ -117,6 +117,7 @@ export default {
       dialogText: "",
       editingIndex:null,
 
+      blurSearch:false,
       searchColumn:null,
       searchValue:null,
       totalDesserts: 0,
@@ -161,12 +162,14 @@ export default {
         {text:'欄位',value:null},
         {text:'職務',value:'org_rank'},
         {text:'姓名',value:'name'},
+        {text:'身分證',value:'id_number'},
+        {text:'手機號碼',value:'phone'},
         {text:'會員狀態',value:'pay_status'},
         {text:'身份',value:'role'},
       ],
       show_level:false,
       show_payStatus:false,
-      show_name:false,
+      show_searchText:false,
       show_role:false,
       level:[
         {text:'職位',value:null},
@@ -198,9 +201,10 @@ export default {
       }
     },
     searchColumn(val){
+      this.blurSearch = false;
       this.show_level = false;
       this.show_payStatus = false;
-      this.show_name = false;
+      this.show_searchText = false;
       this.show_role = false;
       this.searchValue = null;
       switch (val) {
@@ -211,7 +215,10 @@ export default {
           this.show_payStatus = true;
           break;
         case 'name':
-          this.show_name = true;
+        case 'id_number':
+        case 'phone':
+          this.show_searchText = true;
+          this.blurSearch = true;
           break;
         case 'role':
           this.show_role = true;
@@ -336,7 +343,8 @@ export default {
               descending: this.pagination.descending,
               sortBy: this.pagination.sortBy,
               column:this.searchColumn,
-              value:this.searchValue
+              value:this.searchValue,
+              blurSearch:this.blurSearch
             }
           })
           .then(res => {
