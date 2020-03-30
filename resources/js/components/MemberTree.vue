@@ -19,6 +19,9 @@
                         </v-btn>
                     </div>
                     <div class="left-container-item">
+                        <v-btn color="red white--text" @click="removeGroupLeader()">取消職位</v-btn>
+                    </div>
+                    <div class="left-container-item">
                         <div style="width:100%;height:100%;font-size:24px;">
                             成為老師
                         </div>
@@ -137,6 +140,7 @@ export default {
                 alert(res.data.m);
                 if(res.data.s == 1){
                     document.getElementById('tree-frame').contentWindow.location.reload(true);
+                    EventBus.$emit("updateMemberSuccess",this.user);
                 }
             })
             .catch(error=>{
@@ -156,6 +160,23 @@ export default {
                 alert(res.data.m);
                 if(res.data.s == 1){
                     document.getElementById('tree-frame').contentWindow.location.reload(true);
+                    EventBus.$emit("updateMemberSuccess",this.user);
+                }
+            })
+        },
+        removeGroupLeader(){
+            if(!confirm('確定移除職位。該使用者下階層人員將被解散。')){
+                return;
+            }
+            axios.post('/api/removeGroupLeader', {
+                'user_id':this.current_user_id,
+            })
+            .catch(error=>{console.log(error);})
+            .then(res=>{
+                alert(res.data.m);
+                if(res.data.s == 1){
+                    document.getElementById('tree-frame').contentWindow.location.reload(true);
+                    EventBus.$emit("updateMemberSuccess",this.user);
                 }
             })
         },

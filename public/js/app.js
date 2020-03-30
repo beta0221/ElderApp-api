@@ -2640,7 +2640,8 @@ __webpack_require__.r(__webpack_exports__);
 
     User.authOnly();
     EventBus.$on("updateMemberSuccess", function (user) {
-      _this2.$set(_this2.desserts, _this2.editingIndex, user);
+      // this.$set(this.desserts,this.editingIndex,user);
+      _this2.search();
     });
   },
   methods: {
@@ -2887,6 +2888,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -2963,6 +2967,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     joinByLevel: function joinByLevel(level) {
+      var _this4 = this;
+
       axios.post('/api/addGroupMember', {
         'leader_id': this.select_user,
         'user_id': this.current_user_id,
@@ -2972,12 +2978,15 @@ __webpack_require__.r(__webpack_exports__);
 
         if (res.data.s == 1) {
           document.getElementById('tree-frame').contentWindow.location.reload(true);
+          EventBus.$emit("updateMemberSuccess", _this4.user);
         }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     makeGroupLeader: function makeGroupLeader(level, name) {
+      var _this5 = this;
+
       if (!confirm('確定指派為' + name)) {
         return;
       }
@@ -2992,6 +3001,27 @@ __webpack_require__.r(__webpack_exports__);
 
         if (res.data.s == 1) {
           document.getElementById('tree-frame').contentWindow.location.reload(true);
+          EventBus.$emit("updateMemberSuccess", _this5.user);
+        }
+      });
+    },
+    removeGroupLeader: function removeGroupLeader() {
+      var _this6 = this;
+
+      if (!confirm('確定移除職位。該使用者下階層人員將被解散。')) {
+        return;
+      }
+
+      axios.post('/api/removeGroupLeader', {
+        'user_id': this.current_user_id
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function (res) {
+        alert(res.data.m);
+
+        if (res.data.s == 1) {
+          document.getElementById('tree-frame').contentWindow.location.reload(true);
+          EventBus.$emit("updateMemberSuccess", _this6.user);
         }
       });
     },
@@ -60259,6 +60289,26 @@ var render = function() {
                   )
                 }),
                 _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "left-container-item" },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "red white--text" },
+                        on: {
+                          click: function($event) {
+                            return _vm.removeGroupLeader()
+                          }
+                        }
+                      },
+                      [_vm._v("取消職位")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
                 _c("div", { staticClass: "left-container-item" }, [
                   _c(
                     "div",
@@ -103649,8 +103699,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

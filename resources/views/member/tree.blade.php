@@ -83,12 +83,12 @@
         }
         #event-menu{
             top: 50%;
-            left: 50%;
+            left: 80%;
             position: absolute;
             display: inline-block;
             text-align: center;
             border:1px solid gray;
-            width: 80px;
+            width: 120px;
             z-index: 3;
         }
         li.user-name{
@@ -112,19 +112,27 @@
             line-height: 32px;
             color: #000;
         }
+        .session-card{
+            font-size: 24px;
+            border-radius: .3rem;
+            position: fixed;
+            top: 8px;
+            right: 12px;
+            padding: 8px 16px;
+            z-index: 5;
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div id="event-menu">
-        <ul>
-            <li class="user-name"></li>
-            <li class="event">移動</li>
-            <li class="event">升遷</li>
-            <li class="event">降級</li>
-        </ul>
-    </div> --}}
-    <div>
+    @if(Session::has('error'))
+        <div style="background:orange" class="session-card">{{Session::get('error')}}</div>
+    @endif
+    @if(Session::has('success'))
+        <div style="background:limegreen" class="session-card">{{Session::get('success')}}</div>
+    @endif
+    <div style="margin-right:160px;">
         <div id="tree">
             <div class="lv_5"></div>
             <div class="lv_4"></div>
@@ -134,7 +142,11 @@
         </div>
     </div>
 
-    
+    <form style="display:none" id="action-form" action="/removeMemberFromGroup" method="POST">
+        {{ csrf_field() }}
+        <input id="token-input" type="text" name="token">
+        <input id="user-id-input" type="test" name="user_id">
+    </form>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -240,6 +252,10 @@
             }
         });
 
+        setTimeout(function(){ 
+            $('.session-card').remove();
+        }, 2000);
+
     });
 
     function getChildrenLength(element){
@@ -255,13 +271,25 @@
     }
 
     $(document).mousedown(function(event) {
+        if($('.event').is(event.target)){
+            return;
+        }
         $('#event-menu').remove();
         var specificDiv= $(".cell-user");
         if (specificDiv.is(event.target)){
             let user_id = $(event.target).attr('user_id');
             let user_name = name_dic[user_id];
-            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li class='event'>移動</li><li class='event'>升遷</li><li class='event'>降級</li></ul></div>");
+            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li class='event'>移動</li><li id='removeMemberFromGroup' class='event'>從組織移除</li></ul></div>");
+            $('#user-id-input').val(user_id);
         }
+    });
+
+    $(document).on('click','#removeMemberFromGroup',function(){
+        if(!confirm('確定將此使用者從組織移除')){
+            return;
+        }
+        $('#token-input').val(localStorage.getItem('token'));
+        $('#action-form').submit();
     });
     
 </script>

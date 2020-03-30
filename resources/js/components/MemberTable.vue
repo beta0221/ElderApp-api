@@ -231,7 +231,8 @@ export default {
   created() {
     User.authOnly();
     EventBus.$on("updateMemberSuccess", user => {
-      this.$set(this.desserts,this.editingIndex,user);
+      // this.$set(this.desserts,this.editingIndex,user);
+      this.search();
     });
   },
   methods: {

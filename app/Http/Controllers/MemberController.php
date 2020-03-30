@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Session;
 
 class MemberController extends Controller
 {
@@ -322,7 +322,7 @@ class MemberController extends Controller
                     's'=>0,'m'=>'系統錯誤',
                 ]);
             }
-        }else if($addUser->isLeaderOfGroup()){
+        }else if($addUser->isPrimaryLeaderOfGroup()){
 
             if($addUser->groupLevel() != $request->level){
                 return response()->json([
@@ -346,6 +346,27 @@ class MemberController extends Controller
         ]);
 
     }
+
+    public function removeMemberFromGroup(Request $request){
+        //user_id
+        if(!$user = User::find($request->user_id)){
+            Session::flash('error', '查無使用者');
+            return redirect()->back();
+        }
+        if($user->isPrimaryLeaderOfGroup()){
+            Session::flash('error', '無法將組織所有者刪除');
+            return redirect()->back();
+        }
+
+        if(!$result = $user->removeMemberFromGroup()){
+            Session::flash('error', '系統錯誤');
+            return redirect()->back();
+        }
+        Session::flash('success', '完成');
+        return redirect()->back();
+
+    }
+
 
     public function getUserLevel($user_id){
 
@@ -386,7 +407,16 @@ class MemberController extends Controller
             ]);
         }
         $user_level = $user->groupLevel();
-        if($user_level <= 0){
+        if($user_level <= 1){
+
+            if($user->org_rank != null){
+                $user->org_rank = null;
+                $user->save();
+                return response()->json([
+                    's'=>1,'m'=>'解除成功',
+                ]);
+            }
+
             return response()->json([
                 's'=>0,'m'=>'此使用者無所屬職位。',
             ]);

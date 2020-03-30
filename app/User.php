@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -110,10 +111,23 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
-    // public function groupUsers()
-    // {
-    //     return $this->belongsToMany('App\User','user_group','leader_user_id','user_id');
-    // }
+    public function removeMemberFromGroup(){
+        $user_level = $this->groupLevel();
+        $lv = 'lv_' . $user_level;
+        try {
+            if($user_level > 1){
+                DB::table('user_group')->where($lv,$this->id)->update([
+                    $lv=>null
+                ]);
+            }
+            DB::table('user_group')->where('user_id',$this->id)->delete();
+        } catch (\Throwable $th) {
+            Log::info($th);
+            return false;
+        }
+        return true;
+        
+    }
 
     public function joinToGroup($leader_id,$level){
 
@@ -186,7 +200,7 @@ class User extends Authenticatable implements JWTSubject
 
     }
 
-    public function isLeaderOfGroup(){
+    public function isPrimaryLeaderOfGroup(){
         if(!$row = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()){
             return false;
         }
