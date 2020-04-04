@@ -10,13 +10,13 @@
         <v-select v-model="searchColumn" :items="columns" item-value="value" label="搜尋欄位"></v-select>
       </div>
       <div v-show="show_level" style="display:inline-block;width:160px;margin-left:20px;">
-        <v-select v-model="searchValue" :items="level" item-value="value" label="職位" @change="search"></v-select>
+        <v-select v-model="searchValue" :items="level" item-value="value" label="職位" @change="searchByColumn"></v-select>
       </div>
       <div v-show="show_payStatus" style="display:inline-block;width:160px;margin-left:20px;">
-        <v-select v-model="searchValue" :items="payStatus" item-value="value" label="狀態" @change="search"></v-select>
+        <v-select v-model="searchValue" :items="payStatus" item-value="value" label="狀態" @change="searchByColumn"></v-select>
       </div>
       <div v-show="show_role" style="display:inline-block;width:160px;margin-left:20px;">
-        <v-select v-model="searchValue" :items="role" item-value="value" label="身份" @change="search"></v-select>
+        <v-select v-model="searchValue" :items="role" item-value="value" label="身份" @change="searchByColumn"></v-select>
       </div>
       <div v-show="show_searchText" style="display:inline-block;width:160px;margin-left:20px;">
         <v-text-field
@@ -219,6 +219,7 @@ export default {
           this.show_role = true;
           break;
         default:
+          this.pagination.page = 1;
           this.search();
       }
     }
@@ -232,6 +233,10 @@ export default {
     });
   },
   methods: {
+    searchByColumn(){
+      this.pagination.page = 1;
+      this.search();
+    },
     search() {
     if(this.loading == true){
       return;
@@ -245,7 +250,6 @@ export default {
           }, 300);
       });
     },
-    
     toValid(id, index) {
       if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios

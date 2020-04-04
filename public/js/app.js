@@ -2626,6 +2626,7 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         default:
+          this.pagination.page = 1;
           this.search();
       }
     }
@@ -2641,6 +2642,10 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    searchByColumn: function searchByColumn() {
+      this.pagination.page = 1;
+      this.search();
+    },
     search: function search() {
       var _this2 = this;
 
@@ -59858,7 +59863,7 @@ var render = function() {
           [
             _c("v-select", {
               attrs: { items: _vm.level, "item-value": "value", label: "職位" },
-              on: { change: _vm.search },
+              on: { change: _vm.searchByColumn },
               model: {
                 value: _vm.searchValue,
                 callback: function($$v) {
@@ -59895,7 +59900,7 @@ var render = function() {
                 "item-value": "value",
                 label: "狀態"
               },
-              on: { change: _vm.search },
+              on: { change: _vm.searchByColumn },
               model: {
                 value: _vm.searchValue,
                 callback: function($$v) {
@@ -59928,7 +59933,7 @@ var render = function() {
           [
             _c("v-select", {
               attrs: { items: _vm.role, "item-value": "value", label: "身份" },
-              on: { change: _vm.search },
+              on: { change: _vm.searchByColumn },
               model: {
                 value: _vm.searchValue,
                 callback: function($$v) {
