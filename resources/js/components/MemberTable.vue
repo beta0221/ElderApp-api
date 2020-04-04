@@ -122,8 +122,8 @@ export default {
       searchValue:null,
       totalDesserts: 0,
       desserts: [],
-      loading: true,
-      pagination: {'sortBy':'id','descending':true},
+      loading: false,
+      pagination: {'page':1,'rowsPerPage':15,'sortBy':'id','descending':true},
 
       gender: { 1: "blue--text", 0: "red--text" },
       valid: {
@@ -192,13 +192,8 @@ export default {
     };
   },
   watch: {
-    pagination: {
-      handler() {
-        this.getDataFromApi().then(data => {
-          this.desserts = data.items;
-          this.totalDesserts = data.total;
-        });
-      }
+    pagination(val){
+      this.search();
     },
     searchColumn(val){
       this.blurSearch = false;
@@ -229,6 +224,7 @@ export default {
     }
   },
   created() {
+    this.search();
     User.authOnly();
     EventBus.$on("updateMemberSuccess", user => {
       // this.$set(this.desserts,this.editingIndex,user);
@@ -237,9 +233,16 @@ export default {
   },
   methods: {
     search() {
+    if(this.loading == true){
+      return;
+    }
+    this.loading = true;
       this.getDataFromApi().then(data => {
           this.desserts = data.items;
           this.totalDesserts = data.total;
+          setTimeout(() => {  
+            this.loading = false;    
+          }, 300);
       });
     },
     
@@ -333,7 +336,6 @@ export default {
       }
     },
     getDataFromApi() {
-      this.loading = true;
       return new Promise((resolve, reject) => {
         const { sortBy, descending, page, rowsPerPage } = this.pagination;
         axios
@@ -368,14 +370,10 @@ export default {
                 }
               });
             }
-
-            setTimeout(() => {
-              this.loading = false;
-              resolve({
-                items,
-                total
-              });
-            }, 300);
+            resolve({
+              items,
+              total
+            });
           })
           .catch(error => {
             Exception.handle(error);

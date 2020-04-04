@@ -61,9 +61,8 @@ class MemberController extends Controller
                 $query->where($column,$value);
             }
         }    
-
-        $users = $query->skip($skip)->take($rows)->get();
         $total = $query->count();
+        $users = $query->skip($skip)->take($rows)->get();
 
         return response()->json([
             'users' => $users,

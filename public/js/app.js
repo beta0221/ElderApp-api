@@ -2448,8 +2448,10 @@ __webpack_require__.r(__webpack_exports__);
       searchValue: null,
       totalDesserts: 0,
       desserts: [],
-      loading: true,
+      loading: false,
       pagination: {
+        'page': 1,
+        'rowsPerPage': 15,
         'sortBy': 'id',
         'descending': true
       },
@@ -2592,15 +2594,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
-    pagination: {
-      handler: function handler() {
-        var _this = this;
-
-        this.getDataFromApi().then(function (data) {
-          _this.desserts = data.items;
-          _this.totalDesserts = data.total;
-        });
-      }
+    pagination: function pagination(val) {
+      this.search();
     },
     searchColumn: function searchColumn(val) {
       this.blurSearch = false;
@@ -2636,33 +2631,42 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this = this;
 
+    this.search();
     User.authOnly();
     EventBus.$on("updateMemberSuccess", function (user) {
       // this.$set(this.desserts,this.editingIndex,user);
-      _this2.search();
+      _this.search();
     });
   },
   methods: {
     search: function search() {
-      var _this3 = this;
+      var _this2 = this;
 
+      if (this.loading == true) {
+        return;
+      }
+
+      this.loading = true;
       this.getDataFromApi().then(function (data) {
-        _this3.desserts = data.items;
-        _this3.totalDesserts = data.total;
+        _this2.desserts = data.items;
+        _this2.totalDesserts = data.total;
+        setTimeout(function () {
+          _this2.loading = false;
+        }, 300);
       });
     },
     toValid: function toValid(id, index) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         axios.post("/api/toValid", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
-            _this4.desserts[index]["valid"] = 1;
-            _this4.desserts[index]["expiry_date"] = res.data.d;
+            _this3.desserts[index]["valid"] = 1;
+            _this3.desserts[index]["expiry_date"] = res.data.d;
           }
 
           console.log(res);
@@ -2672,14 +2676,14 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     addGroupMember: function addGroupMember() {
-      var _this5 = this;
+      var _this4 = this;
 
       axios.post("/api/addGroupMember", {
         leaderId: this.dialogUserId,
         addAccount: this.addAcount
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this5.group_members.push(res.data.addUser);
+          _this4.group_members.push(res.data.addUser);
         } else {
           alert(res.data.m);
         }
@@ -2705,11 +2709,11 @@ __webpack_require__.r(__webpack_exports__);
       EventBus.$emit('showMemberDetail', user);
     },
     getPayHistory: function getPayHistory(id, name) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.dialog = true;
       axios.get("/api/getPayHistory/".concat(id)).then(function (res) {
-        _this6.dialogName = name;
+        _this5.dialogName = name;
 
         if (res.data.length != 0) {
           var text = "";
@@ -2718,27 +2722,27 @@ __webpack_require__.r(__webpack_exports__);
             text += res.data[i]["created_at"].substring(0, 10) + "<br>";
           }
 
-          _this6.dialogText = text;
+          _this5.dialogText = text;
         } else {
-          _this6.dialogText = "";
+          _this5.dialogText = "";
         }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     clickPayStatus: function clickPayStatus(id, index) {
-      var _this7 = this;
+      var _this6 = this;
 
       if (this.desserts[index]["pay_status"] < 3) {
         axios.post("/api/changePayStatus", {
           id: id
         }).then(function (res) {
           if (res.data.s == 1) {
-            _this7.desserts[index]["pay_status"]++;
+            _this6.desserts[index]["pay_status"]++;
 
-            if (_this7.desserts[index]["pay_status"] == 3) {
-              _this7.desserts[index]["expiry_date"] = res.data.d;
-              _this7.desserts[index]["valid"] = 1;
+            if (_this6.desserts[index]["pay_status"] == 3) {
+              _this6.desserts[index]["expiry_date"] = res.data.d;
+              _this6.desserts[index]["valid"] = 1;
             }
           }
 
@@ -2751,30 +2755,29 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDataFromApi: function getDataFromApi() {
-      var _this8 = this;
+      var _this7 = this;
 
-      this.loading = true;
       return new Promise(function (resolve, reject) {
-        var _this8$pagination = _this8.pagination,
-            sortBy = _this8$pagination.sortBy,
-            descending = _this8$pagination.descending,
-            page = _this8$pagination.page,
-            rowsPerPage = _this8$pagination.rowsPerPage;
+        var _this7$pagination = _this7.pagination,
+            sortBy = _this7$pagination.sortBy,
+            descending = _this7$pagination.descending,
+            page = _this7$pagination.page,
+            rowsPerPage = _this7$pagination.rowsPerPage;
         axios.get("/api/get-members", {
           params: {
-            page: _this8.pagination.page,
-            rowsPerPage: _this8.pagination.rowsPerPage,
-            descending: _this8.pagination.descending,
-            sortBy: _this8.pagination.sortBy,
-            column: _this8.searchColumn,
-            value: _this8.searchValue,
-            blurSearch: _this8.blurSearch
+            page: _this7.pagination.page,
+            rowsPerPage: _this7.pagination.rowsPerPage,
+            descending: _this7.pagination.descending,
+            sortBy: _this7.pagination.sortBy,
+            column: _this7.searchColumn,
+            value: _this7.searchValue,
+            blurSearch: _this7.blurSearch
           }
         }).then(function (res) {
           var items = res.data.users;
           var total = res.data.total;
 
-          if (_this8.pagination.sortBy) {
+          if (_this7.pagination.sortBy) {
             items = items.sort(function (a, b) {
               var sortA = a[sortBy];
               var sortB = b[sortBy];
@@ -2791,13 +2794,10 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
 
-          setTimeout(function () {
-            _this8.loading = false;
-            resolve({
-              items: items,
-              total: total
-            });
-          }, 300);
+          resolve({
+            items: items,
+            total: total
+          });
         })["catch"](function (error) {
           Exception.handle(error);
         });
