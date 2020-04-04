@@ -91,12 +91,12 @@ return [
         ],
         'eventlog'=>[
             'driver' => 'single',
-            'path' => storage_path('logs/event/event.log'),
+            'path' => storage_path('logs/event.log'),
             'level' => 'debug',
         ],
         'translog'=>[
             'driver' => 'single',
-            'path' => storage_path('logs/trans/trans.log'),
+            'path' => storage_path('logs/trans.log'),
             'level' => 'debug',
         ],
     ],

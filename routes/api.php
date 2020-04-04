@@ -98,8 +98,9 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('/my-order-list','OrderDetailController@myOrderList');
     
 
-    // Route::get('git-pull',function(){
-    //     $output = shell_exec('. /opt/scripts/gitpull');
-    //     return response($output);
-    // });
+    Route::get('log-test',function(){
+        Log::channel('eventlog')->info('test event log');
+        Log::channel('translog')->info('test trans log');
+        return 'ok';
+    });
     
