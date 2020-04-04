@@ -90,12 +90,12 @@ return [
             'level' => 'debug',
         ],
         'eventlog'=>[
-            'driver' => 'daily',
+            'driver' => 'single',
             'path' => storage_path('logs/event.log'),
             'level' => 'debug',
         ],
         'translog'=>[
-            'driver' => 'daily',
+            'driver' => 'single',
             'path' => storage_path('logs/trans.log'),
             'level' => 'debug',
         ],

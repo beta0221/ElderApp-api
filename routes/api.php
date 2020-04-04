@@ -99,8 +99,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     
 
     Route::get('log-test',function(){
-        Log::channel('eventlog')->info('test event log');
-        Log::channel('translog')->info('test trans log');
+        Log::channel('eventlog')->info('test event log sdfasdf');
+        Log::channel('translog')->info('test trans log asdfsadf');
         return 'ok';
     });
     
