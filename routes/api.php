@@ -98,9 +98,9 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('/my-order-list','OrderDetailController@myOrderList');
     
 
-    Route::get('log-test',function(){
-        Log::channel('eventlog')->info('test event log sdfasdf');
-        Log::channel('translog')->info('test trans log asdfsadf');
-        return 'ok';
-    });
+    // Route::get('log-test',function(){
+    //     Log::channel('eventlog')->info('test event log sdfasdf');
+    //     Log::channel('translog')->info('test trans log asdfsadf');
+    //     return 'ok';
+    // });
     

@@ -2429,6 +2429,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59814,186 +59817,213 @@ var render = function() {
       _vm._v(" "),
       _c("member-tree"),
       _vm._v(" "),
-      _c("div", [
-        _c(
-          "div",
-          {
-            staticStyle: {
-              display: "inline-block",
-              width: "160px",
-              "margin-left": "20px"
-            }
-          },
-          [
-            _c("v-select", {
-              attrs: {
-                items: _vm.columns,
-                "item-value": "value",
-                label: "搜尋欄位"
-              },
-              model: {
-                value: _vm.searchColumn,
-                callback: function($$v) {
-                  _vm.searchColumn = $$v
+      _c(
+        "div",
+        [
+          _c(
+            "div",
+            {
+              staticStyle: {
+                display: "inline-block",
+                width: "160px",
+                "margin-left": "20px"
+              }
+            },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.columns,
+                  "item-value": "value",
+                  label: "搜尋欄位"
                 },
-                expression: "searchColumn"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.show_level,
-                expression: "show_level"
-              }
-            ],
-            staticStyle: {
-              display: "inline-block",
-              width: "160px",
-              "margin-left": "20px"
-            }
-          },
-          [
-            _c("v-select", {
-              attrs: { items: _vm.level, "item-value": "value", label: "職位" },
-              on: { change: _vm.searchByColumn },
-              model: {
-                value: _vm.searchValue,
-                callback: function($$v) {
-                  _vm.searchValue = $$v
-                },
-                expression: "searchValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.show_payStatus,
-                expression: "show_payStatus"
-              }
-            ],
-            staticStyle: {
-              display: "inline-block",
-              width: "160px",
-              "margin-left": "20px"
-            }
-          },
-          [
-            _c("v-select", {
-              attrs: {
-                items: _vm.payStatus,
-                "item-value": "value",
-                label: "狀態"
-              },
-              on: { change: _vm.searchByColumn },
-              model: {
-                value: _vm.searchValue,
-                callback: function($$v) {
-                  _vm.searchValue = $$v
-                },
-                expression: "searchValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.show_role,
-                expression: "show_role"
-              }
-            ],
-            staticStyle: {
-              display: "inline-block",
-              width: "160px",
-              "margin-left": "20px"
-            }
-          },
-          [
-            _c("v-select", {
-              attrs: { items: _vm.role, "item-value": "value", label: "身份" },
-              on: { change: _vm.searchByColumn },
-              model: {
-                value: _vm.searchValue,
-                callback: function($$v) {
-                  _vm.searchValue = $$v
-                },
-                expression: "searchValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.show_searchText,
-                expression: "show_searchText"
-              }
-            ],
-            staticStyle: {
-              display: "inline-block",
-              width: "160px",
-              "margin-left": "20px"
-            }
-          },
-          [
-            _c("v-text-field", {
-              attrs: {
-                "append-icon": "search",
-                label: "搜尋",
-                "single-line": "",
-                "hide-details": ""
-              },
-              nativeOn: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.search($event)
+                model: {
+                  value: _vm.searchColumn,
+                  callback: function($$v) {
+                    _vm.searchColumn = $$v
+                  },
+                  expression: "searchColumn"
                 }
-              },
-              model: {
-                value: _vm.searchValue,
-                callback: function($$v) {
-                  _vm.searchValue = $$v
-                },
-                expression: "searchValue"
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.show_level,
+                  expression: "show_level"
+                }
+              ],
+              staticStyle: {
+                display: "inline-block",
+                width: "160px",
+                "margin-left": "20px"
               }
-            })
-          ],
-          1
-        )
-      ]),
+            },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.level,
+                  "item-value": "value",
+                  label: "職位"
+                },
+                on: { change: _vm.searchByColumn },
+                model: {
+                  value: _vm.searchValue,
+                  callback: function($$v) {
+                    _vm.searchValue = $$v
+                  },
+                  expression: "searchValue"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.show_payStatus,
+                  expression: "show_payStatus"
+                }
+              ],
+              staticStyle: {
+                display: "inline-block",
+                width: "160px",
+                "margin-left": "20px"
+              }
+            },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.payStatus,
+                  "item-value": "value",
+                  label: "狀態"
+                },
+                on: { change: _vm.searchByColumn },
+                model: {
+                  value: _vm.searchValue,
+                  callback: function($$v) {
+                    _vm.searchValue = $$v
+                  },
+                  expression: "searchValue"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.show_role,
+                  expression: "show_role"
+                }
+              ],
+              staticStyle: {
+                display: "inline-block",
+                width: "160px",
+                "margin-left": "20px"
+              }
+            },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.role,
+                  "item-value": "value",
+                  label: "身份"
+                },
+                on: { change: _vm.searchByColumn },
+                model: {
+                  value: _vm.searchValue,
+                  callback: function($$v) {
+                    _vm.searchValue = $$v
+                  },
+                  expression: "searchValue"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.show_searchText,
+                  expression: "show_searchText"
+                }
+              ],
+              staticStyle: {
+                display: "inline-block",
+                width: "160px",
+                "margin-left": "20px"
+              }
+            },
+            [
+              _c("v-text-field", {
+                attrs: {
+                  "append-icon": "search",
+                  label: "搜尋",
+                  "single-line": "",
+                  "hide-details": ""
+                },
+                nativeOn: {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.search($event)
+                  }
+                },
+                model: {
+                  value: _vm.searchValue,
+                  callback: function($$v) {
+                    _vm.searchValue = $$v
+                  },
+                  expression: "searchValue"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-btn",
+            { staticStyle: { float: "right" }, attrs: { color: "success" } },
+            [
+              _c(
+                "a",
+                {
+                  staticStyle: { color: "#fff", "text-decoration": "none" },
+                  attrs: { href: "/member/join", target: "_blank" }
+                },
+                [_vm._v("新增會員")]
+              )
+            ]
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
         "div",

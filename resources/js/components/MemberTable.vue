@@ -28,6 +28,9 @@
           hide-details
         ></v-text-field>
       </div>
+      <v-btn color="success" style="float:right">
+        <a href="/member/join" target="_blank" style="color:#fff;text-decoration:none">新增會員</a>
+      </v-btn>
     </div>
 
 
