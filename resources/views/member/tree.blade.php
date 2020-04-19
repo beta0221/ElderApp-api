@@ -75,7 +75,7 @@
         }
 
         .lv_1::before {
-            content: '平民';
+            content: '主人';
             position: absolute;
             left: -8px;
             top: 50%;

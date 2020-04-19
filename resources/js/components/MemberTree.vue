@@ -95,7 +95,7 @@ export default {
                 {'level':4,'name':'守護天使'},
                 {'level':3,'name':'大天使'},
                 {'level':2,'name':'小天使'},
-                {'level':1,'name':'平民'},
+                {'level':1,'name':'主人'},
             ],
             org_rank_array:[
                 {'level':5,'name':'領航天使'},

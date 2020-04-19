@@ -2932,7 +2932,7 @@ __webpack_require__.r(__webpack_exports__);
         'name': '小天使'
       }, {
         'level': 1,
-        'name': '平民'
+        'name': '主人'
       }],
       org_rank_array: [{
         'level': 5,
