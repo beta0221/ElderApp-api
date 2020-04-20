@@ -17,7 +17,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','updateMemberLevel']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','moveMemberPage','moveMember','updateMemberLevel']]);
     }
 
     //管理後台的搜尋會員請求
@@ -366,6 +366,57 @@ class MemberController extends Controller
 
     }
 
+    public function moveMemberPage($user_id){
+        if(!$user = User::find($user_id)){
+            return response('no such user');
+        }
+        
+        
+        $rows = $user->getGroupUserRows();
+        $levelDict = [];
+        foreach ($rows as $row) {
+            $levelDict[$row->user_id] = $row->level;
+        }
+
+        $group_users = $user->getGroupUsers(2);
+
+        return view('member.moveMemberPage',[
+            'user'=>$user,
+            'group_users'=>$group_users,
+            'levelDict'=>json_encode($levelDict),
+        ]);
+    }
+
+    public function moveMember(Request $request,$user_id){
+
+        $this->validate($request,[
+            'target_user_id'=>'required',
+            'target_level'=>'required',
+        ]);
+
+        if(!$user = User::find($user_id)){
+            return response('no such user');
+        }
+
+        if($user->isPrimaryLeaderOfGroup()){
+            Session::flash('error', '無法將組織所有者移動');
+            return redirect("member_tree/$user->id_code");
+        }
+
+        if(!$result = $user->removeMemberFromGroup()){
+            Session::flash('error', '系統錯誤');
+            return redirect("member_tree/$user->id_code");
+        }
+
+        if(!$result = $user->joinToGroup($request->target_user_id,$request->target_level)){
+            Session::flash('error', '系統錯誤');
+            return redirect("member_tree/$user->id_code");
+        }
+        
+        Session::flash('success', '完成');
+        return redirect("member_tree/$user->id_code");
+    }
+
 
     public function getUserLevel($user_id){
 
@@ -569,7 +620,7 @@ class MemberController extends Controller
         if(!$user){
             return response('此使用者會員編號不存在');
         }
-        $group_users = $user->getGroupUsers();
+        $group_users = $user->getGroupUserRows();
         if(count($group_users)<=0){
             return response('使用者並無所屬組織。');
         }

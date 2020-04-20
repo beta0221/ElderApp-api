@@ -159,6 +159,7 @@
     var valid_dic = {!!$valid_dic!!};
     var temp = {};
     var dic = {};
+    var targetUserId = null;
     $(document).ready(function () {
 
         group_users.forEach(function (item, index) {
@@ -279,8 +280,9 @@
         if (specificDiv.is(event.target)){
             let user_id = $(event.target).attr('user_id');
             let user_name = name_dic[user_id];
-            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li class='event'>移動</li><li id='removeMemberFromGroup' class='event'>從組織移除</li></ul></div>");
+            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li id='moveMember' class='event'>移動</li><li id='removeMemberFromGroup' class='event'>從組織移除</li></ul></div>");
             $('#user-id-input').val(user_id);
+            targetUserId = user_id;
         }
     });
 
@@ -290,6 +292,13 @@
         }
         $('#token-input').val(localStorage.getItem('token'));
         $('#action-form').submit();
+    });
+
+    $(document).on('click','#moveMember',function(){
+        if(!confirm('確定移動此會員')){
+            return;
+        }
+        window.location.href = '/moveMemberPage/'+targetUserId;
     });
     
 </script>
