@@ -83,7 +83,7 @@ class ProductController extends Controller
 
 
         try {
-            $product = Product::create($request->except('file','select_location','quantity'));
+            $product = Product::create($request->except('file','select_location','quantity','payCashQuantity'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -92,10 +92,11 @@ class ProductController extends Controller
             $location = explode(",",$request->select_location);
             $product->locations()->sync($location);
             $result = true;
+            $payCashQuantity = json_decode($request->payCashQuantity,true);
             if(is_array($quantity = json_decode($request->quantity,true))){
 
                 foreach ($quantity as $key => $value) {
-                    $updated = $product->updateQuantity((int)$key,(int)$value);
+                    $updated = $product->updateQuantity((int)$key,(int)$value,(int)$payCashQuantity[$key]);
                     if($updated != true){
                         $result = false;
                     }
@@ -163,7 +164,7 @@ class ProductController extends Controller
         
 
         try {
-            $product->update($request->except('file','select_location','quantity'));
+            $product->update($request->except('file','select_location','quantity','payCashQuantity'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -176,10 +177,11 @@ class ProductController extends Controller
         }
 
         $result = true;
+        $payCashQuantity = json_decode($request->payCashQuantity,true);
         if(is_array($quantity = json_decode($request->quantity,true))){
 
             foreach ($quantity as $key => $value) {
-                $updated = $product->updateQuantity((int)$key,(int)$value);
+                $updated = $product->updateQuantity((int)$key,(int)$value,(int)$payCashQuantity[$key]);
                 if($updated != true){
                     $result = false;
                 }

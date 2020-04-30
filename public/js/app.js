@@ -3147,6 +3147,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["product_slug"],
   watch: {
@@ -3173,9 +3178,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         product_category_id: "",
         select_location: [],
         price: null,
+        pay_cash_price: null,
+        pay_cash_point: null,
         info: ""
       }
-    }, _defineProperty(_ref, "product_image", null), _defineProperty(_ref, "file", ''), _defineProperty(_ref, "location", []), _defineProperty(_ref, "quantityDic", {}), _ref;
+    }, _defineProperty(_ref, "product_image", null), _defineProperty(_ref, "file", ''), _defineProperty(_ref, "location", []), _defineProperty(_ref, "quantityDic", {}), _defineProperty(_ref, "payCashQuantityDict", {}), _ref;
   },
   created: function created() {
     if (this.product_slug) {
@@ -3230,6 +3237,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this3.form["public"] = res.data["public"];
           _this3.form.product_category_id = res.data.product_category_id;
           _this3.form.price = res.data.price;
+          _this3.form.pay_cash_price = res.data.pay_cash_price;
+          _this3.form.pay_cash_point = res.data.pay_cash_point;
           _this3.form.info = res.data.info;
 
           if (res.data.img) {
@@ -3241,6 +3250,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               _this3.form.select_location.push(item.location_id);
 
               _this3.quantityDic[item.location_id] = item.quantity;
+              _this3.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
             });
           }
         }
@@ -3257,6 +3267,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return formData.append(key, _this4.form[key]);
       });
       formData.append('quantity', JSON.stringify(this.quantityDic));
+      formData.append('payCashQuantity', JSON.stringify(this.payCashQuantityDict));
 
       if (this.edit_mode) {
         this.updateRequest(formData);
@@ -60668,7 +60679,7 @@ var render = function() {
                       staticClass: "d-inline-block",
                       attrs: {
                         label: "Solo",
-                        placeholder: "庫存數量",
+                        placeholder: "樂幣付清庫存數量",
                         solo: ""
                       },
                       model: {
@@ -60677,6 +60688,22 @@ var render = function() {
                           _vm.$set(_vm.quantityDic, l.id, $$v)
                         },
                         expression: "quantityDic[l.id]"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("v-text-field", {
+                      staticClass: "d-inline-block",
+                      attrs: {
+                        label: "Solo",
+                        placeholder: "現金購買庫存數量",
+                        solo: ""
+                      },
+                      model: {
+                        value: _vm.payCashQuantityDict[l.id],
+                        callback: function($$v) {
+                          _vm.$set(_vm.payCashQuantityDict, l.id, $$v)
+                        },
+                        expression: "payCashQuantityDict[l.id]"
                       }
                     })
                   ],
@@ -60724,6 +60751,38 @@ var render = function() {
                         _vm.$set(_vm.form, "price", $$v)
                       },
                       expression: "form.price"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                [
+                  _c("v-text-field", {
+                    attrs: { label: "直購價", placeholder: "直購價", solo: "" },
+                    model: {
+                      value: _vm.form.pay_cash_price,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "pay_cash_price", $$v)
+                      },
+                      expression: "form.pay_cash_price"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      label: "直購價所需樂幣",
+                      placeholder: "直購價所需樂幣",
+                      solo: ""
+                    },
+                    model: {
+                      value: _vm.form.pay_cash_point,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "pay_cash_point", $$v)
+                      },
+                      expression: "form.pay_cash_point"
                     }
                   })
                 ],
@@ -103734,8 +103793,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

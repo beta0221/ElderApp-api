@@ -51,7 +51,8 @@
 
         <div v-for="(l,index) in location" v-bind:key="index" v-show="isSelected(l.id)">
           <span>{{l.name}}：</span>
-          <v-text-field class="d-inline-block" label="Solo" placeholder="庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
+          <v-text-field class="d-inline-block" label="Solo" placeholder="樂幣付清庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
+          <v-text-field class="d-inline-block" label="Solo" placeholder="現金購買庫存數量" solo v-model="payCashQuantityDict[l.id]"></v-text-field>
         </div>
 
         <v-col class="d-flex" cols="12" sm="6">
@@ -69,6 +70,10 @@
           <v-text-field label="所需樂幣" placeholder="所需樂幣" solo v-model="form.price"></v-text-field>
         </v-col>
 
+        <v-col>
+          <v-text-field label="直購價" placeholder="直購價" solo v-model="form.pay_cash_price"></v-text-field>
+          <v-text-field label="直購價所需樂幣" placeholder="直購價所需樂幣" solo v-model="form.pay_cash_point"></v-text-field>
+        </v-col>
 
         <v-col cols="12" sm="6" md="3">
           <markdown-editor v-model="form.info"></markdown-editor>
@@ -108,6 +113,8 @@ export default {
         product_category_id: "",
         select_location:[],
         price: null,
+        pay_cash_price:null,
+        pay_cash_point:null,
         info:"",
       },
       product_image:null,
@@ -115,6 +122,7 @@ export default {
 
       location:[],
       quantityDic:{},
+      payCashQuantityDict:{},
     };
   },
   created() {
@@ -171,6 +179,8 @@ export default {
             this.form.public = res.data.public;
             this.form.product_category_id = res.data.product_category_id;
             this.form.price = res.data.price;
+            this.form.pay_cash_price = res.data.pay_cash_price;
+            this.form.pay_cash_point = res.data.pay_cash_point;
             this.form.info = res.data.info;
             if(res.data.img){
               this.product_image = `/images/products/${res.data.slug}/${res.data.img}`;
@@ -179,6 +189,7 @@ export default {
               res.data.location.forEach((item)=>{
                 this.form.select_location.push(item.location_id);
                 this.quantityDic[item.location_id] = item.quantity;
+                this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
               });
             }
           }
@@ -194,6 +205,7 @@ export default {
       formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
       formData.append('quantity',JSON.stringify(this.quantityDic));
+      formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
       if(this.edit_mode){
         this.updateRequest(formData);
       }else{
