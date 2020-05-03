@@ -25,6 +25,15 @@
             border:.5px solid lightgray;
             overflow-y: scroll;
         }
+        .product-list{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background:#fff;
+            overflow-y:scroll;
+        }
         .product-btn{
             padding: 12px;
             border-radius: .3rem;
