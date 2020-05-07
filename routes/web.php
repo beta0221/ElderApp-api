@@ -40,6 +40,13 @@ Route::get('/order-list/location/{slug}','LocationController@orderListPage');
     //目前還沒有登入驗證所以傳四個參數提高一點安全性
 Route::post('/order-detail/receive','OrderDetailController@receiveOrder');
 
+
+Route::group(['prefix'=>'product'],function(){
+    Route::get('list','ProductController@list');
+    Route::get('detail/{slug}','ProductController@detail');
+});
+
+
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');
 

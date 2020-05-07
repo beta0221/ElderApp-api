@@ -291,4 +291,19 @@ class ProductController extends Controller
 
     }
 
+
+    public function list(){
+        $products = Product::where('public',1)->orderBy('id','desc')->get();
+        return view('product.list',[
+            'products'=>$products
+        ]);
+    }
+
+    public function detail($slug){
+        $product = Product::where('slug',$slug)->firstOrFail();
+        return view('product.detail',[
+            'product'=>$product,
+        ]);
+    }
+
 }
