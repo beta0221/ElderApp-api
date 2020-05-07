@@ -292,10 +292,11 @@ class ProductController extends Controller
     }
 
 
-    public function list(){
+    public function list(Request $req){
         $products = Product::where('public',1)->orderBy('id','desc')->get();
         return view('product.list',[
-            'products'=>$products
+            'products'=>$products,
+            'token'=>$req->token,
         ]);
     }
 

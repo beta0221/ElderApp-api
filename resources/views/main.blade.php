@@ -23,5 +23,26 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="/js/bootstrap.js"></script>
+<script>
+    function token(){
+        return localStorage.getItem('token');
+    }
+</script>
 @yield('js')
+<script>
+    $.ajax({
+        type: "POST",
+        url: "/api/auth/me",
+        dataType: "json",
+        headers:{
+            'Authorization':'Bearer '+token(),
+        },
+        success: function (response) {
+            
+        },
+        error:function(error){
+            
+        }
+    });
+</script>
 </html>
