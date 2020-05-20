@@ -19,7 +19,10 @@ Route::get('play',function(){
     return view('playground');
 });
 
-//Route::get('sendMoney','TransactionController@sendMoney');
+// Route::get('/sendMoney',function(){
+//     return '123';
+// });
+Route::get('/sendMoney','TransactionController@sendMoney');
 
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
@@ -46,6 +49,9 @@ Route::group(['prefix'=>'product'],function(){
     Route::get('detail/{slug}','ProductController@detail');
 });
 
+Route::group(['prefix'=>'cart'],function(){
+    Route::get('/','CartController@index');
+});
 
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');

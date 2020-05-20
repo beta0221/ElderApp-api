@@ -98,6 +98,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('/my-order-list','OrderDetailController@myOrderList');
     
 
+    Route::group(['prefix'=>'cart'],function(){
+        Route::post('store/{product_id}','CartController@store');
+        Route::post('destroy/{product_id}','CartController@destroy');
+    });
     // Route::get('log-test',function(){
     //     Log::channel('eventlog')->info('test event log sdfasdf');
     //     Log::channel('translog')->info('test trans log asdfsadf');

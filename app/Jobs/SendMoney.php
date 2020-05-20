@@ -38,7 +38,7 @@ class SendMoney implements ShouldQueue
     public function handle()
     {
 
-        sleep(5);
+        sleep(3);
         if(Transaction::where('user_id',$this->user->id)->where('event','大天使鼠年紅包')->first()){
             return;
         }

@@ -27,6 +27,12 @@
     function token(){
         return localStorage.getItem('token');
     }
+    function happyAlert(text){
+        $('body').append('<div class="happy-alert"><div><h3>'+text+'</h3></div><div class="happy-btn" onclick="closeHappyAlert()">確定</div></div>');
+    }
+    function closeHappyAlert(){
+        $('.happy-alert').remove();
+    }
 </script>
 @yield('js')
 <script>
@@ -44,5 +50,6 @@
             
         }
     });
+    
 </script>
 </html>

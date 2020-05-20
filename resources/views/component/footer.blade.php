@@ -10,7 +10,7 @@
             <span class="material-icons">account_box</span>
         </div>
         <div class="menu-item">
-            <span class="material-icons">account_box</span>
+            <span class="material-icons">shopping_basket</span>
         </div>
     </div>
 </div>

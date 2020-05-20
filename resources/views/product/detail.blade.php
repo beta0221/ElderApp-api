@@ -57,7 +57,7 @@
 </div>
 
 <div class="float-area p-2">
-    <div class="float-btn bg-warning mb-2">
+    <div class="float-btn bg-warning mb-2" onclick="add_to_cart()">
         <span class="material-icons">
             add_shopping_cart
         </span>
@@ -72,5 +72,19 @@
 @endsection
 
 @section('js')
+<script>
+    const product_id = {{$product->id}};
 
+    function add_to_cart(){
+        $.ajax({
+            type: "POST",
+            url: "/api/cart/store/"+product_id,
+            dataType: "json",
+            success: function (response) {
+                window.happyAlert('成功加入購物車');
+            }
+        });
+    }
+
+</script>
 @endsection

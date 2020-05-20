@@ -6,6 +6,7 @@ use App\Jobs\SendMoney;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -98,21 +99,21 @@ class TransactionController extends Controller
         $this->validate($request,[
             // 'from' => 'required|integer',
             // 'to' => 'required|integer',
-            'event' => 'required',
-            'amount' =>'required|integer|min:1',
+            // 'event' => 'required',
+            // 'amount' =>'required|integer|min:1',
+            'month'=>'required|integer'
         ]);
 
-        $emailArray = [
-            
-        ];
-        $event = $request->event;
-        $amount = $request->amount;
-        // $from = $request->from;
-        // $to = $request->to;
-        foreach ($emailArray as $email) {
-            if($user = User::where('email',$email)->first()){
-                $this->dispatch(new SendMoney($user,$amount,$event));
-            }
+        
+        $event = $request->month . '月壽星生日禮';
+        $amount = 800;
+        
+        $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->get();
+        
+        foreach ($users as $user) {
+
+            $this->dispatch(new SendMoney($user,$amount,$event));
+        
         }
         
         return response('success');
