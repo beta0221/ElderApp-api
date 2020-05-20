@@ -270,7 +270,7 @@ class EventController extends Controller
 
 
         try {
-            $event->update($request->except('file'));
+            $event->update($request->except(['file','reward_level_id']));
         } catch (\Throwable $th) {
             return response($th,500);
         }            
