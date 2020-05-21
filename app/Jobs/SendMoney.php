@@ -39,14 +39,15 @@ class SendMoney implements ShouldQueue
     {
 
         sleep(3);
-        if(Transaction::where('user_id',$this->user->id)->where('event','大天使鼠年紅包')->first()){
+        $result = Transaction::where('user_id',$this->user->id)->where('event','大天使鼠年紅包')->first();
+        if(!$result){
             return;
         }
         
-        if($trans = Transaction::where('user_id',$this->user->id)->where('event','鼠年紅包')->first()){
-            $this->user->updateWallet(false,$trans->amount);
-            $trans->delete();
-        }
+        // if($trans = Transaction::where('user_id',$this->user->id)->where('event','鼠年紅包')->first()){
+        //     $this->user->updateWallet(false,$trans->amount);
+        //     $trans->delete();
+        // }
 
 
         $this->user->updateWallet(true,$this->amount);

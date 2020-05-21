@@ -108,7 +108,7 @@ class TransactionController extends Controller
         $event = $request->month . '月壽星生日禮';
         $amount = 800;
         
-        $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->get();
+        $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->where('org_rank',3)->get();
         
         foreach ($users as $user) {
 
