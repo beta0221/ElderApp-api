@@ -621,7 +621,7 @@ class EventController extends Controller
                     ]);
                 }
 
-                if(FreqEventUser::isRewardDrawed($user_id,$current_day)){
+                if(FreqEventUser::isRewardDrawed($user_id,$event->id,$current_day)){
                     return response()->json([
                         's'=>0,'m'=>'獎勵已領取。'
                     ]);

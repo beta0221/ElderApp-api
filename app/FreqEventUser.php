@@ -12,8 +12,8 @@ class FreqEventUser extends Model
     protected $table = 'frequently_event_user';
 
     
-    public static function isRewardDrawed($user_id,$day){
-        if(DB::table('frequently_event_user')->where('user_id',$user_id)->where('day',$day)->first()){
+    public static function isRewardDrawed($user_id,$event_id,$day){
+        if(DB::table('frequently_event_user')->where('event_id',$event_id)->where('user_id',$user_id)->where('day',$day)->first()){
             return true;
         }
 
