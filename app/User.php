@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements JWTSubject
 {
+
+    const INCREASE_WALLET = true;
+    const DECREASE_WALLET = false;
+
     use Notifiable;
 
     /**

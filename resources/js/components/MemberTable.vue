@@ -3,6 +3,7 @@
 
     <member-detail></member-detail>
     <member-tree></member-tree>
+    <send-money-panel></send-money-panel>
 
     <div>
       
@@ -107,10 +108,12 @@
 <script>
 import MemberDetail from "./MemberDetail";
 import MemberTree from "./MemberTree";
+import SendMoneyPanel from "./SendMoneyPanel";
 export default {
   components:{
     MemberDetail,
     MemberTree,
+    SendMoneyPanel,
   },
   data() {
     return {

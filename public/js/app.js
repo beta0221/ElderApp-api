@@ -2219,6 +2219,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -2253,6 +2254,9 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    showSendMoneyPanel: function showSendMoneyPanel() {
+      EventBus.$emit("showSendMoneyPanel", this.user);
     },
     editMemberDetailRequest: function editMemberDetailRequest() {
       var _this3 = this;
@@ -2326,6 +2330,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MemberDetail__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MemberDetail */ "./resources/js/components/MemberDetail.vue");
 /* harmony import */ var _MemberTree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MemberTree */ "./resources/js/components/MemberTree.vue");
+/* harmony import */ var _SendMoneyPanel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SendMoneyPanel */ "./resources/js/components/SendMoneyPanel.vue");
 //
 //
 //
@@ -2432,12 +2437,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     MemberDetail: _MemberDetail__WEBPACK_IMPORTED_MODULE_0__["default"],
-    MemberTree: _MemberTree__WEBPACK_IMPORTED_MODULE_1__["default"]
+    MemberTree: _MemberTree__WEBPACK_IMPORTED_MODULE_1__["default"],
+    SendMoneyPanel: _SendMoneyPanel__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -3482,6 +3490,81 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (error) {
           Exception.handle(error);
         });
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    var _this = this;
+
+    EventBus.$on("showSendMoneyPanel", function (user) {
+      _this.dialog = true;
+      _this.user = user;
+      _this.amount = null;
+      _this.event = null;
+    });
+  },
+  data: function data() {
+    return {
+      user: {},
+      dialog: false,
+      amount: null,
+      event: null
+    };
+  },
+  methods: {
+    sendMoneyRequest: function sendMoneyRequest() {
+      var _this2 = this;
+
+      axios.post('/api/sendMoneyTo', {
+        'id_code': this.user.id_code,
+        'event': this.event,
+        'amount': this.amount
+      })["catch"](function (err) {
+        console.error(err);
+      }).then(function (res) {
+        alert(res.data.m);
+
+        if (res.data.s == 1) {
+          _this2.dialog = false;
+        }
       });
     }
   }
@@ -59718,6 +59801,15 @@ var render = function() {
           _c(
             "v-card-actions",
             [
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "green darken-1" },
+                  on: { click: _vm.showSendMoneyPanel }
+                },
+                [_vm._v("發送樂幣")]
+              ),
+              _vm._v(" "),
               _c("v-spacer"),
               _vm._v(" "),
               !_vm.isReadMode || _vm.editPasswordMode
@@ -59827,6 +59919,8 @@ var render = function() {
       _c("member-detail"),
       _vm._v(" "),
       _c("member-tree"),
+      _vm._v(" "),
+      _c("send-money-panel"),
       _vm._v(" "),
       _c(
         "div",
@@ -60988,6 +61082,135 @@ var render = function() {
       1
     )
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-dialog",
+    {
+      attrs: { "max-width": "480px" },
+      model: {
+        value: _vm.dialog,
+        callback: function($$v) {
+          _vm.dialog = $$v
+        },
+        expression: "dialog"
+      }
+    },
+    [
+      _c(
+        "v-card",
+        { attrs: { id: "member-detail-dialog" } },
+        [
+          _c("v-card-title", { staticClass: "headline" }, [
+            _vm._v("姓名：" + _vm._s(_vm.user.name))
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "data-row" }, [
+            _c("span", [_vm._v("贈送金額")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.amount,
+                  expression: "amount"
+                }
+              ],
+              attrs: { type: "number" },
+              domProps: { value: _vm.amount },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.amount = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "data-row" }, [
+            _c("span", [_vm._v("留言")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event,
+                  expression: "event"
+                }
+              ],
+              attrs: { type: "text" },
+              domProps: { value: _vm.event },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.event = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "v-card-actions",
+            [
+              _c("v-spacer"),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "green darken-1", flat: "flat" },
+                  on: { click: _vm.sendMoneyRequest }
+                },
+                [_vm._v("確定發送")]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "gray darken-1", flat: "flat" },
+                  on: {
+                    click: function($event) {
+                      _vm.dialog = false
+                    }
+                  }
+                },
+                [_vm._v("關閉")]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -103566,6 +103789,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProductTable_vue_vue_type_template_id_037f888a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProductTable_vue_vue_type_template_id_037f888a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/SendMoneyPanel.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/SendMoneyPanel.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SendMoneyPanel.vue?vue&type=template&id=4a7177f7& */ "./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7&");
+/* harmony import */ var _SendMoneyPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SendMoneyPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SendMoneyPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/SendMoneyPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SendMoneyPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SendMoneyPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SendMoneyPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SendMoneyPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SendMoneyPanel.vue?vue&type=template&id=4a7177f7& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SendMoneyPanel.vue?vue&type=template&id=4a7177f7&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SendMoneyPanel_vue_vue_type_template_id_4a7177f7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

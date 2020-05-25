@@ -79,6 +79,7 @@
       </div>
 
       <v-card-actions>
+        <v-btn color="green darken-1" @click="showSendMoneyPanel">發送樂幣</v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="!isReadMode || editPasswordMode" color="gray darken-1" flat="flat" @click="cancelEditMode">取消</v-btn>
         <v-btn v-if="!isReadMode" color="green darken-1" flat="flat" @click="editMemberDetailRequest">更新</v-btn>
@@ -125,6 +126,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    showSendMoneyPanel(){
+      EventBus.$emit("showSendMoneyPanel",this.user);
     },
     editMemberDetailRequest() {
       axios

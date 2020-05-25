@@ -93,6 +93,38 @@ class TransactionController extends Controller
         
     }
 
+    public function sendMoneyTo(Request $request){
+
+        $this->validate($request,[
+            'id_code' => 'required',
+            'event' => 'required',
+            'amount' =>'required|integer|min:1',
+        ]);
+
+        if(!$user = User::where('id_code',$request->id_code)->first()){
+            return response()->json([
+                's'=>0,
+                'm'=>'無此使用者'
+            ]);
+        }
+
+        $user->updateWallet(User::INCREASE_WALLET,$request->amount);
+
+        Transaction::create([
+            'tran_id'=>time() . rand(10,99),
+            'user_id'=>$user->id,
+            'event' =>$request->event,
+            'amount'=>$request->amount,
+            'target_id'=>0,
+            'give_take'=>User::INCREASE_WALLET,
+        ]);
+
+        return response()->json([
+            's'=>1,
+            'm'=>'發送成功'
+        ]);
+
+    }
 
     public function sendMoney(Request $request){
 

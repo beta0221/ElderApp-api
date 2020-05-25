@@ -48,6 +48,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('makeGroupLeader','MemberController@makeGroupLeader');
     Route::post('removeGroupLeader','MemberController@removeGroupLeader');
     Route::post('makeTeacher','MemberController@makeTeacher');
+
+    Route::post('sendMoneyTo','TransactionController@sendMoneyTo');
 });
 
 //Guest 使用者------------------------

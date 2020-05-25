@@ -22,7 +22,7 @@ Route::get('play',function(){
 // Route::get('/sendMoney',function(){
 //     return '123';
 // });
-Route::get('/sendMoney','TransactionController@sendMoney');
+// Route::get('/sendMoney','TransactionController@sendMoney');
 
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
