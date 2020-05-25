@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\Role;
 use App\PayDate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class MemberController extends Controller
@@ -232,12 +230,17 @@ class MemberController extends Controller
     }
 
     //檢查所有會員把過期的會員效期變成過期
-    public function executeExpired(Request $request){
-        date_default_timezone_set('Asia/Taipei');
-        $now = strtotime(date('Y-m-d'));
-        DB::update("update users set valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now");
-        return response(['s'=>1,'m'=>'Updated'],Response::HTTP_ACCEPTED);
-    }
+    // public function executeExpired(Request $request){
+    //     date_default_timezone_set('Asia/Taipei');
+    //     $now = strtotime(date('Y-m-d'));
+    //     $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
+    //     foreach ($users as $user) {
+    //         Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');    
+    //     }
+    //     DB::update("UPDATE users SET valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
+        
+        // return response(['s'=>1,'m'=>'Updated'],Response::HTTP_ACCEPTED);
+    // }
 
     //更新會員資格（無效會員變成有效會員）
     public function toValid(Request $request){

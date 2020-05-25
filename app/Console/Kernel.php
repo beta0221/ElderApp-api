@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,6 +28,19 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->call(function(){
+            Log::info('expire check');
+            date_default_timezone_set('Asia/Taipei');
+            $now = strtotime(date('Y-m-d'));
+            $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
+            foreach ($users as $user) {
+                Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');    
+            }
+            DB::update("UPDATE users SET valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
+        })->dailyAt('03:00');
+
+        
     }
 
     /**

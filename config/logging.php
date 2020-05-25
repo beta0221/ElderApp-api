@@ -99,6 +99,11 @@ return [
             'path' => storage_path('logs/trans.log'),
             'level' => 'debug',
         ],
+        'expirelog'=>[
+            'driver' => 'single',
+            'path' => storage_path('logs/expire.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];
