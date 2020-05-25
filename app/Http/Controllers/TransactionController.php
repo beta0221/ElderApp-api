@@ -182,7 +182,7 @@ class TransactionController extends Controller
      */
     public function show($user_id)
     {
-        $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->get();
+        $trans = Transaction::where('user_id',$user_id)->orderBy('id','desc')->take(10)->get();
         $result = [];
         foreach($trans as $tran){
             if($tran->target_id == 0){

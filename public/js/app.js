@@ -3530,6 +3530,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -3539,6 +3547,8 @@ __webpack_require__.r(__webpack_exports__);
       _this.user = user;
       _this.amount = null;
       _this.event = null;
+
+      _this.getTransactionHistory();
     });
   },
   data: function data() {
@@ -3546,7 +3556,8 @@ __webpack_require__.r(__webpack_exports__);
       user: {},
       dialog: false,
       amount: null,
-      event: null
+      event: null,
+      transList: []
     };
   },
   methods: {
@@ -3563,8 +3574,20 @@ __webpack_require__.r(__webpack_exports__);
         alert(res.data.m);
 
         if (res.data.s == 1) {
-          _this2.dialog = false;
+          _this2.amount = null;
+          _this2.event = null;
+
+          _this2.getTransactionHistory();
         }
+      });
+    },
+    getTransactionHistory: function getTransactionHistory() {
+      var _this3 = this;
+
+      axios.get('/api/trans-history/' + this.user.id).then(function (res) {
+        _this3.transList = res.data;
+      })["catch"](function (error) {
+        console.log(error);
       });
     }
   }
@@ -61177,6 +61200,47 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c(
+            "div",
+            {
+              staticClass: "data-row",
+              staticStyle: { height: "200px", "margin-top": "12px" }
+            },
+            [
+              _c("div", { staticStyle: { height: "100%" } }, [
+                _c(
+                  "div",
+                  {
+                    staticStyle: {
+                      height: "100%",
+                      "overflow-y": "scroll",
+                      border: ".5px solid gray",
+                      padding: "8px"
+                    }
+                  },
+                  _vm._l(_vm.transList, function(t) {
+                    return _c("p", {
+                      key: t.id,
+                      staticStyle: { "margin-bottom": "4px" },
+                      domProps: {
+                        innerHTML: _vm._s(
+                          t.created_at +
+                            " => " +
+                            t.event +
+                            " (" +
+                            (t.give_take ? "+" : "-") +
+                            t.amount +
+                            ")"
+                        )
+                      }
+                    })
+                  }),
+                  0
+                )
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
             "v-card-actions",
             [
               _c("v-spacer"),
@@ -104085,8 +104149,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

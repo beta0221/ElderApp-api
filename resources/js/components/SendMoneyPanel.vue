@@ -13,6 +13,14 @@
             <input type="text" v-model="event"/>
         </div>
 
+        <div class="data-row" style="height:200px;margin-top:12px;">
+          <div style="height:100%;">
+            <div style="height:100%;overflow-y:scroll;border:.5px solid gray;padding:8px">
+              <p style="margin-bottom:4px" v-for="t in transList" v-bind:key="t.id" v-html="t.created_at + ' => ' + t.event + ' (' + ((t.give_take)?'+':'-') + t.amount + ')'"></p>
+            </div>
+          </div>
+        </div>
+
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" flat="flat" @click="sendMoneyRequest">確定發送</v-btn>
@@ -30,6 +38,7 @@ export default {
       this.user = user;
       this.amount=null;
       this.event=null;
+      this.getTransactionHistory();
     });
   },
   data() {
@@ -37,7 +46,8 @@ export default {
         user:{},
         dialog: false,
         amount:null,
-        event:null
+        event:null,
+        transList:[],
     };
   },
   methods: {
@@ -51,10 +61,20 @@ export default {
           .then(res => {
               alert(res.data.m);
               if(res.data.s==1){
-                  this.dialog=false;
+                  this.amount=null;
+                  this.event=null;
+                  this.getTransactionHistory();
               }
           })
-          
+      },
+      getTransactionHistory(){
+        axios.get('/api/trans-history/'+this.user.id)
+        .then(res=>{
+          this.transList = res.data;
+        })
+        .catch(error=>{
+          console.log(error);
+        })
       }
   }
 };
