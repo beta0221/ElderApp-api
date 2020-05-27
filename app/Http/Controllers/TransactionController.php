@@ -137,10 +137,10 @@ class TransactionController extends Controller
         ]);
 
         
-        $event = $request->month . '月壽星生日禮';
-        $amount = 800;
+        $event = $request->month . '鼠年紅包(補發)';
+        $amount = 100;
         
-        $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->where('org_rank',3)->get();
+        $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->get();
         
         foreach ($users as $user) {
 
