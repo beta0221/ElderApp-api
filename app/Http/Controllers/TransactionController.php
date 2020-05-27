@@ -137,7 +137,7 @@ class TransactionController extends Controller
         ]);
 
         
-        $event = $request->month . '鼠年紅包(補發)';
+        $event = '鼠年紅包(補發)';
         $amount = 100;
         
         $users = User::whereMonth('birthdate',$request->month)->where('valid',1)->get();
