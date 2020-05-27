@@ -54,6 +54,15 @@ class SendMoney implements ShouldQueue
         
 
         if(!$hasSend){
+
+            if($this->user->org_rank == 2){
+                $this->event = '小天使鼠年紅包(補發)';
+                $this->amount = 300;
+            }else if($this->user->org_rank == 3){
+                $this->event = '大天使鼠年紅包(補發)';
+                $this->amount = 600;
+            }
+
             $this->user->updateWallet(true,$this->amount);
 
             $tran_id = time() . rand(10,99);
