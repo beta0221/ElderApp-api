@@ -2676,20 +2676,23 @@ __webpack_require__.r(__webpack_exports__);
     toValid: function toValid(id, index) {
       var _this3 = this;
 
-      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
-        axios.post("/api/toValid", {
-          id: id
-        }).then(function (res) {
-          if (res.data.s == 1) {
-            _this3.desserts[index]["valid"] = 1;
-            _this3.desserts[index]["expiry_date"] = res.data.d;
-          }
-
-          console.log(res);
-        })["catch"](function (error) {
-          console.log(error);
-        });
+      if (!confirm('確定增加會員效期？')) {
+        return;
       }
+
+      axios.post("/api/toValid", {
+        id: id
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this3.desserts[index]["valid"] = 1;
+          _this3.desserts[index]["expiry_date"] = res.data.d;
+        }
+
+        console.log(res);
+      })["catch"](function (error) {
+        console.log(error);
+      }); // if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
+      // }
     },
     addGroupMember: function addGroupMember() {
       var _this4 = this;
@@ -104149,8 +104152,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

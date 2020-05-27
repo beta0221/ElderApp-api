@@ -244,18 +244,31 @@ class MemberController extends Controller
 
     //更新會員資格（無效會員變成有效會員）
     public function toValid(Request $request){
+
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
-        if($user->valid == 0 && $user->expiry_date != null){
-            $user->update([
-                'valid'=>1,
-                'expiry_date'=>date('Y-m-d',strtotime('+1 years')),
-                ]);
-            PayDate::create(['user_id'=>$request->id]);
-            return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d')],Response::HTTP_ACCEPTED);
-        }else{
-            return response(['s'=>0,'m'=>'not allowed to valid'],Response::HTTP_ACCEPTED);
+        
+        $now = time();
+        $next_expiry_date = strtotime('+1 years');//已到期續會
+        if($user->expiry_date){
+            if($now < strtotime($user->expiry_date)){    //如果還沒過期了
+                $next_expiry_date = strtotime('+1 years',strtotime($user->expiry_date));//未到期續會
+            }
         }
+        
+        $user->update([
+            'valid'=>1,
+            'expiry_date'=>date('Y-m-d',$next_expiry_date),
+        ]);
+
+        PayDate::create(['user_id'=>$request->id]);
+
+        return response([
+            's'=>1,
+            'm'=>'Updated',
+            'd'=>date('Y-m-d',$next_expiry_date)
+        ],Response::HTTP_ACCEPTED);
+
     }
 
     //檢查推薦人是否存在

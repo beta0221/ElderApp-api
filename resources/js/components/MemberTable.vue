@@ -257,22 +257,26 @@ export default {
       });
     },
     toValid(id, index) {
-      if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
-        axios
-          .post("/api/toValid", {
-            id: id
-          })
-          .then(res => {
-            if (res.data.s == 1) {
-              this.desserts[index]["valid"] = 1;
-              this.desserts[index]["expiry_date"] = res.data.d;
-            }
-            console.log(res);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+      if(!confirm('確定增加會員效期？')){
+        return;
       }
+      axios
+      .post("/api/toValid", {
+        id: id
+      })
+      .then(res => {
+        if (res.data.s == 1) {
+          this.desserts[index]["valid"] = 1;
+          this.desserts[index]["expiry_date"] = res.data.d;
+        }
+        console.log(res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+      // if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
+        
+      // }
     },
     addGroupMember() {
       axios
