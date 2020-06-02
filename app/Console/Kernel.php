@@ -66,9 +66,9 @@ class Kernel extends ConsoleKernel
             }
         })->dailyAt('08:00');
 
-        $schedule->call(function(){
-            Log::info('schedule test every minute');
-        })->everyMinute();
+        // $schedule->call(function(){
+        //     Log::info('schedule test every minute');
+        // })->everyMinute();
 
 
     }
