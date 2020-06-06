@@ -52,17 +52,17 @@ class Kernel extends ConsoleKernel
             date_default_timezone_set('Asia/Taipei');
             $users = User::whereMonth('birthdate',date('m'))->whereDay('birthdate',date('d'))->get();
             foreach ($users as $user) {
-                Log::info('today is user '.$user->id.' birthday');
-                // $user->updateWallet(true,800);
-                // $tran_id = time() . rand(10,99);
-                // Transaction::create([
-                //     'tran_id'=>$tran_id,
-                //     'user_id'=>$user->id,
-                //     'event' =>'壽星生日禮',
-                //     'amount'=>800,
-                //     'target_id'=>0,
-                //     'give_take'=>true,
-                // ]);
+                Log::channel('birthdaylog')->info('today is user '.$user->name.'('.$user->id.')'.' birthday');
+                $user->updateWallet(User::INCREASE_WALLET,800);
+                $tran_id = time() . rand(10,99);
+                Transaction::create([
+                    'tran_id'=>$tran_id,
+                    'user_id'=>$user->id,
+                    'event' =>'壽星生日禮',
+                    'amount'=>800,
+                    'target_id'=>0,
+                    'give_take'=>User::INCREASE_WALLET,
+                ]);
             }
         })->dailyAt('08:00');
 

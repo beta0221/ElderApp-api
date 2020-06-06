@@ -104,6 +104,11 @@ return [
             'path' => storage_path('logs/expire.log'),
             'level' => 'debug',
         ],
+        'birthdaylog'=>[
+            'driver' => 'single',
+            'path' => storage_path('logs/birthday.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];
