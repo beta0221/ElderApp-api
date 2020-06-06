@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){
             Log::info('birthday check');
             date_default_timezone_set('Asia/Taipei');
-            $users = User::whereMonth('birthdate',date('m'))->whereDay('birthdate',date('d'))->get();
+            $users = User::whereMonth('birthdate',date('m'))->whereDay('birthdate',date('d'))->where('valid',1)->get();
             foreach ($users as $user) {
                 Log::channel('birthdaylog')->info('today is user '.$user->name.'('.$user->id.')'.' birthday');
                 $user->updateWallet(User::INCREASE_WALLET,800);
