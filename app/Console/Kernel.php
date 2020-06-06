@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
                     'give_take'=>User::INCREASE_WALLET,
                 ]);
             }
-        })->dailyAt('21:10');
+        })->dailyAt('08:00');
 
         // $schedule->call(function(){
         //     Log::info('schedule test every minute');
