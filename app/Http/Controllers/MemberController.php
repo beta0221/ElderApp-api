@@ -229,20 +229,10 @@ class MemberController extends Controller
         return response()->json($user);
     }
 
-    //檢查所有會員把過期的會員效期變成過期
-    // public function executeExpired(Request $request){
-    //     date_default_timezone_set('Asia/Taipei');
-    //     $now = strtotime(date('Y-m-d'));
-    //     $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
-    //     foreach ($users as $user) {
-    //         Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');    
-    //     }
-    //     DB::update("UPDATE users SET valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
-        
-        // return response(['s'=>1,'m'=>'Updated'],Response::HTTP_ACCEPTED);
-    // }
 
-    //更新會員資格（無效會員變成有效會員）
+    /**
+     *更新會員資格（無效會員變成有效會員） 
+     */
     public function toValid(Request $request){
 
         date_default_timezone_set('Asia/Taipei');
@@ -271,7 +261,9 @@ class MemberController extends Controller
 
     }
 
-    //檢查推薦人是否存在
+    /**
+     *檢查推薦人是否存在 
+     */
     public function inviterCheck(Request $request){
         
         $request->validate([
@@ -296,7 +288,9 @@ class MemberController extends Controller
     }
 
 
-    //大天使小天使加入組織請求
+    /**
+     *大天使小天使加入組織請求 
+     */
     public function addGroupMember(Request $request){
 
         // leader_id
@@ -362,6 +356,9 @@ class MemberController extends Controller
 
     }
 
+    /**
+     *把使用者從組織中移除 
+     */
     public function removeMemberFromGroup(Request $request){
         //user_id
         if(!$user = User::find($request->user_id)){
@@ -382,11 +379,13 @@ class MemberController extends Controller
 
     }
 
+    /**
+     * 移動組織成員的操作頁面
+     */
     public function moveMemberPage($user_id){
         if(!$user = User::find($user_id)){
             return response('no such user');
         }
-        
         
         $rows = $user->getGroupUserRows();
         $levelDict = [];
@@ -403,6 +402,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 移動成員請求
+     */
     public function moveMember(Request $request,$user_id){
 
         $this->validate($request,[
@@ -433,15 +435,19 @@ class MemberController extends Controller
         return redirect("member_tree/$user->id_code");
     }
 
-
+    /**
+     * get 使用者階級
+     */
     public function getUserLevel($user_id){
-
         if($user = User::find($user_id)){
             return response()->json($user->groupLevel());
         }
         return 0;
     }
 
+    /**
+     * 指派使用者為某階級
+     */
     public function makeGroupLeader(Request $request){
         //user_id
         //level
@@ -465,6 +471,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 移除使用者為職務
+     */
     public function removeGroupLeader(Request $request){
         //user_id
         if(!$user = User::find($request->user_id)){
@@ -497,6 +506,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 指派為老師
+     */
     public function makeTeacher(Request $request){
         //user_id
         if(!$user = User::find($request->user_id)){
@@ -515,12 +527,17 @@ class MemberController extends Controller
         ]);
     }
 
-    //App 的 AccountPage OnAppearing 請求
+    
+    /**
+     * App 的 AccountPage OnAppearing 請求
+     */
     public function myAccount(){
         return response()->json(Auth::user());
     }
 
-    //App首頁更新基本資料
+    /**
+     * App首頁更新基本資料
+     */
     public function updateAccount(Request $request){
         $user = Auth::user();
         
@@ -544,6 +561,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 更新基本資料請求
+     */
     public function updateMemberAccount(Request $request){
         $user = User::find($request->id);
 
@@ -563,7 +583,6 @@ class MemberController extends Controller
             }
             $user->email = $request->email;
         }
-        
 
         $user->name = $request->name;
         $user->id_number = $request->id_number;
@@ -581,6 +600,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 管理後台 幫會員變更密碼 請求
+     */
     public function updateMemberPassword(Request $request,$id_code){
         
         if($request->adminCode == 'ji3g4ej03xu3m06'){
@@ -593,12 +615,12 @@ class MemberController extends Controller
             return response('success',200);
         }
         return response('權限不足',400);
-
-
         
     }
 
-    //會員續會申請
+    /**
+     * 會員續會申請
+     */
     public function extendMemberShip(Request $request){
         $user = User::find($request->user_id);
         if(!$user){
@@ -631,6 +653,9 @@ class MemberController extends Controller
         }
     }
 
+    /**
+     * 組織樹 頁面
+     */
     public function memberTree($id_code){
         $user = User::where('id_code',$id_code)->first();
         if(!$user){
@@ -720,6 +745,9 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * 註冊完成 welcome page
+     */
     public function welcome(){
         return view('member.welcome');
     }
