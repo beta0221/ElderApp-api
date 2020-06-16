@@ -36,5 +36,10 @@ class rolesTableSeeder extends Seeder
         $role->name = 'accountant';
         $role->description = 'accountant';
         $role->save();
+
+        $role = new Role();
+        $role->name = 'firm';
+        $role->description = 'firm';
+        $role->save();
     }
 }
