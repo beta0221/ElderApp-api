@@ -19,6 +19,8 @@ Route::get('play',function(){
     return view('playground');
 });
 
+Route::get('order/list','OrderDetailController@index');
+Route::get('order/show/{order_id}','OrderDetailCOntroller@show');
 // Route::get('/sendMoney',function(){
 //     return '123';
 // });

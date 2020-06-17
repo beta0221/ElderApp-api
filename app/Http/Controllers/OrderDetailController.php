@@ -17,7 +17,7 @@ class OrderDetailController extends Controller
      */
     public function index()
     {
-        //
+        return view('order.list');
     }
 
     /**
@@ -47,7 +47,7 @@ class OrderDetailController extends Controller
      * @param  \App\OrderDetail  $orderDetail
      * @return \Illuminate\Http\Response
      */
-    public function show(OrderDetail $orderDetail)
+    public function show($order_id)
     {
         //
     }
