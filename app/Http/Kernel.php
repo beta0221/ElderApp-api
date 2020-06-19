@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\CheckAdmin::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'BCP' => \App\Http\Middleware\BackendControlPanel::class,
+        'FirmAndAdmin' => \App\Http\Middleware\FirmAndAdminMiddleware::class,
     ];
 
     /**

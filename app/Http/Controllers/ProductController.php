@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['JWT','admin'], ['only' => ['index','store','destroy','update']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['index','store','destroy','update']]);
     }
 
     /**
@@ -36,14 +36,19 @@ class ProductController extends Controller
         }
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
-        $products = DB::table('products')
-        ->select('*')
-        ->orderBy($orderBy, $ascOrdesc)
+        $query = DB::table('products')
+        ->select('*');
+
+        $user = Auth::user();
+        if($user->hasRole('firm')){
+            $query = $query->where('firm_id',$user->id);
+        }
+
+        $total = $query->count();
+        $products = $query->orderBy($orderBy, $ascOrdesc)
         ->skip($skip)
         ->take($rows)
         ->get();
-
-        $total = DB::table('products')->count();
 
         return response()->json([
             'products' => $products,
@@ -81,7 +86,7 @@ class ProductController extends Controller
         }
 
 
-
+        $request->merge(['firm_id'=>Auth::user()->id]);
         try {
             $product = Product::create($request->except('file','select_location','quantity','payCashQuantity'));
         } catch (\Throwable $th) {
@@ -160,8 +165,6 @@ class ProductController extends Controller
                 return response('系統錯誤',500);
             }
         }
-
-        
 
         try {
             $product->update($request->except('file','select_location','quantity','payCashQuantity'));
