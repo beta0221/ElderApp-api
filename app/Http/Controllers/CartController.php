@@ -16,13 +16,7 @@ class CartController extends Controller
     public function index()
     {
         $ip = request()->ip();
-        if(!$cart = Cart::where('ip',$ip)->first()){
-            return response('no items in cart');
-        }
-        $items = json_decode($cart->items,true);
-
-        $products = Product::whereIn('id',$items)->get();
-
+        $products = Cart::getProductsInCart($ip);
 
         return view('cart.cart',[
             'products'=>$products
@@ -86,4 +80,38 @@ class CartController extends Controller
         return response()->json($cart);
 
     }
+
+    /**
+     * 結帳
+     * 
+     * quantityDict = 
+     * {
+     *    '123':{
+     *          'point':3,
+     *          'point_cash':6,
+     *        }
+     *  }
+     * 
+     */
+    public function checkOut(Request $request){
+
+        $this->validate($request,[
+            'quantityDict'=>'required',
+            'receiver_name'=>'required',
+            'receiver_phone'=>'required',
+            'county'=>'required',
+            'district'=>'required',
+            'zipcode'=>'required',
+            'address'=>'required',
+        ]);
+
+        $ip = request()->ip();
+        $products = Cart::getProductsInCart($ip);
+
+        
+
+        return response($products);
+
+    }
+
 }
