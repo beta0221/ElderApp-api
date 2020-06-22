@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Cart;
+use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -106,9 +108,16 @@ class CartController extends Controller
         ]);
 
         $ip = request()->ip();
+        $user = Auth::user();
         $products = Cart::getProductsInCart($ip);
 
         
+
+        $order_delievery_id = OrderDelievery::insert_row($user->id,$request);
+
+
+
+        Cart::clearCart($ip);
 
         return response($products);
 
