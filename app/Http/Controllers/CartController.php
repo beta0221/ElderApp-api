@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cart;
+use App\Order;
 use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
@@ -108,13 +109,26 @@ class CartController extends Controller
         ]);
 
         $ip = request()->ip();
+        $order_numero = rand(0,9) . time() . rand(0,9);
         $user = Auth::user();
         $products = Cart::getProductsInCart($ip);
-
+        
         
 
-        $order_delievery_id = OrderDelievery::insert_row($user->id,$request);
+        if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
+            return response('失敗',500);
+        }
 
+
+        foreach ($products as $product) {
+            
+            $point_quantity = $request->quantityDict[$product->id]['point'];
+            $point_cash_quantity = $request->quantityDict[$product->id]['point_cash'];
+            
+            Order::insert_row($user->id,$order_delievery_id,$order_numero,$product,$point_quantity,$point_cash_quantity);
+
+        }
+        
 
 
         Cart::clearCart($ip);
