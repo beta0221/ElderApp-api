@@ -20,7 +20,7 @@ Route::get('play',function(){
 });
 
 Route::get('order/list','OrderDetailController@index');
-Route::get('order/show/{order_id}','OrderDetailCOntroller@show');
+
 // Route::get('/sendMoney',function(){
 //     return '123';
 // });
@@ -53,6 +53,11 @@ Route::group(['prefix'=>'product'],function(){
 
 Route::group(['prefix'=>'cart'],function(){
     Route::get('/','CartController@index');
+});
+
+Route::group(['prefix'=>'order'],function(){
+    Route::get('thankyou/{order_numero}','OrderController@view_thankyou');
+    Route::get('detail/{order_numero}','OrderController@view_orderDetail');
 });
 
 Route::view('/{any}','admin');

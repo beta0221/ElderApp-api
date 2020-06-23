@@ -112,28 +112,30 @@ class CartController extends Controller
         $order_numero = rand(0,9) . time() . rand(0,9);
         $user = Auth::user();
         $products = Cart::getProductsInCart($ip);
-        
-        
 
         if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
-            return response('失敗',500);
+            return response([
+                's'=>0,
+                'm'=>'error'
+            ]);
         }
-
 
         foreach ($products as $product) {
-            
-            $point_quantity = $request->quantityDict[$product->id]['point'];
-            $point_cash_quantity = $request->quantityDict[$product->id]['point_cash'];
-            
+            $quantityDict = json_decode($request->quantityDict,true);
+            if(!isset($quantityDict[$product->id])){ continue; }
+            $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
+            $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
+            if(($point_quantity + $point_cash_quantity) <= 0){ continue; }
             Order::insert_row($user->id,$order_delievery_id,$order_numero,$product,$point_quantity,$point_cash_quantity);
-
         }
-        
-
 
         Cart::clearCart($ip);
 
-        return response($products);
+        return response([
+            's'=>1,
+            'm'=>'success',
+            'order_numero'=>$order_numero
+        ]);
 
     }
 

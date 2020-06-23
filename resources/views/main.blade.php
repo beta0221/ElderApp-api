@@ -24,7 +24,7 @@
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="/js/bootstrap.js"></script>
 <script>
-    function token(){
+    function getToken(){
         return localStorage.getItem('token');
     }
     function happyAlert(text){
@@ -41,7 +41,7 @@
         url: "/api/auth/me",
         dataType: "json",
         headers:{
-            'Authorization':'Bearer '+token(),
+            'Authorization':'Bearer ' + getToken(),
         },
         success: function (response) {
             
