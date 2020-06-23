@@ -97,21 +97,21 @@
             <form>
                 <div class="form-group">
                     <label for="exampleInputEmail1">收件人</label>
-                    <input type="text"" class=" form-control" placeholder="收件人">
+                    <input type="text" name="receiver_name" class=" form-control" placeholder="收件人">
                 </div>
                 <div class="form-group">
                     <label for="exampleInputEmail1">聯絡電話</label>
-                    <input type="text"" class=" form-control" placeholder="聯絡電話">
+                    <input type="text" name="receiver_phone" class=" form-control" placeholder="聯絡電話">
                 </div>
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <label for="validationTooltip04">地址</label>
                         <div class="form-control" id="twzipcode"></div>
-                        <input type="text"" class=" form-control" placeholder="地址">
+                        <input type="text" name="address" class=" form-control" placeholder="地址">
                     </div>
                     
                 </div>
-                <button type="submit" class="btn btn-block btn-lg btn-primary">確定送出</button>
+                <div onclick="checkOutRequest()" class="btn btn-block btn-lg btn-primary">確定送出</div>
             </form>
         </div>
     </div>
@@ -157,5 +157,54 @@
         $('#total-point').html(total_point);
         $('#total-cash').html(total_cash);
     }
+
+    function checkOutRequest(){
+        
+        var quantityDict = {};
+        $('.input-quantity').each(function(index,item){
+            
+            let product_id = $(this).data('product-id');
+            let quantity = $(this).val();
+
+            if(!quantityDict[product_id]){
+                quantityDict[product_id] = {};
+            }
+
+            if($(this).data('cash') != null){
+                quantityDict[product_id]['point_cash'] = quantity;
+            }else{
+                quantityDict[product_id]['point'] = quantity;
+            }
+            
+        });
+
+        console.log(quantityDict);
+        // return;
+        $.ajax({
+            type: "POST",
+            url: "/api/cart/checkOut",
+            headers:{
+                'Authorization': 'Bearer '+getToken(),
+            },
+            data: {
+                'quantityDict':JSON.stringify(quantityDict),
+                'receiver_name':$("[name='receiver_name'").val(),
+                'receiver_phone':$("[name='receiver_phone'").val(),
+                'county':$("[name='county'").val(),
+                'district':$("[name='district'").val(),
+                'zipcode':$("[name='zipcode'").val(),
+                'address':$("[name='address'").val(),
+            },
+            dataType: "json",
+            success: function (response) {
+                if(response.s == 1){
+                    location.href = '/order/thankyou/'+response.order_numero
+                }else{
+                    alert(response.m);
+                }
+            }
+        });
+    }
+
 </script>
 @endsection
