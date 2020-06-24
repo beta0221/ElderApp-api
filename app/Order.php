@@ -9,6 +9,14 @@ class Order extends Model
     protected $table = 'orders';
     protected $guarded = [];
 
+    public static $shipStatusDict = [
+        '0'=>'待出貨',
+        '1'=>'準備中',
+        '2'=>'已出貨',
+        '3'=>'已到貨',
+        '4'=>'結案',
+    ];
+
     /**
      * insert 進資料庫
      * * @param Int user_id 
@@ -25,6 +33,7 @@ class Order extends Model
             'order_numero'=>$order_numero,
             //
             'firm_id'=>$product->firm_id,
+            'product_id'=>$product->id,
             'name'=>$product->name,
             'price'=>$product->price,
             'pay_cash_price'=>$product->pay_cash_price,
