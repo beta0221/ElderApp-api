@@ -6,6 +6,7 @@ use App\Order;
 use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
+use stdClass;
 
 class OrderController extends Controller
 {
@@ -25,12 +26,7 @@ class OrderController extends Controller
         foreach ($orders as $order) {
             $productIdArray[] = $order->product_id;
         }
-
-        $productImageDict = [];
-        $products = Product::whereIn('id',$productIdArray)->get();
-        foreach ($products as $product) {
-            $productImageDict[$product->id] = '/images/products/' . $product->slug . '/' . $product->img;
-        }
+        $productImageDict = Product::getProductImageDict($productIdArray);
 
         if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
             return view('errors.404');
@@ -46,10 +42,36 @@ class OrderController extends Controller
 
     }
     public function view_orderList(){
-        if(!$orders=Order::where('user_id',2)->get()){
+        if(!$orders=Order::where('user_id',2251)->get()){
             return view('errors.404');
         }
+
+        $productIdArray = [];
+        foreach ($orders as $order) {
+            $productIdArray[] = $order->product_id;
+        }
+        $productImageDict = Product::getProductImageDict($productIdArray);
+
+        $_dict = [];
+        $orderList = [];
+        foreach ($orders as $index => $order) {
+            if(!isset($_dict[$order->order_numero])){
+                $_order = new stdClass();
+                $_order->created_at = $order->created_at;
+                $_order->order_numero = $order->order_numero;
+                $_order->list = [];
+                $orderList[] = $_order;
+                $_dict[$order->order_numero] = $index;
+            }
+        }
+        foreach ($orders as $order) {
+            $index = $_dict[$order->order_numero];
+            $orderList[$index]->list[] = $order;
+        }
+        
         return view('order.list',[
+            'productImageDict'=>$productImageDict,
+            'orderList'=>$orderList,
             'orders'=>$orders
         ]);
     }

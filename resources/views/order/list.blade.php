@@ -10,51 +10,49 @@
 
 @section('content')
     <div class="container">
-        <div class="align-items-center">
+
+        <div class="row align-items-center mt-2">
             <div class="col-sm-12">
-                <h1>我的訂單</h1>
-                <hr>
+                <h3>我的訂單</h3>
+                
             </div>    
-         
-            <table class="table">
-                <thead>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table>
                     <tr>
                         <th>日期</th>
-                        
                         <th>訂單編號</th>
                         <th>產品</th>
-                        <th>價格</th>
-                        <th>數量</th>
-                        <th>紅利折扣</th>
-                        <th>總價</th>
-                        <th>付款方式</th>
-                        <th>付款狀態</th>
-                        <th>出貨狀態</th>
+                        <th></th>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($orders as $order)
-                    {{$order->name}}              
-                
+                    @foreach ($orderList as $order)
                     <tr>
-                    <td>{{$order->created_at}}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
+                        <td>{{$order->created_at}}</td>
+                        <td>{{$order->order_numero}}</td>
+                        <td>
+                            <table>
+                                @foreach ($order->list as $o)
+                                <tr>
+                                    <td>
+                                        <span>{{$o->name}}</span><br>
+                                        <img class="w-100" src="{{$productImageDict[$o->product_id]}}">
+                                    </td>
+                                </tr>        
+                                @endforeach
+                            </table>
+                        </td>
+                        <td>
+                            <a href="/order/detail/{{$order->order_numero}}"><div class="btn btn-primary btn-sm">詳情</div></a>
+                        </td>
                     </tr>
                     @endforeach
-                </tbody>
-            </table> 
-            
-            
-           
+                </table> 
+            </div>
         </div>
+
+
     </div>
 @endsection
 
