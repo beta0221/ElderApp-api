@@ -19,7 +19,7 @@ Route::get('play',function(){
     return view('playground');
 });
 
-Route::get('order/list','OrderDetailController@index');
+
 
 // Route::get('/sendMoney',function(){
 //     return '123';
@@ -58,6 +58,7 @@ Route::group(['prefix'=>'cart'],function(){
 Route::group(['prefix'=>'order'],function(){
     Route::get('thankyou/{order_numero}','OrderController@view_thankyou');
     Route::get('detail/{order_numero}','OrderController@view_orderDetail');
+    Route::get('list','OrderController@view_orderList');
 });
 
 Route::view('/{any}','admin');
