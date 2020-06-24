@@ -15,10 +15,12 @@
                 <h1>我的訂單</h1>
                 <hr>
             </div>    
+         
             <table class="table">
                 <thead>
                     <tr>
                         <th>日期</th>
+                        
                         <th>訂單編號</th>
                         <th>產品</th>
                         <th>價格</th>
@@ -31,18 +33,22 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($orders as $order)
+                    {{$order->name}}              
+                
                     <tr>
-                        <td>2020-06-23</td>
-                        <td>123456</td>
-                    </tr>
-                    <tr>
-                        <td>2020-02-21</td>
-                        <td>12344567</td>
+                    <td>{{$order->created_at}}</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    @endforeach
                 </tbody>
             </table> 
             

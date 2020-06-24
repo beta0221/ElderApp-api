@@ -31,5 +31,13 @@ class OrderController extends Controller
         ]);
 
     }
+    public function view_orderList(){
+        if(!$orders=Order::where('user_id',2)->get()){
+            return view('errors.404');
+        }
+        return view('order.list',[
+            'orders'=>$orders
+        ]);
+    }
     
 }
