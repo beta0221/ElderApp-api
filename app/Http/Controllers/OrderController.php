@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\OrderDelievery;
+use App\Product;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -20,11 +21,24 @@ class OrderController extends Controller
             return view('errors.404');
         }
 
+        $productIdArray = [];
+        foreach ($orders as $order) {
+            $productIdArray[] = $order->product_id;
+        }
+
+        $productImageDict = [];
+        $products = Product::whereIn('id',$productIdArray)->get();
+        foreach ($products as $product) {
+            $productImageDict[$product->id] = '/images/products/' . $product->slug . '/' . $product->img;
+        }
+
         if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
             return view('errors.404');
         }
 
         return view('order.detail',[
+            'shipStatusDict'=>Order::$shipStatusDict,
+            'productImageDict'=>$productImageDict,
             'order_numero'=>$order_numero,
             'orders'=>$orders,
             'orderDelievery'=>$orderDelievery
