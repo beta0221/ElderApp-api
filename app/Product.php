@@ -73,6 +73,20 @@ class Product extends Model
         return $productDictionary;
     }
 
+    /**
+     * 取得產品的圖片url字典
+     * @param Array product id 陣列
+     * @return Array 字典 key:product_id value:圖片 url
+     */
+    public static function getProductImageDict($productIdArray){
+        $productImageDict = [];
+        $products = Product::whereIn('id',$productIdArray)->get();
+        foreach ($products as $product) {
+            $productImageDict[$product->id] = '/images/products/' . $product->slug . '/' . $product->img;
+        }
+        return $productImageDict;
+    }
+
     public static function allAvailable(){
         return DB::table('products')->where('public',1)->orderBy('id','desc')->get();
     }
