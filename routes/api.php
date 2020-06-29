@@ -111,4 +111,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //     Log::channel('translog')->info('test trans log asdfsadf');
     //     return 'ok';
     // });
+
+    Route::group(['prefix'=>'order'],function(){
+        Route::get('getOrders','OrderController@getOrders');
+    });
     
