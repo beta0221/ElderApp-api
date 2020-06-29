@@ -6,10 +6,67 @@ use App\Order;
 use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use stdClass;
 
 class OrderController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders']]);
+    }
+
+    private function groupOrdersByNumero($orders){
+        $_dict = [];
+        $orderList = [];
+        foreach ($orders as $index => $order) {
+            if(!isset($_dict[$order->order_numero])){
+                $_order = new stdClass();
+                $_order->created_at = $order->created_at;
+                $_order->order_numero = $order->order_numero;
+                $_order->list = [];
+                $orderList[] = $_order;
+                $_dict[$order->order_numero] = $index;
+            }
+        }
+        foreach ($orders as $order) {
+            $index = $_dict[$order->order_numero];
+            $orderList[$index]->list[] = $order;
+        }
+        return $orderList;
+    }
+
+    //api route
+
+    public function getOrders(Request $request){
+        $page = ($request->page)?$request->page:1;
+        $rows = ($request->rowsPerPage)?$request->rowsPerPage:15;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+        if ($request->descending == null || $request->descending == 'false') {
+            $ascOrdesc = 'asc';
+        }
+        // $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+        // $column = ($request->column) ? $request->column : null;
+        // $value = (isset($request->value)) ? $request->value : null;
+        // $blurSearch = ($request->blurSearch) ? true : false;
+        $firm_id = Auth::user()->id;
+        
+        $query = Order::where('firm_id',$firm_id);
+        $total = $query->count();
+        $orders = $query->skip($skip)->take($rows)->get();
+
+        $orderList = $this->groupOrdersByNumero($orders);
+
+        return response([
+            'orderList'=>$orderList,
+            'total'=>$total,
+        ]);
+    }
+
+    //web route
+
     public function view_thankyou($order_numero){
         return view('order.thankyou',[
             'order_numero'=>$order_numero
@@ -52,22 +109,7 @@ class OrderController extends Controller
         }
         $productImageDict = Product::getProductImageDict($productIdArray);
 
-        $_dict = [];
-        $orderList = [];
-        foreach ($orders as $index => $order) {
-            if(!isset($_dict[$order->order_numero])){
-                $_order = new stdClass();
-                $_order->created_at = $order->created_at;
-                $_order->order_numero = $order->order_numero;
-                $_order->list = [];
-                $orderList[] = $_order;
-                $_dict[$order->order_numero] = $index;
-            }
-        }
-        foreach ($orders as $order) {
-            $index = $_dict[$order->order_numero];
-            $orderList[$index]->list[] = $order;
-        }
+        $orderList = $this->groupOrdersByNumero($orders);
         
         return view('order.list',[
             'productImageDict'=>$productImageDict,
