@@ -1,7 +1,15 @@
 <template>
 <div>
     <div>
-        <h2>hello</h2>
+        <v-btn color="info" @click="selectAll">
+            全選
+        </v-btn>
+        <v-btn @click="groupNextStatus">
+            下階段
+        </v-btn>
+        <v-btn>
+            匯出
+        </v-btn>
     </div>
         <div>
             <v-data-table
@@ -15,6 +23,14 @@
         >
             <template v-slot:items="props">
                 <td>{{props.index + 1}}</td>
+                <td>
+                    <input type="checkbox" v-model="props.item.isCheck">
+                </td>
+                <td>
+                    <v-btn :color="colorDict[props.item.ship_status]" @click="nextStatus(props.item.order_numero)">
+                        {{statusDict[props.item.ship_status]}}
+                    </v-btn>
+                </td>
                 <td>{{props.item.order_numero}}</td>
                 <td>{{props.item.created_at}}</td>
                 <td>
@@ -32,8 +48,24 @@
 export default {
     data(){
         return{
+            colorDict:{
+                '0':'error',
+                '1':'warning',
+                '2':'info',
+                '3':'primary',
+                '4':'success',
+            },
+            statusDict:{
+                '0':'待出貨',
+                '1':'準備中',
+                '2':'已出貨',
+                '3':'已到貨',
+                '4':'結案',
+            },
             headers: [
                 { text:'#'},
+                { text:'選取'},
+                { text: "狀態", value: "ship_status" },
                 { text: "訂單編號", value: "order_numero" },
                 { text: "日期", value: "created_at" },
                 { text: "商品"},
@@ -63,8 +95,53 @@ export default {
                 this.totalOrders = res.data.total;
                 this.orderList = res.data.orderList;
                 this.loading=false;
+            })  
+        },
+        getCheckedOrderNumero(){
+            let numeroArray = [];
+            this.orderList.forEach(order => {
+                if(order.isCheck){
+                    numeroArray.push(order.order_numero);
+                }
+            });
+            return numeroArray;
+        },
+        groupNextStatus(){
+            let order_numero_array = this.getCheckedOrderNumero();
+            if(order_numero_array.length == 0){
+                alert('請勾選');
+                return;
+            }
+            axios.post('/api/order/groupNextStatus',{
+                'order_numero_array':JSON.stringify(order_numero_array)
             })
-            
+            .then(res => {
+                console.error(res); 
+                this.getOrders();
+            })
+            .catch(err => {
+                console.error(err); 
+            })
+        },
+        nextStatus(order_numero){
+            axios.post('/api/order/nextStatus',{
+                'order_numero':order_numero
+            })
+            .then(res => {
+                if(res.data.s == 1){
+                    this.getOrders();
+                }else{
+                    alert(res.data.m);
+                }
+            })
+            .catch(err => {
+                console.error(err); 
+            })
+        },
+        selectAll(){
+            this.orderList.forEach((order,index) => {
+                this.$set(this.orderList[index],'isCheck',true)
+            });
         }
     }
 };

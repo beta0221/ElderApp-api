@@ -14,20 +14,21 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','nextStatus','groupNextStatus']]);
     }
 
     private function groupOrdersByNumero($orders){
         $_dict = [];
         $orderList = [];
-        foreach ($orders as $index => $order) {
+        foreach ($orders as $order) {
             if(!isset($_dict[$order->order_numero])){
                 $_order = new stdClass();
                 $_order->created_at = $order->created_at;
                 $_order->order_numero = $order->order_numero;
+                $_order->ship_status = $order->ship_status;
                 $_order->list = [];
                 $orderList[] = $_order;
-                $_dict[$order->order_numero] = $index;
+                $_dict[$order->order_numero] = count($orderList) - 1;
             }
         }
         foreach ($orders as $order) {
@@ -63,6 +64,42 @@ class OrderController extends Controller
             'orderList'=>$orderList,
             'total'=>$total,
         ]);
+    }
+
+    /**
+     * 更新訂單狀態到下一個階段（單一訂單號碼）
+     */
+    public function nextStatus(Request $request){
+        $this->validate($request,[
+            'order_numero'=>'required',
+        ]);
+        $firm_id = Auth::user()->id;
+        
+        $result = Order::updateToNextStatus($firm_id,$request->order_numero);
+
+        if($result == -1){
+            return response(['s'=>0,'m'=>'已結案']);
+        }else if($result == 0){
+            return response(['s'=>0,'m'=>'系統錯誤']);
+        }
+
+        return response(['s'=>1,'m'=>'更新成功']);
+    }
+
+    /**
+     * 更新訂單狀態到下一個階段（批次更新）
+     */
+    public function groupNextStatus(Request $request){
+        $this->validate($request,[
+            'order_numero_array'=>'required',
+        ]);
+        $firm_id = Auth::user()->id;
+        $order_numero_array = json_decode($request->order_numero_array,true);
+
+        foreach ($order_numero_array as $order_numero) {
+            Order::updateToNextStatus($firm_id,$order_numero);
+        }
+        return response('success');
     }
 
     //web route

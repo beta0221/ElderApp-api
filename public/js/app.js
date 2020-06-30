@@ -3101,11 +3101,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      colorDict: {
+        '0': 'error',
+        '1': 'warning',
+        '2': 'info',
+        '3': 'primary',
+        '4': 'success'
+      },
+      statusDict: {
+        '0': '待出貨',
+        '1': '準備中',
+        '2': '已出貨',
+        '3': '已到貨',
+        '4': '結案'
+      },
       headers: [{
         text: '#'
+      }, {
+        text: '選取'
+      }, {
+        text: "狀態",
+        value: "ship_status"
       }, {
         text: "訂單編號",
         value: "order_numero"
@@ -3144,6 +3179,57 @@ __webpack_require__.r(__webpack_exports__);
         _this.totalOrders = res.data.total;
         _this.orderList = res.data.orderList;
         _this.loading = false;
+      });
+    },
+    getCheckedOrderNumero: function getCheckedOrderNumero() {
+      var numeroArray = [];
+      this.orderList.forEach(function (order) {
+        if (order.isCheck) {
+          numeroArray.push(order.order_numero);
+        }
+      });
+      return numeroArray;
+    },
+    groupNextStatus: function groupNextStatus() {
+      var _this2 = this;
+
+      var order_numero_array = this.getCheckedOrderNumero();
+
+      if (order_numero_array.length == 0) {
+        alert('請勾選');
+        return;
+      }
+
+      axios.post('/api/order/groupNextStatus', {
+        'order_numero_array': JSON.stringify(order_numero_array)
+      }).then(function (res) {
+        console.error(res);
+
+        _this2.getOrders();
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    nextStatus: function nextStatus(order_numero) {
+      var _this3 = this;
+
+      axios.post('/api/order/nextStatus', {
+        'order_numero': order_numero
+      }).then(function (res) {
+        if (res.data.s == 1) {
+          _this3.getOrders();
+        } else {
+          alert(res.data.m);
+        }
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    selectAll: function selectAll() {
+      var _this4 = this;
+
+      this.orderList.forEach(function (order, index) {
+        _this4.$set(_this4.orderList[index], 'isCheck', true);
       });
     }
   }
@@ -60742,7 +60828,23 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
+    _c(
+      "div",
+      [
+        _c(
+          "v-btn",
+          { attrs: { color: "info" }, on: { click: _vm.selectAll } },
+          [_vm._v("\n            全選\n        ")]
+        ),
+        _vm._v(" "),
+        _c("v-btn", { on: { click: _vm.groupNextStatus } }, [
+          _vm._v("\n            下階段\n        ")
+        ]),
+        _vm._v(" "),
+        _c("v-btn", [_vm._v("\n            匯出\n        ")])
+      ],
+      1
+    ),
     _vm._v(" "),
     _c(
       "div",
@@ -60769,6 +60871,80 @@ var render = function() {
                 return [
                   _c("td", [_vm._v(_vm._s(props.index + 1))]),
                   _vm._v(" "),
+                  _c("td", [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: props.item.isCheck,
+                          expression: "props.item.isCheck"
+                        }
+                      ],
+                      attrs: { type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(props.item.isCheck)
+                          ? _vm._i(props.item.isCheck, null) > -1
+                          : props.item.isCheck
+                      },
+                      on: {
+                        change: function($event) {
+                          var $$a = props.item.isCheck,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                _vm.$set(
+                                  props.item,
+                                  "isCheck",
+                                  $$a.concat([$$v])
+                                )
+                            } else {
+                              $$i > -1 &&
+                                _vm.$set(
+                                  props.item,
+                                  "isCheck",
+                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                )
+                            }
+                          } else {
+                            _vm.$set(props.item, "isCheck", $$c)
+                          }
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: _vm.colorDict[props.item.ship_status]
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.nextStatus(props.item.order_numero)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.statusDict[props.item.ship_status]) +
+                              "\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.order_numero))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.created_at))]),
@@ -60792,14 +60968,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [_c("h2", [_vm._v("hello")])])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
