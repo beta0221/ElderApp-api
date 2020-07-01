@@ -3117,9 +3117,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      columns: [{
+        text: '欄位',
+        value: null
+      }, {
+        text: '狀態',
+        value: 'ship_status'
+      }, {
+        text: '日期',
+        value: 'created_at'
+      }, {
+        text: '訂單編號',
+        value: 'order_numero'
+      }],
       colorDict: {
         '0': 'error',
         '1': 'warning',
@@ -3134,6 +3166,22 @@ __webpack_require__.r(__webpack_exports__);
         '3': '已到貨',
         '4': '結案'
       },
+      statusList: [{
+        text: '待出貨',
+        value: 0
+      }, {
+        text: '準備中',
+        value: 1
+      }, {
+        text: '已出貨',
+        value: 2
+      }, {
+        text: '已到貨',
+        value: 3
+      }, {
+        text: '結案',
+        value: 4
+      }],
       headers: [{
         text: '#'
       }, {
@@ -3156,13 +3204,31 @@ __webpack_require__.r(__webpack_exports__);
       },
       orderList: [],
       totalOrders: 0,
-      loading: true
+      loading: true,
+      //
+      searchColumn: null,
+      searchValue: null
     };
   },
+  watch: {
+    searchColumn: function searchColumn(val) {
+      this.searchValue = null;
+
+      if (val == null) {
+        this.pagination.page = 1;
+        this.getOrders();
+      }
+    }
+  },
   created: function created() {
+    User.authOnly();
     this.getOrders();
   },
   methods: {
+    searchByColumn: function searchByColumn() {
+      this.pagination.page = 1;
+      this.getOrders();
+    },
     getOrders: function getOrders() {
       var _this = this;
 
@@ -3171,7 +3237,9 @@ __webpack_require__.r(__webpack_exports__);
           page: this.pagination.page,
           rowsPerPage: this.pagination.rowsPerPage,
           descending: this.pagination.descending,
-          sortBy: this.pagination.sortBy
+          sortBy: this.pagination.sortBy,
+          column: this.searchColumn,
+          value: this.searchValue
         }
       })["catch"](function (error) {
         Exception.handle(error);
@@ -3209,6 +3277,14 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         console.error(err);
       });
+    },
+    groupExportExcel: function groupExportExcel() {
+      var order_numero_array = this.getCheckedOrderNumero();
+
+      if (order_numero_array.length == 0) {
+        alert('請勾選');
+        return;
+      }
     },
     nextStatus: function nextStatus(order_numero) {
       var _this3 = this;
@@ -60841,7 +60917,162 @@ var render = function() {
           _vm._v("\n            下階段\n        ")
         ]),
         _vm._v(" "),
-        _c("v-btn", [_vm._v("\n            匯出\n        ")])
+        _c("v-btn", [_vm._v("\n            匯出\n        ")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: {
+                items: _vm.columns,
+                "item-value": "value",
+                label: "搜尋欄位"
+              },
+              model: {
+                value: _vm.searchColumn,
+                callback: function($$v) {
+                  _vm.searchColumn = $$v
+                },
+                expression: "searchColumn"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.searchColumn == "ship_status",
+                expression: "(searchColumn=='ship_status')"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-select", {
+              attrs: {
+                items: _vm.statusList,
+                "item-value": "value",
+                label: "狀態"
+              },
+              on: { change: _vm.searchByColumn },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.searchColumn == "created_at",
+                expression: "(searchColumn=='created_at')"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.searchValue,
+                  expression: "searchValue"
+                }
+              ],
+              attrs: { type: "date" },
+              domProps: { value: _vm.searchValue },
+              on: {
+                change: _vm.searchByColumn,
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.searchValue = $event.target.value
+                }
+              }
+            })
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.searchColumn == "order_numero",
+                expression: "(searchColumn=='order_numero')"
+              }
+            ],
+            staticStyle: {
+              display: "inline-block",
+              width: "160px",
+              "margin-left": "20px"
+            }
+          },
+          [
+            _c("v-text-field", {
+              attrs: {
+                "append-icon": "search",
+                label: "訂單編號",
+                "single-line": "",
+                "hide-details": ""
+              },
+              nativeOn: {
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.getOrders($event)
+                }
+              },
+              model: {
+                value: _vm.searchValue,
+                callback: function($$v) {
+                  _vm.searchValue = $$v
+                },
+                expression: "searchValue"
+              }
+            })
+          ],
+          1
+        )
       ],
       1
     ),
@@ -104568,8 +104799,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

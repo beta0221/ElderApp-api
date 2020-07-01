@@ -49,12 +49,19 @@ class OrderController extends Controller
             $ascOrdesc = 'asc';
         }
         // $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
-        // $column = ($request->column) ? $request->column : null;
-        // $value = (isset($request->value)) ? $request->value : null;
+        $column = ($request->column) ? $request->column : null;
+        $value = (isset($request->value)) ? $request->value : null;
         // $blurSearch = ($request->blurSearch) ? true : false;
         $firm_id = Auth::user()->id;
         
         $query = Order::where('firm_id',$firm_id);
+        if($column != null && $value != null){
+            if($column == 'created_at'){
+                $query->whereDate($column,date('Y-m-d',strtotime($value)));
+            }else{
+                $query->where($column,$value);
+            }
+        }
         $total = $query->count();
         $orders = $query->skip($skip)->take($rows)->get();
 

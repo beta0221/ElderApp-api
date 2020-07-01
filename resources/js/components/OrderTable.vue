@@ -10,6 +10,25 @@
         <v-btn>
             匯出
         </v-btn>
+        <div style="display:inline-block;width:160px;margin-left:20px;">
+            <v-select v-model="searchColumn" :items="columns" item-value="value" label="搜尋欄位"></v-select>
+        </div>
+        <div v-show="(searchColumn=='ship_status')" style="display:inline-block;width:160px;margin-left:20px;">
+            <v-select v-model="searchValue" :items="statusList" item-value="value" label="狀態" @change="searchByColumn"></v-select>
+        </div>
+        <div v-show="(searchColumn=='created_at')" style="display:inline-block;width:160px;margin-left:20px;">
+            <input type="date" v-model="searchValue" @change="searchByColumn">
+        </div>
+        <div v-show="(searchColumn=='order_numero')" style="display:inline-block;width:160px;margin-left:20px;">
+            <v-text-field
+            v-model.lazy="searchValue"
+            @keyup.native.enter="getOrders"
+            append-icon="search"
+            label="訂單編號"
+            single-line
+            hide-details
+            ></v-text-field>
+        </div>
     </div>
         <div>
             <v-data-table
@@ -48,6 +67,12 @@
 export default {
     data(){
         return{
+            columns:[
+                {text:'欄位',value:null},
+                {text:'狀態',value:'ship_status'},
+                {text:'日期',value:'created_at'},
+                {text:'訂單編號',value:'order_numero'},
+            ],
             colorDict:{
                 '0':'error',
                 '1':'warning',
@@ -62,6 +87,13 @@ export default {
                 '3':'已到貨',
                 '4':'結案',
             },
+            statusList:[
+                {text:'待出貨',value:0},
+                {text:'準備中',value:1},
+                {text:'已出貨',value:2},
+                {text:'已到貨',value:3},
+                {text:'結案',value:4},
+            ],
             headers: [
                 { text:'#'},
                 { text:'選取'},
@@ -74,12 +106,29 @@ export default {
             orderList:[],
             totalOrders:0,
             loading: true,
+            //
+            searchColumn:null,
+            searchValue:null,
+        }
+    },
+    watch:{
+        searchColumn(val){
+            this.searchValue = null;
+            if(val == null){
+                this.pagination.page = 1;
+                this.getOrders();
+            }
         }
     },
     created(){
+        User.authOnly();
         this.getOrders();
     },
     methods:{
+        searchByColumn(){
+            this.pagination.page = 1;
+            this.getOrders();
+        },
         getOrders(){
             loading: true,
             axios.get('/api/order/getOrders', {
@@ -87,7 +136,9 @@ export default {
                     page: this.pagination.page,
                     rowsPerPage: this.pagination.rowsPerPage,
                     descending: this.pagination.descending,
-                    sortBy: this.pagination.sortBy
+                    sortBy: this.pagination.sortBy,
+                    column:this.searchColumn,
+                    value:this.searchValue,
                 }
             })
             .catch(error => {Exception.handle(error);})
@@ -122,6 +173,15 @@ export default {
             .catch(err => {
                 console.error(err); 
             })
+        },
+        groupExportExcel(){
+            let order_numero_array = this.getCheckedOrderNumero();
+            if(order_numero_array.length == 0){
+                alert('請勾選');
+                return;
+            }
+
+            
         },
         nextStatus(order_numero){
             axios.post('/api/order/nextStatus',{
