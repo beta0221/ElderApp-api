@@ -3285,6 +3285,8 @@ __webpack_require__.r(__webpack_exports__);
         alert('請勾選');
         return;
       }
+
+      window.open('/order/downloadOrderExcel?token=' + localStorage.getItem('token') + '&order_numero_array=' + order_numero_array.join(','));
     },
     nextStatus: function nextStatus(order_numero) {
       var _this3 = this;
@@ -60917,7 +60919,9 @@ var render = function() {
           _vm._v("\n            下階段\n        ")
         ]),
         _vm._v(" "),
-        _c("v-btn", [_vm._v("\n            匯出\n        ")]),
+        _c("v-btn", { on: { click: _vm.groupExportExcel } }, [
+          _vm._v("\n            匯出\n        ")
+        ]),
         _vm._v(" "),
         _c(
           "div",

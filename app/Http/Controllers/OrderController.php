@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrderExport;
 use App\Order;
 use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
 
 class OrderController extends Controller
@@ -110,6 +112,41 @@ class OrderController extends Controller
     }
 
     //web route
+
+    public function excel_downloadOrderExcel(Request $request){
+        $this->validate($request,[
+            'order_numero_array'=>'required',
+        ]);
+        
+        $firm_id = Auth::user()->id;
+        // $firm_id = 2251;
+        $order_numero_array = explode(',',$request->order_numero_array);
+        
+        $cellData = [
+            ['訂購日期','產品','總數量','待收款','收件人','聯絡電話','郵遞區號','地址'],
+        ];
+
+        $orders = Order::whereIn('order_numero',$order_numero_array)->where('firm_id',$firm_id)->get();
+        foreach ($orders as $order) {
+            $delivery = OrderDelievery::find($order->order_delievery_id);
+            $cellData[] = [
+                $order->created_at,
+                $order->name,
+                $order->total_quantity,
+                $order->total_cash,
+                $delivery->receiver_name,
+                $delivery->receiver_phone,
+                $delivery->zipcode,
+                $delivery->county . $delivery->district . $delivery->address,
+            ];
+        }
+
+        date_default_timezone_set('Asia/Taipei');
+        $now = date("Y-m-d");
+
+        return Excel::download(new OrderExport($cellData),'訂單資料-'.$now.'.xlsx');
+        
+    }
 
     public function view_thankyou($order_numero){
         return view('order.thankyou',[

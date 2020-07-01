@@ -7,7 +7,7 @@
         <v-btn @click="groupNextStatus">
             下階段
         </v-btn>
-        <v-btn>
+        <v-btn @click="groupExportExcel">
             匯出
         </v-btn>
         <div style="display:inline-block;width:160px;margin-left:20px;">
@@ -180,8 +180,7 @@ export default {
                 alert('請勾選');
                 return;
             }
-
-            
+            window.open('/order/downloadOrderExcel?token='+localStorage.getItem('token') + '&order_numero_array='+order_numero_array.join(','))
         },
         nextStatus(order_numero){
             axios.post('/api/order/nextStatus',{
