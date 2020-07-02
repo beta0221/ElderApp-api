@@ -36,20 +36,7 @@
 </script>
 @yield('js')
 <script>
-    $.ajax({
-        type: "POST",
-        url: "/api/auth/me",
-        dataType: "json",
-        headers:{
-            'Authorization':'Bearer ' + getToken(),
-        },
-        success: function (response) {
-            
-        },
-        error:function(error){
-            
-        }
-    });
+    
     
 </script>
 </html>

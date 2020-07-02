@@ -16,7 +16,7 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','nextStatus','groupNextStatus']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','nextStatus','groupNextStatus','excel_downloadOrderExcel']]);
     }
 
     private function groupOrdersByNumero($orders){
@@ -119,11 +119,10 @@ class OrderController extends Controller
         ]);
         
         $firm_id = Auth::user()->id;
-        // $firm_id = 2251;
         $order_numero_array = explode(',',$request->order_numero_array);
         
         $cellData = [
-            ['訂購日期','產品','總數量','待收款','收件人','聯絡電話','郵遞區號','地址'],
+            ['訂購日期','訂單編號','產品','總數量','待收款','收件人','聯絡電話','郵遞區號','地址'],
         ];
 
         $orders = Order::whereIn('order_numero',$order_numero_array)->where('firm_id',$firm_id)->get();
@@ -131,6 +130,7 @@ class OrderController extends Controller
             $delivery = OrderDelievery::find($order->order_delievery_id);
             $cellData[] = [
                 $order->created_at,
+                $order->order_numero,
                 $order->name,
                 $order->total_quantity,
                 $order->total_cash,

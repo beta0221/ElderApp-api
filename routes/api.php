@@ -106,11 +106,6 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::get('checkOut','CartController@checkOut');
         Route::post('checkOut','CartController@checkOut');
     });
-    // Route::get('log-test',function(){
-    //     Log::channel('eventlog')->info('test event log sdfasdf');
-    //     Log::channel('translog')->info('test trans log asdfsadf');
-    //     return 'ok';
-    // });
 
     Route::group(['prefix'=>'order'],function(){
         Route::get('getOrders','OrderController@getOrders');

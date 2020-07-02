@@ -64,7 +64,6 @@
 
 @section('js')
 <script>
-    var token = '{{$token}}';
-    localStorage.setItem('token',token);
+    
 </script>
 @endsection

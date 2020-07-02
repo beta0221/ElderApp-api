@@ -20,11 +20,11 @@ Route::get('play',function(){
 });
 
 
+Route::post('web_login','AuthController@web_login');
+Route::get('web_login_page','AuthController@view_login');
+Route::get('view_me','AuthController@view_me');
 
-// Route::get('/sendMoney',function(){
-//     return '123';
-// });
-Route::get('/sendMoney','TransactionController@sendMoney');
+//Route::get('/sendMoney','TransactionController@sendMoney');
 
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 

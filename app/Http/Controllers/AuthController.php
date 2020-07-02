@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
@@ -16,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['login','signup']]);
+        $this->middleware('JWT', ['except' => ['login','signup','web_login','view_login']]);
     }
     
     /**
@@ -37,6 +38,21 @@ class AuthController extends Controller
         return $this->respondWithToken($token,$hasRole);
     }
 
+    public function web_login(){
+        $credentials = request(['email', 'password']);
+        if (! $token = auth('web')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        Cookie::queue('token',$token,60);
+        return redirect('view_me');
+    }
+    public function view_login(){
+        return view('view_login');
+    }
+    public function view_me(){
+        $user = User::web_user();
+        return response()->json($user);
+    }
 
 
     // Sign up part

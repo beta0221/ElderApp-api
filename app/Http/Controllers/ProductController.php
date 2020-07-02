@@ -11,6 +11,7 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
@@ -296,10 +297,12 @@ class ProductController extends Controller
 
 
     public function list(Request $req){
+        if($req->token){
+            Cookie::queue('token',$req->token,60);
+        }
         $products = Product::where('public',1)->orderBy('id','desc')->get();
         return view('product.list',[
             'products'=>$products,
-            'token'=>$req->token,
         ]);
     }
 
