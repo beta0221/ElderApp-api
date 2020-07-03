@@ -109,6 +109,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
 
     Route::group(['prefix'=>'order'],function(){
         Route::get('getOrders','OrderController@getOrders');
+        Route::get('getOrderDetail/{order_numero}','OrderController@getOrderDetail');
         Route::post('nextStatus','OrderController@nextStatus');
         Route::post('groupNextStatus','OrderController@groupNextStatus');
     });

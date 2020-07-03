@@ -16,7 +16,7 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','nextStatus','groupNextStatus','excel_downloadOrderExcel']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','getOrderDetail','nextStatus','groupNextStatus','excel_downloadOrderExcel']]);
     }
 
     private function groupOrdersByNumero($orders){
@@ -72,6 +72,32 @@ class OrderController extends Controller
         return response([
             'orderList'=>$orderList,
             'total'=>$total,
+        ]);
+    }
+
+    /**
+     * 訂單詳情
+     */
+    public function getOrderDetail($order_numero){
+        $firm_id = Auth::user()->id;
+        if(!$orders = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->get()){
+            return response('error',500);
+        }
+
+        $productIdArray = [];
+        foreach ($orders as $order) {
+            $productIdArray[] = $order->product_id;
+        }
+        $productImageDict = Product::getProductImageDict($productIdArray);
+
+        if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
+            return response('error',500);
+        }
+
+        return response([
+            'orders'=>$orders,
+            'orderDelievery'=>$orderDelievery,
+            'productImageDict'=>$productImageDict,
         ]);
     }
 

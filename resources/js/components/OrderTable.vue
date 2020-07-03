@@ -1,5 +1,6 @@
 <template>
 <div>
+    <order-detail></order-detail>
     <div>
         <v-btn color="info" @click="selectAll">
             全選
@@ -50,7 +51,7 @@
                         {{statusDict[props.item.ship_status]}}
                     </v-btn>
                 </td>
-                <td>{{props.item.order_numero}}</td>
+                <td @click="showOrderDetail(props.item.order_numero)">{{props.item.order_numero}}</td>
                 <td>{{props.item.created_at}}</td>
                 <td>
                     <div v-for="product in props.item.list" v-bind:key="product.id">
@@ -64,7 +65,12 @@
 </template>
 
 <script>
+import OrderDetail from "./OrderDetail";
+
 export default {
+    components:{
+        OrderDetail,
+    },
     data(){
         return{
             columns:[
@@ -125,6 +131,9 @@ export default {
         this.getOrders();
     },
     methods:{
+        showOrderDetail(order_numero){
+            EventBus.$emit('showOrderDetail',order_numero);
+        },
         searchByColumn(){
             this.pagination.page = 1;
             this.getOrders();
