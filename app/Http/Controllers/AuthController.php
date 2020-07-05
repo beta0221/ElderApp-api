@@ -47,7 +47,7 @@ class AuthController extends Controller
         return redirect('view_me');
     }
     public function view_login(){
-        return view('view_login');
+        return view('login.login');
     }
     public function view_me(){
         $user = User::web_user();
