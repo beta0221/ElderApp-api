@@ -4,30 +4,56 @@
 
 @section('css')
 <style>
+    .title-bar{
+        height: 56px;
+        background:rgba(0,0,0,0.05);
+        padding: 0 12px;
+    }
+    .title-bar span,.title-bar a{
+        color: #212529;
+        vertical-align: top;
+        display: inline-block;
+        line-height: 56px;
+    }
 .float-area{
     position: fixed;
     right: 0;
     bottom: 56px;
+    height: 56px;
+    width: 100%;
+    display: flex;
 }
 .float-btn{
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
+    flex: 1;
+    height: 100%;
     color: #fff;
+    text-align: center;
 }
 .float-btn span{
-    font-size: 32px;
-    position: absolute;
+    font-size: 28px;
+    line-height: 56px;
+    /* position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%); */
 }
 </style>
 @endsection
 
 @section('content')
 
-<div class="container">
+<div class="title-bar mb-2">
+    <a href="/product/list">
+        <span class="material-icons">arrow_back</span>
+        <span>產品首頁</span>
+    </a>
+    
+</div>
+
+<div class="container" style="margin-bottom: 56px">
+
+    
+
     <div class="row">
         <div class="col-sm-12">
             <div>
@@ -56,16 +82,18 @@
     </div>
 </div>
 
-<div class="float-area p-2">
-    <div class="float-btn bg-warning mb-2" onclick="add_to_cart()">
-        <span class="material-icons">
-            add_shopping_cart
-        </span>
-    </div>
+<div class="float-area">
     <div class="float-btn bg-danger">
-        <span class="material-icons">
+        {{-- <span class="material-icons">
             shopping_basket
-        </span>
+        </span> --}}
+        <span>前往結帳</span>
+    </div>
+    <div class="float-btn bg-warning mb-2" onclick="add_to_cart()">
+        {{-- <span class="material-icons">
+            add_shopping_cart
+        </span> --}}
+        <span>加入購物車</span>
     </div>
 </div>
 

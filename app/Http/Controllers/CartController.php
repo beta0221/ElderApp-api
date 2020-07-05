@@ -65,7 +65,7 @@ class CartController extends Controller
         $ip = request()->ip();
 
         if(!$cart = Cart::where('ip',$ip)->first()){
-            return response('no items in cart');
+            return response(['s'=>0,'m'=>'no item in cart']);
         }
 
         if($items = json_decode($cart->items,true)){
@@ -80,7 +80,10 @@ class CartController extends Controller
             $cart->save();
         }
         
-        return response()->json($cart);
+        return response([
+            's'=>1,
+            'm'=>'success'
+        ]);
 
     }
 

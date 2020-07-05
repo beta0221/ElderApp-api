@@ -14,7 +14,7 @@
 @yield('css')
 <body>
     <div class="wrapper">
-        @include('component.navbar')
+        {{-- @include('component.navbar') --}}
         @yield('content')
         @include('component.footer')
     </div>

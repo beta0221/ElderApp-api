@@ -4,19 +4,27 @@
 
 @section('css')
 <style>
-
+    .step-2-section{
+        display: none;
+    }
+    .table td{
+        padding: 8px 0;
+        text-align: center;
+    }
+    .table th{
+        text-align: center;
+    }
 </style>
 @endsection
 
 @section('content')
 
-<div class="container">
+<div class="container mb-3 mt-3">
     <div class="row">
         <div class="col-sm-12">
             <table class="table">
                 <thead>
                     <tr>
-                        {{-- <th scope="col"></th> --}}
                         <th scope="col">產品</th>
                         <th scope="col">價錢</th>
                         <th scope="col">數量</th>
@@ -24,18 +32,26 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if(count($products) == 0)
+                    <tr>
+                        <td colspan="4">
+                            <h3 class="mt-4 mb-2">購物車中沒有商品</h3>
+                        </td>
+                    </tr>
+                    @endif
+
                     @foreach($products as $p)
                     <tr>
-                        {{-- <td style="width: 40px">
-                            <div class="btn btn-sm btn-danger">刪除</div>
-                        </td> --}}
-                        <td style="width:120px">
+                        <td style="width:100px">
                             <div>
                                 <p>{{$p->name}}</p>
                             </div>
                             <?php $img = '/images/products/' . $p->slug . '/' . $p->img ?>
                             <div style="height: 80px;width:100%">
                                 <img style="height:auto;width:auto;max-height: 100%;max-width:100%" src="{{$img}}">
+                            </div>
+                            <div>
+                                <div class="btn btn-sm btn-danger" onclick="delete_product({{$p->id}})">刪除</div>
                             </div>
                         </td>
                         <td>
@@ -45,26 +61,20 @@
                             <div>
                                 <span style="line-height: 38px">現金:{{$p->pay_cash_price}}樂幣:{{$p->pay_cash_point}}</span>
                             </div>
-                            {{-- <div>
-                                <span>樂幣</span>
-                            </div> --}}
                         </td>
-                        <td>
+                        <td style="width: 56px;">
                             <div>
                                 <input type="number" class="input-point-{{$p->id}} input-quantity form-control d-inline-block" 
-                                style="width:80px" value="0" data-point="{{$p->price}}" 
+                                style="width:56px" value="0" data-point="{{$p->price}}" 
                                 data-product-id="{{$p->id}}" min="0">
                             </div>
                             <div>
                                 <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
-                                style="width:80px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
+                                style="width:56px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
                                 data-product-id="{{$p->id}}" min="0">
                             </div>
-                            {{-- <div>
-                                <input type="number" class="form-control d-inline-block" style="width:120px">
-                            </div> --}}
                         </td>
-                        <td style="width:120px">
+                        <td style="width:100px">
                             <div style="line-height: 38px">樂幣:<span id="subtotal-point-{{$p->id}}" class="subtotal-point">0</span></div>
                             <div style="line-height: 38px">現金:<span id="subtotal-cash-{{$p->id}}" class="subtotal-cash">0</span></div>
                         </td>
@@ -85,15 +95,25 @@
         </div>
     </div>
 
-
-    <div class="row">
+    @if(count($products) == 0)
+    <div class="row step-1-section">
         <div class="col-12">
-            <div class="btn btn-block btn-primary btn-lg">下一步</div>
+            <div class="btn btn-block btn-info btn-lg"><a class="text-white" href="/product/list">繼續逛逛</a></div>
         </div>
     </div>
-
-    <div class="row">
+    @else
+    <div class="row step-1-section">
         <div class="col-12">
+            <div class="btn btn-block btn-primary btn-lg" onclick="toStepTwo()">下一步</div>
+        </div>
+    </div>
+    @endif
+
+    <div class="row step-2-section">
+        <div class="col-12">
+
+            <div class="btn btn-block btn-light btn-lg" onclick="toStepOne()">上一步</div>
+
             <form>
                 <div class="form-group">
                     <label for="exampleInputEmail1">收件人</label>
@@ -204,6 +224,33 @@
                 }
             }
         });
+    }
+
+    function delete_product(id){
+        $.ajax({
+            type: "POST",
+            url: "/api/cart/destroy/"+id,
+            dataType: "json",
+            success: function (response) {
+                if(response.s == 1){
+                    location.reload();
+                }else{
+                    alert(response.m);
+                }
+            }
+        });
+    }
+
+    function toStepTwo(){
+        $('.step-1-section').hide();
+        $('.step-2-section').show();
+        $('.input-quantity').attr('disabled',true);
+    }
+
+    function toStepOne(){
+        $('.step-1-section').show();
+        $('.step-2-section').hide();
+        $('.input-quantity').attr('disabled',false);
     }
 
 </script>
