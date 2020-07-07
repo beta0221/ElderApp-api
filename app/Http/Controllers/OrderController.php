@@ -6,6 +6,7 @@ use App\Exports\OrderExport;
 use App\Order;
 use App\OrderDelievery;
 use App\Product;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
