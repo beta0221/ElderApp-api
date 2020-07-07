@@ -204,7 +204,7 @@
             type: "POST",
             url: "/api/cart/checkOut",
             headers:{
-                'Authorization': 'Bearer '+getToken(),
+                'Authorization': 'Bearer '+getCookie('token'),
             },
             data: {
                 'quantityDict':JSON.stringify(quantityDict),
