@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(!$products)
+                    @if(count($products) == 0)
                     <tr>
                         <td colspan="4">
                             <h3 class="mt-4 mb-2">購物車中沒有商品</h3>
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    @if(!$products)
+    @if(count($products) == 0)
     <div class="row step-1-section">
         <div class="col-12">
             <div class="btn btn-block btn-info btn-lg"><a class="text-white" href="/product/list">繼續逛逛</a></div>
