@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-
+{{json_encode($products)}}
 <div class="container mb-3 mt-3">
     <div class="row">
         <div class="col-sm-12">

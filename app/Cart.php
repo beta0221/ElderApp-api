@@ -17,7 +17,7 @@ class Cart extends Model
      */
     public static function getProductsInCart($ip){
         if(!$cart = Cart::where('ip',$ip)->first()){
-            return null;
+            return [];
         }
         $items = json_decode($cart->items,true);
         
