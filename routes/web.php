@@ -21,7 +21,7 @@ Route::get('play',function(){
 
 
 Route::post('web_login','AuthController@web_login');
-Route::get('web_login_page','AuthController@view_login');
+Route::get('web_login_page','AuthController@view_login')->name('web_login_page');
 Route::get('view_me','AuthController@view_me');
 
 //Route::get('/sendMoney','TransactionController@sendMoney');
@@ -52,7 +52,7 @@ Route::group(['prefix'=>'product'],function(){
 });
 
 Route::group(['prefix'=>'cart'],function(){
-    Route::get('/','CartController@index');
+    Route::get('/','CartController@index')->middleware('webAuth');
 });
 
 Route::group(['prefix'=>'order'],function(){

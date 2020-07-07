@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('JWT', ['only' => ['checkOut']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -41,13 +41,26 @@ class AuthController extends Controller
     public function web_login(){
         $credentials = request(['email', 'password']);
         if (! $token = auth('web')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return view('login.login',[
+                'email'=>request('email'),
+                'password'=>request('password'),
+                'from'=>request('from'),
+                'error'=>'帳號或密碼錯誤',
+            ]);
         }
         Cookie::queue('token',$token,60);
-        return redirect('view_me');
+        
+        $from = request('from');
+        if(isset($from)){
+            return redirect($from);
+        }
+        return redirect('product/list');
     }
     public function view_login(){
-        return view('login.login');
+        $from = request('from');
+        return view('login.login',[
+            'from'=>$from
+        ]);
     }
     public function view_me(){
         $user = User::web_user();

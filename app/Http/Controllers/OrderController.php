@@ -17,6 +17,7 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','getOrderDetail','nextStatus','groupNextStatus','excel_downloadOrderExcel']]);
+        $this->middleware('webAuth',['only'=>['view_orderList','view_orderDetail']]);
     }
 
     private function groupOrdersByNumero($orders){
@@ -206,7 +207,9 @@ class OrderController extends Controller
 
     }
     public function view_orderList(){
-        if(!$orders=Order::where('user_id',2)->get()){
+
+        $user_id = User::web_user()->id;
+        if(!$orders=Order::where('user_id',$user_id)->get()){
             return view('errors.404');
         }
 

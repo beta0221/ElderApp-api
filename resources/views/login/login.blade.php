@@ -40,34 +40,44 @@
 
     <div class="login-form p-4">
         
-        <form action="" role="form" class="text-center">
-        <h2 class="mb-4">會員登入</h2>
+        <form action="/web_login" method="POST" role="form" class="text-center">
+            {{ csrf_field() }}
+            <h2 class="mb-4">會員登入</h2>
 
-        <div class="form-row mb-2">
+            <input type="hidden" name="from" value="{{isset($from)?$from:''}}">
 
-            <div class="col-2">
-                <label for="" class="control-label m-0">帳號 ：</label>
+            <div class="form-row mb-2">
+                <div class="col-3">
+                    <label class="control-label m-0">帳號 ：</label>
+                </div>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="請輸入帳號" name="email" value="{{(isset($email))?$email:''}}">
+                </div>
             </div>
-            <div class="col-10">
-                <input class="form-control" type="text" placeholder="請輸入帳號">
-            </div>
 
-        </div>
-
-         <div class="form-row mb-2">
-            <div class="col-2">
-                <label for="" class="control-label">密碼 ：</label>
+            <div class="form-row mb-2">
+                <div class="col-3">
+                    <label class="control-label">密碼 ：</label>
+                </div>
+                
+                <div class="col-9">
+                    <input class="form-control" type="password" placeholder="請輸入密碼" name="password" value="{{(isset($password))?$password:''}}">
+                </div>
             </div>
             
-            <div class="col-10">
-                <input class="form-control" type="password" placeholder="請輸入密碼">
-            </div>
-        </div>
-
-            <div>
+            <div class="mb-2">
                 <button class="btn btn-block btn-primary">登入</button>
             </div>
+
+            @if (isset($error))
+            <div>
+                <span class="text-danger">{{$error}}</span>
+            </div>    
+            @endif
+            
+
         </form>
+
     </div>
 
 
