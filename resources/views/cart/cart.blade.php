@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-{{json_encode($products)}}
+
 <div class="container mb-3 mt-3">
     <div class="row">
         <div class="col-sm-12">
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    @if(count($products) == 0)
+    @if(!$products)
     <div class="row step-1-section">
         <div class="col-12">
             <div class="btn btn-block btn-info btn-lg"><a class="text-white" href="/product/list">繼續逛逛</a></div>
