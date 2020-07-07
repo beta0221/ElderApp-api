@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(count($products) == 0)
+                    @if(!$products)
                     <tr>
                         <td colspan="4">
                             <h3 class="mt-4 mb-2">購物車中沒有商品</h3>

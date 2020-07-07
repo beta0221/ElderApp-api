@@ -27,7 +27,7 @@
                         <th></th>
                     </tr>
                     
-                    @if(count($orderList)==0)
+                    @if(!$orderList)
                     <tr style="height: 160px">
                         <td class="mt-4 mb-4" colspan="4" style="text-align: center">
                             <h4>無訂單記錄</h4>
