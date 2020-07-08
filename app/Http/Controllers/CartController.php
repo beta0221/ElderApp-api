@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cart;
 use App\Order;
+use App\User;
 use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class CartController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['only' => ['checkOut']]);
+        $this->middleware('webAuth', ['only' => ['checkOut']]);
     }
 
     /**
@@ -119,14 +120,11 @@ class CartController extends Controller
 
         $ip = request()->ip();
         $order_numero = rand(0,9) . time() . rand(0,9);
-        $user = Auth::user();
+        $user = User::web_user();
         $products = Cart::getProductsInCart($ip);
 
         if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
-            return response([
-                's'=>0,
-                'm'=>'error'
-            ]);
+            return redirect()->route('cart_page');
         }
 
         foreach ($products as $product) {
@@ -140,11 +138,7 @@ class CartController extends Controller
 
         Cart::clearCart($ip);
 
-        return response([
-            's'=>1,
-            'm'=>'success',
-            'order_numero'=>$order_numero
-        ]);
+        return redirect('/order/thankyou/'.$order_numero);
 
     }
 

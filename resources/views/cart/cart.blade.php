@@ -114,7 +114,10 @@
 
             <div class="btn btn-block btn-light btn-lg" onclick="toStepOne()">上一步</div>
 
-            <form>
+            <form id="checkout-form" method="POST" action="/cart/checkOut">
+                {{ csrf_field() }}
+                <input type="hidden" name="quantityDict" value="">
+
                 <div class="form-group">
                     <label for="exampleInputEmail1">收件人</label>
                     <input type="text" name="receiver_name" class=" form-control" placeholder="收件人">
@@ -133,6 +136,21 @@
                 </div>
                 <div onclick="checkOutRequest()" class="btn btn-block btn-lg btn-primary">確定送出</div>
             </form>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12">
+            @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -182,48 +200,45 @@
         
         var quantityDict = {};
         $('.input-quantity').each(function(index,item){
-            
             let product_id = $(this).data('product-id');
             let quantity = $(this).val();
-
             if(!quantityDict[product_id]){
                 quantityDict[product_id] = {};
             }
-
             if($(this).data('cash') != null){
                 quantityDict[product_id]['point_cash'] = quantity;
             }else{
                 quantityDict[product_id]['point'] = quantity;
             }
-            
         });
-
         console.log(quantityDict);
+        $("[name='quantityDict'").val(JSON.stringify(quantityDict));
+        $('#checkout-form').submit();
         // return;
-        $.ajax({
-            type: "POST",
-            url: "/api/cart/checkOut",
-            headers:{
-                'Authorization': 'Bearer '+getCookie('token'),
-            },
-            data: {
-                'quantityDict':JSON.stringify(quantityDict),
-                'receiver_name':$("[name='receiver_name'").val(),
-                'receiver_phone':$("[name='receiver_phone'").val(),
-                'county':$("[name='county'").val(),
-                'district':$("[name='district'").val(),
-                'zipcode':$("[name='zipcode'").val(),
-                'address':$("[name='address'").val(),
-            },
-            dataType: "json",
-            success: function (response) {
-                if(response.s == 1){
-                    location.href = '/order/thankyou/'+response.order_numero
-                }else{
-                    alert(response.m);
-                }
-            }
-        });
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/api/cart/checkOut",
+        //     headers:{
+        //         'Authorization': 'Bearer '+getCookie('token'),
+        //     },
+        //     data: {
+        //         'quantityDict':JSON.stringify(quantityDict),
+        //         'receiver_name':$("[name='receiver_name'").val(),
+        //         'receiver_phone':$("[name='receiver_phone'").val(),
+        //         'county':$("[name='county'").val(),
+        //         'district':$("[name='district'").val(),
+        //         'zipcode':$("[name='zipcode'").val(),
+        //         'address':$("[name='address'").val(),
+        //     },
+        //     dataType: "json",
+        //     success: function (response) {
+        //         if(response.s == 1){
+        //             location.href = '/order/thankyou/'+response.order_numero
+        //         }else{
+        //             alert(response.m);
+        //         }
+        //     }
+        // });
     }
 
     function delete_product(id){

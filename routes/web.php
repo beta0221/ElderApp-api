@@ -52,7 +52,8 @@ Route::group(['prefix'=>'product'],function(){
 });
 
 Route::group(['prefix'=>'cart'],function(){
-    Route::get('/','CartController@index')->middleware('webAuth');
+    Route::get('/','CartController@index')->middleware('webAuth')->name('cart_page');
+    Route::post('checkOut','CartController@checkOut');
 });
 
 Route::group(['prefix'=>'order'],function(){
