@@ -3321,6 +3321,13 @@ __webpack_require__.r(__webpack_exports__);
         this.pagination.page = 1;
         this.getOrders();
       }
+    },
+    watch: {
+      pagination: {
+        handler: function handler() {
+          this.getOrders();
+        }
+      }
     }
   },
   created: function created() {
@@ -4027,9 +4034,118 @@ __webpack_require__.r(__webpack_exports__);
         title: '訂單管理',
         icon: 'description',
         url: '/order'
+      }, {
+        title: '交易紀錄',
+        icon: 'history',
+        url: '/transaction'
       }],
       right: null
     };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransTable.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransTable.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      headers: [{
+        text: '#'
+      }, {
+        text: "使用者",
+        value: "user_id"
+      }, {
+        text: "事件",
+        value: "event"
+      }, {
+        text: "金額",
+        value: "amount"
+      }, {
+        text: "對象",
+        value: "target_id"
+      }, {
+        text: "日期",
+        value: "created_at"
+      }],
+      pagination: {
+        sortBy: "id",
+        descending: true
+      },
+      total: 0,
+      loading: true,
+      tranList: []
+    };
+  },
+  watch: {
+    pagination: {
+      handler: function handler() {
+        this.getTrans();
+      }
+    }
+  },
+  created: function created() {
+    User.authOnly();
+    this.getTrans();
+  },
+  methods: {
+    getTrans: function getTrans() {
+      var _this = this;
+
+      loading: true, axios.get('/api/transaction/list', {
+        params: {
+          page: this.pagination.page,
+          rowsPerPage: this.pagination.rowsPerPage,
+          descending: this.pagination.descending,
+          sortBy: this.pagination.sortBy
+        }
+      })["catch"](function (error) {
+        Exception.handle(error);
+      }).then(function (res) {
+        _this.total = res.data.total;
+        _this.tranList = res.data.tranList;
+        _this.loading = false;
+      });
+    }
   }
 });
 
@@ -62233,6 +62349,99 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransTable.vue?vue&type=template&id=8610089e&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransTable.vue?vue&type=template&id=8610089e& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            headers: _vm.headers,
+            items: _vm.tranList,
+            "rows-per-page-items": [15, 30],
+            pagination: _vm.pagination,
+            "total-items": _vm.total,
+            loading: _vm.loading
+          },
+          on: {
+            "update:pagination": function($event) {
+              _vm.pagination = $event
+            }
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "items",
+              fn: function(props) {
+                return [
+                  _c("td", [_vm._v(_vm._s(props.index + 1))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_c("span", [_vm._v(_vm._s(props.item.event))])]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    {
+                      class:
+                        props.item.give_take == 1 ? "green--text" : "red--text"
+                    },
+                    [
+                      _c("span", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            props.item.give_take == 1 ? "+" : "-"
+                          )
+                        }
+                      }),
+                      _c("span", [_vm._v(_vm._s(props.item.amount))])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: {
+                      innerHTML: _vm._s(
+                        props.item.target_id == 0
+                          ? "系統"
+                          : props.item.target_id
+                      )
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("span", [_vm._v(_vm._s(props.item.created_at))])
+                  ])
+                ]
+              }
+            }
+          ])
+        })
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/newEventForm.vue?vue&type=template&id=5519fcee&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/newEventForm.vue?vue&type=template&id=5519fcee& ***!
@@ -104982,6 +105191,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/TransTable.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/TransTable.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransTable.vue?vue&type=template&id=8610089e& */ "./resources/js/components/TransTable.vue?vue&type=template&id=8610089e&");
+/* harmony import */ var _TransTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransTable.vue?vue&type=script&lang=js& */ "./resources/js/components/TransTable.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TransTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TransTable.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TransTable.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/TransTable.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TransTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransTable.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TransTable.vue?vue&type=template&id=8610089e&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/TransTable.vue?vue&type=template&id=8610089e& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TransTable.vue?vue&type=template&id=8610089e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransTable.vue?vue&type=template&id=8610089e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransTable_vue_vue_type_template_id_8610089e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/newEventForm.vue":
 /*!**************************************************!*\
   !*** ./resources/js/components/newEventForm.vue ***!
@@ -105070,9 +105348,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ProductTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/ProductTable */ "./resources/js/components/ProductTable.vue");
 /* harmony import */ var _components_ProductDetailForm__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/ProductDetailForm */ "./resources/js/components/ProductDetailForm.vue");
 /* harmony import */ var _components_OrderTable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/OrderTable */ "./resources/js/components/OrderTable.vue");
+/* harmony import */ var _components_TransTable__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/TransTable */ "./resources/js/components/TransTable.vue");
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
 
 
 
@@ -105111,6 +105391,9 @@ var routes = [{
 }, {
   path: '/order',
   component: _components_OrderTable__WEBPACK_IMPORTED_MODULE_8__["default"]
+}, {
+  path: '/transaction',
+  component: _components_TransTable__WEBPACK_IMPORTED_MODULE_9__["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: routes,
@@ -105140,8 +105423,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

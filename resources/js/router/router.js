@@ -11,6 +11,7 @@ import Login from '../components/Login/Login'
 import ProductTable from '../components/ProductTable'
 import ProductDetailForm from '../components/ProductDetailForm'
 import OrderTable from '../components/OrderTable'
+import TransTable from '../components/TransTable'
 
 
 const routes = [
@@ -23,6 +24,7 @@ const routes = [
     {path:'/productForm', component: ProductDetailForm},
     {path:'/productForm/:product_slug', component: ProductDetailForm,props:true},
     {path:'/order', component: OrderTable},
+    {path:'/transaction', component: TransTable},
 ]
 
 

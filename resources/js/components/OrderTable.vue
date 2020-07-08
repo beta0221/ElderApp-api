@@ -124,7 +124,14 @@ export default {
                 this.pagination.page = 1;
                 this.getOrders();
             }
+        },
+        watch:{
+        pagination: {
+            handler(){
+                this.getOrders();
+            }
         }
+    },
     },
     created(){
         User.authOnly();

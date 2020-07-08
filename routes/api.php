@@ -81,6 +81,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //交易
     Route::post('transaction','TransactionController@transaction');
     Route::get('trans-history/{id}','TransactionController@show');
+    Route::get('transaction/list','TransactionController@list');
 
     //折扣兌換卷
     Route::post('couponcode/exchange','PromocodeController@exchange');

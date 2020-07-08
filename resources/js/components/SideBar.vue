@@ -45,7 +45,8 @@
           { title: '會員管理', icon: 'account_box',url:'/member' },
           { title: '活動管理', icon: 'room',url:'/event' },
           { title: '產品管理', icon: 'photo_filter',url:'/product' },
-          { title: '訂單管理', icon: 'description',url:'/order' }
+          { title: '訂單管理', icon: 'description',url:'/order' },
+          { title: '交易紀錄', icon: 'history',url:'/transaction' }
         ],
         right: null
       }
