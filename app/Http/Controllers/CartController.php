@@ -9,13 +9,14 @@ use App\OrderDelievery;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('webAuth', ['only' => ['checkOut']]);
+        $this->middleware('webAuth', ['only' => ['index','checkOut']]);
     }
 
     /**
@@ -28,8 +29,12 @@ class CartController extends Controller
         $ip = request()->ip();
         $products = Cart::getProductsInCart($ip);
 
+        $user = User::web_user();
+        $wallet_remain = $user->wallet;
+
         return view('cart.cart',[
-            'products'=>$products
+            'products'=>$products,
+            'wallet_remain'=>$wallet_remain,
         ]);
     }
 
@@ -125,6 +130,7 @@ class CartController extends Controller
         $quantityDict = json_decode($request->quantityDict,true);
 
         if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
+            Session::flash('message','系統錯誤');
             return redirect()->route('cart_page');
         }
 
@@ -137,6 +143,7 @@ class CartController extends Controller
         }
 
         if($user->wallet < $total_point){
+            Session::flash('message','樂幣不足');
             return redirect()->route('cart_page');
         }
 

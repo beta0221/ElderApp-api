@@ -20,6 +20,18 @@
 @section('content')
 
 <div class="container mb-3 mt-3">
+
+    <div class="row">
+        <div class="col-sm-12">
+            @if(Session::has('message'))
+                <div class="alert alert-danger" role="alert">
+                    {{Session::get('message')}}
+                </div>
+            @endif
+        </div>
+    </div>
+
+
     <div class="row">
         <div class="col-sm-12">
             <table class="table">
@@ -88,10 +100,11 @@
     <hr>
     <div class="row mb-2">
         <div class="col-6 offset-6">
-            <h5>總計</h5>
-            <hr>
+            <h5 class="m-0">總計</h5>
+            <hr class="mt-1 mb-1">
             <h5>樂幣：<span id="total-point">0</span></h5>
             <h5>現金：<span id="total-cash">0</span></h5>
+            <h6 class="mt-4 text-secondary">剩餘樂幣：{{$wallet_remain}}</h6>
         </div>
     </div>
 
