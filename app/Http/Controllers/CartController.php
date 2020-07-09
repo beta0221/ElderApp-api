@@ -122,13 +122,25 @@ class CartController extends Controller
         $order_numero = rand(0,9) . time() . rand(0,9);
         $user = User::web_user();
         $products = Cart::getProductsInCart($ip);
+        $quantityDict = json_decode($request->quantityDict,true);
 
         if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
             return redirect()->route('cart_page');
         }
 
+        $total_point = 0;   //總共要花多少樂幣
         foreach ($products as $product) {
-            $quantityDict = json_decode($request->quantityDict,true);
+            if(!isset($quantityDict[$product->id])){ continue; }
+            $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
+            $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
+            $total_point += (int)$point_cash_quantity * $product->pay_cash_point + (int)$point_quantity * $product->price;
+        }
+
+        if($user->wallet < $total_point){
+            return redirect()->route('cart_page');
+        }
+
+        foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
             $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
