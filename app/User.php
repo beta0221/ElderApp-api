@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\DB;
@@ -279,6 +279,11 @@ class User extends Authenticatable implements JWTSubject
   
     //database relationship binding
 
+    /**
+     * 更新使用者錢包
+     * @param bool $give_take 增加或減少 (INCREASE_WALLET,DECREASE_WALLET)
+     * @param Int $amount 多少樂幣
+     */
     public function updateWallet($give_take,$amount)
     {
         if ($give_take) {
@@ -289,8 +294,25 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
     }
 
-
-
+    /**
+     * 更新使用者錢包 並且同時新增交易紀錄
+     * @param bool $give_take 增加或減少 (INCREASE_WALLET,DECREASE_WALLET)
+     * @param Int $amount 多少樂幣
+     * @param String $event 交易事件留言
+     * @param Int $target_id 交易目標（預設為 0:系統）
+     */
+    public function update_wallet_with_trans($give_take,$amount,$event,$target_id=0){
+        $this->updateWallet($give_take,$amount);
+        $tran_id = time() . rand(10,99);
+        Transaction::create([
+            'tran_id'=>$tran_id,
+            'user_id'=>$this->id,
+            'event' =>$event,
+            'amount'=>$amount,
+            'target_id'=>$target_id,
+            'give_take'=>$give_take,
+        ]);
+    }
 
 
 

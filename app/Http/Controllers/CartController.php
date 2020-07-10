@@ -155,6 +155,7 @@ class CartController extends Controller
             Order::insert_row($user->id,$order_delievery_id,$order_numero,$product,$point_quantity,$point_cash_quantity);
         }
 
+        $user->update_wallet_with_trans(User::DECREASE_WALLET,$total_point,"訂單：$order_numero");
         Cart::clearCart($ip);
 
         return redirect('/order/thankyou/'.$order_numero);
