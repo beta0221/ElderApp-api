@@ -9,6 +9,12 @@
 @endsection
 
 @section('content')
+
+    @include('component.titlebar',[
+        'url'=>'/product/list',
+        'title'=>'產品首頁',
+    ])
+
     <div class="container">
 
         <div class="row align-items-center mt-2">

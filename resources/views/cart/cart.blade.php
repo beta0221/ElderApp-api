@@ -19,6 +19,11 @@
 
 @section('content')
 
+@include('component.titlebar',[
+    'url'=>'/product/list',
+    'title'=>'產品首頁',
+])
+
 <div class="container mb-3 mt-3">
 
     <div class="row">

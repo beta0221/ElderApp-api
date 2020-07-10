@@ -4,17 +4,6 @@
 
 @section('css')
 <style>
-    .title-bar{
-        height: 56px;
-        background:rgba(0,0,0,0.05);
-        padding: 0 12px;
-    }
-    .title-bar span,.title-bar a{
-        color: #212529;
-        vertical-align: top;
-        display: inline-block;
-        line-height: 56px;
-    }
 .float-area{
     position: fixed;
     right: 0;
@@ -42,13 +31,10 @@
 
 @section('content')
 
-<div class="title-bar mb-2">
-    <a href="/product/list">
-        <span class="material-icons">arrow_back</span>
-        <span>產品首頁</span>
-    </a>
-    
-</div>
+@include('component.titlebar',[
+    'url'=>'/product/list',
+    'title'=>'產品首頁',
+])
 
 <div class="container" style="margin-bottom: 56px">
 
@@ -84,15 +70,9 @@
 
 <div class="float-area">
     <div class="float-btn bg-danger">
-        {{-- <span class="material-icons">
-            shopping_basket
-        </span> --}}
-        <span>前往結帳</span>
+        <a href="/cart" style="color:#fff;"><span>前往結帳</span></a>
     </div>
     <div class="float-btn bg-warning mb-2" onclick="add_to_cart()">
-        {{-- <span class="material-icons">
-            add_shopping_cart
-        </span> --}}
         <span>加入購物車</span>
     </div>
 </div>

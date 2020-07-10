@@ -9,10 +9,16 @@
 @endsection
 
 @section('content')
+
+    @include('component.titlebar',[
+        'url'=>'/order/list',
+        'title'=>'訂單列表',
+    ])
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h3>訂單詳情</h3>
+                <h4>訂單詳情</h4>
                 <h5>訂單號碼：{{$order_numero}}</h5>
                 <hr>
                 <div>
