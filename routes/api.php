@@ -65,6 +65,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
 
     //活動
     Route::apiresource('event','EventController');
+    Route::get('getRewardLevel','EventController@getRewardLevel');
     Route::get('getEvents','EventController@getEvents');
     Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later
     Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later

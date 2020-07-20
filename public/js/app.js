@@ -4359,6 +4359,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    this.getRewardLevel();
     this.getCat();
     this.getDistrict();
 
@@ -4395,24 +4396,33 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
+    getRewardLevel: function getRewardLevel() {
+      var _this2 = this;
+
+      axios.get('api/getRewardLevel')["catch"](function (err) {
+        console.error(err);
+      }).then(function (res) {
+        _this2.rewardLevel = res.data;
+      });
+    },
     onChangeFileUpload: function onChangeFileUpload() {
       this.file = this.$refs.file.files[0];
       this.event_image = URL.createObjectURL(this.$refs.file.files[0]);
     },
     getDistrict: function getDistrict() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('/api/district').then(function (res) {
-        _this2.district = res.data;
+        _this3.district = res.data;
       })["catch"](function (err) {
         console.error(err);
       });
     },
     getCat: function getCat() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("/api/category").then(function (res) {
-        _this3.eventCat = res.data;
+        _this4.eventCat = res.data;
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -4420,7 +4430,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var i = _step.value;
-            _this3.eventCatDic[i.id] = i.name;
+            _this4.eventCatDic[i.id] = i.name;
           }
         } catch (err) {
           _didIteratorError = true;
@@ -4441,12 +4451,12 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     submitForm: function submitForm() {
-      var _this4 = this;
+      var _this5 = this;
 
       var formData = new FormData();
       formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
-        return formData.append(key, _this4.form[key]);
+        return formData.append(key, _this5.form[key]);
       });
 
       if (this.edit_mode) {
@@ -4456,7 +4466,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     storeRequest: function storeRequest(formData) {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.post("/api/event", formData, {
         headers: {
@@ -4464,7 +4474,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this5.$router.push({
+          _this6.$router.push({
             path: "/event"
           });
         } else {
@@ -4476,7 +4486,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateRequest: function updateRequest(formData) {
-      var _this6 = this;
+      var _this7 = this;
 
       formData.append('_method', 'PUT');
       axios.post("/api/event/" + this.slug, formData, {
@@ -4485,7 +4495,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this6.$router.push({
+          _this7.$router.push({
             path: "/event"
           });
         } else {

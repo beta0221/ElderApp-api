@@ -18,7 +18,7 @@ class EventController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update']]);
+        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
     }
 
     /**
@@ -321,6 +321,17 @@ class EventController extends Controller
             ]);
         }
         
+    }
+
+    public function getRewardLevel(){
+        $user = Auth::user();
+        $reward_level = null;
+        if($user->hasAnyRole(['admin','employee'])){
+            $reward_level = DB::table('reward_level')->get();
+        }else{
+            $reward_level = DB::table('reward_level')->where('id',1)->get();
+        }
+        return response($reward_level);
     }
 
     public function MyEvent(Request $request)

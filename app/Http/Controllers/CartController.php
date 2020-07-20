@@ -6,9 +6,7 @@ use App\Cart;
 use App\Order;
 use App\User;
 use App\OrderDelievery;
-use App\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller

@@ -26,5 +26,13 @@ class RewardLevelTableSeeder extends Seeder
         DB::table('reward_level')->insert([
             'reward'=>100,
         ]);
+
+        DB::table('reward_level')->insert([
+            'reward'=>300,
+        ]);
+
+        DB::table('reward_level')->insert([
+            'reward'=>500,
+        ]);
     }
 }

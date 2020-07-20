@@ -203,6 +203,7 @@ export default {
 
   },
   created() {
+    this.getRewardLevel();
     this.getCat();
     this.getDistrict();
     if(this.event_slug){
@@ -240,6 +241,13 @@ export default {
         console.error(err); 
       })
 
+    },
+    getRewardLevel(){
+      axios.get('api/getRewardLevel')
+      .catch(err => {console.error(err); })
+      .then(res => {
+        this.rewardLevel = res.data;
+      })
     },
     onChangeFileUpload(){
         this.file = this.$refs.file.files[0];
