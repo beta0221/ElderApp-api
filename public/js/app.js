@@ -4170,6 +4170,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4178,6 +4179,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "使用者",
         value: "user_id"
+      }, {
+        text: "交易編號",
+        value: "tran_id"
       }, {
         text: "事件",
         value: "event"
@@ -62302,6 +62306,9 @@ var render = function() {
                       domProps: {
                         innerHTML: _vm._s(
                           t.created_at +
+                            "[" +
+                            t.tran_id +
+                            "]" +
                             " => " +
                             t.event +
                             " (" +
@@ -62592,6 +62599,8 @@ var render = function() {
                   _c("td", [_vm._v(_vm._s(props.index + 1))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(props.item.tran_id))]),
                   _vm._v(" "),
                   _c("td", [_c("span", [_vm._v(_vm._s(props.item.event))])]),
                   _vm._v(" "),

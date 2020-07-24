@@ -16,7 +16,7 @@
         <div class="data-row" style="height:200px;margin-top:12px;">
           <div style="height:100%;">
             <div style="height:100%;overflow-y:scroll;border:.5px solid gray;padding:8px">
-              <p style="margin-bottom:4px" v-for="t in transList" v-bind:key="t.id" v-html="t.created_at + ' => ' + t.event + ' (' + ((t.give_take)?'+':'-') + t.amount + ')'"></p>
+              <p style="margin-bottom:4px" v-for="t in transList" v-bind:key="t.id" v-html="t.created_at + `[${t.tran_id}]`+ ' => ' + t.event + ' (' + ((t.give_take)?'+':'-') + t.amount + ')'"></p>
             </div>
           </div>
         </div>

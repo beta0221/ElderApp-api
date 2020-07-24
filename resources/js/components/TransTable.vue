@@ -13,6 +13,7 @@
             <template v-slot:items="props">
                 <td>{{props.index + 1}}</td>
                 <td>{{props.item.user_id}}</td>
+                <td>{{props.item.tran_id}}</td>
                 <td>
                     <span>{{props.item.event}}</span>
                 </td>
@@ -39,6 +40,7 @@ export default {
             headers: [
                 { text:'#'},
                 { text: "使用者", value: "user_id" },
+                { text: "交易編號", value: "tran_id" },
                 { text: "事件", value: "event" },
                 { text: "金額", value: "amount" },
                 { text: "對象", value: "target_id" },
