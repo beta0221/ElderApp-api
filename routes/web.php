@@ -21,7 +21,9 @@ Route::get('play',function(){
 
 
 Route::post('web_login','AuthController@web_login');
+Route::post('web_admin_login','AuthController@web_admin_login');
 Route::get('web_login_page','AuthController@view_login')->name('web_login_page');
+Route::get('web_admin_login_page','AuthController@view_admin_login')->name('web_admin_login_page');
 Route::get('view_me','AuthController@view_me');
 
 //Route::get('/sendMoney','TransactionController@sendMoney');
@@ -32,6 +34,7 @@ Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
 Route::get('/member/welcome','MemberController@welcome');
 Route::get('/member_tree/{id_code}','MemberController@memberTree');
+Route::get('/memberGroupMembers','MemberController@memberGroupMembers');
 Route::post('/removeMemberFromGroup','MemberController@removeMemberFromGroup');
 Route::get('/moveMemberPage/{user_id}','MemberController@moveMemberPage');
 Route::post('/moveMember/{user_id}','MemberController@moveMember');

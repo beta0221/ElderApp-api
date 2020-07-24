@@ -17,7 +17,14 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['login','signup','web_login','view_login']]);
+        $this->middleware('JWT', ['except' => [
+            'login',
+            'signup',
+            'web_login',
+            'web_admin_login',
+            'view_login',
+            'view_admin_login'
+        ]]);
     }
     
     /**
@@ -56,9 +63,32 @@ class AuthController extends Controller
         }
         return redirect('product/list');
     }
+    public function web_admin_login(){
+        $credentials = request(['email', 'password']);
+        if (! $token = auth('web')->attempt($credentials)) {
+            return view('login.admin_login',[
+                'email'=>request('email'),
+                'password'=>request('password'),
+                'from'=>request('from'),
+                'error'=>'帳號或密碼錯誤',
+            ]);
+        }
+        Cookie::queue('token',$token,60);
+        $from = request('from');
+        if(isset($from)){
+            return redirect($from);
+        }
+        return redirect('/');
+    }
     public function view_login(){
         $from = request('from');
         return view('login.login',[
+            'from'=>$from
+        ]);
+    }
+    public function view_admin_login(){
+        $from = request('from');
+        return view('login.admin_login',[
             'from'=>$from
         ]);
     }

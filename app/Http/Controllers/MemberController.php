@@ -15,7 +15,8 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','moveMemberPage','moveMember','updateMemberLevel']]);
+        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','moveMemberPage','moveMember','updateMemberLevel','memberGroupMembers']]);
+        $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers']]);
     }
 
     //管理後台的搜尋會員請求
@@ -666,7 +667,6 @@ class MemberController extends Controller
             return response('使用者並無所屬組織。');
         }
 
-
         $dic=[];
         $validDic=[];
         foreach ($group_users as  $g_user) {
@@ -683,6 +683,35 @@ class MemberController extends Controller
             'valid_dic'=>json_encode($validDic)
         ]);
 
+    }
+    public function memberGroupMembers(){
+        $user = User::web_user();
+        if($user->org_rank < 3){
+            return '權限不足';
+        }
+
+        $group_users = $user->getGroupUserRows();
+        if(count($group_users)<=0){
+            return response('使用者並無所屬組織。');
+        }
+
+        $user_id_array = [];
+        foreach ($group_users as $g_user) {
+            $user_id_array[] = $g_user->id;
+        }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+
+        $districts = DB::table('districts')->get();
+        $districtDict = [];
+        foreach ($districts as $district) {
+            $districtDict[$district->id] = $district->name;
+        }
+
+        return view('member.memberGroupMembers',[
+            'users'=>$users,
+            'districtDict'=>$districtDict
+        ]);
     }
 
     public function updateMemberLevel(Request $request){
