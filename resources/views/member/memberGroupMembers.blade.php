@@ -50,7 +50,7 @@
                                 <td>{{$districtDict[$user->district_id]}}</td>
                                 <td>{{$user->expiry_date}}</td>
                                 <td class="{{($user->valid)?'text-success':'text-danger'}}">{{($user->valid)?'有效':'無效'}}</td>
-                                <td>{{(isset($rank[$user->org_rank]))?$user->org_rank:'主人'}}</td>
+                                <td>{{(isset($rank[$user->org_rank]))?$rank[$user->org_rank]:'主人'}}</td>
                             </tr>   
                         @endforeach
                     </tbody>
