@@ -44,7 +44,7 @@
                             <tr>
                                 <th scope="row">{{($i+1)}}</th>
                                 <td>{{$user->name}}</td>
-                                <td>{{$user->id_code}}</td>
+                                <td>{{$user->id_number}}</td>
                                 <td>{{$user->birthdate}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>{{$districtDict[$user->district_id]}}</td>
