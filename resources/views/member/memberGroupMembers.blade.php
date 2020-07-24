@@ -142,7 +142,7 @@
                                 <td>{{$user->id_number}}</td>
                                 <td>{{$user->birthdate}}</td>
                                 <td>{{$user->phone}}</td>
-                                <td>{{$districtDict[$user->district_id]}}</td>
+                                <td>{{(isset($districtDict[$user->district_id]))?$districtDict[$user->district_id]:''}}</td>
                                 <td>{{$user->expiry_date}}</td>
                                 <td class="{{($user->valid)?'text-success':'text-danger'}}">{{($user->valid)?'有效':'無效'}}</td>
                                 <td>{{(isset($rank[$user->org_rank]))?$rank[$user->org_rank]:'主人'}}</td>
