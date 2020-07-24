@@ -702,6 +702,13 @@ class MemberController extends Controller
 
         $users = User::whereIn('id',$user_id_array)->get();
 
+        $dic=[];
+        $validDic=[];
+        foreach ($users as $user) {
+            $dic[$user->id] = $user->name;
+            $validDic[$user->id] = $user->valid;
+        }
+
         $districts = DB::table('districts')->get();
         $districtDict = [];
         foreach ($districts as $district) {
@@ -710,7 +717,10 @@ class MemberController extends Controller
 
         return view('member.memberGroupMembers',[
             'users'=>$users,
-            'districtDict'=>$districtDict
+            'districtDict'=>$districtDict,
+            'group_users'=>json_encode($group_users),
+            'name_dic'=>json_encode($dic),
+            'valid_dic'=>json_encode($validDic)
         ]);
     }
 
