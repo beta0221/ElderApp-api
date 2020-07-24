@@ -14,7 +14,7 @@ class TransactionController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','admin'],['only'=>['list']]);
+        $this->middleware(['JWT','admin'],['only'=>['list','sendMoneyTo','sendMoneyToUsers']]);
     }
 
     public function transaction(Request $req)
@@ -99,6 +99,9 @@ class TransactionController extends Controller
         
     }
 
+    /**
+     * 送錢給單一使用者
+     */
     public function sendMoneyTo(Request $request){
 
         $this->validate($request,[
@@ -114,20 +117,45 @@ class TransactionController extends Controller
             ]);
         }
 
-        $user->updateWallet(User::INCREASE_WALLET,$request->amount);
-
-        Transaction::create([
-            'tran_id'=>time() . rand(10,99),
-            'user_id'=>$user->id,
-            'event' =>$request->event,
-            'amount'=>$request->amount,
-            'target_id'=>0,
-            'give_take'=>User::INCREASE_WALLET,
-        ]);
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,$request->amount,$request->event);
 
         return response()->json([
             's'=>1,
             'm'=>'發送成功'
+        ]);
+
+    }
+
+    /**
+     * 送錢給多使用者
+     */
+    public function sendMoneyToUsers(Request $request){
+        
+        $this->validate($request,[
+            'account_array' => 'required',
+            'event' => 'required',
+            'amount' =>'required|integer|min:1',
+        ]);
+
+        $max_row = 20;
+        $account_array = json_decode($request->account_array,true);
+        if(empty($account_array)){return response(['s'=>0,'m'=>'error']);}
+        if(count($account_array) == 0){return response(['s'=>0,'m'=>'error']);}
+        if(count($account_array) > $max_row){return response(['s'=>0,'m'=>'一次最多20筆資料']);}
+
+        $not_found_array = [];
+        foreach ($account_array as $account) {
+            if(!$user = User::where('email',$account)->first()){
+                $not_found_array[] = $account;
+                continue;
+            }
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,$request->amount,$request->event);
+        }
+        
+        return response([
+            's'=>1,
+            'm'=>'success',
+            'not_found_array'=>$not_found_array
         ]);
 
     }
