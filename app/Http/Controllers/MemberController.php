@@ -697,7 +697,7 @@ class MemberController extends Controller
 
         $user_id_array = [];
         foreach ($group_users as $g_user) {
-            $user_id_array[] = $g_user->id;
+            $user_id_array[] = $g_user->user_id;
         }
 
         $users = User::whereIn('id',$user_id_array)->get();
