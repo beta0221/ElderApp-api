@@ -658,21 +658,10 @@ class EventController extends Controller
         $rewardAmount = $event->rewardAmount();
         Log::channel('translog')->info('user '.$user_id.' get money '.$rewardAmount);
         try {
-            //使用者加錢
-            $user->updateWallet(true,$rewardAmount);
-
             //註記已領取
             $event->drawReward($user_id);
-
-            //新增交際紀錄
-            Transaction::create([
-                'tran_id'=>time() . rand(10,99),
-                'user_id'=>$user->id,
-                'event' =>'活動獎勵-' . $event->title,
-                'amount'=>$rewardAmount,
-                'target_id'=>0,
-                'give_take'=>true,
-            ]);
+            //使用者加錢
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);
         } catch (\Throwable $th) {
             return response($th);
         }
