@@ -50,6 +50,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('makeTeacher','MemberController@makeTeacher');
 
     Route::post('sendMoneyTo','TransactionController@sendMoneyTo');
+    Route::post('sendMoneyToUsers','TransactionController@sendMoneyToUsers');
 });
 
 //Guest 使用者------------------------

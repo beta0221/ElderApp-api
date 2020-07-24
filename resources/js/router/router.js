@@ -12,6 +12,7 @@ import ProductTable from '../components/ProductTable'
 import ProductDetailForm from '../components/ProductDetailForm'
 import OrderTable from '../components/OrderTable'
 import TransTable from '../components/TransTable'
+import SendMoneyTable from '../components/SendMoneyTable'
 
 
 const routes = [
@@ -25,6 +26,7 @@ const routes = [
     {path:'/productForm/:product_slug', component: ProductDetailForm,props:true},
     {path:'/order', component: OrderTable},
     {path:'/transaction', component: TransTable},
+    {path:'/sendMoney', component: SendMoneyTable},
 ]
 
 
