@@ -73,7 +73,7 @@ class Event extends Model
 
 
     public function drawReward($user_id){
-        DB::table('event_users')->where('user_id',$user_id)->update([
+        DB::table('event_users')->where('event_id',$this->id)->where('user_id',$user_id)->update([
             'reward_drawed'=>1,
         ]);
     }
