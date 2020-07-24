@@ -14,7 +14,7 @@ class TransactionController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','admin'],['only'=>['list','sendMoneyTo','sendMoneyToUsers']]);
+        $this->middleware(['JWT','admin'],['only'=>['list','sendMoneyTo','sendMoneyToUsers','reserseTransaction']]);
     }
 
     public function transaction(Request $req)
@@ -158,6 +158,22 @@ class TransactionController extends Controller
             'not_found_array'=>$not_found_array
         ]);
 
+    }
+
+    public function reserseTransaction(Request $request){
+        
+        $this->validate($request,[
+            'tran_id' => 'required',
+        ]);
+
+        $transaction = Transaction::where('tran_id',$request->tran_id)->first();
+        try {
+            $transaction->reverse();
+        } catch (\Throwable $th) {
+            return response($th);
+        }
+
+        return response('success');
     }
 
     public function sendMoney(Request $request){

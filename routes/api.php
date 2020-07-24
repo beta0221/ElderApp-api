@@ -51,6 +51,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
 
     Route::post('sendMoneyTo','TransactionController@sendMoneyTo');
     Route::post('sendMoneyToUsers','TransactionController@sendMoneyToUsers');
+    Route::post('reserseTransaction','TransactionController@reserseTransaction');
 });
 
 //Guest 使用者------------------------

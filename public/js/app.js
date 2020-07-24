@@ -4167,6 +4167,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4187,6 +4190,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "日期",
         value: "created_at"
+      }, {
+        text: '-'
       }],
       pagination: {
         sortBy: "id",
@@ -4225,6 +4230,24 @@ __webpack_require__.r(__webpack_exports__);
         _this.total = res.data.total;
         _this.tranList = res.data.tranList;
         _this.loading = false;
+      });
+    },
+    reverseTran: function reverseTran(tran_id) {
+      var _this2 = this;
+
+      if (!confirm('確定回朔？')) {
+        return;
+      }
+
+      axios.post('/api/reserseTransaction', {
+        'tran_id': tran_id
+      }).then(function (res) {
+        alert(res.data);
+
+        _this2.getTrans();
+      })["catch"](function (error) {
+        console.log(error);
+        alert('錯誤');
       });
     }
   }
@@ -62602,7 +62625,28 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _c("span", [_vm._v(_vm._s(props.item.created_at))])
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      props.item.target_id == 0
+                        ? _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "error" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.reverseTran(props.item.tran_id)
+                                }
+                              }
+                            },
+                            [_vm._v("回朔")]
+                          )
+                        : _vm._e()
+                    ],
+                    1
+                  )
                 ]
               }
             }
@@ -105675,8 +105719,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

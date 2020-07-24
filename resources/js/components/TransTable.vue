@@ -23,6 +23,9 @@
                 <td>
                     <span>{{props.item.created_at}}</span>
                 </td>
+                <td>
+                    <v-btn v-if="props.item.target_id == 0" color="error" @click="reverseTran(props.item.tran_id)">回朔</v-btn>
+                </td>
             </template>
         </v-data-table>
     </div>
@@ -40,6 +43,7 @@ export default {
                 { text: "金額", value: "amount" },
                 { text: "對象", value: "target_id" },
                 { text: "日期", value: "created_at" },
+                { text: '-'}
             ],
             pagination: { sortBy: "id", descending: true },
             total:0,
@@ -76,6 +80,22 @@ export default {
                 this.loading=false;
             })  
         },
+        reverseTran(tran_id){
+            if(!confirm('確定回朔？')){
+                return;
+            }
+            axios.post('/api/reserseTransaction', {
+                'tran_id':tran_id
+            })
+            .then(res=>{
+                alert(res.data);
+                this.getTrans();
+            })
+            .catch(error => {
+                console.log(error);
+                alert('錯誤');
+            })
+        }
     }
 }
 </script>
