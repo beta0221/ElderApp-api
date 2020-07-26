@@ -4171,6 +4171,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4203,7 +4205,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       total: 0,
       loading: true,
-      tranList: []
+      tranList: [],
+      nameDict: {}
     };
   },
   watch: {
@@ -4233,6 +4236,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         _this.total = res.data.total;
         _this.tranList = res.data.tranList;
+        _this.nameDict = res.data.nameDict;
         _this.loading = false;
       });
     },
@@ -62598,7 +62602,17 @@ var render = function() {
                 return [
                   _c("td", [_vm._v(_vm._s(props.index + 1))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(props.item.user_id))]),
+                  _c("td", [
+                    _vm._v(
+                      "\n                  " +
+                        _vm._s(
+                          _vm.nameDict[props.item.user_id]
+                            ? _vm.nameDict[props.item.user_id]
+                            : ""
+                        ) +
+                        "\n              "
+                    )
+                  ]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(props.item.tran_id))]),
                   _vm._v(" "),

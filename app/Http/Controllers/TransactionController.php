@@ -6,8 +6,6 @@ use App\Jobs\SendMoney;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -227,9 +225,17 @@ class TransactionController extends Controller
         $total = Transaction::count();
         $tranList = Transaction::skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
+        $user_id_array = [];
+        foreach ($tranList as $tran) { $user_id_array[] = $tran->user_id; }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+        $nameDict = [];
+        foreach ($users as $user) { $nameDict[$user->id] = $user->name; }
+
         return response([
             'total'=>$total,
             'tranList'=>$tranList,
+            'nameDict'=>$nameDict
         ]);
         
     }

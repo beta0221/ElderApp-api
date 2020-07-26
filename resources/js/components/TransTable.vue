@@ -12,7 +12,9 @@
         >
             <template v-slot:items="props">
                 <td>{{props.index + 1}}</td>
-                <td>{{props.item.user_id}}</td>
+                <td>
+                    {{(nameDict[props.item.user_id])?nameDict[props.item.user_id]:''}}
+                </td>
                 <td>{{props.item.tran_id}}</td>
                 <td>
                     <span>{{props.item.event}}</span>
@@ -51,6 +53,7 @@ export default {
             total:0,
             loading: true,
             tranList:[],
+            nameDict:{},
         }
     },
     watch:{
@@ -79,6 +82,7 @@ export default {
             .then(res => {
                 this.total = res.data.total;
                 this.tranList = res.data.tranList;
+                this.nameDict = res.data.nameDict;
                 this.loading=false;
             })  
         },
