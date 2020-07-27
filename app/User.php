@@ -314,7 +314,21 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
-
+    /**
+     * 儲存使用者的推播 token
+     */
+    public function set_pushtoken($pushtoken){
+        if($row = DB::table('user_pushtoken')->where('user_id',$this->id)->first()){
+            DB::table('user_pushtoken')->where('user_id',$this->id)->update([
+                'pushtoken'=>$pushtoken
+            ]);
+        }else{
+            DB::table('user_pushtoken')->insert([
+                'user_id'=>$this->id,
+                'pushtoken'=>$pushtoken
+            ]);
+        }
+    }
 
 
 

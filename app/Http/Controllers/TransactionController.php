@@ -13,6 +13,7 @@ class TransactionController extends Controller
     public function __construct()
     {
         $this->middleware(['JWT','admin'],['only'=>['list','history','sendMoneyTo','sendMoneyToUsers','reserseTransaction']]);
+        $this->middleware(['JWT'],['only'=>['myTransactionHistory']]);
     }
 
     public function transaction(Request $req)
@@ -276,6 +277,52 @@ class TransactionController extends Controller
             array_push($result,$tran);
         }
         return response()->json($result);
+    }
+
+    /**
+     * app 使用者查詢自己交易紀錄(app新版本取代 show)
+     */
+    public function myTransactionHistory(Request $request){
+
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $user = auth()->user();
+        $total = Transaction::where('user_id',$user->id)->count();
+        $_transList = Transaction::where('user_id',$user->id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+
+        $user_id_array = [];
+        foreach ($_transList as $tran) { 
+            if($tran->target_id == 0){continue;}
+            if(!in_array($tran->target_id,$user_id_array)){
+                $user_id_array[] = $tran->target_id;
+            }    
+        }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+        $nameDict = [];
+        foreach ($users as $user) { $nameDict[$user->id] = $user->name; }
+
+        $transList = [];
+        foreach ($_transList as $tran) { 
+            if($tran->target_id == 0){
+                $tran['target_name'] = '銀髮學院';
+            }else{
+                $tran['target_name'] = (isset($nameDict[$tran->target_id]))?$nameDict[$tran->target_id]:'';
+            }
+            $transList[] = $tran;
+        }
+
+        $hasNextPage = true;
+        if(($skip + $rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'transList'=>$transList,
+            'hasNextPage'=>$hasNextPage
+        ]);
+
     }
 
     /**

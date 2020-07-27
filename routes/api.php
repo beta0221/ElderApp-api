@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
+    Route::post('set_pushtoken','AuthController@set_pushtoken');
     Route::post('login', 'AuthController@login');
     Route::post('signup', 'AuthController@signup');
     Route::post('logout', 'AuthController@logout');
@@ -84,6 +85,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //交易
     Route::post('transaction','TransactionController@transaction');
     Route::get('trans-history/{id}','TransactionController@show');
+    Route::get('transaction/myTransactionHistory','TransactionController@myTransactionHistory');
     Route::get('transaction/history/{id}','TransactionController@history');
     Route::get('transaction/list','TransactionController@list');
 

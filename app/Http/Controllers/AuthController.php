@@ -221,4 +221,16 @@ class AuthController extends Controller
         ]); 
     }
 
+    /**
+     * 設定使用者 pushtoken
+     */
+    public function set_pushtoken(Request $request){
+        $this->validate($request,[
+            'pushtoken' =>'required',
+        ]);
+        $user = auth()->user();
+        $user->set_pushtoken($request->pushtoken);
+        return response('success');
+    }
+
 }
