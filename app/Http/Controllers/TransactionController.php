@@ -12,7 +12,7 @@ class TransactionController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','admin'],['only'=>['list','sendMoneyTo','sendMoneyToUsers','reserseTransaction']]);
+        $this->middleware(['JWT','admin'],['only'=>['list','history','sendMoneyTo','sendMoneyToUsers','reserseTransaction']]);
     }
 
     public function transaction(Request $req)
@@ -272,6 +272,26 @@ class TransactionController extends Controller
             array_push($result,$tran);
         }
         return response()->json($result);
+    }
+
+    /**
+     * 後台使用的api 查詢使用者交易紀錄
+     */
+    public function history(Request $request,$user_id){
+        
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $total = Transaction::where('user_id',$user_id)->count();
+        $transList = Transaction::where('user_id',$user_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+
+        return response([
+            'total'=>$total,
+            'transList'=>$transList
+        ]);
+
     }
 
     /**

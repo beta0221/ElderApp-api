@@ -84,6 +84,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //交易
     Route::post('transaction','TransactionController@transaction');
     Route::get('trans-history/{id}','TransactionController@show');
+    Route::get('transaction/history/{id}','TransactionController@history');
     Route::get('transaction/list','TransactionController@list');
 
     //折扣兌換卷
