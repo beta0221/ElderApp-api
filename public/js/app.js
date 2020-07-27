@@ -3912,6 +3912,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3937,7 +3942,8 @@ __webpack_require__.r(__webpack_exports__);
       event: null,
       transList: [],
       pagination: {
-        page: 1
+        page: 1,
+        descending: true
       },
       total: 0
     };
@@ -3966,6 +3972,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     setPage: function setPage(page) {
       this.pagination.page = page;
+      this.getTransactionHistory();
+    },
+    setOrder: function setOrder(descending) {
+      this.pagination.descending = descending;
       this.getTransactionHistory();
     },
     getTransactionHistory: function getTransactionHistory() {
@@ -62371,6 +62381,53 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
+            { staticClass: "data-row" },
+            [
+              _c(
+                "v-btn",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.pagination.descending,
+                      expression: "!(pagination.descending)"
+                    }
+                  ],
+                  on: {
+                    click: function($event) {
+                      return _vm.setOrder(true)
+                    }
+                  }
+                },
+                [_vm._v("▲")]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.pagination.descending,
+                      expression: "(pagination.descending)"
+                    }
+                  ],
+                  on: {
+                    click: function($event) {
+                      return _vm.setOrder(false)
+                    }
+                  }
+                },
+                [_vm._v("▼")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
             {
               staticClass: "data-row",
               staticStyle: { height: "200px", "margin-top": "12px" }
@@ -62418,7 +62475,7 @@ var render = function() {
                 attrs: {
                   total: _vm.total,
                   page: _vm.pagination.page,
-                  rows: 15
+                  rows: 20
                 },
                 on: { nav_to_page: _vm.setPage }
               })

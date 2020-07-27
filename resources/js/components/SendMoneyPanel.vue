@@ -13,6 +13,11 @@
             <input type="text" v-model="event"/>
         </div>
 
+        <div class="data-row">
+          <v-btn v-show="!(pagination.descending)" @click="setOrder(true)">▲</v-btn>
+          <v-btn v-show="(pagination.descending)" @click="setOrder(false)">▼</v-btn>
+        </div>
+
         <div class="data-row" style="height:200px;margin-top:12px;">
           <div style="height:100%;">
             <div style="height:100%;overflow-y:scroll;border:.5px solid gray;padding:8px">
@@ -22,7 +27,7 @@
         </div>
 
         <div class="data-row">
-          <simple-pagination :total="total" :page="pagination.page" :rows="15" v-on:nav_to_page="setPage"></simple-pagination>
+          <simple-pagination :total="total" :page="pagination.page" :rows="20" v-on:nav_to_page="setPage"></simple-pagination>
         </div>
 
         <v-card-actions>
@@ -58,6 +63,7 @@ export default {
         transList:[],
         pagination:{
           page:1,
+          descending:true
         },
         total:0,
     };
@@ -82,6 +88,10 @@ export default {
       },
       setPage(page){
         this.pagination.page = page;
+        this.getTransactionHistory();
+      },
+      setOrder(descending){
+        this.pagination.descending = descending;
         this.getTransactionHistory();
       },
       getTransactionHistory(){

@@ -226,7 +226,11 @@ class TransactionController extends Controller
         $tranList = Transaction::skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
         $user_id_array = [];
-        foreach ($tranList as $tran) { $user_id_array[] = $tran->user_id; }
+        foreach ($tranList as $tran) { 
+            if(!in_array($tran->user_id,$user_id_array)){
+                $user_id_array[] = $tran->user_id;
+            }    
+        }
 
         $users = User::whereIn('id',$user_id_array)->get();
         $nameDict = [];
@@ -280,9 +284,12 @@ class TransactionController extends Controller
     public function history(Request $request,$user_id){
         
         $page = ($request->page)?$request->page:1;
-        $rows = 10;
+        $rows = 20;
         $skip = ($page - 1) * $rows;
         $ascOrdesc = 'desc';
+        if ($request->descending == null || $request->descending == 'false') {
+            $ascOrdesc = 'asc';
+        }
 
         $total = Transaction::where('user_id',$user_id)->count();
         $transList = Transaction::where('user_id',$user_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
