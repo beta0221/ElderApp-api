@@ -124,16 +124,18 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * 舊的api, app更新後要移除
      */
     public function show(Product $product)
     {
-        
         $location = $product->getLocationAndQuantity();
-        
+        $product['location'] = $location;
+        return response($product);
+    }
+
+    public function productDetail($slug){
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $location = $product->getLocationAndQuantity();
         return response([
             'product'=> new ProductDetailResource($product),
             'location'=>$location
@@ -303,7 +305,9 @@ class ProductController extends Controller
 
     }
 
-    //for users
+    /**
+     * 舊的api, app更新後要移除
+     */
     public function getAllProduct(){
         
         $products = Product::allAvailable();

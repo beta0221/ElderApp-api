@@ -170,7 +170,7 @@ export default {
     },
     loadProduct() {
       axios
-        .get(`/api/product/${this.product_slug}`)
+        .get(`/api/productDetail/${this.product_slug}`)
         .then(res => {
           if (res.status == 200) {
             this.form.name = res.data.product.name;

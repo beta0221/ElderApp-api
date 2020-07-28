@@ -97,8 +97,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('getLocationAndQuantity/{slug}','ProductController@getLocationAndQuantity');
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');
-    Route::get('getAllProduct','ProductController@getAllProduct');
+    Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
+    
     Route::get('productList','ProductController@productList');
+    Route::get('productDetail/{slug}','ProductController@productDetail');
 
     //經銷據點
     Route::apiresource('location','LocationController');
