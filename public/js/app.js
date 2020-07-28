@@ -3437,8 +3437,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -3541,9 +3539,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   data: function data() {
-    var _ref;
-
-    return _ref = {
+    return {
       edit_mode: false,
       product_image: null,
       product_category: [],
@@ -3558,8 +3554,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         pay_cash_price: null,
         pay_cash_point: null,
         info: ""
-      }
-    }, _defineProperty(_ref, "product_image", null), _defineProperty(_ref, "file", ''), _defineProperty(_ref, "location", []), _defineProperty(_ref, "quantityDic", {}), _defineProperty(_ref, "payCashQuantityDict", {}), _ref;
+      },
+      file: '',
+      location: [],
+      quantityDic: {},
+      payCashQuantityDict: {}
+    };
   },
   created: function created() {
     if (this.product_slug) {
@@ -3609,17 +3609,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios.get("/api/product/".concat(this.product_slug)).then(function (res) {
         if (res.status == 200) {
-          _this3.form.name = res.data.name;
-          _this3["public"] = res.data["public"];
-          _this3.form["public"] = res.data["public"];
-          _this3.form.product_category_id = res.data.product_category_id;
-          _this3.form.price = res.data.price;
-          _this3.form.pay_cash_price = res.data.pay_cash_price;
-          _this3.form.pay_cash_point = res.data.pay_cash_point;
-          _this3.form.info = res.data.info;
+          _this3.form.name = res.data.product.name;
+          _this3["public"] = res.data.product["public"];
+          _this3.form["public"] = res.data.product["public"];
+          _this3.form.product_category_id = res.data.product.product_category_id;
+          _this3.form.price = res.data.product.price;
+          _this3.form.pay_cash_price = res.data.product.pay_cash_price;
+          _this3.form.pay_cash_point = res.data.product.pay_cash_point;
+          _this3.form.info = res.data.product.info;
 
-          if (res.data.img) {
-            _this3.product_image = "/images/products/".concat(res.data.slug, "/").concat(res.data.img);
+          if (res.data.product.imgUrl) {
+            _this3.product_image = res.data.product.imgUrl;
           }
 
           if (res.data.location) {
@@ -3821,7 +3821,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getImagePath: function getImagePath(slug, img) {
-      var imagePath = "/images/products/".concat(slug, "/").concat(img);
+      // let imagePath = `/images/products/${slug}/${img}`;
+      var imagePath = "http://testatic.happybi.com.tw/products/".concat(slug, "/").concat(img);
       return imagePath;
     },
     editProduct: function editProduct(slug) {
@@ -62223,11 +62224,7 @@ var render = function() {
                   _c("td", [_vm._v(_vm._s(props.index + 1))]),
                   _vm._v(" "),
                   _c("td", { staticClass: "column-img" }, [
-                    _c("img", {
-                      attrs: {
-                        src: _vm.getImagePath(props.item.slug, props.item.img)
-                      }
-                    })
+                    _c("img", { attrs: { src: props.item.imgUrl } })
                   ]),
                   _vm._v(" "),
                   _c("td", [
@@ -62239,7 +62236,7 @@ var render = function() {
                       [
                         _vm._v(
                           "\n            " +
-                            _vm._s(props.item.public ? "上架" : "下架") +
+                            _vm._s(props.item.public_text) +
                             "\n          "
                         )
                       ]

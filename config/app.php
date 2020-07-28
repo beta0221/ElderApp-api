@@ -2,6 +2,7 @@
 
 return [
 
+    'static_host' => env('STATIC_HOST','https://static.happybi.com.tw'),
     /*
     |--------------------------------------------------------------------------
     | Application Name

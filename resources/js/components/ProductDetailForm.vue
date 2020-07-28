@@ -117,7 +117,6 @@ export default {
         pay_cash_point:null,
         info:"",
       },
-      product_image:null,
       file:'',
 
       location:[],
@@ -174,17 +173,15 @@ export default {
         .get(`/api/product/${this.product_slug}`)
         .then(res => {
           if (res.status == 200) {
-            this.form.name = res.data.name;
-            this.public = res.data.public;
-            this.form.public = res.data.public;
-            this.form.product_category_id = res.data.product_category_id;
-            this.form.price = res.data.price;
-            this.form.pay_cash_price = res.data.pay_cash_price;
-            this.form.pay_cash_point = res.data.pay_cash_point;
-            this.form.info = res.data.info;
-            if(res.data.img){
-              this.product_image = `/images/products/${res.data.slug}/${res.data.img}`;
-            }
+            this.form.name = res.data.product.name;
+            this.public = res.data.product.public;
+            this.form.public = res.data.product.public;
+            this.form.product_category_id = res.data.product.product_category_id;
+            this.form.price = res.data.product.price;
+            this.form.pay_cash_price = res.data.product.pay_cash_price;
+            this.form.pay_cash_point = res.data.product.pay_cash_point;
+            this.form.info = res.data.product.info;
+            if(res.data.product.imgUrl){ this.product_image = res.data.product.imgUrl; }
             if(res.data.location){
               res.data.location.forEach((item)=>{
                 this.form.select_location.push(item.location_id);

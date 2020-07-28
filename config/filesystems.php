@@ -64,6 +64,20 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'ftp' => [
+            'driver'   => 'ftp',
+            'host'     => env('FILE_SEVER_HOST'),
+            'username' => env('FILE_SEVER_USERNAME'),
+            'password' => env('FILE_SEVER_PASSWORD'),
+        
+            // 可選的 FTP 設定...
+            // 'port'     => 21,
+            // 'root'     => '',
+            // 'passive'  => true,
+            // 'ssl'      => true,
+            // 'timeout'  => 30,
+        ],
+
     ],
 
 ];

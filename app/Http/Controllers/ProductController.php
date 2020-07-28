@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductDetailResource;
+use App\Http\Resources\ProductListResource;
 use App\OrderDetail;
 use App\Product;
 use App\ProductCategory;
@@ -50,6 +52,8 @@ class ProductController extends Controller
         ->skip($skip)
         ->take($rows)
         ->get();
+
+        $products = ProductListResource::collection($products);
 
         return response()->json([
             'products' => $products,
@@ -128,8 +132,11 @@ class ProductController extends Controller
     {
         
         $location = $product->getLocationAndQuantity();
-        $product['location'] = $location;
-        return response($product);
+        
+        return response([
+            'product'=> new ProductDetailResource($product),
+            'location'=>$location
+        ]);
     }
 
     public function getLocationAndQuantity($slug){

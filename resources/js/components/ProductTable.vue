@@ -27,11 +27,11 @@
         <template v-slot:items="props">
           <td>{{props.index + 1}}</td>
           <td class="column-img">
-            <img :src="getImagePath(props.item.slug,props.item.img)">
+            <img :src="props.item.imgUrl">
           </td>
           <td>
             <span :class="(props.item.public)?'green--text':'red--text'">
-              {{(props.item.public)?'上架':'下架'}}
+              {{props.item.public_text}}
             </span>
           </td>
           <td>{{product_category[props.item.product_category_id]}}</td>
@@ -97,7 +97,8 @@ export default {
         });
     },
       getImagePath(slug,img){
-        let imagePath = `/images/products/${slug}/${img}`;
+        // let imagePath = `/images/products/${slug}/${img}`;
+        let imagePath = `http://testatic.happybi.com.tw/products/${slug}/${img}`;
         return imagePath;
       },
         editProduct(slug){
