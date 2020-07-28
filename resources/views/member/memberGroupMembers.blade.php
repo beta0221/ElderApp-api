@@ -129,6 +129,7 @@
                         <th scope="col">生日</th>
                         <th scope="col">電話</th>
                         <th scope="col">地區</th>
+                        <th scope="col">入會日期</th>
                         <th scope="col">會員效期</th>
                         <th scope="col">會員資格</th>
                         <th scope="col">職位</th>
@@ -143,6 +144,7 @@
                                 <td>{{$user->birthdate}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>{{(isset($districtDict[$user->district_id]))?$districtDict[$user->district_id]:''}}</td>
+                                <td>{{substr($user->created_at,0,10)}}</td>
                                 <td>{{$user->expiry_date}}</td>
                                 <td class="{{($user->valid)?'text-success':'text-danger'}}">{{($user->valid)?'有效':'無效'}}</td>
                                 <td>{{(isset($rank[$user->org_rank]))?$rank[$user->org_rank]:'主人'}}</td>
