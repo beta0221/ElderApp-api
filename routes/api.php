@@ -98,6 +98,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');
     Route::get('getAllProduct','ProductController@getAllProduct');
+    Route::get('productList','ProductController@productList');
 
     //經銷據點
     Route::apiresource('location','LocationController');

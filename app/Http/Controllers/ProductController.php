@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductListResource;
+use App\Http\Resources\ProductListResource_User;
 use App\OrderDetail;
 use App\Product;
 use App\ProductCategory;
@@ -312,6 +313,26 @@ class ProductController extends Controller
             'products'=>$products,
             'cats'=>$cats,
         ],200);
+
+    }
+    public function productList(Request $request){
+
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $total = Product::where('public',1)->count();
+        $productList = Product::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $productList = ProductListResource_User::collection($productList);
+
+        $hasNextPage = true;
+        if(($skip + $rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'productList'=>$productList,
+            'hasNextPage'=>$hasNextPage
+        ]);
 
     }
 

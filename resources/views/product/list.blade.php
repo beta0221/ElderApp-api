@@ -39,7 +39,7 @@
 
     <div>
         @foreach($products as $product)
-        <?php $img = '/images/products/'.$product->slug.'/'.$product->img ?>
+        <?php $img = config('app.static_host') . "/products/$product->slug/$product->img"; ?>
         <div class="product-cell p-2">
             
             <div class="image-outter">
