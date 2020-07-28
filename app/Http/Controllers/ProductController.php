@@ -224,10 +224,14 @@ class ProductController extends Controller
         return response(ProductCategory::all());
     }
 
+    /**
+     * 存入圖檔(目前在導入file sever 階段 必須同時執行 本地 以及 file sever 處理速度會很慢，等舊版本App更新才能完全轉移)
+     */
     private function imageHandler($file,$product_slug){
         
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $path = "/images/products/" . $product_slug . "/";
+        $ftpPath = "/products/$product_slug/";
         
         if(Storage::disk('local')->exists($path)){
             $result = Storage::deleteDirectory($path);
@@ -235,9 +239,18 @@ class ProductController extends Controller
                 return false;
             }
         }
+        if(Storage::disk('ftp')->exists($ftpPath)){
+            $result = Storage::disk('ftp')->deleteDirectory($ftpPath);
+            if(!$result){
+                return false;
+            }
+        }
         
         if(!Storage::disk('local')->put($path . $filename,File::get($file))){
             return false;//失敗:回傳false
+        }
+        if(!Storage::disk('ftp')->put($ftpPath . $filename,File::get($file))){
+            return false;
         }
         
         return $filename;//成功：回傳檔名
