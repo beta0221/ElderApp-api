@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LocationQuantityCollection;
 use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\ProductListResource_User;
 use App\OrderDetail;
 use App\Product;
+use App\Location;
 use App\ProductCategory;
 use App\Transaction;
 use Illuminate\Http\Request;
@@ -132,7 +134,32 @@ class ProductController extends Controller
         $product['location'] = $location;
         return response($product);
     }
+    /**App users 商品 detail */
+    public function showV2($slug){
 
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $product = new ProductDetailResource($product);
+
+        $locationList = $product->getLocationAndQuantity();
+        
+        $locationIdArray = [];
+        foreach ($locationList as $location) {
+            $locationIdArray[] = $location->location_id;
+        }
+
+        $locationDict = Location::getLocationDict($locationIdArray);
+
+        $locationList = new LocationQuantityCollection($locationList);
+        $locationList = $locationList->configureDict($locationDict);
+
+        return response([
+            'product'=>$product,
+            'locationList'=>$locationList
+        ]);
+
+    }
+
+    /**後台用 */
     public function productDetail($slug){
         $product = Product::where('slug',$slug)->firstOrFail();
         $location = $product->getLocationAndQuantity();
