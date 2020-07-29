@@ -232,7 +232,7 @@ export default {
           this.form.days = event.days;
           this.slug = event.slug;
           if(event.image){
-            this.event_image = `/images/events/${event.slug}/${event.image}`;
+            this.event_image = `https://static.happybi.com.tw/events/${event.slug}/${event.image}`;
           }
           
         }
@@ -243,7 +243,7 @@ export default {
 
     },
     getRewardLevel(){
-      axios.get('api/getRewardLevel')
+      axios.get('/api/getRewardLevel')
       .catch(err => {console.error(err); })
       .then(res => {
         this.rewardLevel = res.data;

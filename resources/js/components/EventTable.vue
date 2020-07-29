@@ -50,7 +50,9 @@
           :color="(props.item.public)?'success':'warning'">{{(props.item.public)?'上架':'下架'}}</v-btn>
         </td>
         <td>{{eventCat[props.item.category_id]}}</td>
-        <td class="image-td"><img :src="'/images/events/'+props.item.slug+'/'+props.item.image" alt=""></td>
+        <td class="image-td">
+          <img :src="staticHost + '/events/'+props.item.slug+'/'+props.item.image">
+        </td>
         <td class="title-column" @click="showRewardQrcode(props.item.slug)">{{props.item.title}}</td>
         <td>({{district[props.item.district_id]}}){{props.item.location}}</td>
         <td>{{props.item.dateTime}}</td>
@@ -104,7 +106,7 @@ export default {
         { text: "成員"},
         { text: "-",width:"1%"},
       ],
-      
+      staticHost:'',
     };
   },
   watch: {
@@ -201,7 +203,7 @@ export default {
             // console.log(res.data);
             // return false;
             let items = res.data.events;
-            
+            this.staticHost = res.data.staticHost;
             const total = res.data.total;
 
             if (this.pagination.sortBy) {

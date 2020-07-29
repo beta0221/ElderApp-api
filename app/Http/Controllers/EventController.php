@@ -57,6 +57,7 @@ class EventController extends Controller
         return response()->json([
             'events' => $events,
             'total' => $total,
+            'staticHost' => config('app.static_host'),
         ]);
 
     }

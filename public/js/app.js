@@ -1806,6 +1806,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1863,7 +1865,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "-",
         width: "1%"
-      }]
+      }],
+      staticHost: ''
     };
   },
   watch: {
@@ -2007,6 +2010,7 @@ __webpack_require__.r(__webpack_exports__);
           // console.log(res.data);
           // return false;
           var items = res.data.events;
+          _this6.staticHost = res.data.staticHost;
           var total = res.data.total;
 
           if (_this6.pagination.sortBy) {
@@ -4533,7 +4537,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.slug = event.slug;
 
           if (event.image) {
-            _this.event_image = "/images/events/".concat(event.slug, "/").concat(event.image);
+            _this.event_image = "https://static.happybi.com.tw/events/".concat(event.slug, "/").concat(event.image);
           }
         }
       })["catch"](function (err) {
@@ -4543,7 +4547,7 @@ __webpack_require__.r(__webpack_exports__);
     getRewardLevel: function getRewardLevel() {
       var _this2 = this;
 
-      axios.get('api/getRewardLevel')["catch"](function (err) {
+      axios.get('/api/getRewardLevel')["catch"](function (err) {
         console.error(err);
       }).then(function (res) {
         _this2.rewardLevel = res.data;
@@ -59922,11 +59926,11 @@ var render = function() {
                     _c("img", {
                       attrs: {
                         src:
-                          "/images/events/" +
+                          _vm.staticHost +
+                          "/events/" +
                           props.item.slug +
                           "/" +
-                          props.item.image,
-                        alt: ""
+                          props.item.image
                       }
                     })
                   ]),
