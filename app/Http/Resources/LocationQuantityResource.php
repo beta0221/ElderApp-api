@@ -42,6 +42,7 @@ class LocationQuantityResource extends JsonResource
             'address'=>$address,
             'link'=>$link,
 
+            'location_id'=>$this->location_id,
             'quantity'=>$this->quantity,
         ];
     }
