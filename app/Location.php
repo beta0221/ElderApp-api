@@ -14,7 +14,8 @@ class Location extends Model
         return $this->belongsToMany('App\Product','product_location','location_id','product_id');
     }
 
-    public static function getLocationDictionary(){
+    /** abandoned */
+    public static function getLocationDictionary_abandoned(){
 
         $locations = DB::table('locations')->select(['id','name','address'])->get();
         $locationDictionary=[];
@@ -25,6 +26,15 @@ class Location extends Model
             $locationDictionary[$row->id] = $l;
         }
         return $locationDictionary;
+    }
+
+    public static function getLocationDict($idArray){
+        $locations = Location::whereIn('id',$idArray)->get();
+        $dict = [];
+        foreach ($locations as $location) {
+            $dict[$location->id] = $location;
+        }
+        return $dict;
     }
     
 }

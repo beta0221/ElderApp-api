@@ -67,18 +67,20 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::apiresource('category','CategoryController');
 
     //活動
-    Route::apiresource('event','EventController');
-    Route::get('getRewardLevel','EventController@getRewardLevel');
+    //App Users
     Route::get('getEvents','EventController@getEvents');
-    Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later
-    Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later
-    Route::post('myevent','EventController@MyEvent');//should be auth later
-    Route::get('eventguests/{slug}','EventController@EventGuests');
+    Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later //舊的 版本更新後移除
+    Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later //舊的 版本更新後移除
+    Route::post('myevent','EventController@MyEvent');//should be auth later //舊的 版本更新後移除
     Route::get('district','EventController@GetDistrict');
     Route::get('which_category_event/{name}','EventController@which_category_event');
-    Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later
+    Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later //舊的 版本更新後移除
     Route::get('isUserArrive/{slug}','EventController@isUserArrive');
     Route::post('arriveEvent/{slug}','EventController@arriveEvent');
+    //後台
+    Route::apiresource('event','EventController');
+    Route::get('eventguests/{slug}','EventController@EventGuests');
+    Route::get('getRewardLevel','EventController@getRewardLevel');
     Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay')->middleware('BCP');
     Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus')->middleware('BCP');
     
@@ -93,28 +95,33 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('couponcode/exchange','PromocodeController@exchange');
 
     //產品
+    //App Users
     Route::apiresource('product','ProductController');
     Route::get('getLocationAndQuantity/{slug}','ProductController@getLocationAndQuantity');
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');
-    Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
     
+    Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
     Route::get('productList','ProductController@productList');
+    //後台
     Route::get('productDetail/{slug}','ProductController@productDetail');
 
     //經銷據點
     Route::apiresource('location','LocationController');
     Route::get('/order-list/location/{location_id}/{product_id}','LocationController@orderList');
-
-    //訂單
-    Route::get('/my-order-list','OrderDetailController@myOrderList');
     
-
+    //App User
     Route::group(['prefix'=>'cart'],function(){
         Route::post('store/{product_id}','CartController@store');
         Route::post('destroy/{product_id}','CartController@destroy');
     });
 
+    //App Users
+    //訂單
+    Route::get('/my-order-list','OrderDetailController@myOrderList');//舊的 版本更新後移除
+    Route::get('order/myOrderList','OrderDetailController@myOrderListV2');
+
+    //後台
     Route::group(['prefix'=>'order'],function(){
         Route::get('getOrders','OrderController@getOrders');
         Route::get('getOrderDetail/{order_numero}','OrderController@getOrderDetail');

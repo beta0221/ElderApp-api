@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MyOrderCollection;
 use App\OrderDetail;
 use App\Product;
 use App\Location;
@@ -10,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderDetailController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('JWT', ['only' => ['myOrderListV2']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -105,14 +112,12 @@ class OrderDetailController extends Controller
 
     public function myOrderList(){
 
-
-
         if(!$user = Auth::user()){
             return response('使用者權限錯誤',400);
         }
 
-        $productDic = Product::getProductDictionary();
-        $locationDic = Location::getLocationDictionary();
+        $productDic = Product::getProductDictionary_abandoned();
+        $locationDic = Location::getLocationDictionary_abandoned();
 
         $orders = OrderDetail::where('user_id',$user->id)->orderBy('id','desc')->take(20)->get();
         foreach ($orders as $order) {
@@ -130,6 +135,40 @@ class OrderDetailController extends Controller
         }
 
         return response($orders,200);
+
+    }
+
+    public function myOrderListV2(Request $request){
+        
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+        $user = auth()->user();
+
+        $total = OrderDetail::where('user_id',$user->id)->count();
+        $orderList = OrderDetail::where('user_id',$user->id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        
+        $productIdArray = [];
+        $locationIdArray = [];
+        foreach ($orderList as $order) {
+            $productIdArray[] = $order->product_id;
+            $locationIdArray[] = $order->location_id;
+        }
+
+        $productDict = Product::getProductDict($productIdArray);
+        $locationDict = Location::getLocationDict($locationIdArray);
+
+        $orderList = new MyOrderCollection($orderList);
+        $orderList = $orderList->configureDict($productDict,$locationDict);
+
+        $hasNextPage = true;
+        if(($skip + $rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'orderList'=>$orderList,
+            'hasNextPage'=>$hasNextPage
+        ]);
 
     }
 

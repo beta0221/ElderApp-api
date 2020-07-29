@@ -58,7 +58,8 @@ class Product extends Model
         return false;
     }
 
-    public static function getProductDictionary(){
+    /** abandoned */
+    public static function getProductDictionary_abandoned(){
 
         $products = DB::table('products')->select(['id','name','slug','img'])->get();
         $productDictionary=[];
@@ -71,6 +72,15 @@ class Product extends Model
             $productDictionary[$row->id] = $p;
         }
         return $productDictionary;
+    }
+
+    public static function getProductDict($idArray){
+        $products = Product::whereIn('id',$idArray)->get();
+        $dict = [];
+        foreach ($products as $product) {
+            $dict[$product->id] = $product;
+        }
+        return $dict;
     }
 
     /**
