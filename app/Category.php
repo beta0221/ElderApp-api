@@ -16,4 +16,14 @@ class Category extends Model
     public function events(){
         return $this->hasMany('App\Event');
     }
+
+    /**類別字典 key是 id */
+    public static function getCatDict(){
+        $cats = Category::all();
+        $dict = [];
+        foreach ($cats as $cat) {
+            $dict[$cat->id] = $cat;
+        }
+        return $dict;
+    }
 }

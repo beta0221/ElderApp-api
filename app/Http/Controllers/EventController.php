@@ -6,10 +6,11 @@ use App\Event;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
-use App\Transaction;
+use App\Product;
 use App\User;
 use App\Category;
 use App\FreqEventUser;
+use App\Http\Resources\EventCollection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -83,6 +84,40 @@ class EventController extends Controller
 
 
         return $events;
+    }
+
+    /**手機 活動列表夜 v2 */
+    public function eventList(Request $request){
+
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $total = Event::where('public',1)->count();
+        $eventList = Event::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+
+        $districtIdArray = [];
+        foreach ($eventList as $event) {
+            $districtIdArray[] = $event->district_id;
+        }
+
+        $catDict = Category::getCatDict();
+        $rewardDict = Product::getRewardDict();
+        $districtDict = Product::getDistrictDict($districtIdArray);
+        
+        $eventList = new EventCollection($eventList);
+        $eventList = $eventList->configureDict($catDict,$rewardDict,$districtDict);
+
+
+        $hasNextPage = true;
+        if(($skip + $rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'eventList'=>$eventList,
+            'hasNextPage'=>$hasNextPage
+        ]);
+
     }
  
     /**
