@@ -44,7 +44,8 @@ class MyOrderResource extends JsonResource
             'imgUrl'=>$imgUrl,
             'location_name'=>$location_name,
             'address'=>$address,
-            'created_at'=>$this->created_at
+            'created_at'=>$this->created_at,
+            'receive'=>$this->receive
         ];
     }
 
