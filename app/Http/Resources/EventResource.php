@@ -42,7 +42,7 @@ class EventResource extends JsonResource
             'dateTime'=>$this->dateTime,
             'dateTime2'=>$this->dateTime2,
             'deadline'=>$this->deadline,
-            'type'=>$this->type,
+            'type'=>$this->event_type,
             'maximum'=>$this->maximum,
             'people'=>$this->people,
             'location'=>$this->location,
