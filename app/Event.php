@@ -78,6 +78,24 @@ class Event extends Model
         ]);
     }
 
+    public static function getDistrictDict($idArray){
+        $districts = DB::table('districts')->whereIn('id',$idArray)->get();
+        $dict = [];
+        foreach ($districts as $district) {
+            $dict[$district->id] = $district;
+        }
+        return $dict;
+    }
+
+    public static function getRewardDict(){
+        $rewards = DB::table('reward_level')->get();
+        $dict = [];
+        foreach ($rewards as $reward) {
+            $dict[$reward->id] = $reward;
+        }
+        return $dict;
+    }
+
 
 
 }

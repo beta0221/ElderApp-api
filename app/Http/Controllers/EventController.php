@@ -6,7 +6,6 @@ use App\Event;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
-use App\Product;
 use App\User;
 use App\Category;
 use App\FreqEventUser;
@@ -21,7 +20,7 @@ class EventController extends Controller
     public function __construct()
     {
         $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
-        $this->middleware(['JWT'],['only'=>['myEventList']]);
+        $this->middleware(['JWT'],['only'=>['myEventList','eventDetail']]);
     }
 
     /**
@@ -251,12 +250,18 @@ class EventController extends Controller
     public function eventDetail($slug){
         
         $event = Event::where('slug',$slug)->firstOrFail();
-        $rewardDict = Product::getRewardDict();
+        $rewardDict = Event::getRewardDict();
+
+        $user = auth()->user();
+        $isParticipated = $event->isParticipated($user->id);
 
         $event = new EventResource($event);
         $event = $event->configureDict($rewardDict);
 
-        return response($event);
+        return response([
+            'event'=>$event,
+            'isParticipated'=>$isParticipated
+        ]);
 
     }
 
@@ -444,8 +449,8 @@ class EventController extends Controller
         }
 
         $catDict = Category::getCatDict();
-        $rewardDict = Product::getRewardDict();
-        $districtDict = Product::getDistrictDict($districtIdArray);
+        $rewardDict = Event::getRewardDict();
+        $districtDict = Event::getDistrictDict($districtIdArray);
         
         $eventList = new EventCollection($eventList);
         $eventList = $eventList->configureDict($catDict,$rewardDict,$districtDict);
