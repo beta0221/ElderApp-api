@@ -11,6 +11,7 @@ use App\User;
 use App\Category;
 use App\FreqEventUser;
 use App\Http\Resources\EventCollection;
+use App\Http\Resources\EventResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * 後台用Display a listing of the resource. 
      *
      * @return \Illuminate\Http\Response
      */
@@ -122,7 +123,7 @@ class EventController extends Controller
     }
  
     /**
-     * Store a newly created resource in storage.
+     * 後台用Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -232,7 +233,7 @@ class EventController extends Controller
 
 
     /**
-     * Display the specified resource.
+     * 後台用 Display the specified resource.
      *
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
@@ -252,6 +253,21 @@ class EventController extends Controller
                 'm'=>'Event not found!'
             ]);
         }
+    }
+
+    /**
+     * App Users 產品內頁 api v2
+     */
+    public function eventDetail($slug){
+        
+        $event = Event::where('slug',$slug)->firstOrFail();
+        $rewardDict = Product::getRewardDict();
+
+        $event = new EventResource($event);
+        $event = $event->configureDict($rewardDict);
+
+        return response($event);
+
     }
 
   

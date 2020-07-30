@@ -70,6 +70,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //App Users
     Route::get('getEvents','EventController@getEvents');//舊的 版本更新後移除
     Route::get('event/eventList','EventController@eventList'); //v2
+    Route::get('event/eventDetail/{slug}','EventController@eventDetail'); //v2
 
     Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later //舊的 版本更新後移除
     Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later //舊的 版本更新後移除
