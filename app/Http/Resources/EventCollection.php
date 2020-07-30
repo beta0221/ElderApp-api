@@ -46,6 +46,7 @@ class EventCollection extends ResourceCollection
 
             return [
                 'name'=>$resource->title,
+                'slug'=>$resource->slug,
                 'type'=>$resource->event_type,
                 'reward'=>$reward,
                 'cat'=>$cat,
