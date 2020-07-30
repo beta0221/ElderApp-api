@@ -72,9 +72,12 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('event/eventList','EventController@eventList'); //v2
     Route::get('event/eventDetail/{slug}','EventController@eventDetail'); //v2
 
+    Route::post('myevent','EventController@MyEvent');//should be auth later //舊的 版本更新後移除
+    Route::get('event/myEventList','EventController@myEventList'); //v2
+
     Route::post('joinevent/{slug}','EventController@JoinEvent');//should be auth later //舊的 版本更新後移除
     Route::post('cancelevent/{slug}','EventController@CancelEVent');//should be auth later //舊的 版本更新後移除
-    Route::post('myevent','EventController@MyEvent');//should be auth later //舊的 版本更新後移除
+    
     Route::get('district','EventController@GetDistrict');
     Route::get('which_category_event/{name}','EventController@which_category_event');
     Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later //舊的 版本更新後移除

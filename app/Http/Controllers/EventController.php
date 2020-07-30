@@ -21,6 +21,7 @@ class EventController extends Controller
     public function __construct()
     {
         $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
+        $this->middleware(['JWT'],['only'=>['myEventList']]);
     }
 
     /**
@@ -99,18 +100,7 @@ class EventController extends Controller
         $total = Event::where('public',1)->count();
         $eventList = Event::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
-        $districtIdArray = [];
-        foreach ($eventList as $event) {
-            $districtIdArray[] = $event->district_id;
-        }
-
-        $catDict = Category::getCatDict();
-        $rewardDict = Product::getRewardDict();
-        $districtDict = Product::getDistrictDict($districtIdArray);
-        
-        $eventList = new EventCollection($eventList);
-        $eventList = $eventList->configureDict($catDict,$rewardDict,$districtDict);
-
+        $eventList = $this->convertEventColleection($eventList);
 
         $hasNextPage = true;
         if(($skip + $rows) >= $total){ $hasNextPage = false; }
@@ -398,6 +388,9 @@ class EventController extends Controller
         return response($reward_level);
     }
 
+    /**
+     * App users 舊api
+     */
     public function MyEvent(Request $request)
     {
         $user = User::where('id',$request->id)->first();
@@ -409,9 +402,58 @@ class EventController extends Controller
                 's'=>0,
                 'm'=>'User not found!'
             ]);
-        }
-        
+        }   
     }
+
+    /**
+     * App User 我參加的活動 v2
+     */
+    public function myEventList(Request $request){
+        
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $user = auth()->user();
+        $eventIdArray = $user->getUserEventsIdArray();
+        
+        $total = Event::whereIn('id',$eventIdArray)->where('public',1)->count();
+        $eventList = Event::whereIn('id',$eventIdArray)->where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        
+        $eventList = $this->convertEventColleection($eventList);
+
+        $hasNextPage = true;
+        if(($skip + $rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'eventList'=>$eventList,
+            'hasNextPage'=>$hasNextPage
+        ]);
+    }
+
+    /**
+     * eventList 轉型 EventCollection
+     * @param array $eventList
+     * @return array EventCollection
+     */
+    private function convertEventColleection($eventList){
+        $districtIdArray = [];
+        foreach ($eventList as $event) {
+            $districtIdArray[] = $event->district_id;
+        }
+
+        $catDict = Category::getCatDict();
+        $rewardDict = Product::getRewardDict();
+        $districtDict = Product::getDistrictDict($districtIdArray);
+        
+        $eventList = new EventCollection($eventList);
+        $eventList = $eventList->configureDict($catDict,$rewardDict,$districtDict);
+
+        return $eventList;
+    }
+
+
     public function EventGuests($slug){
         $event=Event::where('slug',$slug)->first();
         

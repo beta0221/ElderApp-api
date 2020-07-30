@@ -368,6 +368,15 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\Event','event_users','user_id','event_id');
     }
 
+    /**
+     * 使用者參加的活動Id Array
+     * @return array Event id array
+     */
+    public function getUserEventsIdArray(){
+        $eventIdArray = DB::table('event_users')->where('user_id',$this->id)->pluck('event_id');
+        return $eventIdArray;
+    }
+
     public function becomeRole($role_name){
         if(!$role = DB::table('roles')->where('name',$role_name)->first()){
             return false;
