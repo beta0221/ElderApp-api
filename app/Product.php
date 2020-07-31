@@ -58,6 +58,11 @@ class Product extends Model
         return false;
     }
 
+    /** 使用者已經換取的商品總數*/
+    public function hasExchangedSumBy($user_id){
+        return OrderDetail::where('product_id',$this->id)->where('user_id',$user_id)->count();
+    }
+
     /** abandoned */
     public static function getProductDictionary_abandoned(){
 

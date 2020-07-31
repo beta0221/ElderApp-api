@@ -66,14 +66,19 @@
           ></v-select>
         </v-col>
 
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-text-field label="所需樂幣" placeholder="所需樂幣" solo v-model="form.price"></v-text-field>
-        </v-col>
-
-        <v-col>
-          <v-text-field label="直購價" placeholder="直購價" solo v-model="form.pay_cash_price"></v-text-field>
-          <v-text-field label="直購價所需樂幣" placeholder="直購價所需樂幣" solo v-model="form.pay_cash_point"></v-text-field>
-        </v-col>
+        
+        <label>每人最多兌換(非必填)</label>
+        <v-text-field label="每人最多兌換(非必填)" placeholder="每人最多兌換(非必填)" solo v-model="form.exchange_max"></v-text-field>
+        
+        
+        <label>兌換所需樂幣</label>
+        <v-text-field label="兌換所需樂幣" placeholder="兌換所需樂幣" solo v-model="form.price"></v-text-field>
+        
+        <label>直購價</label>
+        <v-text-field label="直購價" placeholder="直購價" solo v-model="form.pay_cash_price"></v-text-field>
+        <label>直購價所需樂幣</label>
+        <v-text-field label="直購價所需樂幣" placeholder="直購價所需樂幣" solo v-model="form.pay_cash_point"></v-text-field>
+        
 
         <v-col cols="12" sm="6" md="3">
           <markdown-editor v-model="form.info"></markdown-editor>
@@ -115,6 +120,8 @@ export default {
         price: null,
         pay_cash_price:null,
         pay_cash_point:null,
+        // cash:null,
+        exchange_max:null,
         info:"",
       },
       file:'',
@@ -180,6 +187,8 @@ export default {
             this.form.price = res.data.product.price;
             this.form.pay_cash_price = res.data.product.pay_cash_price;
             this.form.pay_cash_point = res.data.product.pay_cash_point;
+            // this.form.cash = res.data.product.cash;
+            this.form.exchange_max = res.data.product.exchange_max;
             this.form.info = res.data.product.info;
             if(res.data.product.imgUrl){ this.product_image = res.data.product.imgUrl; }
             if(res.data.location){

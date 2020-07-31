@@ -3531,6 +3531,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["product_slug"],
   watch: {
@@ -3557,6 +3562,8 @@ __webpack_require__.r(__webpack_exports__);
         price: null,
         pay_cash_price: null,
         pay_cash_point: null,
+        // cash:null,
+        exchange_max: null,
         info: ""
       },
       file: '',
@@ -3619,7 +3626,9 @@ __webpack_require__.r(__webpack_exports__);
           _this3.form.product_category_id = res.data.product.product_category_id;
           _this3.form.price = res.data.product.price;
           _this3.form.pay_cash_price = res.data.product.pay_cash_price;
-          _this3.form.pay_cash_point = res.data.product.pay_cash_point;
+          _this3.form.pay_cash_point = res.data.product.pay_cash_point; // this.form.cash = res.data.product.cash;
+
+          _this3.form.exchange_max = res.data.product.exchange_max;
           _this3.form.info = res.data.product.info;
 
           if (res.data.product.imgUrl) {
@@ -62143,59 +62152,69 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c(
-                "v-col",
-                { staticClass: "d-flex", attrs: { cols: "12", sm: "6" } },
-                [
-                  _c("v-text-field", {
-                    attrs: {
-                      label: "所需樂幣",
-                      placeholder: "所需樂幣",
-                      solo: ""
-                    },
-                    model: {
-                      value: _vm.form.price,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "price", $$v)
-                      },
-                      expression: "form.price"
-                    }
-                  })
-                ],
-                1
-              ),
+              _c("label", [_vm._v("每人最多兌換(非必填)")]),
               _vm._v(" "),
-              _c(
-                "v-col",
-                [
-                  _c("v-text-field", {
-                    attrs: { label: "直購價", placeholder: "直購價", solo: "" },
-                    model: {
-                      value: _vm.form.pay_cash_price,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "pay_cash_price", $$v)
-                      },
-                      expression: "form.pay_cash_price"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("v-text-field", {
-                    attrs: {
-                      label: "直購價所需樂幣",
-                      placeholder: "直購價所需樂幣",
-                      solo: ""
-                    },
-                    model: {
-                      value: _vm.form.pay_cash_point,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "pay_cash_point", $$v)
-                      },
-                      expression: "form.pay_cash_point"
-                    }
-                  })
-                ],
-                1
-              ),
+              _c("v-text-field", {
+                attrs: {
+                  label: "每人最多兌換(非必填)",
+                  placeholder: "每人最多兌換(非必填)",
+                  solo: ""
+                },
+                model: {
+                  value: _vm.form.exchange_max,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "exchange_max", $$v)
+                  },
+                  expression: "form.exchange_max"
+                }
+              }),
+              _vm._v(" "),
+              _c("label", [_vm._v("兌換所需樂幣")]),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: {
+                  label: "兌換所需樂幣",
+                  placeholder: "兌換所需樂幣",
+                  solo: ""
+                },
+                model: {
+                  value: _vm.form.price,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "price", $$v)
+                  },
+                  expression: "form.price"
+                }
+              }),
+              _vm._v(" "),
+              _c("label", [_vm._v("直購價")]),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: { label: "直購價", placeholder: "直購價", solo: "" },
+                model: {
+                  value: _vm.form.pay_cash_price,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "pay_cash_price", $$v)
+                  },
+                  expression: "form.pay_cash_price"
+                }
+              }),
+              _vm._v(" "),
+              _c("label", [_vm._v("直購價所需樂幣")]),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: {
+                  label: "直購價所需樂幣",
+                  placeholder: "直購價所需樂幣",
+                  solo: ""
+                },
+                model: {
+                  value: _vm.form.pay_cash_point,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "pay_cash_point", $$v)
+                  },
+                  expression: "form.pay_cash_point"
+                }
+              }),
               _vm._v(" "),
               _c(
                 "v-col",

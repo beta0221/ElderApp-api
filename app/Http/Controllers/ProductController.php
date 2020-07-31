@@ -78,6 +78,7 @@ class ProductController extends Controller
             'product_category_id'=>'required',
             'price'=>'required|min:1|integer',
             'file'=>'sometimes|nullable|image',
+            'exchange_max'=>'integer'
         ]);
         
         
@@ -300,6 +301,13 @@ class ProductController extends Controller
         $user = Auth::user();
         if($user->wallet < $product->price){
             return response('樂必餘額不足，無法兌換',400);
+        }
+
+        if($exchange_max = $product->exchange_max){
+            $hasExchangedSum = $product->hasExchangedSumBy($user->id);
+            if($exchange_max <= $hasExchangedSum){
+                return response("已達此商品兌換上限:$exchange_max",400);
+            }
         }
 
         //檢查產品庫存 if 足夠 => 扣庫存
