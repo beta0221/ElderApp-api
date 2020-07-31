@@ -181,7 +181,7 @@ class OrderDetailController extends Controller
     public function productOrderList(Request $request,$product_id){
         
         $page = ($request->page)?$request->page:1;
-        $rows = 10;
+        $rows = 20;
         $skip = ($page - 1) * $rows;
         $ascOrdesc = 'desc';
 
