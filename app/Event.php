@@ -66,7 +66,7 @@ class Event extends Model
     }
 
     public function arrive($user_id){
-        DB::table('event_users')->where('event_id',$this->id)->update([
+        DB::table('event_users')->where('event_id',$this->id)->where('user_id',$user_id)->update([
             'arrive'=>true
         ]);
     }
