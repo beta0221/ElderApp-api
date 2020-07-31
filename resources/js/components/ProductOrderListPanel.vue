@@ -39,6 +39,7 @@ export default {
     EventBus.$on("showProductOrderListPanel", product => {
         this.dialog = true;
         this.product = product;
+        this.pagination.page = 1;
         this.name = product.name;
         this.getProductOrderList();
     });

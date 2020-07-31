@@ -3755,6 +3755,7 @@ __webpack_require__.r(__webpack_exports__);
     EventBus.$on("showProductOrderListPanel", function (product) {
       _this.dialog = true;
       _this.product = product;
+      _this.pagination.page = 1;
       _this.name = product.name;
 
       _this.getProductOrderList();
@@ -4039,6 +4040,7 @@ __webpack_require__.r(__webpack_exports__);
       _this.user = user;
       _this.amount = null;
       _this.event = null;
+      _this.pagination.page = 1;
 
       _this.getTransactionHistory();
     });

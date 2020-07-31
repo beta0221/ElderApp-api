@@ -51,6 +51,7 @@ export default {
       this.user = user;
       this.amount=null;
       this.event=null;
+      this.pagination.page = 1;
       this.getTransactionHistory();
     });
   },
