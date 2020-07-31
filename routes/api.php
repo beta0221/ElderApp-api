@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\EventController;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------

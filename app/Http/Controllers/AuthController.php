@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
+
+    const iOSVer_requirement = 10102;
+    const androidVer_requirement = 0;
+    const iOS_store_url = 'https://apps.apple.com/tw/app/%E9%8A%80%E9%AB%AE%E5%AD%B8%E9%99%A2/id1485979712';
+    const android_store_url = '';
+
     /**
      * Create a new AuthController instance.
      *
@@ -27,6 +33,13 @@ class AuthController extends Controller
         ]]);
     }
     
+
+    private function pleaseUpdateResponse(){
+        return response([
+            'ios_update_url'=>static::iOS_store_url,
+            'android_update_url'=>static::android_store_url,
+        ]);
+    }
     /**
      * Get a JWT via given credentials.
      *
@@ -34,6 +47,17 @@ class AuthController extends Controller
      */
     public function login()
     {
+        if($iOSVer = request('iOSVer')){
+            if(static::iOSVer_requirement > (int)$iOSVer){
+                return $this->pleaseUpdateResponse();
+            }
+        }
+        if($androidVer = request('androidVer')){
+            if(static::androidVer_requirement > (int)$androidVer){
+                return $this->pleaseUpdateResponse();
+            }
+        }
+
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
