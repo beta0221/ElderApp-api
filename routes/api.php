@@ -126,6 +126,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //訂單
     Route::get('/my-order-list','OrderDetailController@myOrderList');//舊的 版本更新後移除
     Route::get('order/myOrderList','OrderDetailController@myOrderListV2');
+    //後台
+    Route::get('order/productOrderList/{product_id}','OrderDetailController@productOrderList');
 
     //後台
     Route::group(['prefix'=>'order'],function(){

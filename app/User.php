@@ -330,6 +330,15 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public static function getNameDictByIdArray($userIdArray){
+        $userList = User::select('id','name')->whereIn('id',$userIdArray)->get();
+        $dict = [];
+        foreach ($userList as $user) {
+            $dict[$user->id] = $user->name;
+        }
+        return $dict;
+    }
+
 
 
 

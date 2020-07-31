@@ -1,6 +1,8 @@
 <template>
   <div>
 
+    <product-order-list-panel></product-order-list-panel>
+
     <div>
     
       <router-link class="white--text" to="/productForm" style="text-decoration:none;">
@@ -39,6 +41,7 @@
           <td>{{props.item.price}}</td>
           <td>
               <v-btn color="info" @click="editProduct(props.item.slug)">編輯</v-btn>
+              <v-btn color="" @click="showProductOrderListPanel(props.item)">兌換紀錄</v-btn>
           </td>
           
         </template>
@@ -48,7 +51,11 @@
 </template>
 
 <script>
+import ProductOrderListPanel from "./ProductOrderListPanel";
 export default {
+    components:{
+      ProductOrderListPanel,
+    },
     data(){
         return{
           product_category:{},
@@ -82,6 +89,9 @@ export default {
       this.getCategory();
     },
     methods:{
+      showProductOrderListPanel(product){
+        EventBus.$emit("showProductOrderListPanel",product);
+      },
       getCategory() {
       axios
         .get(`/api/product-category/`)

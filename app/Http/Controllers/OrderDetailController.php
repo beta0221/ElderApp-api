@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\MyOrderCollection;
+use App\Http\Resources\ProductOrderCollection;
 use App\OrderDetail;
 use App\Product;
 use App\Location;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,6 +16,7 @@ class OrderDetailController extends Controller
 
     public function __construct()
     {
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['productOrderList']]);
         $this->middleware('JWT', ['only' => ['myOrderListV2']]);
     }
 
@@ -168,6 +171,39 @@ class OrderDetailController extends Controller
         return response([
             'orderList'=>$orderList,
             'hasNextPage'=>$hasNextPage
+        ]);
+
+    }
+
+    /**
+     * 某個商品的兌換紀錄
+     */
+    public function productOrderList(Request $request,$product_id){
+        
+        $page = ($request->page)?$request->page:1;
+        $rows = 10;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
+        $total = OrderDetail::where('product_id',$product_id)->count();
+        $orderList = OrderDetail::where('product_id',$product_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+
+        $userIdArray = [];
+        $locationIdArray = [];
+        foreach ($orderList as $order) {
+            $userIdArray[] = $order->user_id;
+            $locationIdArray[] = $order->location_id;
+        }
+
+        $locationDict = Location::getLocationDict($locationIdArray);
+        $userNameDict = User::getNameDictByIdArray($userIdArray);
+
+        $orderList = new ProductOrderCollection($orderList);
+        $orderList = $orderList->configureDict($locationDict,$userNameDict);
+
+        return response([
+            'total'=>$total,
+            'orderList'=>$orderList
         ]);
 
     }
