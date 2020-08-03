@@ -16,7 +16,7 @@ class DistrictsTableSeeder extends Seeder
 
         foreach ($districtList as $district) {
             DB::table('districts')->insert([
-                'group'=>'district',
+                'association_id'=>2,
                 'name'=>$district
             ]);
         }

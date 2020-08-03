@@ -17,6 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DistrictsTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(RewardLevelTableSeeder::class);
-        
+        $this->call(AssociationSeeder::class);
     }
 }

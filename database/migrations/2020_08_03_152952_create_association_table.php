@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDistrictTable extends Migration
+class CreateAssociationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateDistrictTable extends Migration
      */
     public function up()
     {
-        Schema::create('districts', function (Blueprint $table) {
+        Schema::create('association', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('association_id')->nullable();
             $table->string('name');
         });
     }
@@ -27,6 +26,6 @@ class CreateDistrictTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('districts');
+        Schema::dropIfExists('association');
     }
 }
