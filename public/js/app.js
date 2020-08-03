@@ -4324,6 +4324,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -63064,15 +63066,17 @@ var render = function() {
                     ]
                   ),
                   _vm._v(" "),
-                  _c("td", {
-                    domProps: {
-                      innerHTML: _vm._s(
-                        props.item.target_id == 0
-                          ? "系統"
-                          : props.item.target_id
-                      )
-                    }
-                  }),
+                  _c("td", [
+                    _vm._v(
+                      "\n                  " +
+                        _vm._s(
+                          _vm.nameDict[props.item.target_id]
+                            ? _vm.nameDict[props.item.target_id]
+                            : "系統"
+                        ) +
+                        "\n              "
+                    )
+                  ]),
                   _vm._v(" "),
                   _c("td", [
                     _c("span", [_vm._v(_vm._s(props.item.created_at))])

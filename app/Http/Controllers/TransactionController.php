@@ -230,7 +230,12 @@ class TransactionController extends Controller
         foreach ($tranList as $tran) { 
             if(!in_array($tran->user_id,$user_id_array)){
                 $user_id_array[] = $tran->user_id;
-            }    
+            }
+            if($tran->target_id != 0){
+                if(!in_array($tran->target_id,$user_id_array)){
+                    $user_id_array[] = $tran->target_id;
+                }
+            }
         }
 
         $users = User::whereIn('id',$user_id_array)->get();

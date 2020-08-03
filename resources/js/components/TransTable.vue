@@ -22,7 +22,9 @@
                 <td :class="(props.item.give_take == 1)?'green--text':'red--text'">
                     <span v-html="(props.item.give_take == 1)?'+':'-'"></span><span >{{props.item.amount}}</span>
                 </td>
-                <td v-html="(props.item.target_id == 0)?'系統':props.item.target_id"></td>
+                <td>
+                    {{(nameDict[props.item.target_id])?nameDict[props.item.target_id]:'系統'}}
+                </td>
                 <td>
                     <span>{{props.item.created_at}}</span>
                 </td>
