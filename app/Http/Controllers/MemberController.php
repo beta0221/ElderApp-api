@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
 use Illuminate\Http\Request;
 use App\User;
 use App\PayDate;
@@ -15,7 +16,19 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['create','welcome','inviterCheck','cacu','store','memberTree','moveMemberPage','moveMember','updateMemberLevel','memberGroupMembers']]);
+        $this->middleware('JWT', ['except' => [
+            'create',
+            'welcome',
+            'inviterCheck',
+            'cacu',
+            'store',
+            'memberTree',
+            'moveMemberPage',
+            'moveMember',
+            'updateMemberLevel',
+            'memberGroupMembers',
+            'getAllAssociation',
+        ]]);
         $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers']]);
     }
 
@@ -71,42 +84,18 @@ class MemberController extends Controller
 
     public function create()
     {
-        return view('member.join');
+        $associationList = Association::all();
+        return view('member.join',[
+            'associationList'=>$associationList,
+        ]);
     }
 
-    //會員資料整理（無用）
-    public function cacu()
-    {
-        if (empty($_GET['from']) || empty($_GET['to'])) {
-            return response('no paremeters');
-        }
-        $from = (int)$_GET['from'];
-        $to = (int)$_GET['to'];
-        try {
-            $users = User::whereBetween('id',[$from,$to])->get();
-            foreach($users as $user){
-                $id = $user->id;
-                $user = User::find($id);
-                while (strlen($id) < 4) {
-                    $id = '0'.$id;
-                }
-                $m = substr($user->created_at,5,2);
-                $id_code = 'H' . substr(date('Y'),-2) . $m . $id . rand(0,9);
-                $user->id_code = $id_code;  
-
-                $user->password = $user->email;
-                $user->save();
-            }
-        } catch (\Throwable $th) {
-            return response($th);
-        }
-        return response('success');
-    }
 
     //註冊新會員
     public function store(Request $request)
     {
         $request->validate([
+            // 'association' => 'required|integer',
             'email' => 'required|unique:users',
             'password' => 'required',
             'name' => 'required',
@@ -127,19 +116,17 @@ class MemberController extends Controller
             ]);    
         }
         
-        $request->merge(['pay_status'=>1,]);
         $id_code = $this->generateIdCode();
         $request->merge([
-            'id_code'=>$id_code
+            'pay_status'=> 1,
+            'id_code'=> $id_code,
         ]);
         
         try {
             $user = User::create($request->all());
-            
         } catch (\Throwable $th) {
             return response($th);
         }
-
 
         if($request->pay_method == 1){
             try {
@@ -156,7 +143,6 @@ class MemberController extends Controller
                         'lv_5'=>$row->lv_5,
                     ]);
                 }
-                
             } catch (\Throwable $th) {
                 return response($th);
             }
@@ -789,6 +775,10 @@ class MemberController extends Controller
      */
     public function welcome(){
         return view('member.welcome');
+    }
+
+    public function getAllAssociation(){
+        return response(Association::all());
     }
     
 }

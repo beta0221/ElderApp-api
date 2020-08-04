@@ -38,7 +38,6 @@ Route::get('/memberGroupMembers','MemberController@memberGroupMembers');
 Route::post('/removeMemberFromGroup','MemberController@removeMemberFromGroup');
 Route::get('/moveMemberPage/{user_id}','MemberController@moveMemberPage');
 Route::post('/moveMember/{user_id}','MemberController@moveMember');
-// Route::get('/member/cacu','MemberController@cacu');
 Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_generate');
 
 //商品兌換據點網頁

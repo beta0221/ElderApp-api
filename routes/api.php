@@ -79,6 +79,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('district','EventController@GetDistrict');
     Route::get('which_category_event/{name}','EventController@which_category_event');
     Route::post('drawEventReward/{slug}','EventController@drawEventReward');//should be auth later //舊的 版本更新後移除
+    Route::post('drawEventRewardV2/{slug}','EventController@drawEventRewardV2');
     Route::get('isUserArrive/{slug}','EventController@isUserArrive');
     Route::post('arriveEvent/{slug}','EventController@arriveEvent');
     //後台

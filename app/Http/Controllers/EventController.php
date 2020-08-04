@@ -20,7 +20,7 @@ class EventController extends Controller
     public function __construct()
     {
         $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
-        $this->middleware(['JWT'],['only'=>['myEventList','eventDetail']]);
+        $this->middleware(['JWT'],['only'=>['myEventList','eventDetail','drawEventRewardV2']]);
     }
 
     /**
@@ -782,6 +782,64 @@ class EventController extends Controller
             's'=>1,'m'=>'您已成功領取活動參與獎勵。'
         ]);
 
+    }
+
+
+    public function drawEventRewardV2(Request $request,$slug){
+        
+        $user = auth()->user();
+
+        if(!$event = Event::where('slug',$slug)->first()){
+            return response()->json([
+                's'=>0,'m'=>'Event not found!'
+            ]);
+        }
+
+        if(!$event->isParticipated($user->id)){
+            return response()->json([
+                's'=>0,
+                'm'=>'非常抱歉，您不在此活動的參加人員名單中'
+            ]);
+        }
+
+        switch ($event->event_type) {
+            case Event::TYPE_FREQUENTLY:
+                if(!$current_day = $event->current_day){
+                    return response()->json([
+                        's'=>0,'m'=>'活動尚未開始。'
+                    ]);
+                }
+                if(FreqEventUser::isRewardDrawed($user->id,$event->id,$current_day)){
+                    return response()->json([
+                        's'=>0,'m'=>'獎勵已領取。'
+                    ]);
+                }
+                FreqEventUser::drawReward($user->id,$current_day,$event->id);
+                break;
+            case Event::TYPE_ONETIME;
+                if($event->isRewardDrawed($user->id)){
+                    return response()->json([
+                        's'=>0,'m'=>'獎勵已領取。'
+                    ]);
+                }
+                break;
+            default:
+                break;
+        }
+
+        $rewardAmount = $event->rewardAmount();
+        Log::channel('translog')->info('user '.$user->id.' get money '.$rewardAmount);
+        try {
+            $event->drawReward($user->id);//註記已領取
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);//使用者加錢
+        } catch (\Throwable $th) {
+            return response($th);
+        }
+
+        Log::channel('eventlog')->info('user '.$user->id.' draw event '.$event->id.' reward success');
+        return response()->json([
+            's'=>1,'m'=>'您已成功領取活動參與獎勵。'
+        ]);
     }
 
 

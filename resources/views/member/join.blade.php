@@ -51,6 +51,18 @@
 
             <form id="validate_form" action='/member/join' method="POST">
                 {{csrf_field()}}
+
+                  {{-- <div class="form-group d-none"> --}}
+                    {{-- <label for="association">欲加入組織</label> --}}
+                    {{-- <select class="form-control" id="association" name="association" required="true" > --}}
+                      {{-- <option value="1">桃園銀髮協會</option> --}}
+                      {{-- <option value="">請選擇</option>
+                      @foreach ($associationList as $ass)
+                        <option value="{{$ass->id}}">{{$ass->name}}</option>
+                      @endforeach --}}
+                    {{-- </select> --}}
+                  {{-- </div> --}}
+
                   <div class="form-group">
                     <label for="phone">會員帳號(建議使用手機或Email)</label>
                   <input type="text" class="form-control" id="email" name="email" placeholder="會員帳號(建議使用手機或Email)" required="true" value="{{old('email')}}">
