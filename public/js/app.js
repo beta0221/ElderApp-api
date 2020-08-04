@@ -4527,6 +4527,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
@@ -63521,49 +63523,64 @@ var render = function() {
                     {
                       name: "show",
                       rawName: "v-show",
-                      value: _vm.form.event_type == 1 ? false : true,
-                      expression: "(form.event_type==1)?false:true"
+                      value: !_vm.edit_mode,
+                      expression: "!edit_mode"
                     }
                   ]
                 },
                 [
                   _c(
-                    "v-btn",
+                    "div",
                     {
-                      on: {
-                        click: function($event) {
-                          _vm.form.days--
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.form.event_type == 1 ? false : true,
+                          expression: "(form.event_type==1)?false:true"
                         }
-                      }
+                      ]
                     },
-                    [_vm._v("-")]
-                  ),
-                  _vm._v(" "),
-                  _c("v-text-field", {
-                    staticClass: "d-inline-block",
-                    attrs: { label: "開課天數" },
-                    model: {
-                      value: _vm.form.days,
-                      callback: function($$v) {
-                        _vm.$set(_vm.form, "days", $$v)
-                      },
-                      expression: "form.days"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      on: {
-                        click: function($event) {
-                          _vm.form.days++
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.form.days--
+                            }
+                          }
+                        },
+                        [_vm._v("-")]
+                      ),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        staticClass: "d-inline-block",
+                        attrs: { label: "開課天數" },
+                        model: {
+                          value: _vm.form.days,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "days", $$v)
+                          },
+                          expression: "form.days"
                         }
-                      }
-                    },
-                    [_vm._v("+")]
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.form.days++
+                            }
+                          }
+                        },
+                        [_vm._v("+")]
+                      )
+                    ],
+                    1
                   )
-                ],
-                1
+                ]
               ),
               _vm._v(" "),
               _c(

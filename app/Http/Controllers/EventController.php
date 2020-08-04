@@ -292,11 +292,7 @@ class EventController extends Controller
 
         switch ($request->event_type) {
             case Event::TYPE_FREQUENTLY:
-                if(!isset($request->days) || $request->days < Event::MIN_DAYS){
-                    return response()->json([
-                        's'=>0,'m'=>'天數不可為空，且必須大於8天。'
-                    ]);
-                }
+                unset($request['days']);
                 unset($request['deadline']);
                 unset($request['dateTime']);
                 unset($request['dateTime_2']);

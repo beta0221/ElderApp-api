@@ -80,10 +80,12 @@
           </v-col>
         </div>
 
-        <div v-show="(form.event_type==1)?false:true">
-          <v-btn @click="form.days--">-</v-btn>
-            <v-text-field class="d-inline-block" label="開課天數" v-model="form.days"></v-text-field>
-          <v-btn @click="form.days++">+</v-btn>
+        <div v-show="!edit_mode">
+          <div v-show="(form.event_type==1)?false:true">
+            <v-btn @click="form.days--">-</v-btn>
+              <v-text-field class="d-inline-block" label="開課天數" v-model="form.days"></v-text-field>
+            <v-btn @click="form.days++">+</v-btn>
+          </div>
         </div>
 
         <v-col cols="12" sm="6" md="3">
