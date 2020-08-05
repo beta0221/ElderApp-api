@@ -197,7 +197,7 @@ class AuthController extends Controller
             'name'=>$user->name,
             'wallet'=>$user->wallet,
             'rank'=>$user->rank,
-            'img'=>$user->img,
+            'org_rank'=>$user->org_rank,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
         ];
