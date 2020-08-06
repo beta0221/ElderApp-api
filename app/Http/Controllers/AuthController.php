@@ -219,24 +219,27 @@ class AuthController extends Controller
     public function uploadImage(Request $request)
     {
         
+        $user = auth()->user();
         //handle image
         $image = $request->image;  // your base64 encoded
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
+        $image = base64_decode($image);
+
         $imageName = time().'.'.'png';
-        $path = 'images/users/'.$request->id;
+        $ftpPath = "/users/$user->id_code/";
 
-
-        
-        if(!Storage::exists($path)){
-            Storage::makeDirectory($path);   
-        }else{
-            \File::cleanDirectory($path);
+        if(Storage::disk('ftp')->exists($ftpPath)){
+            $result = Storage::disk('ftp')->deleteDirectory($ftpPath);
+            if(!$result){
+                return response('error',500);
+            }
         }
 
-        \File::put($path.'/'.$imageName, base64_decode($image));
+        if(!Storage::disk('ftp')->put($ftpPath . $imageName,$image)){
+            return response('error',500);
+        }        
         
-        $user = User::find($request->id);
         $user->img = $imageName;
         $user->save();
 

@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(['JWT','admin'],[
+            'only'=>[
+                'locationList',
+            ]
+        ]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -119,4 +130,18 @@ class LocationController extends Controller
     {
         //
     }
+
+    public function locationList(Request $request){
+        
+        $page = ($request->page)?$request->page:1;
+        $rows = ($request->rowsPerPage)?$request->rowsPerPage:15;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = ($request->descending == null || $request->descending == 'false')?'desc':'asc';
+        $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+
+    }
+
+
+
+
 }

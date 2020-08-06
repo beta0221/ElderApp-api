@@ -519,7 +519,12 @@ class MemberController extends Controller
      * App 的 AccountPage OnAppearing 請求
      */
     public function myAccount(){
-        return response()->json(Auth::user());
+        $user = auth()->user();
+        if($user->img){
+            $img = config('app.static_host') . "/users/$user->id_code/$user->img";
+            $user->img = $img;
+        }
+        return response()->json($user);
     }
 
     /**
