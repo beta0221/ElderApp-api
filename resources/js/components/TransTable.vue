@@ -67,11 +67,11 @@ export default {
     },
     created(){
         User.authOnly();
-        this.getTrans();
+        // this.getTrans();
     },
     methods:{
         getTrans(){
-            loading: true,
+            this.loading = true;
             axios.get('/api/transaction/list', {
                 params: {
                     page: this.pagination.page,

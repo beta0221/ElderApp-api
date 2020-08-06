@@ -13,7 +13,7 @@ import ProductDetailForm from '../components/ProductDetailForm'
 import OrderTable from '../components/OrderTable'
 import TransTable from '../components/TransTable'
 import SendMoneyTable from '../components/SendMoneyTable'
-
+import LocationTable from '../components/LocationTable'
 
 const routes = [
     {path:'/member', component: MemberTable},
@@ -27,6 +27,7 @@ const routes = [
     {path:'/order', component: OrderTable},
     {path:'/transaction', component: TransTable},
     {path:'/sendMoney', component: SendMoneyTable},
+    {path:'/location', component: LocationTable},
 ]
 
 

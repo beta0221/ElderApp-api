@@ -139,6 +139,14 @@ class LocationController extends Controller
         $ascOrdesc = ($request->descending == null || $request->descending == 'false')?'desc':'asc';
         $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
+        $total = Location::count();
+        $locationList = Location::skip($skip)->take($rows)->orderBy($orderBy,$ascOrdesc)->get();
+        
+        return response([
+            'locationList'=>$locationList,
+            'total'=>$total
+        ]);
+
     }
 
 
