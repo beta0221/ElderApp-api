@@ -204,6 +204,10 @@ class ProductController extends Controller
                 return response('系統錯誤',500);
             }
         }
+        
+        if($request->exchange_max == null || $request->exchange_max == 'null'){
+            $request->request->remove('exchange_max');
+        }
 
         try {
             $product->update($request->except('file','select_location','quantity','payCashQuantity'));
