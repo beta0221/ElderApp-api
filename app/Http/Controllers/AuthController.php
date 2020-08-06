@@ -161,7 +161,9 @@ class AuthController extends Controller
      */
     public function logout()
     {
-
+        $user = auth()->user();
+        $user->remove_pushtoken();
+        
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);

@@ -329,6 +329,11 @@ class User extends Authenticatable implements JWTSubject
             ]);
         }
     }
+    public function remove_pushtoken(){
+        if($row = DB::table('user_pushtoken')->where('user_id',$this->id)->first()){
+            $row->delete();
+        }
+    }
 
     public static function getNameDictByIdArray($userIdArray){
         $userList = User::select('id','name')->whereIn('id',$userIdArray)->get();
