@@ -243,10 +243,10 @@ class AuthController extends Controller
         $user->img = $imageName;
         $user->save();
 
-
+        $imgUrl = config('app.static_host') . "/users/$user->id_code/$imageName";
         return response()->json([
-            'status'=>'ok',
-            'image_name'=>$imageName,
+            'status'=>'success',
+            'imgUrl'=>$imgUrl,
         ]); 
     }
 
