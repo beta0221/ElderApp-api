@@ -149,6 +149,40 @@ class LocationController extends Controller
 
     }
 
+    private function validateRequest(Request $request){
+        $this->validate($request,[
+            'name'=>'required',
+            'address'=>'required',
+            'link'=>'required',
+        ]);
+    }
+    public function updateLocation(Request $request){
+        $this->validateRequest($request);
+        
+        $location = Location::findOrFail($request->id);
+        $location->name = $request->name;
+        $location->address = $request->address;
+        $location->link = $request->link;
+        $location->save();
+
+        return response('success');
+    }
+
+    public function insertLocation(Request $request){
+        $this->validateRequest($request);
+        
+        $slug = 'L' . uniqid();
+        $location = new Location();
+        $location->slug = $slug;
+        $location->user_id = auth()->user()->id;
+        $location->name = $request->name;
+        $location->address = $request->address;
+        $location->link = $request->link;
+        $location->save();
+
+        return response('success');
+    }
+
 
 
 

@@ -1,10 +1,10 @@
 <template>
 
   <div>
-
-      <!-- <div>
-        <v-btn color="success">新增據點</v-btn>
-      </div> -->
+      <location-detail-modal v-on:completion="getDataList"></location-detail-modal>
+      <div>
+        <v-btn color="success" @click="addNewLocation">新增據點</v-btn>
+      </div>
 
       <div>
             <v-data-table
@@ -30,9 +30,10 @@
                 <td>
                     {{location+`/order-list/location/${props.item.slug}`}}
                 </td>
-                <!-- <td>
-                    <v-btn color="info" >編輯</v-btn>
-                </td> -->
+                <td>
+                    <v-btn @click="openPanel(props.item.slug)">開啟後台</v-btn>
+                    <v-btn color="info" @click="editLocation(props.item)">編輯</v-btn>
+                </td>
             </template>
 
         </v-data-table>
@@ -42,8 +43,13 @@
 </template>
 
 <script>
+import LocationDetailModal from "./LocationDetailModal";
+
 export default {
-data(){
+    components:{
+        LocationDetailModal
+    },
+    data(){
         return{
             headers: [
                 { text:'#'},
@@ -51,7 +57,7 @@ data(){
                 { text: "地址", value: "address" },
                 { text: "地圖連結", value: "link" },
                 { text: '後台連結'},
-                // { text: '-'}
+                { text: '-'}
             ],
             pagination: { sortBy: "id", descending: true },
             total:0,
@@ -68,9 +74,8 @@ data(){
         }
     },
     created(){
-        this.location = window.location;
+        this.location = window.location.origin;
         User.authOnly();
-        // this.getDataList();
     },
     methods:{
         getDataList(){
@@ -90,6 +95,16 @@ data(){
                 this.loading=false;
             })  
         },
+        editLocation(location){
+            EventBus.$emit('showLocationDetail',location);
+        },
+        addNewLocation(){
+            EventBus.$emit('showLocationDetail');
+        },
+        openPanel(slug){
+            let url = this.location+`/order-list/location/${slug}`
+            window.open(url);
+        }
     }
 }
 </script>

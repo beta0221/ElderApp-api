@@ -117,6 +117,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::apiresource('location','LocationController');
     Route::get('/order-list/location/{location_id}/{product_id}','LocationController@orderList');
     Route::get('/locationList','LocationController@locationList');
+    Route::post('updateLocation','LocationController@updateLocation');
+    Route::post('insertLocation','LocationController@insertLocation');
     
     //App User
     Route::group(['prefix'=>'cart'],function(){

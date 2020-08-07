@@ -13,7 +13,7 @@ import ProductDetailForm from '../components/ProductDetailForm'
 import OrderTable from '../components/OrderTable'
 import TransTable from '../components/TransTable'
 import SendMoneyTable from '../components/SendMoneyTable'
-import LocationTable from '../components/LocationTable'
+import LocationTable from '../components/Location/LocationTable'
 
 const routes = [
     {path:'/member', component: MemberTable},
