@@ -135,9 +135,9 @@ class CartController extends Controller
         $total_point = 0;   //總共要花多少樂幣
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
-            $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
+            // $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
-            $total_point += (int)$point_cash_quantity * $product->pay_cash_point + (int)$point_quantity * $product->price;
+            $total_point += (int)$point_cash_quantity * $product->pay_cash_point;
         }
 
         if($user->wallet < $total_point){
@@ -147,10 +147,10 @@ class CartController extends Controller
 
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
-            $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
+            $cash_quantity = (isset($quantityDict[$product->id]['cash']))?(int)$quantityDict[$product->id]['cash']:0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
-            if(($point_quantity + $point_cash_quantity) <= 0){ continue; }
-            Order::insert_row($user->id,$order_delievery_id,$order_numero,$product,$point_quantity,$point_cash_quantity);
+            if(($cash_quantity + $point_cash_quantity) <= 0){ continue; }
+            Order::insert_row($user->id,$order_delievery_id,$order_numero,$product,$cash_quantity,$point_cash_quantity);
         }
 
         $user->update_wallet_with_trans(User::DECREASE_WALLET,$total_point,"訂單：$order_numero");

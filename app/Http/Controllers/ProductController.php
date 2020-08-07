@@ -78,9 +78,11 @@ class ProductController extends Controller
             'product_category_id'=>'required',
             'price'=>'required|min:1|integer',
             'file'=>'sometimes|nullable|image',
-            'exchange_max'=>'integer'
         ]);
         
+        if($request->exchange_max == null || $request->exchange_max == 'null'){
+            $request->request->remove('exchange_max');
+        }
         
         $slug = 'P'.time();
         $request->merge(['slug'=>$slug]);
@@ -97,7 +99,7 @@ class ProductController extends Controller
 
         $request->merge(['firm_id'=>Auth::user()->id]);
         try {
-            $product = Product::create($request->except('file','select_location','quantity','payCashQuantity'));
+            $product = Product::create($request->except('file','select_location','quantity'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -106,11 +108,11 @@ class ProductController extends Controller
             $location = explode(",",$request->select_location);
             $product->locations()->sync($location);
             $result = true;
-            $payCashQuantity = json_decode($request->payCashQuantity,true);
+            //$payCashQuantity = json_decode($request->payCashQuantity,true);
             if(is_array($quantity = json_decode($request->quantity,true))){
 
                 foreach ($quantity as $key => $value) {
-                    $updated = $product->updateQuantity((int)$key,(int)$value,(int)$payCashQuantity[$key]);
+                    $updated = $product->updateQuantity((int)$key,(int)$value);
                     if($updated != true){
                         $result = false;
                     }
@@ -210,7 +212,7 @@ class ProductController extends Controller
         }
 
         try {
-            $product->update($request->except('file','select_location','quantity','payCashQuantity'));
+            $product->update($request->except('file','select_location','quantity'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -223,11 +225,11 @@ class ProductController extends Controller
         }
 
         $result = true;
-        $payCashQuantity = json_decode($request->payCashQuantity,true);
+        // $payCashQuantity = json_decode($request->payCashQuantity,true);
         if(is_array($quantity = json_decode($request->quantity,true))){
 
             foreach ($quantity as $key => $value) {
-                $updated = $product->updateQuantity((int)$key,(int)$value,(int)$payCashQuantity[$key]);
+                $updated = $product->updateQuantity((int)$key,(int)$value);
                 if($updated != true){
                     $result = false;
                 }

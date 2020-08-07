@@ -27,11 +27,11 @@ class Order extends Model
      * insert 進資料庫
      * * @param Int user_id 
      */
-    public static function insert_row($user_id,$order_delievery_id,$order_numero,Product $product,$point_quantity,$point_cash_quantity){
+    public static function insert_row($user_id,$order_delievery_id,$order_numero,Product $product,$cash_quantity,$point_cash_quantity){
         
-        $total_quantity = (int)$point_quantity + (int)$point_cash_quantity;
-        $total_cash = (int)$point_cash_quantity * $product->pay_cash_price;
-        $total_point = (int)$point_cash_quantity * $product->pay_cash_point + (int)$point_quantity * $product->price;
+        $total_quantity = (int)$cash_quantity + (int)$point_cash_quantity;
+        $total_cash = (int)$point_cash_quantity * $product->pay_cash_price + (int)$cash_quantity * $product->cash;
+        $total_point = (int)$point_cash_quantity * $product->pay_cash_point;
 
         Order::create([
             'user_id'=>$user_id,
@@ -42,11 +42,13 @@ class Order extends Model
             'product_id'=>$product->id,
             'name'=>$product->name,
             'price'=>$product->price,
+            'cash'=>$product->cash,
             'pay_cash_price'=>$product->pay_cash_price,
             'pay_cash_point'=>$product->pay_cash_point,
             //
-            'point_quantity'=>$point_quantity,
+            'point_quantity'=>0,
             'point_cash_quantity'=>$point_cash_quantity,
+            'cash_quantity'=>$cash_quantity,
             'total_quantity'=>$total_quantity,
             //
             'total_point'=>$total_point,

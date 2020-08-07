@@ -3767,6 +3767,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["product_slug"],
   watch: {
@@ -3793,14 +3817,14 @@ __webpack_require__.r(__webpack_exports__);
         price: null,
         pay_cash_price: null,
         pay_cash_point: null,
-        // cash:null,
+        cash: null,
         exchange_max: null,
         info: ""
       },
       file: '',
       location: [],
-      quantityDic: {},
-      payCashQuantityDict: {}
+      quantityDic: {} // payCashQuantityDict:{},
+
     };
   },
   created: function created() {
@@ -3857,8 +3881,8 @@ __webpack_require__.r(__webpack_exports__);
           _this3.form.product_category_id = res.data.product.product_category_id;
           _this3.form.price = res.data.product.price;
           _this3.form.pay_cash_price = res.data.product.pay_cash_price;
-          _this3.form.pay_cash_point = res.data.product.pay_cash_point; // this.form.cash = res.data.product.cash;
-
+          _this3.form.pay_cash_point = res.data.product.pay_cash_point;
+          _this3.form.cash = res.data.product.cash;
           _this3.form.exchange_max = res.data.product.exchange_max;
           _this3.form.info = res.data.product.info;
 
@@ -3870,8 +3894,7 @@ __webpack_require__.r(__webpack_exports__);
             res.data.location.forEach(function (item) {
               _this3.form.select_location.push(item.location_id);
 
-              _this3.quantityDic[item.location_id] = item.quantity;
-              _this3.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
+              _this3.quantityDic[item.location_id] = item.quantity; // this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
             });
           }
         }
@@ -3887,8 +3910,7 @@ __webpack_require__.r(__webpack_exports__);
       Object.keys(this.form).forEach(function (key) {
         return formData.append(key, _this4.form[key]);
       });
-      formData.append('quantity', JSON.stringify(this.quantityDic));
-      formData.append('payCashQuantity', JSON.stringify(this.payCashQuantityDict));
+      formData.append('quantity', JSON.stringify(this.quantityDic)); // formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
 
       if (this.edit_mode) {
         this.updateRequest(formData);
@@ -62585,6 +62607,8 @@ var render = function() {
                 "v-col",
                 { attrs: { cols: "12", sm: "6", md: "3" } },
                 [
+                  _c("span", [_vm._v("產品名稱")]),
+                  _vm._v(" "),
                   _c("v-text-field", {
                     attrs: { label: "Solo", placeholder: "產品名稱", solo: "" },
                     model: {
@@ -62602,6 +62626,8 @@ var render = function() {
               _c(
                 "v-col",
                 [
+                  _c("span", [_vm._v("經銷據點")]),
+                  _vm._v(" "),
                   _c("v-select", {
                     attrs: {
                       items: _vm.location,
@@ -62639,13 +62665,15 @@ var render = function() {
                     key: index
                   },
                   [
-                    _c("span", [_vm._v(_vm._s(l.name) + "：")]),
+                    _c("span", [
+                      _vm._v("據點庫存（" + _vm._s(l.name) + "）：")
+                    ]),
                     _vm._v(" "),
                     _c("v-text-field", {
                       staticClass: "d-inline-block",
                       attrs: {
                         label: "Solo",
-                        placeholder: "樂幣付清庫存數量",
+                        placeholder: "庫存數量",
                         solo: ""
                       },
                       model: {
@@ -62655,27 +62683,13 @@ var render = function() {
                         },
                         expression: "quantityDic[l.id]"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("v-text-field", {
-                      staticClass: "d-inline-block",
-                      attrs: {
-                        label: "Solo",
-                        placeholder: "現金購買庫存數量",
-                        solo: ""
-                      },
-                      model: {
-                        value: _vm.payCashQuantityDict[l.id],
-                        callback: function($$v) {
-                          _vm.$set(_vm.payCashQuantityDict, l.id, $$v)
-                        },
-                        expression: "payCashQuantityDict[l.id]"
-                      }
                     })
                   ],
                   1
                 )
               }),
+              _vm._v(" "),
+              _c("div", [_c("span", [_vm._v("產品類別")])]),
               _vm._v(" "),
               _c(
                 "v-col",
@@ -62718,52 +62732,122 @@ var render = function() {
                 }
               }),
               _vm._v(" "),
-              _c("label", [_vm._v("兌換所需樂幣")]),
+              _c(
+                "v-layout",
+                { attrs: { row: "", wrap: "" } },
+                [
+                  _c(
+                    "v-flex",
+                    { attrs: { md3: "" } },
+                    [
+                      _c("label", [_vm._v("免費兌換（樂幣）")]),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "免費兌換（樂幣）",
+                          placeholder: "免費兌換（樂幣）",
+                          solo: ""
+                        },
+                        model: {
+                          value: _vm.form.price,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "price", $$v)
+                          },
+                          expression: "form.price"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
               _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  label: "兌換所需樂幣",
-                  placeholder: "兌換所需樂幣",
-                  solo: ""
-                },
-                model: {
-                  value: _vm.form.price,
-                  callback: function($$v) {
-                    _vm.$set(_vm.form, "price", $$v)
-                  },
-                  expression: "form.price"
-                }
-              }),
+              _c(
+                "v-layout",
+                { attrs: { row: "", wrap: "" } },
+                [
+                  _c(
+                    "v-flex",
+                    { attrs: { md3: "" } },
+                    [
+                      _c("label", [_vm._v("各半支付（樂幣）")]),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "各半支付（樂幣）",
+                          placeholder: "各半支付（樂幣）",
+                          solo: ""
+                        },
+                        model: {
+                          value: _vm.form.pay_cash_point,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "pay_cash_point", $$v)
+                          },
+                          expression: "form.pay_cash_point"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-flex",
+                    { attrs: { md3: "" } },
+                    [
+                      _c("label", [_vm._v("各半支付（現金）")]),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "各半支付（現金）",
+                          placeholder: "各半支付（現金）",
+                          solo: ""
+                        },
+                        model: {
+                          value: _vm.form.pay_cash_price,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "pay_cash_price", $$v)
+                          },
+                          expression: "form.pay_cash_price"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
               _vm._v(" "),
-              _c("label", [_vm._v("直購價")]),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: { label: "直購價", placeholder: "直購價", solo: "" },
-                model: {
-                  value: _vm.form.pay_cash_price,
-                  callback: function($$v) {
-                    _vm.$set(_vm.form, "pay_cash_price", $$v)
-                  },
-                  expression: "form.pay_cash_price"
-                }
-              }),
-              _vm._v(" "),
-              _c("label", [_vm._v("直購價所需樂幣")]),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  label: "直購價所需樂幣",
-                  placeholder: "直購價所需樂幣",
-                  solo: ""
-                },
-                model: {
-                  value: _vm.form.pay_cash_point,
-                  callback: function($$v) {
-                    _vm.$set(_vm.form, "pay_cash_point", $$v)
-                  },
-                  expression: "form.pay_cash_point"
-                }
-              }),
+              _c(
+                "v-layout",
+                { attrs: { row: "", wrap: "" } },
+                [
+                  _c(
+                    "v-flex",
+                    { attrs: { md3: "" } },
+                    [
+                      _c("label", [_vm._v("現金購買")]),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "現金購買",
+                          placeholder: "現金購買",
+                          solo: ""
+                        },
+                        model: {
+                          value: _vm.form.cash,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "cash", $$v)
+                          },
+                          expression: "form.cash"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
               _vm._v(" "),
               _c(
                 "v-col",
@@ -105804,15 +105888,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************************************************!*\
   !*** ./resources/js/components/Location/LocationTable.vue ***!
   \************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _LocationTable_vue_vue_type_template_id_80ac2e6c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LocationTable.vue?vue&type=template&id=80ac2e6c& */ "./resources/js/components/Location/LocationTable.vue?vue&type=template&id=80ac2e6c&");
 /* harmony import */ var _LocationTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LocationTable.vue?vue&type=script&lang=js& */ "./resources/js/components/Location/LocationTable.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _LocationTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _LocationTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -105842,7 +105925,7 @@ component.options.__file = "resources/js/components/Location/LocationTable.vue"
 /*!*************************************************************************************!*\
   !*** ./resources/js/components/Location/LocationTable.vue?vue&type=script&lang=js& ***!
   \*************************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -107092,9 +107175,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/supplierApp.scss */"./resources/sass/supplierApp.scss");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/supplierApp.scss */"./resources/sass/supplierApp.scss");
 
 
 /***/ }),

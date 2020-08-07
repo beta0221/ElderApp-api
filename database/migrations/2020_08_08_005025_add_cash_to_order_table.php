@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPayCashQuantityToProductLocation extends Migration
+class AddCashToOrderTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddPayCashQuantityToProductLocation extends Migration
      */
     public function up()
     {
-        Schema::table('product_location', function (Blueprint $table) {
-            $table->integer('pay_cash_quantity')->default(0)->after('quantity');
+        Schema::table('orders', function (Blueprint $table) {
+            //
         });
     }
 
@@ -25,8 +25,8 @@ class AddPayCashQuantityToProductLocation extends Migration
      */
     public function down()
     {
-        Schema::table('product_location', function (Blueprint $table) {
-            $table->dropColumn('pay_cash_quantity');
+        Schema::table('orders', function (Blueprint $table) {
+            //
         });
     }
 }

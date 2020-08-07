@@ -25,9 +25,11 @@ class CreateOrdersTable extends Migration
             $table->integer('price');
             $table->integer('pay_cash_price');
             $table->integer('pay_cash_point');
+            $table->integer('cash');
 
             $table->integer('point_quantity');
             $table->integer('point_cash_quantity');
+            $table->integer('cash_quantity');
             $table->integer('total_quantity');
 
             $table->integer('total_point');

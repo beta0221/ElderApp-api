@@ -39,15 +39,7 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">產品</th>
-                        <th scope="col">價錢</th>
-                        <th scope="col">數量</th>
-                        <th scope="col">小計</th>
-                    </tr>
-                </thead>
+            <table style="width:100%;text-align: center">
                 <tbody>
                     @if(count($products) == 0)
                     <tr>
@@ -58,42 +50,60 @@
                     @endif
 
                     @foreach($products as $p)
+                    <?php $img = config('app.static_host') . "/products/$p->slug/$p->img"; ?>
                     <tr>
-                        <td style="width:100px">
+                        <td style="width:100%">
                             <div>
-                                <p>{{$p->name}}</p>
+                                <div>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td style="width:80px">
+                                                <img style="height:auto;width:auto;max-height: 100%;max-width:100%" src="{{$img}}">
+                                            </td>
+                                            <td>
+                                                {{$p->name}}
+                                            </td>
+                                            <td style="width:64px">
+                                                <div class="btn btn-sm btn-danger" onclick="delete_product({{$p->id}})">刪除</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td style="width:80px">
+                                                <span style="line-height: 24px">現金</span><br>
+                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span><br>
+                                                <span style="line-height: 24px">現金/樂幣</span><br>
+                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->pay_cash_price}}</font>/<font color="#fb8c00">{{$p->pay_cash_point}}</font></span>
+                                            </td>
+                                            <td>
+                                                <div class="mb-1">
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
+                                                    <input type="number" class="input-cash-{{$p->id}} input-quantity form-control d-inline-block" 
+                                                    style="width:48px;line-height: 32px" value="0" data-cash="{{$p->cash}}" 
+                                                    data-product-id="{{$p->id}}" min="0">
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
+                                                </div>
+                                                <div>
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
+                                                    <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
+                                                    style="width:48px;line-height:32px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
+                                                    data-product-id="{{$p->id}}" min="0">
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
+                                                </div>
+                                            </td>
+                                            <td style="width:64px">
+                                                <span style="line-height: 24px">現金</span><br>
+                                                <span id="subtotal-cash-{{$p->id}}" class="subtotal-cash" style="color:#ff5252">0</span><br>
+                                                <span style="line-height: 24px">樂幣</span><br>
+                                                <span id="subtotal-point-{{$p->id}}" class="subtotal-point" style="color:#fb8c00">0</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                            <?php $img = '/images/products/' . $p->slug . '/' . $p->img ?>
-                            <div style="height: 80px;width:100%">
-                                <img style="height:auto;width:auto;max-height: 100%;max-width:100%" src="{{$img}}">
-                            </div>
-                            <div>
-                                <div class="btn btn-sm btn-danger" onclick="delete_product({{$p->id}})">刪除</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <span style="line-height: 38px">樂幣:{{$p->price}}</span>
-                            </div>
-                            <div>
-                                <span style="line-height: 38px">現金:{{$p->pay_cash_price}}樂幣:{{$p->pay_cash_point}}</span>
-                            </div>
-                        </td>
-                        <td style="width: 56px;">
-                            <div>
-                                <input type="number" class="input-point-{{$p->id}} input-quantity form-control d-inline-block" 
-                                style="width:56px" value="0" data-point="{{$p->price}}" 
-                                data-product-id="{{$p->id}}" min="0">
-                            </div>
-                            <div>
-                                <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
-                                style="width:56px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
-                                data-product-id="{{$p->id}}" min="0">
-                            </div>
-                        </td>
-                        <td style="width:100px">
-                            <div style="line-height: 38px">樂幣:<span id="subtotal-point-{{$p->id}}" class="subtotal-point">0</span></div>
-                            <div style="line-height: 38px">現金:<span id="subtotal-cash-{{$p->id}}" class="subtotal-cash">0</span></div>
                         </td>
                     </tr>
                     @endforeach
@@ -107,8 +117,8 @@
         <div class="col-6 offset-6">
             <h5 class="m-0">總計</h5>
             <hr class="mt-1 mb-1">
-            <h5>樂幣：<span id="total-point">0</span></h5>
-            <h5>現金：<span id="total-cash">0</span></h5>
+            <h5>現金：<span id="total-cash" style="color:#ff5252">0</span></h5>
+            <h5>樂幣：<span id="total-point" style="color:#fb8c00">0</span></h5>
             <h6 class="mt-4 text-secondary">剩餘樂幣：{{$wallet_remain}}</h6>
         </div>
     </div>
@@ -188,13 +198,35 @@
             let id = $(this).data('product-id');
             cacu_product(id);
         });
+
+        $('.input-decrease').on('click',function(){
+            var input_dom = $(this).next();
+            var input_dom_value = parseInt(input_dom.val());
+            var product_id = $(this).data('product-id');
+            if(input_dom_value == 0){return false;}
+            input_dom_value -= 1;
+            input_dom.val(input_dom_value);
+            cacu_product(product_id);
+        })
+
+        $('.input-increase').on('click',function(){
+            var input_dom = $(this).prev();
+            var input_dom_value = parseInt(input_dom.val());
+            var product_id = $(this).data('product-id');
+            input_dom_value += 1;
+            input_dom.val(input_dom_value);
+            cacu_product(product_id);
+        })
+
     });
 
     function cacu_product(id){
         let point = 0;
         let cash = 0;
-        let input_point = $('.input-point-'+id);
-        point += (input_point.val() * input_point.data('point'));
+
+        let input_cash = $('.input-cash-'+id);
+        cash += (input_cash.val() * input_cash.data('cash'));
+
         let input_cash_point = $('.input-cash-point-'+id);
         point += (input_cash_point.val() * input_cash_point.data('point'));
         cash += (input_cash_point.val() * input_cash_point.data('cash'));
@@ -223,10 +255,10 @@
             if(!quantityDict[product_id]){
                 quantityDict[product_id] = {};
             }
-            if($(this).data('cash') != null){
+            if($(this).data('point') != null){
                 quantityDict[product_id]['point_cash'] = quantity;
             }else{
-                quantityDict[product_id]['point'] = quantity;
+                quantityDict[product_id]['cash'] = quantity;
             }
         });
         console.log(quantityDict);

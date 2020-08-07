@@ -30,6 +30,13 @@
         max-height: 100%;
         max-width: 100%;
     }
+    .product-info-box{
+        background: rgba(230, 230, 230, 0.918);
+        border-radius: .3rem;
+    }
+    .product-name-box{
+        height: 56px;
+    }
 </style>
 @endsection
 
@@ -49,10 +56,15 @@
                     </a>
                 </div>
             </div>
-            <div class="pt-2 pb-2">
-                <h4>{{$product->name}}</h4>
-                <h4>樂幣:{{$product->price}}</h4>
-                <h4>售價:{{$product->pay_cash_price}}</h4>
+            <div class="p-1 product-info-box">
+                <div class="product-name-box">
+                    <h4>{{$product->name}}</h4>
+                </div>
+                
+                <h5>現金</h5>
+                <h5><font color="#ff5252">{{$product->cash}}</font></h5>
+                <h5>現金/樂幣</h5>
+                <h5><font color="#ff5252">{{$product->pay_cash_price}}</font>/<font color="#fb8c00">{{$product->pay_cash_point}}</font></h5>
             </div>
             
             

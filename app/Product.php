@@ -32,12 +32,12 @@ class Product extends Model
         return DB::table('product_location')->where('product_id',$this->id)->get();
     }
 
-    public function updateQuantity($location_id,$quantity,$payCashQuantity){
+    public function updateQuantity($location_id,$quantity){
         
         try {
             DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
                 'quantity'=>(int)$quantity,
-                'pay_cash_quantity'=>(int)$payCashQuantity,
+                // 'pay_cash_quantity'=>(int)$payCashQuantity,
             ]);
         } catch (\Throwable $th) {
             return $th;

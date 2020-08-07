@@ -43,7 +43,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div>
-                <?php $img = '/images/products/'.$product->slug.'/'.$product->img ?>
+                <?php $img = config('app.static_host') . "/products/$product->slug/$product->img"; ?>
+                
                 <img class="w-100" src="{{$img}}">
             </div>
         </div>
@@ -51,9 +52,12 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <h2>{{$product->name}}</h2>
-            <h2>樂幣:{{$product->price}}</h2>
-            <h2>售價:{{$product->pay_cash_price}}</h2>
+            <h2 class="mb-3">{{$product->name}}</h2>
+
+            <h3>現金</h3>
+            <h3><font color="#ff5252">{{$product->cash}}</font></h3>
+            <h3>現金/樂幣</h3>
+            <h3><font color="#ff5252">{{$product->pay_cash_price}}</font>/<font color="#fb8c00">{{$product->pay_cash_point}}</font></h3>
         </div>
     </div>
 

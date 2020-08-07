@@ -33,10 +33,12 @@
         </div>
 
         <v-col cols="12" sm="6" md="3">
+          <span>產品名稱</span>
           <v-text-field label="Solo" placeholder="產品名稱" solo v-model="form.name"></v-text-field>
         </v-col>
 
         <v-col>
+          <span>經銷據點</span>
           <v-select
             v-model="form.select_location"
             :items="location"
@@ -49,12 +51,16 @@
           ></v-select>
         </v-col>
 
+        
         <div v-for="(l,index) in location" v-bind:key="index" v-show="isSelected(l.id)">
-          <span>{{l.name}}：</span>
-          <v-text-field class="d-inline-block" label="Solo" placeholder="樂幣付清庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
-          <v-text-field class="d-inline-block" label="Solo" placeholder="現金購買庫存數量" solo v-model="payCashQuantityDict[l.id]"></v-text-field>
+          <span>據點庫存（{{l.name}}）：</span>
+          <v-text-field class="d-inline-block" label="Solo" placeholder="庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
+          <!-- <v-text-field class="d-inline-block" label="Solo" placeholder="現金購買庫存數量" solo v-model="payCashQuantityDict[l.id]"></v-text-field> -->
         </div>
 
+        <div>
+          <span>產品類別</span>
+        </div>
         <v-col class="d-flex" cols="12" sm="6">
           <v-select
             :items="product_category"
@@ -70,14 +76,32 @@
         <label>每人最多兌換(非必填)</label>
         <v-text-field label="每人最多兌換(非必填)" placeholder="每人最多兌換(非必填)" solo v-model="form.exchange_max"></v-text-field>
         
+        <v-layout row wrap>
+          <v-flex md3>
+            <label>免費兌換（樂幣）</label>
+            <v-text-field label="免費兌換（樂幣）" placeholder="免費兌換（樂幣）" solo v-model="form.price"></v-text-field>
+          </v-flex>
+        </v-layout>
         
-        <label>兌換所需樂幣</label>
-        <v-text-field label="兌換所需樂幣" placeholder="兌換所需樂幣" solo v-model="form.price"></v-text-field>
         
-        <label>直購價</label>
-        <v-text-field label="直購價" placeholder="直購價" solo v-model="form.pay_cash_price"></v-text-field>
-        <label>直購價所需樂幣</label>
-        <v-text-field label="直購價所需樂幣" placeholder="直購價所需樂幣" solo v-model="form.pay_cash_point"></v-text-field>
+        <v-layout row wrap>
+          <v-flex md3>
+              <label>各半支付（樂幣）</label>
+              <v-text-field label="各半支付（樂幣）" placeholder="各半支付（樂幣）" solo v-model="form.pay_cash_point"></v-text-field>
+          </v-flex>
+          <v-flex md3>
+              <label>各半支付（現金）</label>
+              <v-text-field label="各半支付（現金）" placeholder="各半支付（現金）" solo v-model="form.pay_cash_price"></v-text-field>
+          </v-flex>
+        </v-layout>
+
+        
+        <v-layout row wrap>
+          <v-flex md3>
+            <label>現金購買</label>
+            <v-text-field label="現金購買" placeholder="現金購買" solo v-model="form.cash"></v-text-field>
+          </v-flex>
+        </v-layout>
         
 
         <v-col cols="12" sm="6" md="3">
@@ -120,7 +144,7 @@ export default {
         price: null,
         pay_cash_price:null,
         pay_cash_point:null,
-        // cash:null,
+        cash:null,
         exchange_max:null,
         info:"",
       },
@@ -128,7 +152,7 @@ export default {
 
       location:[],
       quantityDic:{},
-      payCashQuantityDict:{},
+      // payCashQuantityDict:{},
     };
   },
   created() {
@@ -187,7 +211,7 @@ export default {
             this.form.price = res.data.product.price;
             this.form.pay_cash_price = res.data.product.pay_cash_price;
             this.form.pay_cash_point = res.data.product.pay_cash_point;
-            // this.form.cash = res.data.product.cash;
+            this.form.cash = res.data.product.cash;
             this.form.exchange_max = res.data.product.exchange_max;
             this.form.info = res.data.product.info;
             if(res.data.product.imgUrl){ this.product_image = res.data.product.imgUrl; }
@@ -195,7 +219,7 @@ export default {
               res.data.location.forEach((item)=>{
                 this.form.select_location.push(item.location_id);
                 this.quantityDic[item.location_id] = item.quantity;
-                this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
+                // this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
               });
             }
           }
@@ -211,7 +235,7 @@ export default {
       formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
       formData.append('quantity',JSON.stringify(this.quantityDic));
-      formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
+      // formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
       if(this.edit_mode){
         this.updateRequest(formData);
       }else{
