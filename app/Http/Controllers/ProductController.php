@@ -383,12 +383,30 @@ class ProductController extends Controller
 
 
     public function list(Request $req){
+
+        $page = ($req->page)?$req->page:1;
+        $rows = 6;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
+
         if($req->token){
             Cookie::queue('token',$req->token,60);
         }
-        $products = Product::where('public',1)->orderBy('id','desc')->get();
+
+        $total = Product::where('public',1)->count();
+        if($rows > $total){
+            $totalPage = 1;
+        }else{
+            $totalPage = ceil($total / $rows);
+            if($total % $rows != 0){ $totalPage += 1; }
+        }
+        
+        $products = Product::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+
         return view('product.list',[
             'products'=>$products,
+            'totalPage'=>$totalPage,
+            'page'=>$page,
         ]);
     }
 

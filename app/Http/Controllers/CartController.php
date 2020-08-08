@@ -26,6 +26,7 @@ class CartController extends Controller
     {
         $ip = request()->ip();
         $products = Cart::getProductsInCart($ip);
+        $shipping_fee = Cart::cacuShippingFee($products);
 
         $user = User::web_user();
         $wallet_remain = $user->wallet;
@@ -33,6 +34,7 @@ class CartController extends Controller
         return view('cart.cart',[
             'products'=>$products,
             'wallet_remain'=>$wallet_remain,
+            'shipping_fee'=>$shipping_fee,
         ]);
     }
 
@@ -125,6 +127,7 @@ class CartController extends Controller
         $order_numero = rand(0,9) . time() . rand(0,9);
         $user = User::web_user();
         $products = Cart::getProductsInCart($ip);
+        $shipping_fee = Cart::cacuShippingFee($products);
         $quantityDict = json_decode($request->quantityDict,true);
 
         if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){

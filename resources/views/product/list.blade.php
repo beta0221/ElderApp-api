@@ -37,6 +37,17 @@
     .product-name-box{
         height: 56px;
     }
+    .page-item.active .page-link{
+        background-color: #fb8c00;
+        border-color: #fb8c00;
+    }
+    .page-link {
+        color :#fb8c00;
+    }
+    .page-link:hover{
+        color :#fb8c00;
+    }
+}
 </style>
 @endsection
 
@@ -61,15 +72,23 @@
                     <h4>{{$product->name}}</h4>
                 </div>
                 
-                <h5>現金</h5>
+                <h5>台幣</h5>
                 <h5><font color="#ff5252">{{$product->cash}}</font></h5>
-                <h5>現金/樂幣</h5>
+                <h5>台幣/樂幣</h5>
                 <h5><font color="#ff5252">{{$product->pay_cash_price}}</font>/<font color="#fb8c00">{{$product->pay_cash_point}}</font></h5>
             </div>
             
             
         </div>
         @endforeach
+    </div>
+
+    <div class="mt-4 mb-4">
+        @include('component.pagination',[
+            'totalPage'=>$totalPage,
+            'page'=>$page,
+            'url'=>'/product/list',
+        ])
     </div>
 
 </div>

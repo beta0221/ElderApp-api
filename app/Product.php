@@ -99,7 +99,7 @@ class Product extends Model
         $productImageDict = [];
         $products = Product::whereIn('id',$productIdArray)->get();
         foreach ($products as $product) {
-            $productImageDict[$product->id] = '/images/products/' . $product->slug . '/' . $product->img;
+            $productImageDict[$product->id] = config('app.static_host') . "/products/$product->slug/$product->img";
         }
         return $productImageDict;
     }

@@ -240,6 +240,8 @@ class MemberController extends Controller
 
         PayDate::create(['user_id'=>$request->id]);
 
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,300,'續會獎勵');
+
         return response([
             's'=>1,
             'm'=>'Updated',

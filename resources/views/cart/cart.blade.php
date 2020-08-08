@@ -73,9 +73,9 @@
                                     <table style="width:100%">
                                         <tr>
                                             <td style="width:80px">
-                                                <span style="line-height: 24px">現金</span><br>
+                                                <span style="line-height: 24px">台幣</span><br>
                                                 <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span><br>
-                                                <span style="line-height: 24px">現金/樂幣</span><br>
+                                                <span style="line-height: 24px">台幣/樂幣</span><br>
                                                 <span style="line-height: 24px"><font color="#ff5252">{{$p->pay_cash_price}}</font>/<font color="#fb8c00">{{$p->pay_cash_point}}</font></span>
                                             </td>
                                             <td>
@@ -95,7 +95,7 @@
                                                 </div>
                                             </td>
                                             <td style="width:64px">
-                                                <span style="line-height: 24px">現金</span><br>
+                                                <span style="line-height: 24px">台幣</span><br>
                                                 <span id="subtotal-cash-{{$p->id}}" class="subtotal-cash" style="color:#ff5252">0</span><br>
                                                 <span style="line-height: 24px">樂幣</span><br>
                                                 <span id="subtotal-point-{{$p->id}}" class="subtotal-point" style="color:#fb8c00">0</span>
@@ -114,10 +114,12 @@
     </div>
     <hr>
     <div class="row mb-2">
-        <div class="col-6 offset-6">
+        <div class="col-8 offset-4">
+            <h5>運費：{{$shipping_fee}}</h5>
             <h5 class="m-0">總計</h5>
             <hr class="mt-1 mb-1">
-            <h5>現金：<span id="total-cash" style="color:#ff5252">0</span></h5>
+            
+            <h5>台幣：<span id="total-cash" style="color:#ff5252">{{$shipping_fee}}</span></h5>
             <h5>樂幣：<span id="total-point" style="color:#fb8c00">0</span></h5>
             <h6 class="mt-4 text-secondary">剩餘樂幣：{{$wallet_remain}}</h6>
         </div>
@@ -190,6 +192,9 @@
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
 <script>
+
+    const shipping_fee = {{$shipping_fee}};
+
     $('#twzipcode').twzipcode({
         "css": ["form-control","form-control","form-control"],
     });
@@ -235,7 +240,7 @@
         $('#subtotal-cash-'+id).html(cash);
         
         var total_point = 0;
-        var total_cash = 0;
+        var total_cash = shipping_fee;
         $('.subtotal-point').each(function(index,item){
             total_point += parseInt($(this).html());
         });

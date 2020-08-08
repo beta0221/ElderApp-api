@@ -49,10 +49,6 @@ class TransactionController extends Controller
             }
 
             return response($store,400);
-
-
-
-
         }
         
         return response('data uncorrect',400);

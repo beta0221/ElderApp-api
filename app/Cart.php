@@ -10,6 +10,20 @@ class Cart extends Model
     protected $guarded = [];
     public $timestamps = false;
 
+    /**運費 */
+    const SHIPPING_FEE = 100;
+
+    /**計算運費 */
+    public static function cacuShippingFee($productList){
+        $firms = [];
+        foreach ($productList as $product) {
+            $firms[] = $product->firm_id;
+        }
+        $firmCount = count(array_count_values($firms));
+        $shipping_fee = $firmCount * self::SHIPPING_FEE;
+        return $shipping_fee;
+    }
+
     /**
      * 取得ip的購物車所有產品
      * @param String ip

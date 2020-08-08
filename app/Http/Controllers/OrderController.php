@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cart;
 use App\Exports\OrderExport;
 use App\Order;
 use App\OrderDelievery;
@@ -67,7 +68,7 @@ class OrderController extends Controller
             }
         }
         $total = $query->count();
-        $orders = $query->skip($skip)->take($rows)->get();
+        $orders = $query->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
         $orderList = $this->groupOrdersByNumero($orders);
 
@@ -203,14 +204,29 @@ class OrderController extends Controller
             'productImageDict'=>$productImageDict,
             'order_numero'=>$order_numero,
             'orders'=>$orders,
-            'orderDelievery'=>$orderDelievery
+            'orderDelievery'=>$orderDelievery,
+            'shipping_fee'=>Cart::SHIPPING_FEE,
         ]);
 
     }
-    public function view_orderList(){
+    public function view_orderList(Request $req){
+
+        $page = ($req->page)?$req->page:1;
+        $rows = 6;
+        $skip = ($page - 1) * $rows;
+        $ascOrdesc = 'desc';
 
         $user_id = User::web_user()->id;
-        if(!$orders=Order::where('user_id',$user_id)->get()){
+
+        $total = Order::where('user_id',$user_id)->count();
+        if($rows > $total){
+            $totalPage = 1;
+        }else{
+            $totalPage = ceil($total / $rows);
+            if($total % $rows != 0){ $totalPage += 1; }
+        }
+        
+        if(!$orders=Order::where('user_id',$user_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get()){
             return view('errors.404');
         }
 
@@ -225,7 +241,9 @@ class OrderController extends Controller
         return view('order.list',[
             'productImageDict'=>$productImageDict,
             'orderList'=>$orderList,
-            'orders'=>$orders
+            'orders'=>$orders,
+            'totalPage'=>$totalPage,
+            'page'=>$page,
         ]);
     }
     
