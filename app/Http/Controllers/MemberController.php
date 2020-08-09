@@ -96,14 +96,14 @@ class MemberController extends Controller
     {
         $request->validate([
             // 'association' => 'required|integer',
-            'email' => 'required|unique:users',
+            'email' => 'required|unique:users|min:8',
             'password' => 'required',
             'name' => 'required',
-            'gender' => 'required',
-            'birthdate'=>'required',
-            'id_number'=>'required',
+            //'gender' => 'required',//
+            //'birthdate'=>'required',//
+            //'id_number'=>'required',//
             'district_id' => 'required',
-            'address' => 'required',
+            //'address' => 'required',//
             'pay_method'=>'required',
         ]);
 

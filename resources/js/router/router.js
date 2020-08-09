@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-
+import Dashboard from '../components/Dashboard/Dashboard'
 import MemberTable from '../components/MemberTable'
 import EventTable from '../components/EventTable'
 import newEventForm from '../components/newEventForm'
@@ -16,6 +16,7 @@ import SendMoneyTable from '../components/SendMoneyTable'
 import LocationTable from '../components/Location/LocationTable'
 
 const routes = [
+    {path:'/dashboard', component: Dashboard},
     {path:'/member', component: MemberTable},
     {path:'/event', component: EventTable},
     {path:'/login',name:'login',component: Login,props:true},

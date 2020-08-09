@@ -141,3 +141,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::post('groupNextStatus','OrderController@groupNextStatus');
     });
     
+    //後台 儀表板
+    Route::group(['prefix'=>'dashboard'],function(){
+        Route::get('getTotal','DashboardController@getTotal');
+        Route::get('getValid','DashboardController@getValid');
+        Route::get('getUnValid','DashboardController@getUnValid');
+        Route::get('getAgeDist','DashboardController@getAgeDist');
+    });

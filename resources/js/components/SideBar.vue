@@ -41,7 +41,7 @@
     data () {
       return {
         items: [
-          { title: 'Home', icon: 'dashboard' ,url:'/'},
+          { title: '儀表板', icon: 'dashboard' ,url:'/dashboard'},
           { title: '會員管理', icon: 'account_box',url:'/member' },
           { title: '活動管理', icon: 'book_online',url:'/event' },
           { title: '產品管理', icon: 'photo_filter',url:'/product' },
