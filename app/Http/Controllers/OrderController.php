@@ -150,30 +150,43 @@ class OrderController extends Controller
         $firm_id = Auth::user()->id;
         $order_numero_array = explode(',',$request->order_numero_array);
         
-        $cellData = [
-            ['訂購日期','訂單編號','產品','總數量','待收款','收件人','聯絡電話','郵遞區號','地址'],
-        ];
-
+        
         $orders = Order::whereIn('order_numero',$order_numero_array)->where('firm_id',$firm_id)->get();
-        foreach ($orders as $order) {
-            $delivery = OrderDelievery::find($order->order_delievery_id);
-            $cellData[] = [
+        $cellData = [];
+        $cellDict = [
+            // 's232323'=>[
+            //     'from'=>2,
+            //     'to'=>5,
+            // ],
+        ];
+        foreach ($orders as $index => $order) {
+            $delivery = null;
+            if(!isset($cellDict[$order->order_numero])){
+                $cellDict[$order->order_numero] = ['from'=>$index+2];
+                $delivery = OrderDelievery::find($order->order_delievery_id);
+            }else{
+                $cellDict[$order->order_numero]['to'] = $index+2;
+            }
+            $data = [
                 $order->created_at,
                 $order->order_numero,
                 $order->name,
                 $order->total_quantity,
                 $order->total_cash,
-                $delivery->receiver_name,
-                $delivery->receiver_phone,
-                $delivery->zipcode,
-                $delivery->county . $delivery->district . $delivery->address,
             ];
+            if($delivery){
+                $data[] = $delivery->receiver_name;
+                $data[] = $delivery->receiver_phone;
+                $data[] = $delivery->zipcode;
+                $data[] = $delivery->county . $delivery->district . $delivery->address;
+            }
+            $cellData[] = $data;
         }
 
         date_default_timezone_set('Asia/Taipei');
         $now = date("Y-m-d");
 
-        return Excel::download(new OrderExport($cellData),'訂單資料-'.$now.'.xlsx');
+        return Excel::download(new OrderExport($cellData,$cellDict),'訂單資料-'.$now.'.xlsx');
         
     }
 
@@ -222,7 +235,7 @@ class OrderController extends Controller
         if($rows > $total){
             $totalPage = 1;
         }else{
-            $totalPage = ceil($total / $rows);
+            $totalPage = floor($total / $rows);
             if($total % $rows != 0){ $totalPage += 1; }
         }
         

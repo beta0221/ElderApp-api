@@ -36,6 +36,7 @@
     }
     .product-name-box{
         height: 56px;
+        overflow: hidden;
     }
     .page-item.active .page-link{
         background-color: #fb8c00;
@@ -69,7 +70,7 @@
             </div>
             <div class="p-1 product-info-box">
                 <div class="product-name-box">
-                    <h4>{{$product->name}}</h4>
+                    <h5>{{$product->name}}</h5>
                 </div>
                 
                 <h5>台幣</h5>

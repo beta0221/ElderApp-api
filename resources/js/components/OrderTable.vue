@@ -51,13 +51,14 @@
                         {{statusDict[props.item.ship_status]}}
                     </v-btn>
                 </td>
-                <td @click="showOrderDetail(props.item.order_numero)">{{props.item.order_numero}}</td>
-                <td>{{props.item.created_at}}</td>
                 <td>
                     <div v-for="product in props.item.list" v-bind:key="product.id">
                         <span>{{product.name}}</span>
                     </div>
                 </td>
+                <td @click="showOrderDetail(props.item.order_numero)">{{props.item.order_numero}}</td>
+                <td>{{props.item.created_at}}</td>
+                
             </template>
         </v-data-table>
     </div>
@@ -104,9 +105,9 @@ export default {
                 { text:'#'},
                 { text:'選取'},
                 { text: "狀態", value: "ship_status" },
+                { text: "商品"},
                 { text: "訂單編號", value: "order_numero" },
                 { text: "日期", value: "created_at" },
-                { text: "商品"},
             ],
             pagination: { sortBy: "id", descending: true },
             orderList:[],
@@ -115,6 +116,8 @@ export default {
             //
             searchColumn:null,
             searchValue:null,
+            //
+            isSelectAll:false,
         }
     },
     watch:{
@@ -214,8 +217,9 @@ export default {
             })
         },
         selectAll(){
+            this.isSelectAll = !this.isSelectAll;
             this.orderList.forEach((order,index) => {
-                this.$set(this.orderList[index],'isCheck',true)
+                this.$set(this.orderList[index],'isCheck',this.isSelectAll);
             });
         }
     }

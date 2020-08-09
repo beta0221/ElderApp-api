@@ -3470,6 +3470,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3528,13 +3529,13 @@ __webpack_require__.r(__webpack_exports__);
         text: "狀態",
         value: "ship_status"
       }, {
+        text: "商品"
+      }, {
         text: "訂單編號",
         value: "order_numero"
       }, {
         text: "日期",
         value: "created_at"
-      }, {
-        text: "商品"
       }],
       pagination: {
         sortBy: "id",
@@ -3545,7 +3546,9 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       //
       searchColumn: null,
-      searchValue: null
+      searchValue: null,
+      //
+      isSelectAll: false
     };
   },
   watch: {
@@ -3654,8 +3657,9 @@ __webpack_require__.r(__webpack_exports__);
     selectAll: function selectAll() {
       var _this4 = this;
 
+      this.isSelectAll = !this.isSelectAll;
       this.orderList.forEach(function (order, index) {
-        _this4.$set(_this4.orderList[index], 'isCheck', true);
+        _this4.$set(_this4.orderList[index], 'isCheck', _this4.isSelectAll);
       });
     }
   }
@@ -62461,6 +62465,16 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "td",
+                      _vm._l(props.item.list, function(product) {
+                        return _c("div", { key: product.id }, [
+                          _c("span", [_vm._v(_vm._s(product.name))])
+                        ])
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
                       {
                         on: {
                           click: function($event) {
@@ -62471,17 +62485,7 @@ var render = function() {
                       [_vm._v(_vm._s(props.item.order_numero))]
                     ),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(props.item.created_at))]),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      _vm._l(props.item.list, function(product) {
-                        return _c("div", { key: product.id }, [
-                          _c("span", [_vm._v(_vm._s(product.name))])
-                        ])
-                      }),
-                      0
-                    )
+                    _c("td", [_vm._v(_vm._s(props.item.created_at))])
                   ]
                 }
               }

@@ -397,7 +397,7 @@ class ProductController extends Controller
         if($rows > $total){
             $totalPage = 1;
         }else{
-            $totalPage = ceil($total / $rows);
+            $totalPage = floor($total / $rows);
             if($total % $rows != 0){ $totalPage += 1; }
         }
         
