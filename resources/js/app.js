@@ -12,11 +12,14 @@ import Vuetify from 'vuetify'
 
 Vue.use(Vuetify)
 
-import VueSimplemde from 'vue-simplemde'
-Vue.use(VueSimplemde)
 
 import CKEditor from '@ckeditor/ckeditor5-vue';
 Vue.use(CKEditor)
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+window.ClassicEditor = ClassicEditor
+// import MyUploadAdapter from './Helpers/MyUploadAdapter'
+// window.MyUploadAdapter = MyUploadAdapter
 
 import User from './Helpers/User'
 window.User = User
@@ -37,7 +40,6 @@ window.EventBus = new Vue();
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('app-home', require('./components/AppHome.vue').default);
-Vue.component('common-text-editor',require('./components/Editor/CommonTextEditor.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -45,6 +47,7 @@ Vue.component('common-text-editor',require('./components/Editor/CommonTextEditor
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import router from './router/router.js'
+import Token from './Helpers/Token';
 const app = new Vue({
     el: '#app',
     router,

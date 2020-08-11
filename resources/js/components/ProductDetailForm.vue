@@ -105,7 +105,7 @@
         
 
         <v-col cols="12" sm="6" md="3">
-          <markdown-editor v-model="form.info"></markdown-editor>
+          <ckeditor id="editor" :editor="editor" v-model="form.info"></ckeditor>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -131,6 +131,7 @@ export default {
   },
   data() {
     return {
+      editor:ClassicEditor,
       edit_mode: false,
       product_image: null,
       product_category: [],

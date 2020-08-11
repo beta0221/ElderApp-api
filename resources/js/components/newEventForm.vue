@@ -89,7 +89,7 @@
         </div>
 
         <v-col cols="12" sm="6" md="3">
-          <markdown-editor v-model="form.body"></markdown-editor>
+          <ckeditor :editor="editor" v-model="form.body"></ckeditor>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -107,6 +107,7 @@ export default {
   props:['event_slug'],
   data() {
     return {
+      editor:ClassicEditor,
       edit_mode:false,
       event_image:null,
       file:'',
