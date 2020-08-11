@@ -52049,7 +52049,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
 
 
 /***/ })

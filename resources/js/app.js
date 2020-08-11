@@ -15,6 +15,9 @@ Vue.use(Vuetify)
 import VueSimplemde from 'vue-simplemde'
 Vue.use(VueSimplemde)
 
+import CKEditor from '@ckeditor/ckeditor5-vue';
+Vue.use(CKEditor)
+
 import User from './Helpers/User'
 window.User = User
 
@@ -34,7 +37,7 @@ window.EventBus = new Vue();
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('app-home', require('./components/AppHome.vue').default);
-
+Vue.component('common-text-editor',require('./components/Editor/CommonTextEditor.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
