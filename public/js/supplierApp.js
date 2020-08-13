@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -52042,14 +52042,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 2:
+/***/ 1:
 /*!*******************************************!*\
   !*** multi ./resources/js/supplierApp.js ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
 
 
 /***/ })

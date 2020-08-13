@@ -105,7 +105,7 @@
         
 
         <v-col cols="12" sm="6" md="3">
-          <ckeditor id="editor" :editor="editor" v-model="form.info"></ckeditor>
+          <ckeditor id="editor" :editor="editor" v-model="form.info" :config="editorConfig"></ckeditor>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -118,6 +118,7 @@
 </template>
 
 <script>
+import MyUploadAdapter from '../Helpers/MyUploadAdapter'
 export default {
   props: ["product_slug"],
   watch:{
@@ -132,6 +133,14 @@ export default {
   data() {
     return {
       editor:ClassicEditor,
+      editorConfig:{
+        placeholder: 'Type some text...',
+        extraPlugins:[(editor)=>{
+          editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            return new MyUploadAdapter( loader , `/api/image/upload/productContent/${this.product_slug}`);
+          };
+        }]
+      },
       edit_mode: false,
       product_image: null,
       product_category: [],

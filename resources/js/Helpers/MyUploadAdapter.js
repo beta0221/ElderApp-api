@@ -1,8 +1,9 @@
-class MyUploadAdapter {
+export default class MyUploadAdapter {
 
-    constructor( loader ) {
+    constructor( loader , requestUrl ) {
         // The file loader instance to use during the upload.
         this.loader = loader;
+        this.requestUrl = requestUrl;
     }
 
     // Starts the upload process.
@@ -30,8 +31,9 @@ class MyUploadAdapter {
         // integration to choose the right communication channel. This example uses
         // a POST request with JSON as a data structure but your configuration
         // could be different.
-        xhr.open( 'POST', 'http://example.com/image/upload/path', true );
+        xhr.open( 'POST', this.requestUrl , true );
         xhr.responseType = 'json';
+        xhr.timeout = 8000;
     }
 
     // Initializes XMLHttpRequest listeners.
@@ -93,5 +95,3 @@ class MyUploadAdapter {
         this.xhr.send( data );
     }
 }
-
-export default MyUploadAdapter = new MyUploadAdapter()

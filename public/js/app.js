@@ -3789,6 +3789,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Helpers/MyUploadAdapter */ "./resources/js/Helpers/MyUploadAdapter.js");
 //
 //
 //
@@ -3908,6 +3909,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["product_slug"],
   watch: {
@@ -3920,8 +3922,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   data: function data() {
+    var _this = this;
+
     return {
       editor: ClassicEditor,
+      editorConfig: {
+        placeholder: 'Type some text...',
+        extraPlugins: [function (editor) {
+          editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+            return new _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_0__["default"](loader, "/api/image/upload/productContent/".concat(_this.product_slug));
+          };
+        }]
+      },
       edit_mode: false,
       product_image: null,
       product_category: [],
@@ -3967,52 +3979,52 @@ __webpack_require__.r(__webpack_exports__);
       this.product_image = URL.createObjectURL(this.$refs.file.files[0]);
     },
     getLocation: function getLocation() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("/api/location/").then(function (res) {
         if (res.status == 200) {
-          _this.location = res.data;
+          _this2.location = res.data;
         }
       })["catch"](function (err) {
         console.error(err);
       });
     },
     getCategory: function getCategory() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("/api/product-category/").then(function (res) {
         if (res.status == 200) {
-          _this2.product_category = res.data;
+          _this3.product_category = res.data;
         }
       })["catch"](function (err) {
         console.error(err);
       });
     },
     loadProduct: function loadProduct() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("/api/productDetail/".concat(this.product_slug)).then(function (res) {
         if (res.status == 200) {
-          _this3.form.name = res.data.product.name;
-          _this3["public"] = res.data.product["public"];
-          _this3.form["public"] = res.data.product["public"];
-          _this3.form.product_category_id = res.data.product.product_category_id;
-          _this3.form.price = res.data.product.price;
-          _this3.form.pay_cash_price = res.data.product.pay_cash_price;
-          _this3.form.pay_cash_point = res.data.product.pay_cash_point;
-          _this3.form.cash = res.data.product.cash;
-          _this3.form.exchange_max = res.data.product.exchange_max;
-          _this3.form.info = res.data.product.info;
+          _this4.form.name = res.data.product.name;
+          _this4["public"] = res.data.product["public"];
+          _this4.form["public"] = res.data.product["public"];
+          _this4.form.product_category_id = res.data.product.product_category_id;
+          _this4.form.price = res.data.product.price;
+          _this4.form.pay_cash_price = res.data.product.pay_cash_price;
+          _this4.form.pay_cash_point = res.data.product.pay_cash_point;
+          _this4.form.cash = res.data.product.cash;
+          _this4.form.exchange_max = res.data.product.exchange_max;
+          _this4.form.info = res.data.product.info;
 
           if (res.data.product.imgUrl) {
-            _this3.product_image = res.data.product.imgUrl;
+            _this4.product_image = res.data.product.imgUrl;
           }
 
           if (res.data.location) {
             res.data.location.forEach(function (item) {
-              _this3.form.select_location.push(item.location_id);
+              _this4.form.select_location.push(item.location_id);
 
-              _this3.quantityDic[item.location_id] = item.quantity; // this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
+              _this4.quantityDic[item.location_id] = item.quantity; // this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
             });
           }
         }
@@ -4021,12 +4033,12 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     submitForm: function submitForm() {
-      var _this4 = this;
+      var _this5 = this;
 
       var formData = new FormData();
       formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
-        return formData.append(key, _this4.form[key]);
+        return formData.append(key, _this5.form[key]);
       });
       formData.append('quantity', JSON.stringify(this.quantityDic)); // formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
 
@@ -4037,7 +4049,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     storeRequest: function storeRequest(formData) {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.post("/api/product", formData, {
         headers: {
@@ -4045,7 +4057,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.status == 200) {
-          _this5.$router.push({
+          _this6.$router.push({
             path: "product"
           });
         } else {
@@ -4057,7 +4069,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateRequest: function updateRequest(formData) {
-      var _this6 = this;
+      var _this7 = this;
 
       formData.append('_method', 'PUT');
       axios.post("/api/product/" + this.product_slug, formData, {
@@ -4067,7 +4079,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.status == 200) {
-          _this6.$router.push({
+          _this7.$router.push({
             path: "/product"
           });
         } else {
@@ -4800,6 +4812,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Helpers/MyUploadAdapter */ "./resources/js/Helpers/MyUploadAdapter.js");
 //
 //
 //
@@ -4904,11 +4917,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['event_slug'],
   data: function data() {
+    var _this = this;
+
     return {
       editor: ClassicEditor,
+      editorConfig: {
+        placeholder: 'Type some text...',
+        extraPlugins: [function (editor) {
+          editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+            return new _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_0__["default"](loader, "/api/image/upload/eventContent/".concat(_this.event_slug));
+          };
+        }]
+      },
       edit_mode: false,
       event_image: null,
       file: '',
@@ -5013,26 +5037,26 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     loadEvent: function loadEvent() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("/api/event/".concat(this.event_slug)).then(function (res) {
         if (res.data.s == 1) {
           var event = res.data.event;
-          _this.form.title = event.title;
-          _this.form.event_type = event.event_type;
-          _this.form.category_id = event.category_id;
-          _this.form.district_id = event.district_id;
-          _this.form.location = event.location;
-          _this.form.maximum = event.maximum;
-          _this.form.body = event.body;
-          _this.form.dateTime = event.dateTime;
-          _this.form.dateTime_2 = event.dateTime_2;
-          _this.form.deadline = event.deadline;
-          _this.form.days = event.days;
-          _this.slug = event.slug;
+          _this2.form.title = event.title;
+          _this2.form.event_type = event.event_type;
+          _this2.form.category_id = event.category_id;
+          _this2.form.district_id = event.district_id;
+          _this2.form.location = event.location;
+          _this2.form.maximum = event.maximum;
+          _this2.form.body = event.body;
+          _this2.form.dateTime = event.dateTime;
+          _this2.form.dateTime_2 = event.dateTime_2;
+          _this2.form.deadline = event.deadline;
+          _this2.form.days = event.days;
+          _this2.slug = event.slug;
 
           if (event.image) {
-            _this.event_image = "https://static.happybi.com.tw/events/".concat(event.slug, "/").concat(event.image);
+            _this2.event_image = "https://static.happybi.com.tw/events/".concat(event.slug, "/").concat(event.image);
           }
         }
       })["catch"](function (err) {
@@ -5040,12 +5064,12 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getRewardLevel: function getRewardLevel() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('/api/getRewardLevel')["catch"](function (err) {
         console.error(err);
       }).then(function (res) {
-        _this2.rewardLevel = res.data;
+        _this3.rewardLevel = res.data;
       });
     },
     onChangeFileUpload: function onChangeFileUpload() {
@@ -5053,19 +5077,19 @@ __webpack_require__.r(__webpack_exports__);
       this.event_image = URL.createObjectURL(this.$refs.file.files[0]);
     },
     getDistrict: function getDistrict() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/api/district').then(function (res) {
-        _this3.district = res.data;
+        _this4.district = res.data;
       })["catch"](function (err) {
         console.error(err);
       });
     },
     getCat: function getCat() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get("/api/category").then(function (res) {
-        _this4.eventCat = res.data;
+        _this5.eventCat = res.data;
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -5073,7 +5097,7 @@ __webpack_require__.r(__webpack_exports__);
         try {
           for (var _iterator = res.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var i = _step.value;
-            _this4.eventCatDic[i.id] = i.name;
+            _this5.eventCatDic[i.id] = i.name;
           }
         } catch (err) {
           _didIteratorError = true;
@@ -5094,12 +5118,12 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     submitForm: function submitForm() {
-      var _this5 = this;
+      var _this6 = this;
 
       var formData = new FormData();
       formData.append('file', this.file);
       Object.keys(this.form).forEach(function (key) {
-        return formData.append(key, _this5.form[key]);
+        return formData.append(key, _this6.form[key]);
       });
 
       if (this.edit_mode) {
@@ -5109,7 +5133,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     storeRequest: function storeRequest(formData) {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.post("/api/event", formData, {
         headers: {
@@ -5117,7 +5141,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this6.$router.push({
+          _this7.$router.push({
             path: "/event"
           });
         } else {
@@ -5129,7 +5153,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateRequest: function updateRequest(formData) {
-      var _this7 = this;
+      var _this8 = this;
 
       formData.append('_method', 'PUT');
       axios.post("/api/event/" + this.slug, formData, {
@@ -5138,7 +5162,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         if (res.data.s == 1) {
-          _this7.$router.push({
+          _this8.$router.push({
             path: "/event"
           });
         } else {
@@ -44198,7 +44222,11 @@ var render = function() {
                 { attrs: { cols: "12", sm: "6", md: "3" } },
                 [
                   _c("ckeditor", {
-                    attrs: { id: "editor", editor: _vm.editor },
+                    attrs: {
+                      id: "editor",
+                      editor: _vm.editor,
+                      config: _vm.editorConfig
+                    },
                     model: {
                       value: _vm.form.info,
                       callback: function($$v) {
@@ -45562,7 +45590,7 @@ var render = function() {
                 { attrs: { cols: "12", sm: "6", md: "3" } },
                 [
                   _c("ckeditor", {
-                    attrs: { editor: _vm.editor },
+                    attrs: { editor: _vm.editor, config: _vm.editorConfig },
                     model: {
                       value: _vm.form.body,
                       callback: function($$v) {
@@ -86635,6 +86663,138 @@ function () {
 
 /***/ }),
 
+/***/ "./resources/js/Helpers/MyUploadAdapter.js":
+/*!*************************************************!*\
+  !*** ./resources/js/Helpers/MyUploadAdapter.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MyUploadAdapter; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var MyUploadAdapter =
+/*#__PURE__*/
+function () {
+  function MyUploadAdapter(loader, requestUrl) {
+    _classCallCheck(this, MyUploadAdapter);
+
+    // The file loader instance to use during the upload.
+    this.loader = loader;
+    this.requestUrl = requestUrl;
+  } // Starts the upload process.
+
+
+  _createClass(MyUploadAdapter, [{
+    key: "upload",
+    value: function upload() {
+      var _this = this;
+
+      return this.loader.file.then(function (file) {
+        return new Promise(function (resolve, reject) {
+          _this._initRequest();
+
+          _this._initListeners(resolve, reject, file);
+
+          _this._sendRequest(file);
+        });
+      });
+    } // Aborts the upload process.
+
+  }, {
+    key: "abort",
+    value: function abort() {
+      if (this.xhr) {
+        this.xhr.abort();
+      }
+    } // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+
+  }, {
+    key: "_initRequest",
+    value: function _initRequest() {
+      var xhr = this.xhr = new XMLHttpRequest(); // Note that your request may look different. It is up to you and your editor
+      // integration to choose the right communication channel. This example uses
+      // a POST request with JSON as a data structure but your configuration
+      // could be different.
+
+      xhr.open('POST', this.requestUrl, true);
+      xhr.responseType = 'json';
+      xhr.timeout = 8000;
+    } // Initializes XMLHttpRequest listeners.
+
+  }, {
+    key: "_initListeners",
+    value: function _initListeners(resolve, reject, file) {
+      var xhr = this.xhr;
+      var loader = this.loader;
+      var genericErrorText = "Couldn't upload file: ".concat(file.name, ".");
+      xhr.addEventListener('error', function () {
+        return reject(genericErrorText);
+      });
+      xhr.addEventListener('abort', function () {
+        return reject();
+      });
+      xhr.addEventListener('load', function () {
+        var response = xhr.response; // This example assumes the XHR server's "response" object will come with
+        // an "error" which has its own "message" that can be passed to reject()
+        // in the upload promise.
+        //
+        // Your integration may handle upload errors in a different way so make sure
+        // it is done properly. The reject() function must be called when the upload fails.
+
+        if (!response || response.error) {
+          return reject(response && response.error ? response.error.message : genericErrorText);
+        } // If the upload is successful, resolve the upload promise with an object containing
+        // at least the "default" URL, pointing to the image on the server.
+        // This URL will be used to display the image in the content. Learn more in the
+        // UploadAdapter#upload documentation.
+
+
+        resolve({
+          "default": response.url
+        });
+      }); // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+      // properties which are used e.g. to display the upload progress bar in the editor
+      // user interface.
+
+      if (xhr.upload) {
+        xhr.upload.addEventListener('progress', function (evt) {
+          if (evt.lengthComputable) {
+            loader.uploadTotal = evt.total;
+            loader.uploaded = evt.loaded;
+          }
+        });
+      }
+    } // Prepares the data and sends the request.
+
+  }, {
+    key: "_sendRequest",
+    value: function _sendRequest(file) {
+      // Prepare the form data.
+      var data = new FormData();
+      data.append('upload', file); // Important note: This is the right place to implement security mechanisms
+      // like authentication and CSRF protection. For instance, you can use
+      // XMLHttpRequest.setRequestHeader() to set the request headers containing
+      // the CSRF token generated earlier by your application.
+      // Send the request.
+
+      this.xhr.send(data);
+    }
+  }]);
+
+  return MyUploadAdapter;
+}();
+
+
+
+/***/ }),
+
 /***/ "./resources/js/Helpers/Token.js":
 /*!***************************************!*\
   !*** ./resources/js/Helpers/Token.js ***!
@@ -86890,9 +87050,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(_ckeditor_ckeditor5_vue__WEBPACK_IMPORTED_MODULE_2___default.a);
 
-window.ClassicEditor = _ckeditor_ckeditor5_build_classic__WEBPACK_IMPORTED_MODULE_3___default.a; // import MyUploadAdapter from './Helpers/MyUploadAdapter'
-// window.MyUploadAdapter = MyUploadAdapter
-
+window.ClassicEditor = _ckeditor_ckeditor5_build_classic__WEBPACK_IMPORTED_MODULE_3___default.a;
 
 window.User = _Helpers_User__WEBPACK_IMPORTED_MODULE_4__["default"];
 
@@ -88592,9 +88750,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/sass/supplierApp.scss */"./resources/sass/supplierApp.scss");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/sass/supplierApp.scss */"./resources/sass/supplierApp.scss");
 
 
 /***/ })

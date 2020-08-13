@@ -16,10 +16,8 @@ Vue.use(Vuetify)
 import CKEditor from '@ckeditor/ckeditor5-vue';
 Vue.use(CKEditor)
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 window.ClassicEditor = ClassicEditor
-// import MyUploadAdapter from './Helpers/MyUploadAdapter'
-// window.MyUploadAdapter = MyUploadAdapter
 
 import User from './Helpers/User'
 window.User = User

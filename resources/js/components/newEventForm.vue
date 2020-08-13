@@ -89,7 +89,7 @@
         </div>
 
         <v-col cols="12" sm="6" md="3">
-          <ckeditor :editor="editor" v-model="form.body"></ckeditor>
+          <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -103,11 +103,20 @@
 </template>
 
 <script>
+import MyUploadAdapter from '../Helpers/MyUploadAdapter'
 export default {
   props:['event_slug'],
   data() {
     return {
       editor:ClassicEditor,
+      editorConfig:{
+        placeholder: 'Type some text...',
+        extraPlugins:[(editor)=>{
+          editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            return new MyUploadAdapter( loader , `/api/image/upload/eventContent/${this.event_slug}`);
+          };
+        }]
+      },
       edit_mode:false,
       event_image:null,
       file:'',

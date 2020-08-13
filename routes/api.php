@@ -148,3 +148,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::get('getUnValid','DashboardController@getUnValid');
         Route::get('getAgeDist','DashboardController@getAgeDist');
     });
+
+
+    Route::group(['prefix'=>'image'],function(){
+        Route::post('upload/{type}/{slug}','ImageController@upload');
+    });
