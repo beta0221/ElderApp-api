@@ -33,7 +33,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $page = $request->page;
-        $rows = $request->rowsPerPage;
+        $rows = ($request->rowsPerPage)?$request->rowsPerPage:15;
         $skip = ($page - 1) * $rows;
         if ($request->descending == null || $request->descending == 'false') {
             $ascOrdesc = 'asc';

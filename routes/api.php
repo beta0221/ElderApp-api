@@ -153,3 +153,11 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::group(['prefix'=>'image'],function(){
         Route::post('upload/{type}/{slug}','ImageController@upload');
     });
+
+    //App Users po文
+    Route::group(['prefix'=>'post'],function(){
+        Route::get('list','PostController@list');
+        Route::post('makeNewPost','PostController@makeNewPost');
+        Route::post('likePost/{slug}','PostController@likePost');
+        Route::post('unLikePost/{slug}','PostController@unLikePost');
+    });
