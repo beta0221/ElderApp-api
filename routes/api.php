@@ -161,6 +161,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::post('makeNewPost','PostController@makeNewPost');
         Route::post('likePost/{slug}','PostController@likePost');
         Route::post('unLikePost/{slug}','PostController@unLikePost');
+        Route::get('detail/{slug}','PostController@detail');
         Route::post('commentOnPost/{slug}','PostController@commentOnPost');
         Route::post('removeComment','PostController@removeComment');
+        Route::get('commentList/{slug}','PostController@commentList');
     });

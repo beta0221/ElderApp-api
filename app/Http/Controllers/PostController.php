@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\Helpers\Pagination;
+use App\Http\Resources\CommentCollection;
 use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
 use App\Post;
 use App\User;
 use Illuminate\Http\Request;
@@ -24,6 +26,23 @@ class PostController extends Controller
                 'removeComment',
             ]
         ]);
+    }
+
+    /**文章內頁 */
+    public function detail($slug){
+        $post = Post::where('slug',$slug)->firstOrFail();
+        $post = new PostResource($post);
+
+        $isAuthor = false;
+        if($user = request()->user()){
+            if($user->id == $post->user_id){$isAuthor == true;}
+        }
+        
+        return response([
+            'post'=>$post,
+            'isAuthor'=>$isAuthor
+        ]);
+
     }
 
     /**文章列表 */
@@ -170,5 +189,38 @@ class PostController extends Controller
         return response('success',200);
 
     }
+
+    /**文章中的留言 */
+    public function commentList(Request $request,$slug){
+        $p = new Pagination($request);
+
+        $post = Post::where('slug',$slug)->firstOrFail();
+        $total = Comment::where('post_id',$post->id)->count();
+        $commentList = Comment::where('post_id',$post->id)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc)->get();
+
+        $user_id_array = [];
+        foreach ($commentList as $comment) {
+            if(!in_array($comment->user_id,$user_id_array)){
+                $user_id_array[] = $comment->user_id;
+            }
+        }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) { $userDict[$user->id] = $user; }
+
+        $commentList = new CommentCollection($commentList);
+        $commentList = $commentList->configureDict($userDict);
+
+        $hasNextPage = true;
+        if(($p->skip + $p->rows) >= $total){ $hasNextPage = false; }
+
+        return response([
+            'hasNextPage'=>$hasNextPage,
+            'commentList'=>$commentList,
+        ]);
+    }
+
+
 
 }
