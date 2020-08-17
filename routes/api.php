@@ -157,7 +157,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     //App Users po文
     Route::group(['prefix'=>'post'],function(){
         Route::get('list','PostController@list');
+        Route::get('myPostList','PostController@myPostList');
         Route::post('makeNewPost','PostController@makeNewPost');
         Route::post('likePost/{slug}','PostController@likePost');
         Route::post('unLikePost/{slug}','PostController@unLikePost');
+        Route::post('commentOnPost/{slug}','PostController@commentOnPost');
+        Route::post('removeComment','PostController@removeComment');
     });

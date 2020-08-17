@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use App\Helpers\Pagination;
+use App\Http\Resources\PostCollection;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -13,28 +16,66 @@ class PostController extends Controller
     {
         $this->middleware('JWT', ['only' => 
             [
+                'myPostList',
                 'makeNewPost',
                 'likePost',
                 'unLikePost',
+                'commentOnPost',
+                'removeComment',
             ]
         ]);
     }
 
-
+    /**文章列表 */
     public function list(Request $request){
         $p = new Pagination($request);
 
         $total = Post::count();
         $postList = Post::skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc)->get();
 
+        $user_id_array = [];
+        foreach ($postList as $post) {
+            if(!in_array($post->user_id,$user_id_array)){
+                $user_id_array[] = $post->user_id;
+            }
+        }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) { $userDict[$user->id] = $user; }
+
+        $postList = new PostCollection($postList);
+        $postList = $postList->configureDict($userDict);
+        
         return response([
+            'pagination'=>$p,
             'total'=>$total,
             'postList'=>$postList
         ]);
     }
 
+    /** 我的所有po文 */
+    public function myPostList(Request $request){
+        $p = new Pagination($request);
+        $user = request()->user();
+
+        $total = Post::where('user_id',$user->id)->count();
+        $postList = Post::where('user_id',$user->id)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc)->get();
+
+        return response([
+            'pagination'=>$p,
+            'total'=>$total,
+            'postList'=>$postList
+        ]);
+    }
+
+    /** po文 */
     public function makeNewPost(Request $request){
-        
+        $this->validate($request,[
+            'title'=>'required',
+            'body'=>'required',
+        ]);
+
         $user = request()->user();
         $request->merge([
             'slug'=>'P' . uniqid(),
@@ -51,6 +92,7 @@ class PostController extends Controller
 
     }
 
+    /**按讚 */
     public function likePost($slug){
         $post = Post::where('slug',$slug)->firstOrFail();
         $user = request()->user();
@@ -66,6 +108,7 @@ class PostController extends Controller
         return response('success',200);
     }
 
+    /**收回讚 */
     public function unLikePost($slug){
         $post = Post::where('slug',$slug)->firstOrFail();
         if($post->likes == 0){ return response('success',200); }
@@ -82,5 +125,44 @@ class PostController extends Controller
         return response('success',200);
     }
 
+    /**在po文下面留言 */
+    public function commentOnPost(Request $request,$slug){
+        $this->validate($request,[
+            'comment'=>'required'
+        ]);
+
+        $post = Post::where('slug',$slug)->firstOrFail();
+        $user = request()->user();
+
+        try {
+            $post->makeComment($user->id,$request->comment);
+        } catch (\Throwable $th) {
+            return response($th,400);
+        }
+
+        return response('success',200);
+    }
+
+    /**刪除留言 */
+    public function removeComment(Request $request){
+        $this->validate($request,[
+            'comment_id'=>'required'
+        ]);
+        $user = request()->user();
+
+        $comment = Comment::findOrFail($request->comment_id);
+        if($comment->user_id != $user->id){
+            return response('error',400);
+        }
+
+        try {
+            $comment->removeCommentFromPost();
+        } catch (\Throwable $th) {
+            return response($th,400);
+        }
+
+        return response('success',200);
+
+    }
 
 }

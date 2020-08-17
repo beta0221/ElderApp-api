@@ -40,4 +40,15 @@ class Post extends Model
         return true;
     }
 
+    public function makeComment($user_id,$comment){
+        $this->comments += 1;
+        $this->save();
+
+        Comment::create([
+            'post_id'=>$this->id,
+            'user_id'=>$user_id,
+            'body'=>$comment
+        ]);
+    }
+
 }
