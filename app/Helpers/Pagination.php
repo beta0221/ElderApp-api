@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 class Pagination{
 
     public $page = 1;
-    public $rows = 15;
+    public $rows = 10;
     public $skip = 0;
     public $ascOrdesc = 'desc';
     public $orderBy = 'id';

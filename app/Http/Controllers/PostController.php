@@ -62,6 +62,12 @@ class PostController extends Controller
         $total = Post::where('user_id',$user->id)->count();
         $postList = Post::where('user_id',$user->id)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc)->get();
 
+        $userDict = [];
+        $userDict[$user->id] = $user;
+
+        $postList = new PostCollection($postList);
+        $postList = $postList->configureDict($userDict);
+
         return response([
             'pagination'=>$p,
             'total'=>$total,
@@ -85,10 +91,10 @@ class PostController extends Controller
         try {
             Post::create($request->all());
         } catch (\Throwable $th) {
-            return response($th,400);
+            return response(['m'=>$th],400);
         }
         
-        return response('success',200);
+        return response(['m'=>'success'],200);
 
     }
 
