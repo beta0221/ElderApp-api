@@ -34,13 +34,16 @@ class PostController extends Controller
         $post = new PostResource($post);
 
         $isAuthor = false;
+        $hasLiked = false;
         if($user = request()->user()){
-            if($user->id == $post->user_id){$isAuthor == true;}
+            if($user->id == $post->user_id){ $isAuthor == true; }
+            $hasLiked = $post->hasLikedBy($user->id);
         }
         
         return response([
             'post'=>$post,
-            'isAuthor'=>$isAuthor
+            'isAuthor'=>$isAuthor,
+            'hasLiked'=>$hasLiked,
         ]);
 
     }
@@ -124,13 +127,13 @@ class PostController extends Controller
         
         try {
             if(!$result = $post->likeBy($user->id)){
-                return response('您已按讚',200);
+                return response(['m'=>'您已按讚'],200);
             }
         } catch (\Throwable $th) {
-            return response($th,400);
+            return response(['m'=>'$th'],400);
         }
         
-        return response('success',200);
+        return response(['m'=>'success'],200);
     }
 
     /**收回讚 */
@@ -141,13 +144,13 @@ class PostController extends Controller
 
         try {
             if(!$result = $post->unLikeBy($user->id)){
-                return response('您已收回讚',200);
+                return response(['m'=>'您已收回讚'],200);
             }
         } catch (\Throwable $th) {
-            return response($th,400);
+            return response(['m'=>$th],400);
         }
         
-        return response('success',200);
+        return response(['m'=>'success'],200);
     }
 
     /**在po文下面留言 */

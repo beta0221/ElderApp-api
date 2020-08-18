@@ -44,6 +44,7 @@ class PostCollection extends ResourceCollection
             return [
                 'user_name'=>$user_name,
                 'user_image'=>$user_image,
+                'slug'=>$resource->slug,
                 'title'=>$resource->title,
                 'body'=>$resource->body,
                 'likes'=>$resource->likes,

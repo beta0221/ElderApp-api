@@ -10,9 +10,20 @@ class Post extends Model
     protected $table = 'post';
     protected $guarded=[];    
 
-
-    public function likeBy($user_id){
+    /**
+     * 是否按過讚 
+     * @return Boolean
+     * */
+    public function hasLikedBy($user_id){
         if(DB::table('post_like')->where('user_id',$user_id)->where('post_id',$this->id)->first()){
+            return true;
+        }
+        return false;
+    }
+
+    /**按讚 */
+    public function likeBy($user_id){
+        if($this->hasLikedBy($user_id)){    //已經按過
             return false;
         }
 
@@ -29,8 +40,9 @@ class Post extends Model
         
     }
 
+    /**收回讚 */
     public function unLikeBy($user_id){
-        if(!$row = DB::table('post_like')->where('user_id',$user_id)->where('post_id',$this->id)->first()){
+        if(!$this->hasLikedBy($user_id)){   //沒按過
             return false;
         }
         DB::table('post_like')->where('user_id',$user_id)->where('post_id',$this->id)->delete();
@@ -40,6 +52,7 @@ class Post extends Model
         return true;
     }
 
+    /**留言 */
     public function makeComment($user_id,$comment){
         $this->comments += 1;
         $this->save();
