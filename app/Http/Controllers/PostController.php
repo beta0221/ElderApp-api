@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Comment;
 use App\Helpers\Pagination;
 use App\Http\Resources\CommentCollection;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Post;
@@ -163,12 +164,20 @@ class PostController extends Controller
         $user = request()->user();
 
         try {
-            $post->makeComment($user->id,$request->comment);
+            $comment = $post->makeComment($user->id,$request->comment);
         } catch (\Throwable $th) {
-            return response($th,400);
+            return response(['m'=>$th],400);
         }
 
-        return response('success',200);
+        $userDict = [];
+        $userDict[$user->id] = $user;
+
+        $comment = new CommentResource($comment);
+        $comment = $comment->configureDict($userDict);
+
+        return response([
+            'comment'=>$comment,
+        ],200);
     }
 
     /**刪除留言 */
