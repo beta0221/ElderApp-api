@@ -41,7 +41,7 @@ class PostController extends Controller
             $hasLiked = $post->hasLikedBy($user->id);
         }
         
-        return response([
+        return response()->json([
             'post'=>$post,
             'isAuthor'=>$isAuthor,
             'hasLiked'=>$hasLiked,
@@ -70,7 +70,7 @@ class PostController extends Controller
         $postList = new PostCollection($postList);
         $postList = $postList->configureDict($userDict);
         
-        return response([
+        return response()->json([
             'pagination'=>$p,
             'total'=>$total,
             'postList'=>$postList
@@ -91,7 +91,7 @@ class PostController extends Controller
         $postList = new PostCollection($postList);
         $postList = $postList->configureDict($userDict);
 
-        return response([
+        return response()->json([
             'pagination'=>$p,
             'total'=>$total,
             'postList'=>$postList
