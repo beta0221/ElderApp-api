@@ -44139,12 +44139,12 @@ var render = function() {
                     "v-flex",
                     { attrs: { md3: "" } },
                     [
-                      _c("label", [_vm._v("各半支付（樂幣）")]),
+                      _c("label", [_vm._v("樂幣抵用（各半）")]),
                       _vm._v(" "),
                       _c("v-text-field", {
                         attrs: {
-                          label: "各半支付（樂幣）",
-                          placeholder: "各半支付（樂幣）",
+                          label: "樂幣抵用（各半）",
+                          placeholder: "樂幣抵用（各半）",
                           solo: ""
                         },
                         model: {
@@ -44163,12 +44163,12 @@ var render = function() {
                     "v-flex",
                     { attrs: { md3: "" } },
                     [
-                      _c("label", [_vm._v("各半支付（現金）")]),
+                      _c("label", [_vm._v("現金支付（各半）")]),
                       _vm._v(" "),
                       _c("v-text-field", {
                         attrs: {
-                          label: "各半支付（現金）",
-                          placeholder: "各半支付（現金）",
+                          label: "現金支付（各半）",
+                          placeholder: "現金支付（各半）",
                           solo: ""
                         },
                         model: {
@@ -44194,12 +44194,12 @@ var render = function() {
                     "v-flex",
                     { attrs: { md3: "" } },
                     [
-                      _c("label", [_vm._v("現金購買")]),
+                      _c("label", [_vm._v("現金原價")]),
                       _vm._v(" "),
                       _c("v-text-field", {
                         attrs: {
-                          label: "現金購買",
-                          placeholder: "現金購買",
+                          label: "現金原價",
+                          placeholder: "現金原價",
                           solo: ""
                         },
                         model: {
