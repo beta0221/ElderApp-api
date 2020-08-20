@@ -105,7 +105,8 @@
         
 
         <v-col cols="12" sm="6" md="3">
-          <ckeditor id="editor" :editor="editor" v-model="form.info" :config="editorConfig"></ckeditor>
+          <!-- <ckeditor id="editor" :editor="editor" v-model="form.info" :config="editorConfig"></ckeditor> -->
+          <markdown-editor v-model="form.info"></markdown-editor>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">

@@ -12,6 +12,8 @@ import Vuetify from 'vuetify'
 
 Vue.use(Vuetify)
 
+import VueSimplemde from 'vue-simplemde'
+Vue.use(VueSimplemde)
 
 import CKEditor from '@ckeditor/ckeditor5-vue';
 Vue.use(CKEditor)
