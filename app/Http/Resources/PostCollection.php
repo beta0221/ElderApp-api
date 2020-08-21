@@ -37,9 +37,9 @@ class PostCollection extends ResourceCollection
                 }
             }
 
-            if(strlen($resource->body) > 20){
-                $resource->body = substr($resource->body,0,20) . '...';
-            }
+            // if(strlen($resource->body) > 20){
+            //     $resource->body = substr($resource->body,0,20) . '...';
+            // }
 
             return [
                 'user_name'=>$user_name,
