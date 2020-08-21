@@ -11,6 +11,7 @@ use App\Http\Resources\PostResource;
 use App\Post;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -98,6 +99,28 @@ class PostController extends Controller
         ]);
     }
 
+    /**
+     * 處理上傳的圖片
+     * @return mixed false 失敗 imageName(String)成功
+     */
+    private function handleImage($image,$slug){
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $image = base64_decode($image);
+        $imageName = $slug.'.'.'png';
+        $ftpPath = "/posts/$slug/";
+        if(Storage::disk('ftp')->exists($ftpPath)){
+            if(!$result = Storage::disk('ftp')->deleteDirectory($ftpPath)){
+                return false;
+            }
+        }
+        if(!Storage::disk('ftp')->put($ftpPath . $imageName,$image)){
+            return false;
+        }
+
+        return $imageName;
+    }
+
     /** po文 */
     public function makeNewPost(Request $request){
         $this->validate($request,[
@@ -105,9 +128,19 @@ class PostController extends Controller
             'body'=>'required',
         ]);
 
+        $slug = 'P' . uniqid();
+        if(!empty($request->image)){
+            $imageName = $this->handleImage($request->image,$slug);
+            if(empty($imageName)){
+                return response(['m'=>'error'],500);
+            }
+            $request['images'] = $imageName;
+        }
+
         $user = request()->user();
+        $request->request->remove('image');
         $request->merge([
-            'slug'=>'P' . uniqid(),
+            'slug'=>$slug,
             'user_id'=>$user->id
         ]);
 
