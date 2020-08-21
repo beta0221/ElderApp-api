@@ -29,12 +29,16 @@ class PostCollection extends ResourceCollection
             
             $user_name = '';
             $user_image = null;
+            $post_image = null;
             if(isset($this->userDict[$resource->user_id])){
                 $user = $this->userDict[$resource->user_id];
                 $user_name = $user->name;
                 if($user->img){
                     $user_image = config('app.static_host') . "/users/$user->id_code/$user->img";    
                 }
+            }
+            if($resource->images){
+                $post_image = config('app.static_host') . "/posts/$resource->slug/$resource->images";    
             }
 
             if(strlen($resource->body) > 20){
@@ -44,6 +48,7 @@ class PostCollection extends ResourceCollection
             return [
                 'user_name'=>$user_name,
                 'user_image'=>$user_image,
+                'post_image'=>$post_image,
                 'slug'=>$resource->slug,
                 'title'=>$resource->title,
                 'body'=>$resource->body,
