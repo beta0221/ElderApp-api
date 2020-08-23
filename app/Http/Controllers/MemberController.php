@@ -95,7 +95,7 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'association' => 'required|integer',
+            // 'association_id' => 'required',
             'email' => 'required|unique:users|min:8',
             'password' => 'required',
             'name' => 'required',
@@ -106,6 +106,8 @@ class MemberController extends Controller
             //'address' => 'required',//
             'pay_method'=>'required',
         ]);
+        
+        $request->merge(['association_id'=>1]);
 
         if($request->pay_method == 1){
             $inviter = User::where('phone',$request->inviter_id_code)->orWhere('id_code',$request->inviter_id_code)->firstOrFail();

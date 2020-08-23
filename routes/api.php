@@ -56,6 +56,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
 //Guest 使用者------------------------
 
     //MemberController
+    Route::get('getAllAssociation','MemberController@getAllAssociation');
     Route::get('inviterCheck','MemberController@inviterCheck');
     Route::post('extendMemberShip','MemberController@extendMemberShip');
     Route::post('member/join','MemberController@store');
