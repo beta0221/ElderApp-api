@@ -28,9 +28,6 @@ Route::get('view_me','AuthController@view_me');
 
 //Route::get('/sendMoney','TransactionController@sendMoney');
 
-Route::get('getGroup','MemberController@getGroup');
-Route::get('countGroup','MemberController@countGroup');
-
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
 Route::get('/member/join','MemberController@create');
