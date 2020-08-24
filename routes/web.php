@@ -27,6 +27,7 @@ Route::get('web_admin_login_page','AuthController@view_admin_login')->name('web_
 Route::get('view_me','AuthController@view_me');
 
 //Route::get('/sendMoney','TransactionController@sendMoney');
+Route::get('fix_trans','TransactionController@fix_trans');
 
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
