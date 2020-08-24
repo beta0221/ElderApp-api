@@ -19,6 +19,11 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
+import CKEditor from '@ckeditor/ckeditor5-vue';
+Vue.use(CKEditor)
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+window.ClassicEditor = ClassicEditor
+
 import User from './SupplierHelper/User'
 window.User = User
 

@@ -234,7 +234,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label>商品詳細內容</label>
-                    <textarea name id cols="100" rows="5" v-model="tempProduct.info"></textarea>
+                    <ckeditor id="editor" :editor="editor" v-model="tempProduct.info" :config="editorConfig"></ckeditor>
                   </div>
                 </div>
               </div>
@@ -253,6 +253,7 @@
 <script>
 import ProductOrderListPanel from "../components/ProductOrderListPanel";
 import Pegination from "./Pegination";
+import MyUploadAdapter from '../Helpers/MyUploadAdapter';
 export default {
   components: {
     ProductOrderListPanel,
@@ -260,6 +261,15 @@ export default {
   },
   data() {
     return {
+      editor:ClassicEditor,
+      editorConfig:{
+        placeholder: 'Type some text...',
+        extraPlugins:[(editor)=>{
+          editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            return new MyUploadAdapter( loader , `/api/image/upload/productContent/${this.product_slug}`);
+          };
+        }]
+      },
       pagination: {
         sortBy: "id",
         descending: true,
