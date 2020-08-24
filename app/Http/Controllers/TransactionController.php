@@ -384,16 +384,4 @@ class TransactionController extends Controller
     }
 
 
-    public function fix_trans(){
-        $transList = Transaction::where('event','續會獎勵')->where('amount',300)->take(10)->get();
-        foreach ($transList as $tran) {
-            if($user = User::find($tran->user_id)){
-                $user->updateWallet(User::INCREASE_WALLET,200);
-            }
-            $tran->amount = 500;
-            $tran->save();
-        }
-
-        return response()->json($transList);
-    }
 }

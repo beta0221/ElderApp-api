@@ -28,6 +28,7 @@ class MemberController extends Controller
             'updateMemberLevel',
             'memberGroupMembers',
             'getAllAssociation',
+            'countGroup'
         ]]);
         $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers']]);
     }
@@ -788,6 +789,28 @@ class MemberController extends Controller
 
     public function getAllAssociation(){
         return response(Association::all());
+    }
+
+    public function getGroup(Request $request){
+        $page = ($request->page)?$request->page:1;
+        $groupLeader = DB::table('user_group')->select('group_id')->groupBy('group_id')->get();
+        return response()->json($groupLeader);
+    }
+
+    public function countGroup(Request $request){
+        
+        $user = User::find($request->leader_id);
+        $user_id_array = DB::table('user_group')->where('group_id',$request->leader_id)->pluck('user_id');
+        $count = User::whereIn('id',$user_id_array)->where('valid',1)->count();
+        // return response()->json([
+        //     '組長'=>$user->name,
+        //     '有效組員'=>$count,
+        // ]);
+
+        echo '組長:' .$user->name;
+        echo '<br>';
+        echo '有效組員:' .$count;
+
     }
     
 }
