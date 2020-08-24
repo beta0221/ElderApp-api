@@ -3,11 +3,14 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-
+import SupplierOrders from '../supplierComponents/SupplierOrders'
+import SupplierLogin from '../supplierComponents/SupplierLogin'
 
 
 const routes = [
-    
+    {path:'/supplier/supplierOrders',name:'supplierOrders',component: SupplierOrders},
+    {path:'/supplier/supplierLogin',name:'supplierLogin',component: SupplierLogin},
+    {path:'/supplier/admin',name:'supplierLogin',component: SupplierLogin},
 ]
 
 

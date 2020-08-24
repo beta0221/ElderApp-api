@@ -64,9 +64,8 @@ Route::group(['prefix'=>'order'],function(){
     Route::get('detail/{order_numero}','OrderController@view_orderDetail');
     Route::get('list','OrderController@view_orderList');
 });
-
-Route::view('/supplier/admin','supplierAdmin');
-Route::view('/supplier/admin/{any}','supplierAdmin');
+Route::view('/supplier/{any}','supplierAdmin');
+Route::view('/supplier/{any}/{any}','supplierAdmin');
 
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');

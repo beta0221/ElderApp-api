@@ -8,7 +8,9 @@
         <div style="padding-left:24px" v-for="(value,key) in dashboardData.ageDist" v-bind:key="key">
             <h4><span>{{key}}</span>：<span>{{value}}</span></h4>
         </div>
+       
   </div>
+  
 </template>
 
 <script>
@@ -56,7 +58,7 @@ export default {
             .catch(error => {
                 Exception.handle(error);
             })
-        }
+        },
     }
 
 }

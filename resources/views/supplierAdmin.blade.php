@@ -11,6 +11,7 @@
 <body>
     <div id="app">
         <app-home></app-home>
+        {{-- <app-login></app-login> --}}
     </div>
 </body>
 <script src="{{asset('js/supplierApp.js')}}"></script>

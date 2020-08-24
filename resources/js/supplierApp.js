@@ -7,8 +7,23 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-import Vue from 'vue'
+import Vue from 'vue';
+import 'bootstrap';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+library.add(faUserSecret);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+Vue.config.productionTip = false;
+
+import User from './SupplierHelper/User'
+window.User = User
+
+import Exception from './SupplierHelper/Exception'
+window.Exception = Exception
 
 window.EventBus = new Vue();
 /**
@@ -23,7 +38,7 @@ window.EventBus = new Vue();
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('app-home', require('./supplierComponents/AppHome').default);
-
+// Vue.component('app-login',require('./supplierComponents/SupplierLogin').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
