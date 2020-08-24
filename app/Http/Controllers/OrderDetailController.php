@@ -16,7 +16,7 @@ class OrderDetailController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['productOrderList']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['productOrderList','deleteOrderDetail']]);
         $this->middleware('JWT', ['only' => ['myOrderListV2']]);
     }
 
@@ -204,6 +204,29 @@ class OrderDetailController extends Controller
         return response([
             'total'=>$total,
             'orderList'=>$orderList
+        ]);
+
+    }
+
+    /**
+     * 取消樂幣兌換的訂單
+     */
+    public function deleteOrderDetail(Request $request){
+        $this->validate($request,[
+            'order_detail_id'=>'required'
+        ]);
+
+        $orderDetail = OrderDetail::findOrFail($request->order_detail_id);
+
+        if($orderDetail->receive){
+            return response(['s'=>0,'m'=>'此商品已領取無法取消']);
+        }
+
+        $orderDetail->delete();
+
+        return response([
+            's'=>1,
+            'm'=>'success'
         ]);
 
     }

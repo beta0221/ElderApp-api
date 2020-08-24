@@ -10,6 +10,7 @@
                 style="margin-bottom:4px"
                 v-for="o in orderList"
                 v-bind:key="o.id">
+                <button style="background:red;padding:0 4px;color:#fff" v-if="!(o.receive)" @click="deleteOrderDetail(o.id)">取消訂單</button>
                 {{o.created_at}} => {{o.name}} （{{o.location}}） <font color="green">{{(o.receive)?'已領取':''}}</font>
                 </p>
             </div>
@@ -67,7 +68,28 @@ export default {
         .then(res => {
             this.orderList = res.data.orderList;
             this.total = res.data.total;
-        })      
+        })
+        .catch(err => {
+          Exception.handle(err);
+        })
+    },
+    deleteOrderDetail(id){
+      if(!confirm('確定刪除？')){
+        return;
+      }
+      axios.post('/api/order/deleteOrderDetail',{
+        'order_detail_id':id,
+      })
+      .then(res => {
+        if(res.data.s != 1){
+          alert(res.data.m);
+          return;
+        }
+        this.getProductOrderList();
+      })
+      .catch(err => {
+        Exception.handle(err);
+      })
     },
     setPage(page){
         this.pagination.page = page;

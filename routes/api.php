@@ -133,6 +133,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('order/myOrderList','OrderDetailController@myOrderListV2');
     //後台
     Route::get('order/productOrderList/{product_id}','OrderDetailController@productOrderList');
+    Route::post('order/deleteOrderDetail','OrderDetailController@deleteOrderDetail');
 
     //後台
     Route::group(['prefix'=>'order'],function(){
