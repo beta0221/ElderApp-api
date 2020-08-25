@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Category;
 use App\FreqEventUser;
+use App\Helpers\ImageResizer;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
@@ -210,10 +210,11 @@ class EventController extends Controller
             }
         }
         
-        if(!Storage::disk('local')->put($path . $filename,File::get($file))){
+        $img = ImageResizer::aspectFit($file,300)->encode();
+        if(!Storage::disk('local')->put($path . $filename,$img)){
             return false;//失敗:回傳false
         }
-        if(!Storage::disk('ftp')->put($ftpPath . $filename,File::get($file))){
+        if(!Storage::disk('ftp')->put($ftpPath . $filename,$img)){
             return false;
         }
 
@@ -230,6 +231,9 @@ class EventController extends Controller
     public function show($slug)
     {
         $event= Event::where('slug',$slug)->first();
+
+        // $imgUrl = config('app.static_host') . "/events/$event->slug/$event->image";
+        // $event['imgUrl'] = $imgUrl;
         //-----------------------------------------------------------------是否有登入
        if($event){
         return response()->json([

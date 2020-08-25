@@ -244,6 +244,7 @@ export default {
           this.form.deadline = event.deadline;
           this.form.days = event.days;
           this.slug = event.slug;
+          //this.event_image = event.imgUrl;
           if(event.image){
             this.event_image = `https://static.happybi.com.tw/events/${event.slug}/${event.image}`;
           }

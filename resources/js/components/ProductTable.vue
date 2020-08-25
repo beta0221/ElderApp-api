@@ -93,8 +93,7 @@ export default {
         EventBus.$emit("showProductOrderListPanel",product);
       },
       getCategory() {
-      axios
-        .get(`/api/product-category/`)
+        axios.get(`/api/product-category/`)
         .then(res => {
           if (res.status == 200) {
             res.data.forEach(cat => {
@@ -105,11 +104,6 @@ export default {
         .catch(err => {
           console.error(err);
         });
-    },
-      getImagePath(slug,img){
-        // let imagePath = `/images/products/${slug}/${img}`;
-        let imagePath = `http://testatic.happybi.com.tw/products/${slug}/${img}`;
-        return imagePath;
       },
         editProduct(slug){
             this.$router.push({path:'/productForm/'+slug})

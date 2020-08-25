@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ImageResizer;
 use App\Http\Resources\LocationQuantityCollection;
 use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductListResource;
@@ -15,7 +16,6 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
@@ -282,11 +282,12 @@ class ProductController extends Controller
                 return false;
             }
         }
-        
-        if(!Storage::disk('local')->put($path . $filename,File::get($file))){
+
+        $img = ImageResizer::aspectFit($file,300)->encode();
+        if(!Storage::disk('local')->put($path . $filename,$img)){
             return false;//失敗:回傳false
         }
-        if(!Storage::disk('ftp')->put($ftpPath . $filename,File::get($file))){
+        if(!Storage::disk('ftp')->put($ftpPath . $filename,$img)){
             return false;
         }
         

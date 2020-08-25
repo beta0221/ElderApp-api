@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Helpers\ImageResizer;
 use App\Helpers\Pagination;
 use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CommentResource;
@@ -104,9 +105,7 @@ class PostController extends Controller
      * @return mixed false 失敗 imageName(String)成功
      */
     private function handleImage($image,$slug){
-        $image = str_replace('data:image/png;base64,', '', $image);
-        $image = str_replace(' ', '+', $image);
-        $image = base64_decode($image);
+        
         $imageName = $slug.'.'.'png';
         $ftpPath = "/posts/$slug/";
         if(Storage::disk('ftp')->exists($ftpPath)){
@@ -114,6 +113,12 @@ class PostController extends Controller
                 return false;
             }
         }
+        
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        //$image = base64_decode($image);
+        $image = ImageResizer::aspectFit($image,300)->encode();
+
         if(!Storage::disk('ftp')->put($ftpPath . $imageName,$image)){
             return false;
         }

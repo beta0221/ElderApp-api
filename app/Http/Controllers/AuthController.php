@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ImageResizer;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -224,7 +225,7 @@ class AuthController extends Controller
         $image = $request->image;  // your base64 encoded
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
-        $image = base64_decode($image);
+        //$image = base64_decode($image);
 
         $imageName = time().'.'.'png';
         $ftpPath = "/users/$user->id_code/";
@@ -236,6 +237,7 @@ class AuthController extends Controller
             }
         }
 
+        $image = ImageResizer::aspectFit($image,80)->encode();
         if(!Storage::disk('ftp')->put($ftpPath . $imageName,$image)){
             return response('error',500);
         }        
