@@ -96,10 +96,15 @@
         </v-layout>
 
         
+        
         <v-layout row wrap>
           <v-flex md3>
-            <label>現金原價</label>
-            <v-text-field label="現金原價" placeholder="現金原價" solo v-model="form.cash"></v-text-field>
+            <label>原價(顯示用)</label>
+            <v-text-field label="原價" placeholder="原價" solo v-model="form.original_cash"></v-text-field>
+          </v-flex>
+          <v-flex md3>
+            <label>優惠價(實際購買)</label>
+            <v-text-field label="優惠價" placeholder="優惠價" solo v-model="form.cash"></v-text-field>
           </v-flex>
         </v-layout>
         
@@ -155,6 +160,7 @@ export default {
         price: null,
         pay_cash_price:null,
         pay_cash_point:null,
+        original_cash:null,
         cash:null,
         exchange_max:null,
         info:"",
@@ -222,6 +228,7 @@ export default {
             this.form.price = res.data.product.price;
             this.form.pay_cash_price = res.data.product.pay_cash_price;
             this.form.pay_cash_point = res.data.product.pay_cash_point;
+            this.form.original_cash = res.data.product.original_cash;
             this.form.cash = res.data.product.cash;
             this.form.exchange_max = res.data.product.exchange_max;
             this.form.info = res.data.product.info;

@@ -28,6 +28,7 @@ class ProductDetailResource extends JsonResource
             'price'=>$this->price,
             'pay_cash_point'=>$this->pay_cash_point,
             'pay_cash_price'=>$this->pay_cash_price,
+            'original_cash'=>$this->original_cash,
             'cash'=>$this->cash,
             'product_category_id'=>$this->product_category_id,
             'info'=>$this->info,

@@ -117,7 +117,7 @@ class PostController extends Controller
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
         //$image = base64_decode($image);
-        $image = ImageResizer::aspectFit($image,300)->encode();
+        $image = ImageResizer::aspectFit($image,400)->encode();
 
         if(!Storage::disk('ftp')->put($ftpPath . $imageName,$image)){
             return false;

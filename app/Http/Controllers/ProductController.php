@@ -283,7 +283,7 @@ class ProductController extends Controller
             }
         }
 
-        $img = ImageResizer::aspectFit($file,300)->encode();
+        $img = ImageResizer::aspectFit($file,400)->encode();
         if(!Storage::disk('local')->put($path . $filename,$img)){
             return false;//失敗:回傳false
         }
