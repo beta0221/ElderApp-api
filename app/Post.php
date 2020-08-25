@@ -10,6 +10,8 @@ class Post extends Model
     protected $table = 'post';
     protected $guarded=[];    
 
+    const MAX_LIKES_PER_DAY = 3;
+    const MAX_POSTS_PER_DAY = 1;
     /**
      * 是否按過讚 
      * @return Boolean
@@ -19,6 +21,29 @@ class Post extends Model
             return true;
         }
         return false;
+    }
+
+    /**發文是否已達當日上限 */
+    public static function checkPostMax($user_id){
+        $count = Post::where('user_id',$user_id)
+        ->whereDate('created_at', \Carbon\Carbon::today())
+        ->count();
+        if($count >= static::MAX_POSTS_PER_DAY){
+            return false;
+        }
+        return true;
+    }
+
+    /**按讚是否已達當日上限 */
+    public static function checkLikeMax($user_id){
+        $count = DB::table('post_like')
+        ->where('user_id',$user_id)
+        ->whereDate('created_at', \Carbon\Carbon::today())
+        ->count();
+        if($count >= static::MAX_LIKES_PER_DAY){
+            return false;
+        }
+        return true;
     }
 
     /**按讚 */

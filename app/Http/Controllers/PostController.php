@@ -127,6 +127,11 @@ class PostController extends Controller
             'title'=>'required',
             'body'=>'required',
         ]);
+        $user = request()->user();
+
+        if(!Post::checkPostMax($user->id)){
+            return response(['alert'=>'已達當日發文上限','m'=>'error']);
+        }
 
         $slug = 'P' . uniqid();
         if(!empty($request->image)){
@@ -137,7 +142,6 @@ class PostController extends Controller
             $request['images'] = $imageName;
         }
 
-        $user = request()->user();
         $request->request->remove('image');
         $request->merge([
             'slug'=>$slug,
@@ -159,12 +163,16 @@ class PostController extends Controller
         $post = Post::where('slug',$slug)->firstOrFail();
         $user = request()->user();
         
+        if(!Post::checkLikeMax($user->id)){
+            return response(['alert'=>'已達當日按讚上限','m'=>'error']);
+        }
+
         try {
             if(!$result = $post->likeBy($user->id)){
                 return response(['m'=>'您已按讚'],200);
             }
         } catch (\Throwable $th) {
-            return response(['m'=>'$th'],400);
+            return response(['m'=>$th],400);
         }
         
         return response(['m'=>'success'],200);
@@ -195,6 +203,10 @@ class PostController extends Controller
 
         $post = Post::where('slug',$slug)->firstOrFail();
         $user = request()->user();
+
+        if(!Comment::checkCommentMax($user->id)){
+            return response(['alert'=>'已達當日留言上限','m'=>'error']);
+        }
 
         try {
             $comment = $post->makeComment($user->id,$request->comment);
