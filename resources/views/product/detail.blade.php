@@ -55,7 +55,10 @@
             <h2 class="mb-3">{{$product->name}}</h2>
 
             <h3>台幣</h3>
-            <h3><font color="#ff5252">{{$product->cash}}</font></h3>
+            <h3>
+                <font color="#ff5252">{{$product->cash}}</font>
+                <font style="text-decoration: line-through;" size="3" color="gray">原價:{{$product->original_cash}}</font>
+            </h3>
             <h3>台幣/樂幣</h3>
             <h3><font color="#ff5252">{{$product->pay_cash_price}}</font>/<font color="#fb8c00">{{$product->pay_cash_point}}</font></h3>
         </div>
