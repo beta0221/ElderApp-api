@@ -10,8 +10,11 @@
           新增產品
         </v-btn>
       </router-link>
+      <div style="display:inline-block;width:160px;margin-left:20px;">
+        <v-select v-model="public" :items="publicSelectItem" item-value="value" label="上下架"></v-select>
+      </div>
       
-  </div>
+    </div>
 
 
 
@@ -60,6 +63,7 @@ export default {
         return{
           product_category:{},
             pagination: { sortBy: "id", descending: true },
+            public:null,
             totalProduct: 0,
             productAray:[],
             loading: true,
@@ -72,16 +76,19 @@ export default {
                 { text: "價錢", value: "price" },
                 { text: "-"},
             ],
+            publicSelectItem:[
+              {text:'全部',value:null},
+              {text:'上架',value:1},
+              {text:'下架',value:0},
+            ]
         }
     },
     watch:{
         pagination:{
-            handler(){
-                this.getDataFromApi().then(data => {
-                    this.productAray = data.items;
-                    this.totalProduct = data.total;
-                });
-            }
+          handler(){this.getData();}
+        },
+        public:{
+          handler(){this.getData();}
         }
     },
     created(){
@@ -89,6 +96,12 @@ export default {
       this.getCategory();
     },
     methods:{
+      getData(){
+        this.getDataFromApi().then(data => {
+          this.productAray = data.items;
+          this.totalProduct = data.total;
+        });
+      },
       showProductOrderListPanel(product){
         EventBus.$emit("showProductOrderListPanel",product);
       },
@@ -119,7 +132,8 @@ export default {
                     page: this.pagination.page,
                     rowsPerPage: this.pagination.rowsPerPage,
                     descending: this.pagination.descending,
-                    sortBy: this.pagination.sortBy
+                    sortBy: this.pagination.sortBy,
+                    public:this.public,
                     }
                 })
                 .then(res => {

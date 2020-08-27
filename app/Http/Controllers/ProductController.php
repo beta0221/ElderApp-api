@@ -12,6 +12,7 @@ use App\Product;
 use App\Location;
 use App\ProductCategory;
 use App\Transaction;
+use App\Helpers\Pagination;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -32,28 +33,23 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->page;
-        $rows = ($request->rowsPerPage)?$request->rowsPerPage:15;
-        $skip = ($page - 1) * $rows;
-        if ($request->descending == null || $request->descending == 'false') {
-            $ascOrdesc = 'asc';
-        } else {
-            $ascOrdesc = 'desc';
-        }
-        $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+        $p = new Pagination($request);
 
         $query = DB::table('products')
         ->select('*');
 
-        $user = Auth::user();
+        $user = request()->user();
         if($user->hasRole('firm')){
             $query = $query->where('firm_id',$user->id);
         }
+        if($request->has('public')){
+            $query = $query->where('public',$request->public);
+        }
 
         $total = $query->count();
-        $products = $query->orderBy($orderBy, $ascOrdesc)
-        ->skip($skip)
-        ->take($rows)
+        $products = $query->orderBy($p->orderBy, $p->ascOrdesc)
+        ->skip($p->skip)
+        ->take($p->rows)
         ->get();
 
         $products = ProductListResource::collection($products);

@@ -22,6 +22,9 @@ class Pagination{
         if($request->descending == null || $request->descending == 'false'){
             $this->ascOrdesc = 'asc';
         }
+        if($request->sortBy){
+            $this->orderBy = $request->sortBy;
+        }
 
         $this->skip = ($this->page - 1) * $this->rows;
     }
