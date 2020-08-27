@@ -49633,7 +49633,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "number" },
                             domProps: { value: _vm.tempProduct.pay_cash_point },
                             on: {
                               input: function($event) {
@@ -49665,7 +49665,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "number" },
                             domProps: { value: _vm.tempProduct.pay_cash_price },
                             on: {
                               input: function($event) {
@@ -49692,13 +49692,13 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.tempProduct.cash,
-                                expression: "tempProduct.cash"
+                                value: _vm.tempProduct.original_cash,
+                                expression: "tempProduct.original_cash"
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.tempProduct.cash },
+                            attrs: { type: "number" },
+                            domProps: { value: _vm.tempProduct.original_cash },
                             on: {
                               input: function($event) {
                                 if ($event.target.composing) {
@@ -49706,7 +49706,7 @@ var render = function() {
                                 }
                                 _vm.$set(
                                   _vm.tempProduct,
-                                  "cash",
+                                  "original_cash",
                                   $event.target.value
                                 )
                               }
@@ -49729,7 +49729,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "number" },
                             domProps: { value: _vm.tempProduct.cash },
                             on: {
                               input: function($event) {

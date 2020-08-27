@@ -162,27 +162,27 @@
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>各半支付（樂幣）</label>
-                    <input type="text" class="form-control" v-model="tempProduct.pay_cash_point" />
+                    <input type="number" class="form-control" v-model="tempProduct.pay_cash_point" />
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>各半支付（現金）</label>
-                    <input type="text" class="form-control" v-model="tempProduct.pay_cash_price" />
+                    <input type="number" class="form-control" v-model="tempProduct.pay_cash_price" />
                   </div>
                 </div>
 
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>現金購買</label>
-                    <input type="text" class="form-control" v-model="tempProduct.cash" />
+                    <input type="number" class="form-control" v-model="tempProduct.original_cash" />
                   </div>
                 </div>
 
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>特價現金</label>
-                    <input type="text" class="form-control" v-model="tempProduct.cash" />
+                    <input type="number" class="form-control" v-model="tempProduct.cash" />
                   </div>
                 </div>
 
