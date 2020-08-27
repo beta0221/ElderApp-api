@@ -13,9 +13,9 @@ class AuthController extends Controller
 {
 
     const iOSVer_requirement = 10102;
-    const androidVer_requirement = 0;
+    const androidVer_requirement = 2;
     const iOS_store_url = 'https://apps.apple.com/tw/app/%E9%8A%80%E9%AB%AE%E5%AD%B8%E9%99%A2/id1485979712';
-    const android_store_url = '';
+    const android_store_url = 'https://play.google.com/store/apps/details?id=com.elderApp.ElderApp';
 
     /**
      * Create a new AuthController instance.
