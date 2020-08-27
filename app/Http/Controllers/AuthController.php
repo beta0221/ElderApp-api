@@ -49,17 +49,13 @@ class AuthController extends Controller
      */
     public function login()
     {
-        Log::info('someone login');
         if($iOSVer = request('iOSVer')){
             if(static::iOSVer_requirement > (int)$iOSVer){
                 return $this->pleaseUpdateResponse();
             }
         }
         if($androidVer = request('androidVer')){
-            Log::info('android device');
-            Log::info($androidVer);
             if(static::androidVer_requirement > (int)$androidVer){
-                Log::info('return update response');
                 return $this->pleaseUpdateResponse();
             }
         }
