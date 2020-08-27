@@ -11958,6 +11958,43 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "CheckboxBtn",
+  props: ["isChecked"],
+  data: function data() {
+    return {
+      aaa: this.isChecked
+    };
+  },
+  watch: {
+    isChecked: function isChecked(val) {
+      this.aaa = val;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/Pegination.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/Pegination.vue?vue&type=script&lang=js& ***!
@@ -12086,6 +12123,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ProductOrderListPanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/ProductOrderListPanel */ "./resources/js/components/ProductOrderListPanel.vue");
 /* harmony import */ var _Pegination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Pegination */ "./resources/js/supplierComponents/Pegination.vue");
 /* harmony import */ var _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Helpers/MyUploadAdapter */ "./resources/js/Helpers/MyUploadAdapter.js");
+/* harmony import */ var _CheckboxBtn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CheckboxBtn */ "./resources/js/supplierComponents/CheckboxBtn.vue");
 //
 //
 //
@@ -12338,13 +12376,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     ProductOrderListPanel: _components_ProductOrderListPanel__WEBPACK_IMPORTED_MODULE_0__["default"],
-    Pegination: _Pegination__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Pegination: _Pegination__WEBPACK_IMPORTED_MODULE_1__["default"],
+    CheckboxBtn: _CheckboxBtn__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     var _this = this;
@@ -12352,9 +12412,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       editor: ClassicEditor,
       editorConfig: {
-        placeholder: 'Type some text...',
+        placeholder: "Type some text...",
         extraPlugins: [function (editor) {
-          editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+          editor.plugins.get("FileRepository").createUploadAdapter = function (loader) {
             return new _Helpers_MyUploadAdapter__WEBPACK_IMPORTED_MODULE_2__["default"](loader, "/api/image/upload/productContent/".concat(_this.product_slug));
           };
         }]
@@ -12448,13 +12508,20 @@ __webpack_require__.r(__webpack_exports__);
         Exception.handle(error);
       });
     },
+    getRecord: function getRecord(id) {
+      axios.get("/api/order/productOrderList/".concat(id)).then(function (res) {
+        console.log(res);
+      })["catch"](function (err) {
+        Exception.handle(error);
+      });
+    },
     submit: function submit() {
       var _this6 = this;
 
       var formdata = new FormData();
       var keysArray = Object.keys(this.tempProduct);
       keysArray.forEach(function (key) {
-        if (key == 'imgUrl') {
+        if (key == "imgUrl") {
           return;
         }
 
@@ -12483,7 +12550,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateProduct: function updateProduct(formdata) {
-      formdata.append('_method', 'PUT');
+      formdata.append("_method", "PUT");
       axios.post("/api/product/".concat(this.slug), formdata, {
         headers: {
           "content-type": "multipart/form-data"
@@ -12499,7 +12566,7 @@ __webpack_require__.r(__webpack_exports__);
     newProduct: function newProduct() {
       this.isNew = true;
       this.tempProduct = {
-        'select_location': []
+        select_location: []
       };
       this.product_quantity = {};
       this.selected_location = [];
@@ -12536,8 +12603,11 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
 
-      this.$set(this.tempProduct, 'select_location', new_select_location);
+      this.$set(this.tempProduct, "select_location", new_select_location);
       this.selected_location = new_select_location;
+    },
+    putIntemp: function putIntemp(che) {
+      this.tempProduct["public"] = che;
     },
     openModal: function openModal() {
       $("#productModal").modal("show");
@@ -17011,6 +17081,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.side-bar{\n    position: absolute;\n    left: 0;\n    top :0;\n    width: 150px;\n    height: 100%;\n}\n.content{\n    position: absolute;\n    left: 200px;\n    top: 0;\n    height: 100%;\n    width: calc(100% - 200px);\n    overflow-y: scroll;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.switch[data-v-441dc22c] {\n  position: relative;\n  cursor: pointer;\n  display: inline-block;\n  width: 54px;\n  height: 32px;\n}\n.checkbox[data-v-441dc22c] {\n  height: 32px;\n  width: 54px;\n  opacity: 0;\n  margin: 0;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n  cursor: pointer;\n}\n.track[data-v-441dc22c] {\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 32px;\n  width: 100%;\n  background-color: gray;\n  border-radius: 16px;\n}\n.thumb[data-v-441dc22c] {\n  position: absolute;\n  top: 2px;\n  left: 2px;\n  background-color: white;\n  border-radius: 50%;\n  height: 28px;\n  width: 28px;\n  transition: transform 0.1s ease-in-out;\n}\n.checkbox:checked ~ .thumb[data-v-441dc22c] {\n  transform: translateX(22px);\n}\n.checkbox:checked ~ .track[data-v-441dc22c] {\n  background-color: #51d86a;\n}\n", ""]);
 
 // exports
 
@@ -47926,6 +48015,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--7-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/SupplierLogin.vue?vue&type=style&index=0&id=48aaf80e&scoped=true&lang=css&":
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/SupplierLogin.vue?vue&type=style&index=0&id=48aaf80e&scoped=true&lang=css& ***!
@@ -48804,6 +48923,78 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "switch" }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.aaa,
+            expression: "aaa"
+          }
+        ],
+        staticClass: "checkbox",
+        attrs: { type: "checkbox", "true-value": 1, "false-value": 0 },
+        domProps: {
+          checked: Array.isArray(_vm.aaa)
+            ? _vm._i(_vm.aaa, null) > -1
+            : _vm._q(_vm.aaa, 1)
+        },
+        on: {
+          change: [
+            function($event) {
+              var $$a = _vm.aaa,
+                $$el = $event.target,
+                $$c = $$el.checked ? 1 : 0
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.aaa = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.aaa = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.aaa = $$c
+              }
+            },
+            function($event) {
+              return _vm.$emit("getValue", _vm.aaa)
+            }
+          ]
+        }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "track" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "thumb" })
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/Pegination.vue?vue&type=template&id=cb9c2a46&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/supplierComponents/Pegination.vue?vue&type=template&id=cb9c2a46& ***!
@@ -49142,10 +49333,6 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("td", { staticClass: "align-middle" }, [
-                  _vm._v(_vm._s(item.price))
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "align-middle" }, [
                   _c(
                     "button",
                     {
@@ -49158,6 +49345,20 @@ var render = function() {
                       }
                     },
                     [_vm._v("商品詳情")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-outline-secondary btn-sm",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.getRecord(item.id)
+                        }
+                      }
+                    },
+                    [_vm._v("\n                兌換紀錄\n              ")]
                   )
                 ])
               ])
@@ -49190,451 +49391,468 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("form", [
-                  _c("div", { staticClass: "row" }, [
-                    _c("div", { staticClass: "col-sm-4" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { attrs: { for: "image" } }, [
-                          _vm._v("輸入圖片網址")
+                  _c(
+                    "div",
+                    { staticClass: "row" },
+                    [
+                      _c("div", { staticClass: "col-sm-4" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "image" } }, [
+                            _vm._v("輸入圖片網址")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.imageUrl,
+                                expression: "tempProduct.imageUrl"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              id: "image",
+                              placeholder: "請輸入圖片連結"
+                            },
+                            domProps: { value: _vm.tempProduct.imageUrl },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "imageUrl",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
                         ]),
                         _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.imageUrl,
-                              expression: "tempProduct.imageUrl"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            id: "image",
-                            placeholder: "請輸入圖片連結"
-                          },
-                          domProps: { value: _vm.tempProduct.imageUrl },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "imageUrl",
-                                $event.target.value
-                              )
-                            }
-                          }
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "customFile" } }, [
+                            _vm._v(
+                              "\n                    或 上傳圖片\n                    "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            ref: "files",
+                            staticClass: "form-control",
+                            attrs: { type: "file", id: "customFile" },
+                            on: { change: _vm.fileUpload }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-8" }, [
+                        _c("img", {
+                          staticClass: "img-fluid",
+                          attrs: { src: _vm.product_imgUrl, alt: "" }
                         })
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { attrs: { for: "customFile" } }, [
-                          _vm._v(
-                            "\n                    或 上傳圖片\n                    "
-                          )
+                      _c("div", { staticClass: "col-sm-12 form-group" }, [
+                        _c("span", { staticClass: "col-sm-5 align-middle" }, [
+                          _vm._v("是否上架 :")
                         ]),
                         _vm._v(" "),
-                        _c("input", {
-                          ref: "files",
-                          staticClass: "form-control",
-                          attrs: { type: "file", id: "customFile" },
-                          on: { change: _vm.fileUpload }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-8" }, [
-                      _c("img", {
-                        staticClass: "img-fluid",
-                        attrs: { src: _vm.product_imgUrl, alt: "" }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("商品名稱")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.name,
-                              expression: "tempProduct.name"
-                            }
+                        _c(
+                          "span",
+                          {
+                            staticClass: "col-sm-5 align-middle",
+                            staticStyle: { display: "inline-block" }
+                          },
+                          [
+                            _c("CheckboxBtn", {
+                              attrs: { isChecked: _vm.tempProduct.public },
+                              on: { getValue: _vm.putIntemp }
+                            })
                           ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.name },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "name",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6 form-group" }, [
-                      _c("label", [_vm._v("商品類別")]),
+                          1
+                        )
+                      ]),
                       _vm._v(" "),
-                      _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.product_category_id,
-                              expression: "tempProduct.product_category_id"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { name: "", id: "" },
-                          on: {
-                            change: function($event) {
-                              var $$selectedVal = Array.prototype.filter
-                                .call($event.target.options, function(o) {
-                                  return o.selected
-                                })
-                                .map(function(o) {
-                                  var val = "_value" in o ? o._value : o.value
-                                  return val
-                                })
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "product_category_id",
-                                $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              )
-                            }
-                          }
-                        },
-                        _vm._l(_vm.product_category, function(op) {
-                          return _c(
-                            "option",
-                            { key: op.id, domProps: { value: op.id } },
-                            [_vm._v(_vm._s(op.name))]
-                          )
-                        }),
-                        0
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("現金購買")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.cash,
-                              expression: "tempProduct.cash"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.cash },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "cash",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("樂幣兌換")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.price,
-                              expression: "tempProduct.price"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.price },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "price",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("各半支付（樂幣）")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.pay_cash_point,
-                              expression: "tempProduct.pay_cash_point"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.pay_cash_point },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "pay_cash_point",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("各半支付（現金）")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.pay_cash_price,
-                              expression: "tempProduct.pay_cash_price"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.pay_cash_price },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "pay_cash_price",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("每人樂幣兌換上限數量")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.exchange_max,
-                              expression: "tempProduct.exchange_max"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.tempProduct.exchange_max },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.tempProduct,
-                                "exchange_max",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("是否上架")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tempProduct.public,
-                              expression: "tempProduct.public"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "checkbox",
-                            "true-value": 1,
-                            "false-value": 0
-                          },
-                          domProps: {
-                            checked: Array.isArray(_vm.tempProduct.public)
-                              ? _vm._i(_vm.tempProduct.public, null) > -1
-                              : _vm._q(_vm.tempProduct.public, 1)
-                          },
-                          on: {
-                            change: function($event) {
-                              var $$a = _vm.tempProduct.public,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? 1 : 0
-                              if (Array.isArray($$a)) {
-                                var $$v = null,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 &&
-                                    _vm.$set(
-                                      _vm.tempProduct,
-                                      "public",
-                                      $$a.concat([$$v])
-                                    )
-                                } else {
-                                  $$i > -1 &&
-                                    _vm.$set(
-                                      _vm.tempProduct,
-                                      "public",
-                                      $$a
-                                        .slice(0, $$i)
-                                        .concat($$a.slice($$i + 1))
-                                    )
-                                }
-                              } else {
-                                _vm.$set(_vm.tempProduct, "public", $$c)
-                              }
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      _vm._l(_vm.location, function(loc) {
-                        return _c("div", { key: loc.id }, [
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("商品名稱")]),
+                          _vm._v(" "),
                           _c("input", {
-                            attrs: { type: "checkbox" },
-                            domProps: { checked: _vm.isSelected(loc.id) },
-                            on: {
-                              change: function($event) {
-                                return _vm.clickLocationCheckbox($event, loc.id)
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.name,
+                                expression: "tempProduct.name"
                               }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("span", [_vm._v(_vm._s(loc.name))]),
-                          _vm._v(" "),
-                          _vm.tempProduct.select_location
-                            ? _c(
-                                "div",
-                                { staticStyle: { display: "inline-block" } },
-                                [
-                                  _vm.selected_location.includes(loc.id)
-                                    ? _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.product_quantity[loc.id],
-                                            expression:
-                                              "product_quantity[loc.id]"
-                                          }
-                                        ],
-                                        attrs: {
-                                          type: "number",
-                                          placeholder: "庫存數量"
-                                        },
-                                        domProps: {
-                                          value: _vm.product_quantity[loc.id]
-                                        },
-                                        on: {
-                                          input: function($event) {
-                                            if ($event.target.composing) {
-                                              return
-                                            }
-                                            _vm.$set(
-                                              _vm.product_quantity,
-                                              loc.id,
-                                              $event.target.value
-                                            )
-                                          }
-                                        }
-                                      })
-                                    : _vm._e()
-                                ]
-                              )
-                            : _vm._e()
-                        ])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-12" }, [
-                      _c(
-                        "div",
-                        { staticClass: "form-group" },
-                        [
-                          _c("label", [_vm._v("商品詳細內容")]),
-                          _vm._v(" "),
-                          _c("ckeditor", {
-                            attrs: {
-                              id: "editor",
-                              editor: _vm.editor,
-                              config: _vm.editorConfig
-                            },
-                            model: {
-                              value: _vm.tempProduct.info,
-                              callback: function($$v) {
-                                _vm.$set(_vm.tempProduct, "info", $$v)
-                              },
-                              expression: "tempProduct.info"
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.name },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "name",
+                                  $event.target.value
+                                )
+                              }
                             }
                           })
-                        ],
-                        1
-                      )
-                    ])
-                  ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6 form-group" }, [
+                        _c("label", [_vm._v("商品類別")]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.product_category_id,
+                                expression: "tempProduct.product_category_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { name: "", id: "" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "product_category_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          _vm._l(_vm.product_category, function(op) {
+                            return _c(
+                              "option",
+                              { key: op.id, domProps: { value: op.id } },
+                              [_vm._v(_vm._s(op.name))]
+                            )
+                          }),
+                          0
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("樂幣兌換")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.price,
+                                expression: "tempProduct.price"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.price },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "price",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("每人樂幣兌換上限數量")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.exchange_max,
+                                expression: "tempProduct.exchange_max"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.exchange_max },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "exchange_max",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("各半支付（樂幣）")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.pay_cash_point,
+                                expression: "tempProduct.pay_cash_point"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.pay_cash_point },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "pay_cash_point",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("各半支付（現金）")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.pay_cash_price,
+                                expression: "tempProduct.pay_cash_price"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.pay_cash_price },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "pay_cash_price",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("現金購買")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.cash,
+                                expression: "tempProduct.cash"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.cash },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "cash",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-6" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [_vm._v("特價現金")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tempProduct.cash,
+                                expression: "tempProduct.cash"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.tempProduct.cash },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.tempProduct,
+                                  "cash",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.location, function(loc) {
+                        return _c(
+                          "div",
+                          {
+                            key: loc.id,
+                            staticClass: "col-sm-3 form-group",
+                            staticStyle: { display: "inline-block" }
+                          },
+                          [
+                            _c("input", {
+                              staticClass: "col-sm-1",
+                              attrs: { type: "checkbox" },
+                              domProps: { checked: _vm.isSelected(loc.id) },
+                              on: {
+                                change: function($event) {
+                                  return _vm.clickLocationCheckbox(
+                                    $event,
+                                    loc.id
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              { staticClass: "col-sm-10 pr-0 pl-0" },
+                              [_vm._v(_vm._s(loc.name))]
+                            ),
+                            _vm._v(" "),
+                            _vm.tempProduct.select_location
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "col-sm-12 pl-0 pr-0",
+                                    staticStyle: { display: "inline-block" }
+                                  },
+                                  [
+                                    _vm.selected_location.includes(loc.id)
+                                      ? _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.product_quantity[loc.id],
+                                              expression:
+                                                "product_quantity[loc.id]"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "number",
+                                            placeholder: "庫存數量"
+                                          },
+                                          domProps: {
+                                            value: _vm.product_quantity[loc.id]
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.product_quantity,
+                                                loc.id,
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      : _vm._e()
+                                  ]
+                                )
+                              : _vm._e()
+                          ]
+                        )
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-12" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _c("label", [_vm._v("商品詳細內容")]),
+                            _vm._v(" "),
+                            _c("ckeditor", {
+                              attrs: {
+                                id: "editor",
+                                editor: _vm.editor,
+                                config: _vm.editorConfig
+                              },
+                              model: {
+                                value: _vm.tempProduct.info,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.tempProduct, "info", $$v)
+                                },
+                                expression: "tempProduct.info"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ])
+                    ],
+                    2
+                  )
                 ])
               ]),
               _vm._v(" "),
@@ -49655,7 +49873,7 @@ var render = function() {
                     attrs: { type: "button" },
                     on: { click: _vm.submit }
                   },
-                  [_vm._v("確認更改")]
+                  [_vm._v("確認")]
                 )
               ])
             ])
@@ -49710,8 +49928,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("名稱")]),
         _vm._v(" "),
-        _c("th", [_vm._v("價格")]),
-        _vm._v(" "),
         _c("th", [_vm._v("編輯訂單")])
       ])
     ])
@@ -49722,7 +49938,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header bg-dark text-white" }, [
       _c("h5", { staticClass: "modal-title", attrs: { id: "productModal" } }, [
-        _c("span", [_vm._v("訂單")])
+        _c("span", [_vm._v("商品詳情")])
       ]),
       _vm._v(" "),
       _c(
@@ -65455,6 +65671,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AppHome_vue_vue_type_template_id_7a15fa1e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AppHome_vue_vue_type_template_id_7a15fa1e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/supplierComponents/CheckboxBtn.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/supplierComponents/CheckboxBtn.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true& */ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true&");
+/* harmony import */ var _CheckboxBtn_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CheckboxBtn.vue?vue&type=script&lang=js& */ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& */ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _CheckboxBtn_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "441dc22c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/supplierComponents/CheckboxBtn.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CheckboxBtn.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&":
+/*!******************************************************************************************************************!*\
+  !*** ./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& ***!
+  \******************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--7-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=style&index=0&id=441dc22c&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_style_index_0_id_441dc22c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true& ***!
+  \****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/supplierComponents/CheckboxBtn.vue?vue&type=template&id=441dc22c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckboxBtn_vue_vue_type_template_id_441dc22c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
