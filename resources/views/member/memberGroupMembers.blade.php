@@ -125,8 +125,6 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">姓名</th>
-                        <th scope="col">身分證</th>
-                        <th scope="col">生日</th>
                         <th scope="col">電話</th>
                         <th scope="col">地區</th>
                         <th scope="col">入會日期</th>
@@ -140,8 +138,6 @@
                             <tr>
                                 <th scope="row">{{($i+1)}}</th>
                                 <td>{{$user->name}}</td>
-                                <td>{{$user->id_number}}</td>
-                                <td>{{$user->birthdate}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>{{(isset($districtDict[$user->district_id]))?$districtDict[$user->district_id]:''}}</td>
                                 <td>{{substr($user->created_at,0,10)}}</td>
