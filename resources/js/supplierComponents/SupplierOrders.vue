@@ -16,13 +16,13 @@
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-              <a class="nav-link" href="#">全部</a>
+              <a class="nav-link" :class="{'active':visibility=='all'}" @click="visibility='all'" href="#">全部</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">上架中</a>
+              <a class="nav-link" :class="{'active':visibility=='on'}" @click="visibility='on'" href="#">上架中</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">未上架</a>
+              <a class="nav-link" :class="{'active':visibility=='off'}" @click="visibility='off'" href="#">未上架</a>
             </li>
             <span class="align-right ml-auto">
               <pegination
@@ -44,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,key) in products" :key="key">
+            <tr v-for="(item,key) in filterProducts" :key="key">
               <td class="align-middle">{{key+1}}</td>
               <td class="align-middle">
                 <img class="thumbnail" :src="item.imgUrl" />
@@ -62,9 +62,10 @@
                 >商品詳情</button>
                 <button type="button" 
                 class="btn btn-outline-secondary btn-sm"
-                @click="getRecord(item.id)">
+                 @click="getRecord(item.id)">
                   兌換紀錄
-                </button>
+                </button> 
+                 <RecordModal :recordShow="recordShow" :products="products" :record="record" :itemKey="itemKey"></RecordModal>
               </td>
             </tr>
           </tbody>
@@ -275,11 +276,13 @@ import ProductOrderListPanel from "../components/ProductOrderListPanel";
 import Pegination from "./Pegination";
 import MyUploadAdapter from "../Helpers/MyUploadAdapter";
 import CheckboxBtn from "./CheckboxBtn";
+import RecordModal from './RecordModal';
 export default {
   components: {
     ProductOrderListPanel,
     Pegination,
     CheckboxBtn,
+    RecordModal,
   },
   data() {
     return {
@@ -316,7 +319,35 @@ export default {
       product_category: [],
       location: [],
       selected_location: [],
+      record:[],
+      recordTotal:"",
+      itemKey:'',
+      recordShow:false,
+      visibility:"all",
     };
+  },
+  computed:{
+      filterProducts(){
+        if(this.visibility=="all"){
+          return this.products;
+        }else if(this.visibility=="on"){
+          let newProducts=[];
+          this.products.forEach((item)=>{
+            if(item.public==1){
+              newProducts.push(item);
+            }
+          });
+          return newProducts;
+        }else if(this.visibility=="off"){
+          let newProducts=[];
+          this.products.forEach((item)=>{
+            if(item.public==0){
+              newProducts.push(item);
+            }
+          });
+          return newProducts;
+        }
+      },  
   },
   methods: {
     logout() {
@@ -395,6 +426,17 @@ export default {
     getRecord(id){
       axios.get(`/api/order/productOrderList/${id}`)
       .then(res => {
+        this.recordShow=!this.recordShow;
+        this.recordTotal=res.data.total;
+        this.record=res.data.orderList;
+
+        this.products.forEach((item,key)=>{
+          if(id==item.id){
+           this.itemKey=key;
+          }
+        })
+
+        
         console.log(res);
       })
       .catch(err => {
@@ -428,6 +470,7 @@ export default {
         .then((res) => {
           console.log(res);
           $("#productModal").modal("hide");
+          this.getProducts();
         })
         .catch((err) => {
           console.error(err);
@@ -445,6 +488,7 @@ export default {
         .then((res) => {
           console.log(res);
           $("#productModal").modal("hide");
+          this.getProducts();
         })
         .catch((err) => {
           console.error(err);
