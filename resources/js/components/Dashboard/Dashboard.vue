@@ -1,13 +1,50 @@
 <template>
-  <div style="padding:24px">
-        <h2>總會員數：{{dashboardData.totalSum}}</h2>
-        <h2>有效會員數：<font color="green">{{dashboardData.validSum}}</font></h2>
-        <h2>無效會員數：<font color="red">{{dashboardData.unValidSum}}</font></h2>
+  <div style="padding:12px 24px">
 
-        <h2>年齡區間</h2>
-        <div style="padding-left:24px" v-for="(value,key) in dashboardData.ageDist" v-bind:key="key">
-            <h4><span>{{key}}</span>：<span>{{value}}</span></h4>
-        </div>
+
+    <v-layout row wrap>
+
+        <v-flex md6>
+            <h2>總流通樂幣：<font color="orange">{{dashboardData.totalWallet}}</font></h2>
+            <h2>總會員數：{{dashboardData.totalSum}} 人</h2>
+            <h2>有效會員數：<font color="green">{{dashboardData.validSum}}</font> 人</h2>
+            <h2>無效會員數：<font color="red">{{dashboardData.unValidSum}}</font> 人</h2>
+
+            <h2>年齡區間</h2>
+            <div style="padding-left:24px" v-for="(value,key) in dashboardData.ageDist" v-bind:key="key">
+                <h4><span>{{key}} 歲</span>：<span>{{value}} 人</span></h4>
+            </div>
+
+            
+        </v-flex>
+
+        <v-flex md6>
+            
+            <h2>今日壽星名單</h2>
+            <div style="padding-left:24px" v-for="(name,index) in dashboardData.birthdayList" v-bind:key="index">
+                <h4>{{name}}</h4>
+            </div>
+            <h2>職位人數</h2>
+            <div style="padding-left:24px">
+                <h4><span>領航天使</span>：<span>{{dashboardData.orgRankSum5}} 人</span></h4>
+                <h4><span>守護天使</span>：<span>{{dashboardData.orgRankSum4}} 人</span></h4>
+                <h4><span>大天使</span>：<span>{{dashboardData.orgRankSum3}} 人</span></h4>
+                <h4><span>小天使</span>：<span>{{dashboardData.orgRankSum2}} 人</span></h4>
+                <h4><span>主人</span>：<span>{{dashboardData.orgRankSum1}} 人</span></h4>
+            </div>
+            
+
+            <h2>各區人數分布</h2>
+            <div style="padding-left:24px" v-for="(value,key) in dashboardData.districtSum" v-bind:key="key">
+                <h4><span>{{districtDict[key]}} 區</span>：<span>{{value}} 人</span></h4>
+            </div>
+            
+        </v-flex>
+
+    </v-layout>
+
+
+        
        
   </div>
   
@@ -22,7 +59,30 @@ export default {
                 {url:'getValid',param:'validSum'},
                 {url:'getUnValid',param:'unValidSum'},
                 {url:'getAgeDist',param:'ageDist'},
+                {url:'getTotalWallet',param:'totalWallet'},
+                {url:'getBirthdayList',param:'birthdayList'},
+                {url:'getOrgRankSum5',param:'orgRankSum5'},
+                {url:'getOrgRankSum4',param:'orgRankSum4'},
+                {url:'getOrgRankSum3',param:'orgRankSum3'},
+                {url:'getOrgRankSum2',param:'orgRankSum2'},
+                {url:'getOrgRankSum1',param:'orgRankSum1'},
+                {url:'getDistrictSum',param:'districtSum'},
             ],
+            districtDict:{
+                '1': "桃園",
+                '2': "中壢",
+                '3': "平鎮",
+                '4': "八德",
+                '5': "龜山",
+                '6': "蘆竹",
+                '7': "大園",
+                '8': "觀音",
+                '9': "新屋",
+                '10': "楊梅",
+                '11': "龍潭",
+                '12': "大溪",
+                '13': "復興",
+            },
             dashboardData:{
                 totalSum:0,
                 validSum:0,
@@ -32,7 +92,15 @@ export default {
                     '55-60':0,
                     '60-65':0,
                     '65-100':0,
-                }
+                },
+                totalWallet:0,
+                birthdayList:[],
+                orgRankSum5:0,
+                orgRankSum4:0,
+                orgRankSum3:0,
+                orgRankSum2:0,
+                orgRankSum1:0,
+                districtSum:{},
             },
         }
     },
@@ -65,5 +133,7 @@ export default {
 </script>
 
 <style>
-
+h2{
+    margin: 16px 0;
+}
 </style>

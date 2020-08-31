@@ -149,6 +149,14 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::get('getValid','DashboardController@getValid');
         Route::get('getUnValid','DashboardController@getUnValid');
         Route::get('getAgeDist','DashboardController@getAgeDist');
+        Route::get('getTotalWallet','DashboardController@getTotalWallet');
+        Route::get('getBirthdayList','DashboardController@getBirthdayList');
+        Route::get('getOrgRankSum5','DashboardController@getOrgRankSum5');
+        Route::get('getOrgRankSum4','DashboardController@getOrgRankSum4');
+        Route::get('getOrgRankSum3','DashboardController@getOrgRankSum3');
+        Route::get('getOrgRankSum2','DashboardController@getOrgRankSum2');
+        Route::get('getOrgRankSum1','DashboardController@getOrgRankSum1');
+        Route::get('getDistrictSum','DashboardController@getDistrictSum');
     });
 
 
