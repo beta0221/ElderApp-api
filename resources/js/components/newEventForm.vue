@@ -234,6 +234,7 @@ export default {
           let event = res.data.event;
           this.form.title = event.title;
           this.form.event_type = event.event_type;
+          this.form.reward_level_id = event.reward_level_id;
           this.form.category_id = event.category_id;
           this.form.district_id = event.district_id;
           this.form.location = event.location;

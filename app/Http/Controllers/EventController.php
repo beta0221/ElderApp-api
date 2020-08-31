@@ -133,8 +133,10 @@ class EventController extends Controller
             return response($e);
         }
 
-        if(Auth::user()->hasRole('teacher')){
-            $request['owner_id'] = Auth::user()->id;
+        $user = request()->user();
+        if($user->hasRole('teacher')){
+            $request['owner_id'] = $user->id;
+            $request['reward_level_id'] = 1;
         }
 
         $event_slug='A'.time();
@@ -286,12 +288,14 @@ class EventController extends Controller
             ]);
         }
         
-        if(Auth::user()->hasRole('teacher')){
-            if($event->owner_id != Auth::user()->id){
+        $user = request()->user();
+        if($user->hasRole('teacher')){
+            if($event->owner_id != $user->id){
                 return response()->json([
                     's'=>0,'m'=>'Event not found!'
                 ]);
             }
+            unset($request['reward_level_id']);
         }
 
         switch ($request->event_type) {
@@ -329,7 +333,7 @@ class EventController extends Controller
 
 
         try {
-            $event->update($request->except(['file','reward_level_id']));
+            $event->update($request->except(['file']));
         } catch (\Throwable $th) {
             return response($th,500);
         }            
@@ -383,13 +387,14 @@ class EventController extends Controller
     }
 
     public function getRewardLevel(){
-        $user = Auth::user();
-        $reward_level = null;
-        if($user->hasAnyRole(['admin','employee'])){
-            $reward_level = DB::table('reward_level')->get();
-        }else{
-            $reward_level = DB::table('reward_level')->where('id',1)->get();
-        }
+        // $user = Auth::user();
+        // $reward_level = null;
+        // if($user->hasAnyRole(['admin','employee'])){
+        //     $reward_level = DB::table('reward_level')->get();
+        // }else{
+        //     $reward_level = DB::table('reward_level')->where('id',1)->get();
+        // }
+        $reward_level = DB::table('reward_level')->get();
         return response($reward_level);
     }
 
