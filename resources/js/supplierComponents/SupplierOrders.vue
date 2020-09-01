@@ -16,13 +16,13 @@
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility=='all'}" @click="visibility='all'" href="#">全部</a>
+              <a class="nav-link"  @click="getProducts(null)" href="#">全部</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility=='on'}" @click="visibility='on'" href="#">上架中</a>
+              <a class="nav-link"  @click="getProducts(1)" href="#">上架中</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility=='off'}" @click="visibility='off'" href="#">未上架</a>
+              <a class="nav-link" @click="getProducts(0)" href="#">未上架</a>
             </li>
             <span class="align-right ml-auto">
               <pegination
@@ -44,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,key) in filterProducts" :key="key">
+            <tr v-for="(item,key) in products" :key="key">
               <td class="align-middle">{{key+1}}</td>
               <td class="align-middle">
                 <img class="thumbnail" :src="item.imgUrl" />
@@ -62,10 +62,12 @@
                 >商品詳情</button>
                 <button type="button" 
                 class="btn btn-outline-secondary btn-sm"
-                 @click="getRecord(item.id)">
+                 @click="getRecord(item.id,1)">
                   兌換紀錄
                 </button> 
-                 <RecordModal :recordShow="recordShow" :products="products" :record="record" :itemKey="itemKey"></RecordModal>
+                 <RecordModal :recordTotal="recordTotal" 
+                 :recordShow="recordShow" :products="products" :record="record" :recordId="recordId"
+                  :itemKey="itemKey" :recordPage="recordPage" :recordPageTotal="recordPageTotal" @getRecord="getRecord"></RecordModal>
               </td>
             </tr>
           </tbody>
@@ -187,30 +189,9 @@
                   </div>
                 </div>
 
-                <!-- <div class="col-sm-6">
-                  <span class="form-group col-sm-6">
-                    <label>據點庫存</label>
-                    <select class="form-control" v-model="selected" 
-                    @change="clickLocation(selected)" required>
-                      <option v-for="lct in location"                    
-                       :key="lct.id" :value="lct.id">{{lct.name}}</option>
-                    </select>
-                  </span>
-
-                  <span class="form-group col-sm-6">
-                    <input
-                      v-for="lct in location"
-                      :key="lct.id"
-                      v-show="selected===lct.id"
-                      class="form-control"
-                      type="number"
-                      v-model="product_quantity[lct.id]"
-                    />
-                  </span>
-                </div>-->
-
+              <div class="col-sm-12 scrollbox mb-4 mt-4">
                 <div
-                  class="col-sm-3 form-group"
+                  class="col-sm-4 form-group"
                   style="display:inline-block"
                   v-for="loc in location"
                   v-bind:key="loc.id"
@@ -237,7 +218,7 @@
                     />
                   </div>
                 </div>
-
+              </div>
                 <!-- <div class="form-group col-sm-6" v-for="(lct,index) in location" :key="index" >
                 <span >
                     <label>{{lct.name}}</label>
@@ -307,6 +288,7 @@ export default {
         descending: true,
         page: 1,
         rowsPerPage: 15,
+        public:"",
       },
       totalPage: 0,
       loading: true,
@@ -320,34 +302,14 @@ export default {
       location: [],
       selected_location: [],
       record:[],
+      recordPage:1,
       recordTotal:"",
+      recordPageTotal:"",
+      recordId:"",
       itemKey:'',
       recordShow:false,
       visibility:"all",
     };
-  },
-  computed:{
-      filterProducts(){
-        if(this.visibility=="all"){
-          return this.products;
-        }else if(this.visibility=="on"){
-          let newProducts=[];
-          this.products.forEach((item)=>{
-            if(item.public==1){
-              newProducts.push(item);
-            }
-          });
-          return newProducts;
-        }else if(this.visibility=="off"){
-          let newProducts=[];
-          this.products.forEach((item)=>{
-            if(item.public==0){
-              newProducts.push(item);
-            }
-          });
-          return newProducts;
-        }
-      },  
   },
   methods: {
     logout() {
@@ -379,7 +341,8 @@ export default {
           console.error(err);
         });
     },
-    getProducts() {
+    getProducts(pub) {
+      this.pagination.public=pub;
       axios
         .get("/api/product", {
           params: this.pagination,
@@ -423,20 +386,22 @@ export default {
           Exception.handle(error);
         });
     },
-    getRecord(id){
-      axios.get(`/api/order/productOrderList/${id}`)
+    getRecord(id,page){
+      this.recordPage=page;
+      axios.get(`/api/order/productOrderList/${id}`,{params:{page:this.recordPage}})
       .then(res => {
         this.recordShow=!this.recordShow;
         this.recordTotal=res.data.total;
         this.record=res.data.orderList;
-
+        this.recordId=id;
+        this.recordPageTotal=Math.ceil(
+            res.data.total / 20
+          );
         this.products.forEach((item,key)=>{
           if(id==item.id){
            this.itemKey=key;
           }
         })
-
-        
         console.log(res);
       })
       .catch(err => {
@@ -499,6 +464,7 @@ export default {
       this.isNew = true;
       this.tempProduct = {
         select_location: [],
+        public:1
       };
       this.product_quantity = {};
       this.selected_location = [];
@@ -557,5 +523,9 @@ export default {
 <style>
 .thumbnail {
   max-height: 80px;
+}
+.scrollbox{
+  height: 80px; 
+ overflow-y: scroll;
 }
 </style>

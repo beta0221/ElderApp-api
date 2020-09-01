@@ -4,9 +4,8 @@
       href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
       crossorigin="anonymous"> -->
       
-        <!-- <div class="side-bar">
-            <SupplierSideBar></SupplierSideBar>      
-             </div> -->
+            
+            
         <router-view></router-view>
       
     </div>
@@ -14,10 +13,13 @@
 </template>
 
 <script>
-// import SupplierSideBar from './SupplierSideBar';
+
 import supplierLogin from './SupplierLogin';
 
 export default {
+    components:{
+       
+    },
     created() {
         this.$router.push({name:'supplierLogin'});
     },

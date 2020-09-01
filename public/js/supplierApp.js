@@ -11945,10 +11945,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-// import SupplierSideBar from './SupplierSideBar';
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {},
   created: function created() {
     this.$router.push({
       name: 'supplierLogin'
@@ -12102,17 +12101,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["recordShow", "record", "products", "itemKey"],
+  props: ["recordShow", "record", "products", "itemKey", "recordTotal", "recordPage", "totalPage", "recordPageTotal", "recordId"],
   data: function data() {
     return {
-      renderLater: false
+      renderLater: false,
+      recordWatch: this.recordPage
     };
   },
   watch: {
     recordShow: function recordShow() {
       $("#recordModal").modal("show");
       this.renderLater = true;
+    },
+    recordPage: function recordPage(val) {
+      this.recordWatch = val;
+    }
+  },
+  methods: {
+    next: function next() {
+      //this.pagination
+      this.recordWatch += 1;
+      this.getRecord();
+    },
+    prev: function prev() {
+      if (this.recordWatch <= 0) {
+        return false;
+      }
+
+      this.recordWatch -= 1;
+      this.getRecord();
+    },
+    getRecord: function getRecord() {
+      this.$emit('getRecord', this.recordId, this.recordWatch);
     }
   }
 });
@@ -12438,25 +12487,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -12486,7 +12516,8 @@ __webpack_require__.r(__webpack_exports__);
         sortBy: "id",
         descending: true,
         page: 1,
-        rowsPerPage: 15
+        rowsPerPage: 15,
+        "public": ""
       },
       totalPage: 0,
       loading: true,
@@ -12500,34 +12531,14 @@ __webpack_require__.r(__webpack_exports__);
       location: [],
       selected_location: [],
       record: [],
+      recordPage: 1,
       recordTotal: "",
+      recordPageTotal: "",
+      recordId: "",
       itemKey: '',
       recordShow: false,
       visibility: "all"
     };
-  },
-  computed: {
-    filterProducts: function filterProducts() {
-      if (this.visibility == "all") {
-        return this.products;
-      } else if (this.visibility == "on") {
-        var newProducts = [];
-        this.products.forEach(function (item) {
-          if (item["public"] == 1) {
-            newProducts.push(item);
-          }
-        });
-        return newProducts;
-      } else if (this.visibility == "off") {
-        var _newProducts = [];
-        this.products.forEach(function (item) {
-          if (item["public"] == 0) {
-            _newProducts.push(item);
-          }
-        });
-        return _newProducts;
-      }
-    }
   },
   methods: {
     logout: function logout() {
@@ -12558,9 +12569,10 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    getProducts: function getProducts() {
+    getProducts: function getProducts(pub) {
       var _this4 = this;
 
+      this.pagination["public"] = pub;
       axios.get("/api/product", {
         params: this.pagination
       }).then(function (res) {
@@ -12599,13 +12611,20 @@ __webpack_require__.r(__webpack_exports__);
         Exception.handle(error);
       });
     },
-    getRecord: function getRecord(id) {
+    getRecord: function getRecord(id, page) {
       var _this6 = this;
 
-      axios.get("/api/order/productOrderList/".concat(id)).then(function (res) {
+      this.recordPage = page;
+      axios.get("/api/order/productOrderList/".concat(id), {
+        params: {
+          page: this.recordPage
+        }
+      }).then(function (res) {
         _this6.recordShow = !_this6.recordShow;
         _this6.recordTotal = res.data.total;
         _this6.record = res.data.orderList;
+        _this6.recordId = id;
+        _this6.recordPageTotal = Math.ceil(res.data.total / 20);
 
         _this6.products.forEach(function (item, key) {
           if (id == item.id) {
@@ -12677,7 +12696,8 @@ __webpack_require__.r(__webpack_exports__);
     newProduct: function newProduct() {
       this.isNew = true;
       this.tempProduct = {
-        select_location: []
+        select_location: [],
+        "public": 1
       };
       this.product_quantity = {};
       this.selected_location = [];
@@ -17248,7 +17268,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.thumbnail {\n  max-height: 80px;\n}\n", ""]);
+exports.push([module.i, "\n.thumbnail {\n  max-height: 80px;\n}\n.scrollbox{\n  height: 80px; \n overflow-y: scroll;\n}\n", ""]);
 
 // exports
 
@@ -49282,34 +49302,138 @@ var render = function() {
                 _vm._m(0)
               ]),
               _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "modal-body" },
-                _vm._l(_vm.record, function(rec, key) {
-                  return _c("tr", { key: key }, [
-                    rec.receive == 1
-                      ? _c("span", { staticClass: "text-success" }, [
-                          _vm._v("已領取")
-                        ])
-                      : _c("span", { staticClass: "text-danger" }, [
-                          _vm._v("尚未領取")
-                        ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm._v(
-                        _vm._s(rec.name) +
-                          "  " +
-                          _vm._s(rec.location) +
-                          " " +
-                          _vm._s(rec.created_at)
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "table",
+                  { staticClass: "table" },
+                  _vm._l(_vm.record, function(rec, key) {
+                    return _c("tr", { key: key }, [
+                      _c(
+                        "td",
+                        {
+                          staticClass: "align-middle",
+                          staticStyle: { padding: "0.3rem", margin: "0.3rem" }
+                        },
+                        [
+                          rec.receive == 1
+                            ? _c("span", { staticClass: "text-success" }, [
+                                _vm._v("已領取")
+                              ])
+                            : _c("span", { staticClass: "text-danger" }, [
+                                _vm._v("尚未領取")
+                              ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          staticClass: "align-middle",
+                          staticStyle: { padding: "0.3rem", margin: "0.3rem" }
+                        },
+                        [
+                          _vm._v(
+                            "領取人 :" +
+                              _vm._s(rec.name) +
+                              " 領取地點 :" +
+                              _vm._s(rec.location) +
+                              " 時間 :" +
+                              _vm._s(rec.created_at)
+                          )
+                        ]
                       )
                     ])
-                  ])
-                }),
-                0
-              ),
+                  }),
+                  0
+                )
+              ]),
               _vm._v(" "),
-              _vm._m(1)
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "nav",
+                  { attrs: { "aria-label": "Page navigation example" } },
+                  [
+                    _c("ul", { staticClass: "pagination" }, [
+                      _c(
+                        "li",
+                        {
+                          staticClass: "page-item",
+                          class: { disabled: _vm.recordWatch === 1 }
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { href: "#", "aria-label": "Previous" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.prev($event)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("«")
+                              ])
+                            ]
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("li", { staticClass: "page-item" }, [
+                        _c(
+                          "a",
+                          { staticClass: "page-link", attrs: { href: "#" } },
+                          [_vm._v(_vm._s(_vm.recordWatch))]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "li",
+                        {
+                          staticClass: "page-item",
+                          class: {
+                            disabled: _vm.recordWatch == _vm.recordPageTotal
+                          }
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { href: "#", "aria-label": "Next" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.next($event)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("»")
+                              ])
+                            ]
+                          )
+                        ]
+                      )
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c("span", [_vm._v("共" + _vm._s(_vm.recordTotal) + "筆")]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
             ])
           ]
         )
@@ -49334,21 +49458,6 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-secondary",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("Close")]
-      )
-    ])
   }
 ]
 render._withStripped = true
@@ -49521,11 +49630,10 @@ var render = function() {
                 "a",
                 {
                   staticClass: "nav-link",
-                  class: { active: _vm.visibility == "all" },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
-                      _vm.visibility = "all"
+                      return _vm.getProducts(null)
                     }
                   }
                 },
@@ -49538,11 +49646,10 @@ var render = function() {
                 "a",
                 {
                   staticClass: "nav-link",
-                  class: { active: _vm.visibility == "on" },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
-                      _vm.visibility = "on"
+                      return _vm.getProducts(1)
                     }
                   }
                 },
@@ -49555,11 +49662,10 @@ var render = function() {
                 "a",
                 {
                   staticClass: "nav-link",
-                  class: { active: _vm.visibility == "off" },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
-                      _vm.visibility = "off"
+                      return _vm.getProducts(0)
                     }
                   }
                 },
@@ -49589,7 +49695,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.filterProducts, function(item, key) {
+            _vm._l(_vm.products, function(item, key) {
               return _c("tr", { key: key }, [
                 _c("td", { staticClass: "align-middle" }, [
                   _vm._v(_vm._s(key + 1))
@@ -49641,7 +49747,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            return _vm.getRecord(item.id)
+                            return _vm.getRecord(item.id, 1)
                           }
                         }
                       },
@@ -49650,11 +49756,16 @@ var render = function() {
                     _vm._v(" "),
                     _c("RecordModal", {
                       attrs: {
+                        recordTotal: _vm.recordTotal,
                         recordShow: _vm.recordShow,
                         products: _vm.products,
                         record: _vm.record,
-                        itemKey: _vm.itemKey
-                      }
+                        recordId: _vm.recordId,
+                        itemKey: _vm.itemKey,
+                        recordPage: _vm.recordPage,
+                        recordPageTotal: _vm.recordPageTotal
+                      },
+                      on: { getRecord: _vm.getRecord }
                     })
                   ],
                   1
@@ -49689,368 +49800,368 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("form", [
-                  _c(
-                    "div",
-                    { staticClass: "row" },
-                    [
-                      _c("div", { staticClass: "col-sm-4" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", { attrs: { for: "image" } }, [
-                            _vm._v("輸入圖片網址")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.imageUrl,
-                                expression: "tempProduct.imageUrl"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: {
-                              type: "text",
-                              id: "image",
-                              placeholder: "請輸入圖片連結"
-                            },
-                            domProps: { value: _vm.tempProduct.imageUrl },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "imageUrl",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          })
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col-sm-4" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "image" } }, [
+                          _vm._v("輸入圖片網址")
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", { attrs: { for: "customFile" } }, [
-                            _vm._v(
-                              "\n                    或 上傳圖片\n                    "
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            ref: "files",
-                            staticClass: "form-control",
-                            attrs: { type: "file", id: "customFile" },
-                            on: { change: _vm.fileUpload }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-8" }, [
-                        _c("img", {
-                          staticClass: "img-fluid",
-                          attrs: { src: _vm.product_imgUrl, alt: "" }
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.imageUrl,
+                              expression: "tempProduct.imageUrl"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            id: "image",
+                            placeholder: "請輸入圖片連結"
+                          },
+                          domProps: { value: _vm.tempProduct.imageUrl },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "imageUrl",
+                                $event.target.value
+                              )
+                            }
+                          }
                         })
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-12 form-group" }, [
-                        _c("span", { staticClass: "col-sm-5 align-middle" }, [
-                          _vm._v("是否上架 :")
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "customFile" } }, [
+                          _vm._v(
+                            "\n                    或 上傳圖片\n                    "
+                          )
                         ]),
                         _vm._v(" "),
-                        _c(
-                          "span",
-                          {
-                            staticClass: "col-sm-5 align-middle",
-                            staticStyle: { display: "inline-block" }
-                          },
-                          [
-                            _c("CheckboxBtn", {
-                              attrs: { isChecked: _vm.tempProduct.public },
-                              on: { getValue: _vm.putIntemp }
-                            })
-                          ],
-                          1
-                        )
+                        _c("input", {
+                          ref: "files",
+                          staticClass: "form-control",
+                          attrs: { type: "file", id: "customFile" },
+                          on: { change: _vm.fileUpload }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-8" }, [
+                      _c("img", {
+                        staticClass: "img-fluid",
+                        attrs: { src: _vm.product_imgUrl, alt: "" }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-12 form-group" }, [
+                      _c("span", { staticClass: "col-sm-5 align-middle" }, [
+                        _vm._v("是否上架 :")
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("商品名稱")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.name,
-                                expression: "tempProduct.name"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.tempProduct.name },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "name",
-                                  $event.target.value
-                                )
-                              }
-                            }
+                      _c(
+                        "span",
+                        {
+                          staticClass: "col-sm-5 align-middle",
+                          staticStyle: { display: "inline-block" }
+                        },
+                        [
+                          _c("CheckboxBtn", {
+                            attrs: { isChecked: _vm.tempProduct.public },
+                            on: { getValue: _vm.putIntemp }
                           })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6 form-group" }, [
-                        _c("label", [_vm._v("商品類別")]),
+                        ],
+                        1
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("商品名稱")]),
                         _vm._v(" "),
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.product_category_id,
-                                expression: "tempProduct.product_category_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { name: "", id: "" },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "product_category_id",
-                                  $event.target.multiple
-                                    ? $$selectedVal
-                                    : $$selectedVal[0]
-                                )
-                              }
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.name,
+                              expression: "tempProduct.name"
                             }
-                          },
-                          _vm._l(_vm.product_category, function(op) {
-                            return _c(
-                              "option",
-                              { key: op.id, domProps: { value: op.id } },
-                              [_vm._v(_vm._s(op.name))]
-                            )
-                          }),
-                          0
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("樂幣兌換")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.price,
-                                expression: "tempProduct.price"
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text" },
+                          domProps: { value: _vm.tempProduct.name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
                               }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.tempProduct.price },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "price",
-                                  $event.target.value
-                                )
-                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "name",
+                                $event.target.value
+                              )
                             }
-                          })
-                        ])
-                      ]),
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6 form-group" }, [
+                      _c("label", [_vm._v("商品類別")]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("每人樂幣兌換上限數量")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.exchange_max,
-                                expression: "tempProduct.exchange_max"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.tempProduct.exchange_max },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "exchange_max",
-                                  $event.target.value
-                                )
-                              }
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.product_category_id,
+                              expression: "tempProduct.product_category_id"
                             }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("各半支付（樂幣）")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.pay_cash_point,
-                                expression: "tempProduct.pay_cash_point"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.tempProduct.pay_cash_point },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "pay_cash_point",
-                                  $event.target.value
-                                )
-                              }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { name: "", id: "" },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "product_category_id",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
                             }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("各半支付（現金）")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.pay_cash_price,
-                                expression: "tempProduct.pay_cash_price"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.tempProduct.pay_cash_price },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "pay_cash_price",
-                                  $event.target.value
-                                )
-                              }
+                          }
+                        },
+                        _vm._l(_vm.product_category, function(op) {
+                          return _c(
+                            "option",
+                            { key: op.id, domProps: { value: op.id } },
+                            [_vm._v(_vm._s(op.name))]
+                          )
+                        }),
+                        0
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("樂幣兌換")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.price,
+                              expression: "tempProduct.price"
                             }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("現金購買")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.original_cash,
-                                expression: "tempProduct.original_cash"
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text" },
+                          domProps: { value: _vm.tempProduct.price },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
                               }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.tempProduct.original_cash },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "original_cash",
-                                  $event.target.value
-                                )
-                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "price",
+                                $event.target.value
+                              )
                             }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-6" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", [_vm._v("特價現金")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.tempProduct.cash,
-                                expression: "tempProduct.cash"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.tempProduct.cash },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.tempProduct,
-                                  "cash",
-                                  $event.target.value
-                                )
-                              }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("每人樂幣兌換上限數量")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.exchange_max,
+                              expression: "tempProduct.exchange_max"
                             }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text" },
+                          domProps: { value: _vm.tempProduct.exchange_max },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "exchange_max",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("各半支付（樂幣）")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.pay_cash_point,
+                              expression: "tempProduct.pay_cash_point"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.tempProduct.pay_cash_point },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "pay_cash_point",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("各半支付（現金）")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.pay_cash_price,
+                              expression: "tempProduct.pay_cash_price"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.tempProduct.pay_cash_price },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "pay_cash_price",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("現金購買")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.original_cash,
+                              expression: "tempProduct.original_cash"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.tempProduct.original_cash },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "original_cash",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [_vm._v("特價現金")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tempProduct.cash,
+                              expression: "tempProduct.cash"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.tempProduct.cash },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.tempProduct,
+                                "cash",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-12 scrollbox mb-4 mt-4" },
                       _vm._l(_vm.location, function(loc) {
                         return _c(
                           "div",
                           {
                             key: loc.id,
-                            staticClass: "col-sm-3 form-group",
+                            staticClass: "col-sm-4 form-group",
                             staticStyle: { display: "inline-block" }
                           },
                           [
@@ -50122,35 +50233,35 @@ var render = function() {
                           ]
                         )
                       }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-12" }, [
-                        _c(
-                          "div",
-                          { staticClass: "form-group" },
-                          [
-                            _c("label", [_vm._v("商品詳細內容")]),
-                            _vm._v(" "),
-                            _c("ckeditor", {
-                              attrs: {
-                                id: "editor",
-                                editor: _vm.editor,
-                                config: _vm.editorConfig
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-12" }, [
+                      _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", [_vm._v("商品詳細內容")]),
+                          _vm._v(" "),
+                          _c("ckeditor", {
+                            attrs: {
+                              id: "editor",
+                              editor: _vm.editor,
+                              config: _vm.editorConfig
+                            },
+                            model: {
+                              value: _vm.tempProduct.info,
+                              callback: function($$v) {
+                                _vm.$set(_vm.tempProduct, "info", $$v)
                               },
-                              model: {
-                                value: _vm.tempProduct.info,
-                                callback: function($$v) {
-                                  _vm.$set(_vm.tempProduct, "info", $$v)
-                                },
-                                expression: "tempProduct.info"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ])
-                    ],
-                    2
-                  )
+                              expression: "tempProduct.info"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  ])
                 ])
               ]),
               _vm._v(" "),

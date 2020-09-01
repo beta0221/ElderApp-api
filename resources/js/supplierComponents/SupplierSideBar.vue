@@ -34,7 +34,7 @@
 					 <ul class="nav flex-column mb-2">
              <li class="nav-item">            
               <router-link class="nav-link"
-              to="/supplier/Login"> 
+              to="/supplier/supplierOrders"> 
               <i class="far fa-list-alt"></i>
               訂單列表 </router-link>                       
             </li>
