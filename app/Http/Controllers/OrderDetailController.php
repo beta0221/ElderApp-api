@@ -222,6 +222,8 @@ class OrderDetailController extends Controller
             return response(['s'=>0,'m'=>'此商品已領取無法取消']);
         }
 
+        $product = Product::findOrFail($orderDetail->product_id);
+        $product->addOneQuantity($orderDetail->location_id);
         $orderDetail->delete();
 
         return response([

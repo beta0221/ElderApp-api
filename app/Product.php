@@ -57,6 +57,14 @@ class Product extends Model
         }
         return false;
     }
+    public function addOneQuantity($location_id){
+        if($row = DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->first()){
+            $q = $row->quantity += 1;
+            DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->update(['quantity'=>$q]);
+            return true;
+        }
+        return false;
+    }
 
     /** 使用者已經換取的商品總數*/
     public function hasExchangedSumBy($user_id){
