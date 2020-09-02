@@ -281,6 +281,14 @@ class User extends Authenticatable implements JWTSubject
     //database relationship binding
 
     /**
+     * 提升經驗值
+     */
+    public function increaseRank($value){
+        $this->rank += $value;
+        $this->save();
+    }
+
+    /**
      * 更新使用者錢包
      * @param bool $give_take 增加或減少 (INCREASE_WALLET,DECREASE_WALLET)
      * @param Int $amount 多少樂幣

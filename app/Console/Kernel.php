@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Post;
 use App\Transaction;
 use App\User;
 use Illuminate\Console\Scheduling\Schedule;
@@ -53,18 +54,23 @@ class Kernel extends ConsoleKernel
             $users = User::whereMonth('birthdate',date('m'))->whereDay('birthdate',date('d'))->where('valid',1)->get();
             foreach ($users as $user) {
                 Log::channel('birthdaylog')->info('today is user '.$user->name.'('.$user->id.')'.' birthday');
-                $user->updateWallet(User::INCREASE_WALLET,800);
-                $tran_id = time() . rand(10,99);
-                Transaction::create([
-                    'tran_id'=>$tran_id,
-                    'user_id'=>$user->id,
-                    'event' =>'壽星生日禮',
-                    'amount'=>800,
-                    'target_id'=>0,
-                    'give_take'=>User::INCREASE_WALLET,
-                ]);
+                $user->update_wallet_with_trans(User::INCREASE_WALLET,800,'壽星生日禮');
             }
         })->dailyAt('08:00');
+
+
+        //意見領袖獎勵
+        $schedule->call(function(){
+            $postList = Post::whereDate('created_at',date('Y-m-d',strtotime("-2 days")))->get();
+            foreach ($postList as $post) {
+                if($user = User::find($post->user_id)){
+                    $reward = $post->likes + $post->comments + 2;
+                    $user->update_wallet_with_trans(User::INCREASE_WALLET,$reward,'社群活躍獎勵');
+                    $user->increaseRank($reward);
+                }
+            }
+        })->dailyAt('04:00');
+
 
         // $schedule->call(function(){
         //     Log::info('schedule test every minute');
