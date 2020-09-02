@@ -67,6 +67,7 @@ class Kernel extends ConsoleKernel
                     $reward = $post->likes + $post->comments + 2;
                     $user->update_wallet_with_trans(User::INCREASE_WALLET,$reward,'社群活躍獎勵');
                     $user->increaseRank($reward);
+                    Log::info("User $user->name gets $reward reward");
                 }
             }
         })->dailyAt('04:00');
