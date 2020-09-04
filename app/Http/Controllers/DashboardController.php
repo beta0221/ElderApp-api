@@ -110,8 +110,8 @@ class DashboardController extends Controller
         return response([
             'name'=>$user->name,
             'total'=>count($valid_array),
-            'valid'=>$result["1"],
-            'unValid'=>$result["0"],
+            'valid'=>(isset($result["1"]))?$result["1"]:0,
+            'unValid'=>(isset($result["0"]))?$result["0"]:0,
         ]);
     }
 
