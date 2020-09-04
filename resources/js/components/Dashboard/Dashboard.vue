@@ -154,7 +154,7 @@ export default {
                     setTimeout(()=>{
                         this.getGroupStatus(leader_id);
                     }, delay);
-                    delay += 500;
+                    delay += 800;
                 });
             })
         },
