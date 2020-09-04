@@ -157,6 +157,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::get('getOrgRankSum2','DashboardController@getOrgRankSum2');
         Route::get('getOrgRankSum1','DashboardController@getOrgRankSum1');
         Route::get('getDistrictSum','DashboardController@getDistrictSum');
+        Route::get('getGroupleaders','DashboardController@getGroupleaders');
+        Route::get('getGroupStatus','DashboardController@getGroupStatus');
     });
 
 

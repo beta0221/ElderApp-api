@@ -43,7 +43,21 @@
 
     </v-layout>
 
-
+    <div>
+        <hr>
+        <div>
+            <v-btn v-if="groupBtn" color="info" @click="getGroupleaders">載入組織狀態</v-btn>
+        </div>
+        <div>
+            <div v-for="(status,index) in groupStatusList" v-bind:key="index">
+                <h3>{{status.name}} ({{status.total}})</h3>
+                <div style="padding-left:12px">
+                    <span>有效：<font color="green">{{status.valid}}</font></span><br>
+                    <span>無效：<font color="red">{{status.unValid}}</font></span><br>
+                </div>
+            </div>
+        </div>
+    </div>
         
        
   </div>
@@ -102,6 +116,8 @@ export default {
                 orgRankSum1:0,
                 districtSum:{},
             },
+            groupStatusList:[],
+            groupBtn:true,
         }
     },
     created(){
@@ -127,6 +143,32 @@ export default {
                 Exception.handle(error);
             })
         },
+        getGroupleaders(){
+            this.groupBtn = false;
+            axios.get('/api/dashboard/getGroupleaders')
+            .catch(err => {Exception.handle(error);})
+            .then(res => {
+                let leader_id_array = res.data;
+                let delay = 0;
+                leader_id_array.forEach(leader_id => {
+                    setTimeout(()=>{
+                        this.getGroupStatus(leader_id);
+                    }, delay);
+                    delay += 500;
+                });
+            })
+        },
+        getGroupStatus(leader_id){
+            axios.get('/api/dashboard/getGroupStatus', {
+                params: {
+                    leader_id: leader_id
+                }
+            })
+            .catch(err => {Exception.handle(error);})
+            .then(res => {
+                this.groupStatusList.push(res.data);
+            })
+        }
     }
 
 }

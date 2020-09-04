@@ -86,6 +86,33 @@ class DashboardController extends Controller
         }
         return response($dict);
     }
-    
+
+
+    public function getGroupleaders(){
+        $groupLeaders = DB::table('user_group')->select('group_id')->groupBy('group_id')->pluck('group_id');
+        return response($groupLeaders);
+    }
+    public function getGroupStatus(Request $req){
+        $user = User::findOrFail($req->leader_id);
+        $members_id = DB::table('user_group')->select('user_id')->where('group_id',(int)$req->leader_id)->pluck('user_id');
+
+        if(count($members_id) <= 0){
+            return response([
+                'name'=>$user->name,
+                'total'=>0,
+                'valid'=>0,
+                'unValid'=>0,
+            ]);
+        }
+        $valid_array = User::select('valid')->whereIn('id',$members_id)->pluck('valid')->toArray();
+        $result = array_count_values($valid_array);
+
+        return response([
+            'name'=>$user->name,
+            'total'=>count($valid_array),
+            'valid'=>$result["1"],
+            'unValid'=>$result["0"],
+        ]);
+    }
 
 }
