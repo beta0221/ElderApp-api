@@ -17,8 +17,8 @@ class PostResource extends JsonResource
     {
 
         $user = User::find($this->user_id);
-        $user_image = '';
-        $post_image = '';
+        $user_image = null;
+        $post_image = null;
         if($user->img){
             $user_image = config('app.static_host') . "/users/$user->id_code/$user->img";    
         }
