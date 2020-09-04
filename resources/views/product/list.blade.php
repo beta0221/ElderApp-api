@@ -72,14 +72,14 @@
                 <div class="product-name-box">
                     <h5>{{$product->name}}</h5>
                 </div>
-                
+                <h5>台幣+樂幣</h5>
+                <h5><font color="#ff5252">{{$product->pay_cash_price}}</font>+<font color="#fb8c00">{{$product->pay_cash_point}}</font></h5>
                 <h5>台幣</h5>
                 <h5>
                     <font color="#ff5252">{{$product->cash}}</font>
                     <font style="text-decoration: line-through;" size="2" color="gray">原價:{{$product->original_cash}}</font>
                 </h5>
-                <h5>台幣/樂幣</h5>
-                <h5><font color="#ff5252">{{$product->pay_cash_price}}</font>/<font color="#fb8c00">{{$product->pay_cash_point}}</font></h5>
+                
             </div>
             
             

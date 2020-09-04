@@ -407,8 +407,13 @@ class ProductController extends Controller
         ]);
     }
 
-    public function detail($slug){
+    public function detail(Request $req,$slug){
         $product = Product::where('slug',$slug)->firstOrFail();
+
+        if($req->token){
+            Cookie::queue('token',$req->token,60);
+        }
+
         return view('product.detail',[
             'product'=>$product,
         ]);

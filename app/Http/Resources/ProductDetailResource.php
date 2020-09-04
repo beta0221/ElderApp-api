@@ -18,6 +18,7 @@ class ProductDetailResource extends JsonResource
         if($this->img){
             $imgUrl = config('app.static_host') . "/products/$this->slug/$this->img";
         }
+        $buynowUrl = config('app.url') . "/product/detail/$this->slug";
         return [
             'id'=>$this->id,
             'name'=>$this->name,
@@ -33,6 +34,7 @@ class ProductDetailResource extends JsonResource
             'product_category_id'=>$this->product_category_id,
             'info'=>$this->info,
             'imgUrl'=>$imgUrl,
+            'buynowUrl'=>$buynowUrl,
         ];
     }
 }

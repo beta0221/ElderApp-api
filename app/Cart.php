@@ -24,6 +24,22 @@ class Cart extends Model
         return $shipping_fee;
     }
 
+    public static function addToCart($product_id){
+        $ip = request()->ip();
+        $cart = Cart::firstOrCreate(['ip'=>$ip]);
+        $items = json_decode($cart->items,true);
+        if($items){
+            if(!in_array($product_id,$items)){
+                array_push($items,$product_id);
+            }
+        }else{
+            $items = [$product_id];
+        }
+        $cart->items = json_encode($items);
+        $cart->save();
+        return $cart;
+    }
+
     /**
      * 取得ip的購物車所有產品
      * @param String ip

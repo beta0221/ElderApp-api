@@ -73,23 +73,23 @@
                                     <table style="width:100%">
                                         <tr>
                                             <td style="width:80px">
+                                                <span style="line-height: 24px">台幣+樂幣</span><br>
+                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->pay_cash_price}}</font>+<font color="#fb8c00">{{$p->pay_cash_point}}</font></span><br>
                                                 <span style="line-height: 24px">台幣</span><br>
-                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span><br>
-                                                <span style="line-height: 24px">台幣/樂幣</span><br>
-                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->pay_cash_price}}</font>/<font color="#fb8c00">{{$p->pay_cash_point}}</font></span>
+                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span>
                                             </td>
                                             <td>
-                                                <div class="mb-1">
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
-                                                    <input type="number" class="input-cash-{{$p->id}} input-quantity form-control d-inline-block" 
-                                                    style="width:48px;line-height: 32px" value="0" data-cash="{{$p->cash}}" 
-                                                    data-product-id="{{$p->id}}" min="0">
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
-                                                </div>
                                                 <div>
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
                                                     <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
                                                     style="width:48px;line-height:32px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
+                                                    data-product-id="{{$p->id}}" min="0">
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
+                                                    <input type="number" class="input-cash-{{$p->id}} input-quantity form-control d-inline-block" 
+                                                    style="width:48px;line-height: 32px" value="0" data-cash="{{$p->cash}}" 
                                                     data-product-id="{{$p->id}}" min="0">
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
                                                 </div>
@@ -303,7 +303,7 @@
             dataType: "json",
             success: function (response) {
                 if(response.s == 1){
-                    location.reload();
+                    location.href = "/cart";
                 }else{
                     alert(response.m);
                 }

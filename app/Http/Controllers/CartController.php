@@ -47,21 +47,7 @@ class CartController extends Controller
     public function store(Request $request,$product_id)
     {
         
-        $ip = request()->ip();
-        
-        $cart = Cart::firstOrCreate(['ip'=>$ip]);
-
-        $items = json_decode($cart->items,true);
-        if($items){
-            if(!in_array($product_id,$items)){
-                array_push($items,$product_id);
-            }
-        }else{
-            $items = [$product_id];
-        }
-        
-        $cart->items = json_encode($items);
-        $cart->save();
+        $cart = Cart::addToCart($product_id);
 
         return response()->json($cart);
     }
