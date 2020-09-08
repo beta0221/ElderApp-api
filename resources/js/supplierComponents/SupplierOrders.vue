@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container-fluid">
+    <div class="container-fluid" style="width:90%;margin-left:8rem;">
       <div class="row justify-content-between">
         <div class="col-md-2 mt-3 ml-4">
           <button type="button" class="btn btn-primary" @click="newProduct">新增商品</button>
@@ -11,8 +11,8 @@
       </div>
     </div>
     <!-- <loading :active.sync="isLoading"></loading> -->
-    <div style="padding:1.5rem">
-      <div class="card text-center">
+    <div style="padding:1.5rem;width:90%;margin-left:8rem;" class="container-fluid">
+      <div class="card text-center row">
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">

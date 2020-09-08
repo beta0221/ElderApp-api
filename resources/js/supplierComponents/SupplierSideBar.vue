@@ -1,7 +1,7 @@
 <template>
     
       
-     <!-- <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+     <nav id="sidebarMenu" class="col-md-2 col-lg-1 d-md-block bg-light sidebar collapse">
        
       <div class="sidebar-sticky pt-3">
 
@@ -15,16 +15,22 @@
          <ul class="nav flex-column mb-2">
           <li class="nav-item">            
               <router-link class="nav-link"
-              to="/supplier/SupplierOrders"> 
-              <i class="far fa-list-alt"></i>
-              訂單列表 </router-link>                       
+              to="/supplier/admin/supplierOrders"> 
+             
+              訂單管理 </router-link>                       
+          </li>
+          <li class="nav-item">            
+              <router-link class="nav-link"
+              to="/supplier/admin/supplierProducts"> 
+              
+              產品管理 </router-link>                       
           </li>
         </ul>
        
       </div>
-    </nav> -->
+    </nav>
 
-    <nav class="navbar navbar-expand-lg">
+    <!-- <nav class="navbar navbar-expand-lg">
 			<div class="container-fluid">
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarResponsive">
@@ -36,12 +42,18 @@
               <router-link class="nav-link"
               to="/supplier/supplierOrders"> 
               <i class="far fa-list-alt"></i>
-              訂單列表 </router-link>                       
+              產品管理 </router-link>                       
+            </li>
+            <li class="nav-item">            
+              <router-link class="nav-link"
+              to="/supplier/supplierOrders"> 
+              <i class="far fa-list-alt"></i>
+              訂單管理 </router-link>                       
             </li>
         </ul>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 
 </template>
 <script>

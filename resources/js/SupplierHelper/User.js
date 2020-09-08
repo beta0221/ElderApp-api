@@ -29,7 +29,7 @@ class User {
                 if(from_url){
                     router.push({path:from_url});
                 }else{
-                    router.push({path:'/supplier/SupplierOrders'});
+                    router.push({path:'/supplier/admin'});
                 }
             }
         }

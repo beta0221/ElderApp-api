@@ -29,7 +29,7 @@ export default {
     },
     created(){
         if(User.loggedIn()){
-            this.$router.push('/supplier/supplierOrders');
+            this.$router.push('/supplier/admin');
         }
     },
     methods:{
