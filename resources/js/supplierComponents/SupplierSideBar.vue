@@ -13,17 +13,15 @@
         </h6>
     
          <ul class="nav flex-column mb-2">
-          <li class="nav-item">            
+          <li class="nav-item mt-3">            
               <router-link class="nav-link"
-              to="/supplier/admin/supplierOrders"> 
-             
-              訂單管理 </router-link>                       
+              to="/supplier/admin/supplierProducts">        
+              商品管理 </router-link>                       
           </li>
           <li class="nav-item">            
               <router-link class="nav-link"
-              to="/supplier/admin/supplierProducts"> 
-              
-              產品管理 </router-link>                       
+              to="/supplier/admin/supplierOrders"> 
+              訂單管理 </router-link>                       
           </li>
         </ul>
        
