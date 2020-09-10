@@ -42,9 +42,9 @@ window.EventBus = new Vue();
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('app-home', require('./supplierComponents/DashBoard').default);
+Vue.component('app-home', require('./supplierComponents/AppHome').default);
 // Vue.component('app-login',require('./supplierComponents/SupplierLogin').default);
-
+Vue.component('side-bar', require('./supplierComponents/SupplierSideBar').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

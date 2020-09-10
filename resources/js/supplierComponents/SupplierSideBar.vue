@@ -1,7 +1,7 @@
 <template>
     
       
-     <nav id="sidebarMenu" class="col-md-2 col-lg-1 d-md-block bg-light sidebar collapse">
+     <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse">
        
       <div class="sidebar-sticky pt-3">
 

@@ -1,12 +1,21 @@
 <template>
-    <div>
-       <div style="padding:1.5rem;width:90%;margin-left:8rem;" class="container-fluid">
+    
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-md-2 col-lg-2">
+                <side-bar></side-bar>
+            </div>
+    <div class="col-md-10 col-lg-10">
+    <div class="container-fluid ">
       <div class="card text-center row">
         <div class="card-header">
             
           <ul class="nav nav-tabs card-header-tabs">
               <li class="nav-item mb-2 mr-4">
-                  <button class="btn btn-primary">全選</button>
+                  <button class="btn btn-primary" @click="selectAll">全選</button>
+              </li>
+              <li class="nav-item mb-2 mr-4">
+                  <button class="btn btn-primary" @click="groupNextStatus">下階段</button>
               </li>
               <li class="nav-item mb-2 mr-3">
                   <select class="form-control" name="" id="" v-model="searchColumn">
@@ -17,7 +26,7 @@
                   </select>
               </li>
             <li class="nav-item mb-2 mr-3" >
-              <select class="form-control" name="" id="" @change="getOrders($event)" 
+              <select class="form-control" name="" id="" @change="searchByColumn" 
                       v-model="searchValue" v-show="searchColumn=='ship_status'">
                   <option value="0">待出貨</option>
                   <option value="1">準備中</option>
@@ -54,18 +63,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,key) in orderList" :key="key">
-              <td class="align-middle">{{key+1}}</td>
+            <tr v-for="(item,index) in orderList" :key="index">
+              <td class="align-middle">{{index+1}}</td>
               <td class="align-middle">
-                <input type="checkbox" class="form-control" style="height:15px;" v-model="isCheck">
+                <input type="checkbox" class="form-control" style="height:15px;" v-model="item.isCheck">
               </td>
-              
-              <td class="align-middle">
-                <button v-if="item.ship_status===0" class="btn btn-secondary">待出貨</button>
-                <button v-if="item.ship_status===1" class="btn btn-info">準備中</button>
-                <button v-if="item.ship_status===2" class="btn btn-primary">已出貨</button>
-                <button v-if="item.ship_status===3" class="btn btn-success">已到貨</button>
-                <button v-if="item.ship_status===4" class="btn btn-danger">結案</button>
+              <td class="align-middle" >
+                <button v-if="item.ship_status===0" class="btn btn-secondary" @click="nextStatus(item.order_numero)">待出貨</button>
+                <button v-if="item.ship_status===1" class="btn btn-info" @click="nextStatus(item.order_numero)">準備中</button>
+                <button v-if="item.ship_status===2" class="btn btn-primary" @click="nextStatus(item.order_numero)">已出貨</button>
+                <button v-if="item.ship_status===3" class="btn btn-success" @click="nextStatus(item.order_numero)">已到貨</button>
+                <button v-if="item.ship_status===4" class="btn btn-danger" @click="nextStatus(item.order_numero)">結案</button>
               </td>
               <td class="align-middle">{{item.name}}</td>
               <td class="align-middle">
@@ -82,6 +90,8 @@
      
         </div>-->
       </div>
+    </div>
+    </div>
     </div>
     </div>
 </template>
@@ -104,24 +114,25 @@ export default {
             totalPage:0,
             searchColumn:null,
             searchValue:null,
-            isCheck:false,
+            isSelectAll:false,
         }
     },
     watch:{
         searchColumn(val){
-            this.searchValue=null;
-            if(val == null){
-                this.pagination.page = 1;
-                this.getOrders;
-            }
-        }
+            this.searchValue=null;  
+            this.searchColumn=val;
+            this.pagination.page = 1;
+            this.getOrders();
+            console.log("here");           
+        },
+        
     },
     methods:{
         searchByColumn(){
             this.pagination.page = 1;
             this.getOrders();
         },
-        getOrders($event){
+        getOrders(){
             axios.get('/api/order/getOrders', {
                 params: {
                     page: this.pagination.page,
@@ -140,6 +151,53 @@ export default {
                 );
                 console.log(res);
             }).catch(error => {Exception.handle(error);})
+        },
+        getCheckedOrderNumero(){
+            let numeroArray = [];
+            this.orderList.forEach(order => {
+                if(order.isCheck){
+                    numeroArray.push(order.order_numero);
+                }
+            });
+            return numeroArray;
+        },
+        groupNextStatus(){
+            let order_numero_array = this.getCheckedOrderNumero();
+            if(order_numero_array.length == 0){
+                alert('請勾選');
+                return;
+            }
+            axios.post('/api/order/groupNextStatus',{
+                'order_numero_array':JSON.stringify(order_numero_array)
+            })
+            .then(res => {
+                console.error(res); 
+                this.getOrders();
+            })
+            .catch(err => {
+                console.error(err); 
+            })
+        },
+        selectAll(){
+           this.isSelectAll=!this.isSelectAll;
+           this.orderList.forEach((order,index) => {
+                this.$set(this.orderList[index],'isCheck',this.isSelectAll);
+            });
+        },
+        nextStatus(order_numero){
+            axios.post('/api/order/nextStatus',{
+                'order_numero':order_numero
+            })
+            .then(res => {
+                if(res.data.s == 1){
+                    this.getOrders();
+                }else{
+                    alert(res.data.m);
+                }
+            })
+            .catch(err => {
+                console.error(err); 
+            })
         },
     },
     created(){

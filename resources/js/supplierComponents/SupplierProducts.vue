@@ -1,17 +1,22 @@
 <template>
-  <div>
-    <div class="container-fluid" style="width:90%;margin-left:8rem;">
-      <div class="row justify-content-between">
-        <div class="col-md-2 mt-3 ml-4">
+  <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 col-lg-2">
+                <side-bar></side-bar>
+            </div>
+    <div class="col-md-10 col-lg-10">
+    <div class="container-fluid">
+      <div class="row col-md-11 col-lg-10 justify-content-between">    
+        <div class="">  
           <button type="button" class="btn btn-primary" @click="newProduct">新增商品</button>
         </div>
-        <div class="col-md-1 mt-2">
-          <button type="button" class="btn btn-secondary mt-2 mr-4" @click="logout">登出</button>
+        <div class="">
+          <!-- <button type="button" class="btn btn-secondary mt-2 ml-3" @click="logout">登出</button> -->
         </div>
       </div>
     </div>
     <!-- <loading :active.sync="isLoading"></loading> -->
-    <div style="padding:1.5rem;width:90%;margin-left:8rem;" class="container-fluid">
+    <div class="container-fluid">
       <div class="card text-center row">
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
@@ -248,6 +253,8 @@
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </div>
 </template>
