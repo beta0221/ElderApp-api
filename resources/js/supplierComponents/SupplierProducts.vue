@@ -8,7 +8,7 @@
     <div class="container-fluid">
       <div class="row col-md-11 col-lg-10 justify-content-between">    
         <div class="">  
-          <button type="button" class="btn btn-primary" @click="newProduct">新增商品</button>
+          <button type="button" class="btn btn-primary mt-2 mb-2" @click="newProduct">新增商品</button>
         </div>
         <div class="">
           <!-- <button type="button" class="btn btn-secondary mt-2 ml-3" @click="logout">登出</button> -->
@@ -106,18 +106,8 @@
               <div class="row">
                 <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="image">輸入圖片網址</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="image"
-                      placeholder="請輸入圖片連結"
-                      v-model="tempProduct.imageUrl"
-                    />
-                  </div>
-                  <div class="form-group">
                     <label for="customFile">
-                      或 上傳圖片
+                      上傳圖片
                       <!-- <i class="fas fa-spinner fa-spin" v-if="status.fileloading"></i> -->
                     </label>
                     <input
@@ -532,7 +522,8 @@ export default {
   max-height: 80px;
 }
 .scrollbox{
-  height: 80px; 
+  height: 170px; 
+  border: 1px solid;
  overflow-y: scroll;
 }
 </style>

@@ -17,6 +17,7 @@ library.add(faUserSecret);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
+
 Vue.config.productionTip = false;
 
 import CKEditor from '@ckeditor/ckeditor5-vue';
