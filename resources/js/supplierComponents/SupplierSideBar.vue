@@ -16,14 +16,14 @@
           <li class="nav-item mt-3">            
               <router-link class="nav-link"
               to="/supplier/admin/supplierProducts">
-              <font-awesome-icon :icon="['fas', 'user-secret']" />
-              商品管理 </router-link>                       
+              <font-awesome-icon :icon="['fas', 'box-open']" />
+              <span>商品管理</span>  </router-link>                       
           </li>
           <li class="nav-item">            
               <router-link class="nav-link"
               to="/supplier/admin/supplierOrders"> 
-               <font-awesome-icon :icon="['fas', 'user-secret']" />
-              訂單管理 </router-link>                       
+               <font-awesome-icon :icon="['fas', 'list']" style="width: 1.3em;" />
+               <span>訂單管理</span> </router-link>                       
           </li>
         </ul>
        

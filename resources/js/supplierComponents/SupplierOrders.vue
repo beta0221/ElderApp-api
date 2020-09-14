@@ -15,12 +15,16 @@
                 <li class="nav-item mb-2 mr-4">
                   <button class="btn btn-primary" @click="groupNextStatus">下階段</button>
                 </li>
+                <li class="nav-item mb-2 mr-4">
+                  <button class="btn btn-primary" @click="groupExportExcel">匯出</button>
+                </li>
                 <li class="nav-item mb-2 mr-3">
                   <select class="form-control" name id v-model="searchColumn">
-                    <option value="null">欄位</option>
-                    <option value="ship_status">狀態</option>
-                    <option value="created_at">日期</option>
-                    <option value="order_numero">訂單編號</option>
+                    <option
+                      v-for="(col,index) in columns"
+                      :key="index"
+                      :value="col.value"
+                    >{{col.text}}</option>
                   </select>
                 </li>
                 <li class="nav-item mb-2 mr-3">
@@ -32,11 +36,11 @@
                     v-model="searchValue"
                     v-show="searchColumn=='ship_status'"
                   >
-                    <option value="0">待出貨</option>
-                    <option value="1">準備中</option>
-                    <option value="2">已出貨</option>
-                    <option value="3">已到貨</option>
-                    <option value="4">結案</option>
+                    <option
+                      v-for="opt in statusList"
+                      :key="opt.value"
+                      :value="opt.value"
+                    >{{opt.text}}</option>
                   </select>
                 </li>
                 <li class="nav-item mb-2" v-show="searchColumn=='created_at'">
@@ -58,12 +62,7 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>選取</th>
-                  <th>狀態</th>
-                  <th>名稱</th>
-                  <th>訂單編號</th>
-                  <th>日期</th>
+                  <th v-for="(header,index) in headers" :key="index">{{header.text}}</th>
                 </tr>
               </thead>
               <tbody>
@@ -79,45 +78,23 @@
                   </td>
                   <td class="align-middle">
                     <button
-                      v-if="item.ship_status===0"
-                      class="btn btn-secondary"
+                      :class="btnClass[item.ship_status]"
                       @click="nextStatus(item.order_numero)"
-                    >待出貨</button>
-                    <button
-                      v-if="item.ship_status===1"
-                      class="btn btn-info"
-                      @click="nextStatus(item.order_numero)"
-                    >準備中</button>
-                    <button
-                      v-if="item.ship_status===2"
-                      class="btn btn-primary"
-                      @click="nextStatus(item.order_numero)"
-                    >已出貨</button>
-                    <button
-                      v-if="item.ship_status===3"
-                      class="btn btn-success"
-                      @click="nextStatus(item.order_numero)"
-                    >已到貨</button>
-                    <button
-                      v-if="item.ship_status===4"
-                      class="btn btn-danger"
-                      @click="nextStatus(item.order_numero)"
-                    >結案</button>
+                    >{{statusDict[item.ship_status]}}</button>
                   </td>
                   <td
                     class="align-middle"
                     v-for="(detail,index) in item.list"
                     :key="index"
                   >{{detail.name}}</td>
-                  <td class="align-middle" @click="getOrderDetail(item.order_numero)">{{item.order_numero}}</td>
+                  <td
+                    class="align-middle"
+                    @click="getOrderDetail(item.order_numero)"
+                  >{{item.order_numero}}</td>
                   <td class="align-middle">{{item.created_at}}</td>
                 </tr>
               </tbody>
             </table>
-            <!-- <div class="card-footer d-flex justify-content-between">
-      <span>頁數</span>
-     
-            </div>-->
           </div>
         </div>
       </div>
@@ -133,51 +110,49 @@
       >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <div class="modal-header">              
-                  <ul class="list-unstyled">
-                      <li>
-                         <h5 class="modal-title" id="detailModal">訂單編號 : {{orderNumero}}</h5>
-                      </li>
-                      <li>
-                           <h6 class="modal-title">收件人 : {{orderDelievery.receiver_name}}</h6>
-                      </li>
-                      <li>
-                           <h6 class="modal-title">聯絡電話 : {{orderDelievery.receiver_phone}}</h6>
-                      </li>
-                      <li>
-                            <h6 class="modal-title">地址 : {{orderDelievery.address}}</h6>
-                      </li>
-                  </ul>          
+            <div class="modal-header">
+              <ul class="list-unstyled">
+                <li>
+                  <h5 class="modal-title" id="detailModal">訂單編號 : {{orderNumero}}</h5>
+                </li>
+                <li>
+                  <h6 class="modal-title">收件人 : {{orderDelievery.receiver_name}}</h6>
+                </li>
+                <li>
+                  <h6 class="modal-title">聯絡電話 : {{orderDelievery.receiver_phone}}</h6>
+                </li>
+                <li>
+                  <h6 class="modal-title">地址 : {{orderDelievery.address}}</h6>
+                </li>
+              </ul>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
-              </button>        
+              </button>
             </div>
             <div class="modal-body">
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>商品</th>
-                            <th>總數</th>
-                            <th>總金額</th>
-                        </tr>                       
-                    </thead>
-                    <tbody>
-                     <tr v-for="(item,index) in orderDetail" :key="index">
-                        <td class="align-middle" v-for="(img,index) in productImageDict" :key="index">
-                            <img style="height:100px" :src="img">
-                        </td>
-                        <td class="align-middle">{{item.name}}</td>
-                        <td class="align-middle">{{item.cash_quantity}}</td>
-                        <td class="align-middle">{{item.total_cash}}</td>
-                     </tr>
-                    </tbody>
-                    
-                </table>
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>商品</th>
+                    <th>總數</th>
+                    <th>總金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item,index) in orderDetail" :key="index">
+                    <td class="align-middle" v-for="(img,index) in productImageDict" :key="index">
+                      <img style="height:100px" :src="img" />
+                    </td>
+                    <td class="align-middle">{{item.name}}</td>
+                    <td class="align-middle">{{item.cash_quantity}}</td>
+                    <td class="align-middle">{{item.total_cash}}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-              
             </div>
           </div>
         </div>
@@ -205,10 +180,45 @@ export default {
       searchColumn: null,
       searchValue: null,
       isSelectAll: false,
-      orderDelievery:{},
-      orderDetail:[],
-      orderNumero:"",
-      productImageDict:"",
+      orderDelievery: {},
+      orderDetail: [],
+      orderNumero: "",
+      productImageDict: "",
+      btnClass: {
+        "0": "btn btn-secondary",
+        "1": "btn btn-info",
+        "2": "btn btn-primary",
+        "3": "btn btn-success",
+        "4": "btn btn-danger",
+      },
+      statusDict: {
+        "0": "待出貨",
+        "1": "準備中",
+        "2": "已出貨",
+        "3": "已到貨",
+        "4": "結案",
+      },
+      statusList: [
+        { text: "待出貨", value: 0 },
+        { text: "準備中", value: 1 },
+        { text: "已出貨", value: 2 },
+        { text: "已到貨", value: 3 },
+        { text: "結案", value: 4 },
+      ],
+      columns: [
+        { text: "欄位", value: null },
+        { text: "狀態", value: "ship_status" },
+        { text: "日期", value: "created_at" },
+        { text: "訂單編號", value: "order_numero" },
+      ],
+      headers: [
+        { text: "#" },
+        { text: "選取" },
+        { text: "狀態", value: "ship_status" },
+        { text: "商品" },
+        { text: "訂單編號", value: "order_numero" },
+        { text: "日期", value: "created_at" },
+      ],
     };
   },
   watch: {
@@ -282,6 +292,19 @@ export default {
         this.$set(this.orderList[index], "isCheck", this.isSelectAll);
       });
     },
+    groupExportExcel() {
+      let order_numero_array = this.getCheckedOrderNumero();
+      if (order_numero_array.length == 0) {
+        alert("請勾選");
+        return;
+      }
+      window.open(
+        "/order/downloadOrderExcel?token=" +
+          localStorage.getItem("token") +
+          "&order_numero_array=" +
+          order_numero_array.join(",")
+      );
+    },
     nextStatus(order_numero) {
       axios
         .post("/api/order/nextStatus", {
@@ -298,19 +321,20 @@ export default {
           console.error(err);
         });
     },
-    getOrderDetail(numero){
-        this.orderNumero=numero;
-        this.openModal();
-        axios.get(`/api/order/getOrderDetail/${numero}`)
-        .then(res => {
-            console.log(res);
-            this.orderDelievery=res.data.orderDelievery;
-            this.orderDetail=res.data.orders;
-            this.productImageDict=res.data.productImageDict;
+    getOrderDetail(numero) {
+      this.orderNumero = numero;
+      this.openModal();
+      axios
+        .get(`/api/order/getOrderDetail/${numero}`)
+        .then((res) => {
+          console.log(res);
+          this.orderDelievery = res.data.orderDelievery;
+          this.orderDetail = res.data.orders;
+          this.productImageDict = res.data.productImageDict;
         })
-        .catch(err => {
-            console.error(err); 
-        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     openModal() {
       $("#detailModal").modal("show");

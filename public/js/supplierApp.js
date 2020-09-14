@@ -12422,31 +12422,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -12469,7 +12444,66 @@ __webpack_require__.r(__webpack_exports__);
       orderDelievery: {},
       orderDetail: [],
       orderNumero: "",
-      productImageDict: ""
+      productImageDict: "",
+      btnClass: {
+        "0": "btn btn-secondary",
+        "1": "btn btn-info",
+        "2": "btn btn-primary",
+        "3": "btn btn-success",
+        "4": "btn btn-danger"
+      },
+      statusDict: {
+        "0": "待出貨",
+        "1": "準備中",
+        "2": "已出貨",
+        "3": "已到貨",
+        "4": "結案"
+      },
+      statusList: [{
+        text: "待出貨",
+        value: 0
+      }, {
+        text: "準備中",
+        value: 1
+      }, {
+        text: "已出貨",
+        value: 2
+      }, {
+        text: "已到貨",
+        value: 3
+      }, {
+        text: "結案",
+        value: 4
+      }],
+      columns: [{
+        text: "欄位",
+        value: null
+      }, {
+        text: "狀態",
+        value: "ship_status"
+      }, {
+        text: "日期",
+        value: "created_at"
+      }, {
+        text: "訂單編號",
+        value: "order_numero"
+      }],
+      headers: [{
+        text: "#"
+      }, {
+        text: "選取"
+      }, {
+        text: "狀態",
+        value: "ship_status"
+      }, {
+        text: "商品"
+      }, {
+        text: "訂單編號",
+        value: "order_numero"
+      }, {
+        text: "日期",
+        value: "created_at"
+      }]
     };
   },
   watch: {
@@ -12543,6 +12577,16 @@ __webpack_require__.r(__webpack_exports__);
       this.orderList.forEach(function (order, index) {
         _this3.$set(_this3.orderList[index], "isCheck", _this3.isSelectAll);
       });
+    },
+    groupExportExcel: function groupExportExcel() {
+      var order_numero_array = this.getCheckedOrderNumero();
+
+      if (order_numero_array.length == 0) {
+        alert("請勾選");
+        return;
+      }
+
+      window.open("/order/downloadOrderExcel?token=" + localStorage.getItem("token") + "&order_numero_array=" + order_numero_array.join(","));
     },
     nextStatus: function nextStatus(order_numero) {
       var _this4 = this;
@@ -50080,6 +50124,17 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
+                _c("li", { staticClass: "nav-item mb-2 mr-4" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: { click: _vm.groupExportExcel }
+                    },
+                    [_vm._v("匯出")]
+                  )
+                ]),
+                _vm._v(" "),
                 _c("li", { staticClass: "nav-item mb-2 mr-3" }, [
                   _c(
                     "select",
@@ -50110,23 +50165,14 @@ var render = function() {
                         }
                       }
                     },
-                    [
-                      _c("option", { attrs: { value: "null" } }, [
-                        _vm._v("欄位")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "ship_status" } }, [
-                        _vm._v("狀態")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "created_at" } }, [
-                        _vm._v("日期")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "order_numero" } }, [
-                        _vm._v("訂單編號")
-                      ])
-                    ]
+                    _vm._l(_vm.columns, function(col, index) {
+                      return _c(
+                        "option",
+                        { key: index, domProps: { value: col.value } },
+                        [_vm._v(_vm._s(col.text))]
+                      )
+                    }),
+                    0
                   )
                 ]),
                 _vm._v(" "),
@@ -50169,25 +50215,14 @@ var render = function() {
                         ]
                       }
                     },
-                    [
-                      _c("option", { attrs: { value: "0" } }, [
-                        _vm._v("待出貨")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "1" } }, [
-                        _vm._v("準備中")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "2" } }, [
-                        _vm._v("已出貨")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "3" } }, [
-                        _vm._v("已到貨")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "4" } }, [_vm._v("結案")])
-                    ]
+                    _vm._l(_vm.statusList, function(opt) {
+                      return _c(
+                        "option",
+                        { key: opt.value, domProps: { value: opt.value } },
+                        [_vm._v(_vm._s(opt.text))]
+                      )
+                    }),
+                    0
                   )
                 ]),
                 _vm._v(" "),
@@ -50285,7 +50320,17 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("table", { staticClass: "table table-hover" }, [
-              _vm._m(0),
+              _c("thead", [
+                _c(
+                  "tr",
+                  _vm._l(_vm.headers, function(header, index) {
+                    return _c("th", { key: index }, [
+                      _vm._v(_vm._s(header.text))
+                    ])
+                  }),
+                  0
+                )
+              ]),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -50346,80 +50391,18 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "align-middle" }, [
-                        item.ship_status === 0
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-secondary",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.nextStatus(item.order_numero)
-                                  }
-                                }
-                              },
-                              [_vm._v("待出貨")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        item.ship_status === 1
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-info",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.nextStatus(item.order_numero)
-                                  }
-                                }
-                              },
-                              [_vm._v("準備中")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        item.ship_status === 2
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.nextStatus(item.order_numero)
-                                  }
-                                }
-                              },
-                              [_vm._v("已出貨")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        item.ship_status === 3
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.nextStatus(item.order_numero)
-                                  }
-                                }
-                              },
-                              [_vm._v("已到貨")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        item.ship_status === 4
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.nextStatus(item.order_numero)
-                                  }
-                                }
-                              },
-                              [_vm._v("結案")]
-                            )
-                          : _vm._e()
+                        _c(
+                          "button",
+                          {
+                            class: _vm.btnClass[item.ship_status],
+                            on: {
+                              click: function($event) {
+                                return _vm.nextStatus(item.order_numero)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.statusDict[item.ship_status]))]
+                        )
                       ]),
                       _vm._v(" "),
                       _vm._l(item.list, function(detail, index) {
@@ -50512,12 +50495,12 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(1)
+                  _vm._m(0)
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("table", { staticClass: "table table-borderless" }, [
-                    _vm._m(2),
+                    _vm._m(1),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -50559,7 +50542,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(2)
               ])
             ]
           )
@@ -50569,26 +50552,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("選取")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("狀態")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("名稱")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("訂單編號")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("日期")])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -51423,9 +51386,10 @@ var render = function() {
                 },
                 [
                   _c("font-awesome-icon", {
-                    attrs: { icon: ["fas", "user-secret"] }
+                    attrs: { icon: ["fas", "box-open"] }
                   }),
-                  _vm._v("\n              商品管理 ")
+                  _vm._v(" "),
+                  _c("span", [_vm._v("商品管理")])
                 ],
                 1
               )
@@ -51445,9 +51409,11 @@ var render = function() {
                 },
                 [
                   _c("font-awesome-icon", {
-                    attrs: { icon: ["fas", "user-secret"] }
+                    staticStyle: { width: "1.3em" },
+                    attrs: { icon: ["fas", "list"] }
                   }),
-                  _vm._v("\n              訂單管理 ")
+                  _vm._v(" "),
+                  _c("span", [_vm._v("訂單管理")])
                 ],
                 1
               )
@@ -67089,7 +67055,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 
-_fortawesome_fontawesome_svg_core__WEBPACK_IMPORTED_MODULE_2__["library"].add(_fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faUserSecret"]);
+_fortawesome_fontawesome_svg_core__WEBPACK_IMPORTED_MODULE_2__["library"].add(_fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["fas"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('font-awesome-icon', _fortawesome_vue_fontawesome__WEBPACK_IMPORTED_MODULE_4__["FontAwesomeIcon"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.config.productionTip = false;
 
