@@ -141,8 +141,8 @@
                 </thead>
                 <tbody>
                   <tr v-for="(item,index) in orderDetail" :key="index">
-                    <td class="align-middle" v-for="(img,index) in productImageDict" :key="index">
-                      <img style="height:100px" :src="img" />
+                    <td class="align-middle">
+                      <img style="height:100px" :src="productImageDict[item.product_id]" />
                     </td>
                     <td class="align-middle">{{item.name}}</td>
                     <td class="align-middle">{{item.cash_quantity}}</td>

@@ -50522,37 +50522,28 @@ var render = function() {
                     _c(
                       "tbody",
                       _vm._l(_vm.orderDetail, function(item, index) {
-                        return _c(
-                          "tr",
-                          { key: index },
-                          [
-                            _vm._l(_vm.productImageDict, function(img, index) {
-                              return _c(
-                                "td",
-                                { key: index, staticClass: "align-middle" },
-                                [
-                                  _c("img", {
-                                    staticStyle: { height: "100px" },
-                                    attrs: { src: img }
-                                  })
-                                ]
-                              )
-                            }),
-                            _vm._v(" "),
-                            _c("td", { staticClass: "align-middle" }, [
-                              _vm._v(_vm._s(item.name))
-                            ]),
-                            _vm._v(" "),
-                            _c("td", { staticClass: "align-middle" }, [
-                              _vm._v(_vm._s(item.cash_quantity))
-                            ]),
-                            _vm._v(" "),
-                            _c("td", { staticClass: "align-middle" }, [
-                              _vm._v(_vm._s(item.total_cash))
-                            ])
-                          ],
-                          2
-                        )
+                        return _c("tr", { key: index }, [
+                          _c("td", { staticClass: "align-middle" }, [
+                            _c("img", {
+                              staticStyle: { height: "100px" },
+                              attrs: {
+                                src: _vm.productImageDict[item.product_id]
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "align-middle" }, [
+                            _vm._v(_vm._s(item.name))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "align-middle" }, [
+                            _vm._v(_vm._s(item.cash_quantity))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "align-middle" }, [
+                            _vm._v(_vm._s(item.total_cash))
+                          ])
+                        ])
                       }),
                       0
                     )
