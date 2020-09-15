@@ -378,7 +378,8 @@ class MemberController extends Controller
         if(!$user = User::find($user_id)){
             return response('no such user');
         }
-        
+        $isLeader = $user->isPrimaryLeaderOfGroup();
+
         $rows = $user->getGroupUserRows();
         $levelDict = [];
         foreach ($rows as $row) {
@@ -391,6 +392,7 @@ class MemberController extends Controller
             'user'=>$user,
             'group_users'=>$group_users,
             'levelDict'=>json_encode($levelDict),
+            'isLeader'=>$isLeader,
         ]);
     }
 

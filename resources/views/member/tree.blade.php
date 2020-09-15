@@ -83,7 +83,7 @@
         }
         #event-menu{
             top: 50%;
-            left: 80%;
+            left: calc(50% + 12px);
             position: absolute;
             display: inline-block;
             text-align: center;
