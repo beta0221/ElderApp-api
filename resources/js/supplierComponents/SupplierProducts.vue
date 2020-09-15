@@ -184,35 +184,33 @@
                   </div>
                 </div>
 
-              <div class="col-sm-12 scrollbox mb-4 mt-4">
-                <div
-                  class="col-sm-4 form-group"
-                  style="display:inline-block"
-                  v-for="loc in location"
-                  v-bind:key="loc.id"
-                >
-                  <input
-                    type="checkbox"
-                    class="col-sm-1"
-                    :checked="isSelected(loc.id)"
-                    @change="clickLocationCheckbox($event,loc.id)"
-                  />
-                  <label class="col-sm-10 pr-0 pl-0">{{loc.name}}</label>
+              <div class="col-sm-12 mb-4 mt-4">
+                <label>上架據點</label>
+                <div class="scrollbox">
 
-                  <div
+                  <div class="col-sm-4 form-group"
                     style="display:inline-block"
-                    class="col-sm-12 pl-0 pr-0"
-                    v-if="tempProduct.select_location"
-                  >
-                    <input
-                      type="number"
-                      class="form-control"
-                      placeholder="庫存數量"
-                      v-if="selected_location.includes(loc.id)"
-                      v-model="product_quantity[loc.id]"
-                    />
+                    v-for="loc in location"
+                    v-bind:key="loc.id">
+                    <input type="checkbox"
+                      class="col-sm-1"
+                      :checked="isSelected(loc.id)"
+                      @change="clickLocationCheckbox($event,loc.id)"/>
+                    <label class="col-sm-10 pr-0 pl-0">{{loc.name}}</label>
+
+                    <div style="display:inline-block"
+                      class="col-sm-12 pl-0 pr-0"
+                      v-if="tempProduct.select_location">
+                      <input type="number"
+                        class="form-control"
+                        placeholder="庫存數量"
+                        v-if="selected_location.includes(loc.id)"
+                        v-model="product_quantity[loc.id]" />
+                    </div>
                   </div>
+
                 </div>
+
               </div>
                 <!-- <div class="form-group col-sm-6" v-for="(lct,index) in location" :key="index" >
                 <span >
@@ -522,8 +520,10 @@ export default {
   max-height: 80px;
 }
 .scrollbox{
-  height: 170px; 
-  border: 1px solid;
- overflow-y: scroll;
+  padding: 12px 0;
+  border-radius: .2rem;
+  height: 200px; 
+  border: 1px solid lightgray;
+  overflow-y: scroll;
 }
 </style>

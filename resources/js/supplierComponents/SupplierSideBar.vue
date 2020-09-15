@@ -1,28 +1,29 @@
 <template>
     
       
-     <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse">
+     <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse p-0">
        
-      <div class="sidebar-sticky pt-3">
+      <div class="sidebar-sticky">
 
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>管理員</span>
           <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
             <span data-feather="plus-circle"></span>
           </a>
-        </h6>
-    
-         <ul class="nav flex-column mb-2">   
-          <li class="nav-item mt-3">            
+        </h6> -->
+        <h5 class="px-3 m-0">廠商：{{user_name}}</h5>
+        <hr>
+         <ul class="nav flex-column mt-2">   
+          <li class="nav-item">            
               <router-link class="nav-link"
               to="/supplier/admin/supplierProducts">
-              <font-awesome-icon :icon="['fas', 'box-open']" />
+              <font-awesome-icon icon="box-open" />
               <span>商品管理</span>  </router-link>                       
           </li>
           <li class="nav-item">            
               <router-link class="nav-link"
               to="/supplier/admin/supplierOrders"> 
-               <font-awesome-icon :icon="['fas', 'list']" style="width: 1.3em;" />
+               <font-awesome-icon icon="list" style="width: 1.3em;" />
                <span>訂單管理</span> </router-link>                       
           </li>
         </ul>
@@ -59,6 +60,13 @@
 <script>
 
 export default {
-    
+    data(){
+      return{
+        user_name:'',
+      }
+    },
+    created(){
+      this.user_name = localStorage.getItem('user');
+    }
 }
 </script>

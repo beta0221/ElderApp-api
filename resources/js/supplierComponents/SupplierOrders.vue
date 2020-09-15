@@ -1,10 +1,10 @@
 <template>
-  <div class="container-fluid mt-3">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-2 col-lg-2">
         <side-bar></side-bar>
       </div>
-      <div class="col-md-10 col-lg-10">
+      <div class="col-md-10 col-lg-10 pt-3">
         <div class="container-fluid">
           <div class="card text-center row">
             <div class="card-header">
@@ -44,7 +44,7 @@
                   </select>
                 </li>
                 <li class="nav-item mb-2" v-show="searchColumn=='created_at'">
-                  <input class="form-control" type="date" v-model="searchValue" />
+                  <input class="form-control" type="date" v-model="searchValue" @change="searchByColumn"/>
                 </li>
                 <li class="nav-item mb-2" v-show="searchColumn=='order_numero'">
                   <input class="form-control" type="text" v-model="searchValue" />
@@ -82,16 +82,16 @@
                       @click="nextStatus(item.order_numero)"
                     >{{statusDict[item.ship_status]}}</button>
                   </td>
-                  <td
-                    class="align-middle"
-                    v-for="(detail,index) in item.list"
-                    :key="index"
-                  >{{detail.name}}</td>
-                  <td
-                    class="align-middle"
-                    @click="getOrderDetail(item.order_numero)"
-                  >{{item.order_numero}}</td>
+                  <td class="align-middle">
+                    <div v-for="(detail,index) in item.list" :key="index">
+                      {{detail.name}}
+                    </div>
+                  </td>
+                  <td class="align-middle">{{item.order_numero}}</td>
                   <td class="align-middle">{{item.created_at}}</td>
+                  <td>
+                    <button class="btn btn-info" @click="getOrderDetail(item.order_numero)">詳細</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -218,16 +218,17 @@ export default {
         { text: "商品" },
         { text: "訂單編號", value: "order_numero" },
         { text: "日期", value: "created_at" },
+        { text: "-"},
       ],
     };
   },
   watch: {
     searchColumn(val) {
-      this.searchValue = null;
-      this.searchColumn = val;
-      this.pagination.page = 1;
-      this.getOrders();
-      console.log("here");
+      if(val == null){
+        this.searchValue = null;
+        this.pagination.page = 1;
+        this.getOrders();
+      }
     },
   },
   methods: {
