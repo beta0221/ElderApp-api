@@ -8,8 +8,25 @@
 </head>
 <body>
     
-
 <h3>移動成員：{{$user->name}}</h3>
+
+@if($isLeader)
+
+<form action="/promoteLeader" method="POST">
+    {{csrf_field()}}
+    <input type="hidden" name="user_id" value="{{$user->id}}">
+    <label for="">提升職位</label>
+    <select name="target_level">
+        <option value="">選擇職位</option>
+        <option value="5">領航天使</option>
+        <option value="4">守護天使</option>
+        <option value="3">大天使</option>
+    </select>
+    <button type="submit">確定提升</button>
+</form>
+
+@else
+
 <form action="/moveMember/{{$user->id}}" method="POST">
     {{csrf_field()}}
     <label for="">移動至：</label>
@@ -33,9 +50,6 @@
     <button type="submit">確定移動</button>
 </form>
 
-
-@if($isLeader)
-    
 @endif
 
 </body>

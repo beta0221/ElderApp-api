@@ -25,6 +25,7 @@ class MemberController extends Controller
             'memberTree',
             'moveMemberPage',
             'moveMember',
+            'promoteLeader',
             'updateMemberLevel',
             'memberGroupMembers',
             'getAllAssociation',
@@ -425,6 +426,37 @@ class MemberController extends Controller
             return redirect("member_tree/$user->id_code");
         }
         
+        Session::flash('success', '完成');
+        return redirect("member_tree/$user->id_code");
+    }
+
+    /**
+     * 升級組長等級
+     */
+    public function promoteLeader(Request $request){
+        $this->validate($request,[
+            'user_id'=>'required',
+            'target_level'=>'required',
+        ]);
+        if(!$user = User::find($request->user_id)){
+            return response('no such user');
+        }
+        if(!$user->isPrimaryLeaderOfGroup()){
+            Session::flash('error', '此使用者不屬於組織所有者');
+            return redirect("member_tree/$user->id_code");
+        }
+
+        $user_level = $user->groupLevel();
+        if($user_level >= $request->target_level){
+            Session::flash('error', '目標等級必須為使用者目前等級以上');
+            return redirect("member_tree/$user->id_code");
+        }
+
+        if(!$result = $user->promoteGroupLeader((int)$request->target_level)){
+            Session::flash('error', '系統錯誤');
+            return redirect("member_tree/$user->id_code");
+        }
+
         Session::flash('success', '完成');
         return redirect("member_tree/$user->id_code");
     }

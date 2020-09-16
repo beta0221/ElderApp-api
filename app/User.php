@@ -248,6 +248,28 @@ class User extends Authenticatable implements JWTSubject
         }
         return true;
     }
+
+    /**提升組長等級 */
+    public function promoteGroupLeader(int $target_level){
+        $from_lv = 'lv_' . $this->groupLevel();
+        $to_lv = 'lv_' . $target_level;
+        try {
+            DB::table('user_group')->where('group_id',$this->id)->update([
+                $from_lv => null,
+                $to_lv => $this->id,
+            ]);
+            DB::table('user_group')->where('user_id',$this->id)->update([
+                'level' => $target_level
+            ]);
+            $this->org_rank = $target_level;
+            $this->save();
+        } catch (\Throwable $th) {
+            Log::info($th);
+            return false;
+        }
+        return true;
+    }
+
     public function getGroupUsers($above_level=1){
         $user_rows = $this->getGroupUserRows($above_level);
         $userIdArray = [];
