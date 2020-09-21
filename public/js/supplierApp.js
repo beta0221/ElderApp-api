@@ -12422,6 +12422,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -12445,6 +12450,7 @@ __webpack_require__.r(__webpack_exports__);
       orderDetail: [],
       orderNumero: "",
       productImageDict: "",
+      locationDict: {},
       btnClass: {
         "0": "btn btn-secondary",
         "1": "btn btn-info",
@@ -12615,6 +12621,7 @@ __webpack_require__.r(__webpack_exports__);
         _this5.orderDelievery = res.data.orderDelievery;
         _this5.orderDetail = res.data.orders;
         _this5.productImageDict = res.data.productImageDict;
+        _this5.locationDict = res.data.locationDict;
       })["catch"](function (err) {
         console.error(err);
       });
@@ -50488,28 +50495,35 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c("li", [
-                      _c("h6", { staticClass: "modal-title" }, [
-                        _vm._v(
-                          "收件人 : " + _vm._s(_vm.orderDelievery.receiver_name)
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("li", [
-                      _c("h6", { staticClass: "modal-title" }, [
-                        _vm._v(
-                          "聯絡電話 : " +
-                            _vm._s(_vm.orderDelievery.receiver_phone)
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("li", [
-                      _c("h6", { staticClass: "modal-title" }, [
-                        _vm._v("地址 : " + _vm._s(_vm.orderDelievery.address))
-                      ])
-                    ])
+                    _vm.orderDelievery
+                      ? _c("div", [
+                          _c("li", [
+                            _c("h6", { staticClass: "modal-title" }, [
+                              _vm._v(
+                                "收件人 : " +
+                                  _vm._s(_vm.orderDelievery.receiver_name)
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c("h6", { staticClass: "modal-title" }, [
+                              _vm._v(
+                                "聯絡電話 : " +
+                                  _vm._s(_vm.orderDelievery.receiver_phone)
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c("h6", { staticClass: "modal-title" }, [
+                              _vm._v(
+                                "地址 : " + _vm._s(_vm.orderDelievery.address)
+                              )
+                            ])
+                          ])
+                        ])
+                      : _vm._e()
                   ]),
                   _vm._v(" "),
                   _vm._m(0)
@@ -50533,7 +50547,20 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "align-middle" }, [
-                            _vm._v(_vm._s(item.name))
+                            _c("span", [_vm._v(_vm._s(item.name))]),
+                            _c("br"),
+                            _vm._v(" "),
+                            _c("span", [
+                              _c("span", [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.locationDict[item.location_id]
+                                      ? _vm.locationDict[item.location_id]
+                                      : ""
+                                  )
+                                )
+                              ])
+                            ])
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "align-middle" }, [
@@ -67789,7 +67816,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
+module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
 
 
 /***/ })

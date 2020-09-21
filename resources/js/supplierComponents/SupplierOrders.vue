@@ -115,15 +115,17 @@
                 <li>
                   <h5 class="modal-title" id="detailModal">訂單編號 : {{orderNumero}}</h5>
                 </li>
-                <li>
-                  <h6 class="modal-title">收件人 : {{orderDelievery.receiver_name}}</h6>
-                </li>
-                <li>
-                  <h6 class="modal-title">聯絡電話 : {{orderDelievery.receiver_phone}}</h6>
-                </li>
-                <li>
-                  <h6 class="modal-title">地址 : {{orderDelievery.address}}</h6>
-                </li>
+                <div v-if="(orderDelievery)">
+                  <li>
+                    <h6 class="modal-title">收件人 : {{orderDelievery.receiver_name}}</h6>
+                  </li>
+                  <li>
+                    <h6 class="modal-title">聯絡電話 : {{orderDelievery.receiver_phone}}</h6>
+                  </li>
+                  <li>
+                    <h6 class="modal-title">地址 : {{orderDelievery.address}}</h6>
+                  </li>
+                </div>
               </ul>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -144,7 +146,10 @@
                     <td class="align-middle">
                       <img style="height:100px" :src="productImageDict[item.product_id]" />
                     </td>
-                    <td class="align-middle">{{item.name}}</td>
+                    <td class="align-middle">
+                      <span>{{item.name}}</span><br>
+                      <span><span>{{(locationDict[item.location_id])?locationDict[item.location_id]:''}}</span></span>
+                    </td>
                     <td class="align-middle">{{item.cash_quantity}}</td>
                     <td class="align-middle">{{item.total_cash}}</td>
                   </tr>
@@ -184,6 +189,7 @@ export default {
       orderDetail: [],
       orderNumero: "",
       productImageDict: "",
+      locationDict:{},
       btnClass: {
         "0": "btn btn-secondary",
         "1": "btn btn-info",
@@ -332,6 +338,7 @@ export default {
           this.orderDelievery = res.data.orderDelievery;
           this.orderDetail = res.data.orders;
           this.productImageDict = res.data.productImageDict;
+          this.locationDict = res.data.locationDict;
         })
         .catch((err) => {
           console.error(err);

@@ -96,8 +96,8 @@
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease quantity-btn" data-product-id="{{$p->id}}">◀</div>
 
                                                     <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
-                                                    style="width:48px;line-height:32px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
-                                                    data-product-id="{{$p->id}}" min="0">
+                                                    style="width:48px;line-height:32px" value="1" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
+                                                    data-product-id="{{$p->id}}" min="1">
 
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase quantity-btn" data-product-id="{{$p->id}}">▶</div>
                                                 </div>
@@ -111,9 +111,9 @@
                                             </td>
                                             <td style="width:64px">
                                                 <span style="line-height: 24px">台幣</span><br>
-                                                <span id="subtotal-cash-{{$p->id}}" class="subtotal-cash" style="color:#ff5252">0</span><br>
+                                                <span id="subtotal-cash-{{$p->id}}" class="subtotal-cash" style="color:#ff5252">{{$p->pay_cash_price}}</span><br>
                                                 <span style="line-height: 24px">樂幣</span><br>
-                                                <span id="subtotal-point-{{$p->id}}" class="subtotal-point" style="color:#fb8c00">0</span>
+                                                <span id="subtotal-point-{{$p->id}}" class="subtotal-point" style="color:#fb8c00">{{$p->pay_cash_point}}</span>
                                             </td>
                                         </tr>
                                     </table>

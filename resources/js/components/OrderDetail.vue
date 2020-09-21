@@ -3,16 +3,18 @@
       <v-card id="member-detail-dialog">
         <v-card-title class="headline">訂單編號：{{order_numero}}</v-card-title>
 
-        <div class="data-row">
-            <span>收件人：{{orderDelievery.receiver_name}}</span>
-        </div>
+        <div v-if="(orderDelievery)">
+            <div class="data-row">
+                <span>收件人：{{orderDelievery.receiver_name}}</span>
+            </div>
 
-        <div class="data-row">
-            <span>聯絡電話：{{orderDelievery.receiver_phone}}</span>
-        </div>
+            <div class="data-row">
+                <span>聯絡電話：{{orderDelievery.receiver_phone}}</span>
+            </div>
 
-        <div class="data-row">
-            <span>地址：{{orderDelievery.county}}{{orderDelievery.district}}{{orderDelievery.address}}</span>
+            <div class="data-row">
+                <span>地址：{{orderDelievery.county}}{{orderDelievery.district}}{{orderDelievery.address}}</span>
+            </div>
         </div>
 
         <div class="data-row">
@@ -27,7 +29,8 @@
                         <img style="width:100%" :src="productImageDict[e.product_id]">
                     </td>
                     <td>
-                        {{e.name}}
+                        <span>{{e.name}}</span><br>
+                        <span>{{(locationDict[e.location_id])?locationDict[e.location_id]:''}}</span>
                     </td>
                     <td>
                         {{e.total_quantity}}
@@ -65,6 +68,7 @@ export default {
             orders:[],
             orderDelievery:{},
             productImageDict:{},
+            locationDict:{},
         };
     },
     methods:{
@@ -75,6 +79,7 @@ export default {
                 this.orders = res.data.orders;
                 this.orderDelievery = res.data.orderDelievery;
                 this.productImageDict = res.data.productImageDict;
+                this.locationDict = res.data.locationDict;
             });
         }
     }

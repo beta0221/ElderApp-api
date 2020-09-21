@@ -136,7 +136,14 @@ class CartController extends Controller
                 Session::flash('message','系統錯誤');
                 return redirect()->route('cart_page');
             }
-        }        
+        }else{
+            foreach ($products as $product) {
+                if(!isset($locationDict[$product->id])){
+                    Session::flash('message','請選擇據點');
+                    return redirect()->route('cart_page');
+                }
+            }
+        }   
 
         $total_point = 0;   //總共要花多少樂幣
         foreach ($products as $product) {

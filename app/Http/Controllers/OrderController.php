@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cart;
 use App\Exports\OrderExport;
+use App\Location;
 use App\Order;
 use App\OrderDelievery;
 use App\Product;
@@ -88,18 +89,33 @@ class OrderController extends Controller
         }
 
         $productIdArray = [];
+        $locationArray = [];
         foreach ($orders as $order) {
             $productIdArray[] = $order->product_id;
+            if($order->location_id){$locationArray[] = $order->location_id;}
         }
         $productImageDict = Product::getProductImageDict($productIdArray);
 
-        if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
-            return response('error',500);
+
+        $orderDelievery = null;
+        $locationDict = [];
+
+        if(!$orders[0]->order_delievery_id){
+            $locationList = Location::whereIn('id',$locationArray)->get();
+            foreach ($locationList as $location) {
+                $locationDict[$location->id] = $location->name;
+            }
+        }else{
+            if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
+                return response('error',500);
+            }
         }
+        
 
         return response([
             'orders'=>$orders,
             'orderDelievery'=>$orderDelievery,
+            'locationDict'=>$locationDict,
             'productImageDict'=>$productImageDict,
         ]);
     }
@@ -203,16 +219,21 @@ class OrderController extends Controller
         }
 
         $productIdArray = [];
+        $locationArray = [];
         foreach ($orders as $order) {
             $productIdArray[] = $order->product_id;
+            if($order->location_id){$locationArray[] = $order->location_id;}
         }
         $productImageDict = Product::getProductImageDict($productIdArray);
 
         $orderDelievery = null;
-        $location = null;
+        $locationDict = [];
 
         if(!$orders[0]->order_delievery_id){
-            
+            $locationList = Location::whereIn('id',$locationArray)->get();
+            foreach ($locationList as $location) {
+                $locationDict[$location->id] = $location;
+            }
         }else{
             if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
                 return view('errors.404');
@@ -225,7 +246,7 @@ class OrderController extends Controller
             'order_numero'=>$order_numero,
             'orders'=>$orders,
             'orderDelievery'=>$orderDelievery,
-            'shipping_fee'=>Cart::SHIPPING_FEE,
+            'locationDict'=>$locationDict,
         ]);
 
     }

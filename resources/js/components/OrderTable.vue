@@ -56,9 +56,11 @@
                         <span>{{product.name}}</span>
                     </div>
                 </td>
-                <td @click="showOrderDetail(props.item.order_numero)">{{props.item.order_numero}}</td>
+                <td>{{props.item.order_numero}}</td>
                 <td>{{props.item.created_at}}</td>
-                
+                <td>
+                    <v-btn @click="showOrderDetail(props.item.order_numero)">詳細</v-btn>
+                </td>
             </template>
         </v-data-table>
     </div>
@@ -108,6 +110,7 @@ export default {
                 { text: "商品"},
                 { text: "訂單編號", value: "order_numero" },
                 { text: "日期", value: "created_at" },
+                { text: "",},
             ],
             pagination: { sortBy: "id", descending: true },
             orderList:[],

@@ -31,11 +31,10 @@
                 <div>
                     <span>地址:{{$orderDelievery->county}}{{$orderDelievery->district}}{{$orderDelievery->address}}</span>
                 </div>    
-                @else
-
+                <hr>
                 @endif
                 
-                <hr>
+                
                 <div class="mb-4">
                     <table style="width:100%;text-align:center">
                         <tr>
@@ -47,6 +46,10 @@
                         <tr>
                             <td colspan="3" style="text-align: left">
                                 <h6 class="mt-2">{{$order->name}}</h6>
+                                @if (!empty($locationDict) && $order->location_id)
+                                    <span>領取：{{$locationDict[$order->location_id]->name}}</span><br>
+                                    <span>{{$locationDict[$order->location_id]->address}}</span>
+                                @endif
                             </td>
                         </tr>
                         <tr>
@@ -57,8 +60,7 @@
                                 <span>樂幣:{{$order->total_point}}</span><br>
                                 <hr class="m-0">
                                 <span>台幣:{{$order->total_cash}}</span><br>
-                                <span>運費:{{$shipping_fee}}</span><br>
-                                <span>總額:{{$order->total_cash + $shipping_fee}}</span>
+                                {{-- <span>總額:{{$order->total_cash}}</span> --}}
                             </td>
                             <td>
                                 <span>{{$shipStatusDict[$order->ship_status]}}</span>
