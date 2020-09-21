@@ -45,10 +45,9 @@
                     <tr>
                         <td class="w-100">
                             <div>
-                                <h5>編號：{{$order->order_numero}}</h5>
+                                <h5 class="m-0">編號：{{$order->order_numero}}</h5>
                             </div>
-                            
-                            <div>
+                            <div class="mb-4">
                                 <table class="w-100">
                                     @foreach ($order->list as $index => $o)
                                     <tr>
@@ -65,6 +64,7 @@
                                     @endforeach
                                 </table>
                             </div>
+                            <hr>
                         </td>
                     </tr>
                     @endforeach

@@ -6,7 +6,7 @@
 <style>
     .product-cell{
         display: inline-block;
-        width: calc(50% - 3px);
+        width: 100%;
     }
 	.image-outter{
         padding-top: 100%;

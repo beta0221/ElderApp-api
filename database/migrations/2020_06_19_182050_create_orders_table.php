@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
 
             $table->integer('user_id');
             $table->integer('firm_id');
-            $table->integer('order_delievery_id');
+            $table->integer('order_delievery_id')->nullable();
             $table->string('order_numero');
 
             $table->string('name');

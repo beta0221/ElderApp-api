@@ -208,8 +208,15 @@ class OrderController extends Controller
         }
         $productImageDict = Product::getProductImageDict($productIdArray);
 
-        if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
-            return view('errors.404');
+        $orderDelievery = null;
+        $location = null;
+
+        if(!$orders[0]->order_delievery_id){
+            
+        }else{
+            if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
+                return view('errors.404');
+            }
         }
 
         return view('order.detail',[

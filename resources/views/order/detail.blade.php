@@ -21,6 +21,7 @@
                 <h4>訂單詳情</h4>
                 <h5>訂單號碼：{{$order_numero}}</h5>
                 <hr>
+                @if ($orderDelievery)
                 <div>
                     <span>收件人:{{$orderDelievery->receiver_name}}</span>
                 </div>
@@ -29,7 +30,11 @@
                 </div>
                 <div>
                     <span>地址:{{$orderDelievery->county}}{{$orderDelievery->district}}{{$orderDelievery->address}}</span>
-                </div>
+                </div>    
+                @else
+
+                @endif
+                
                 <hr>
                 <div class="mb-4">
                     <table style="width:100%;text-align:center">

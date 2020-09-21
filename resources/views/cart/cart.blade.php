@@ -7,12 +7,25 @@
     .step-2-section{
         display: none;
     }
+    .delivery-section{
+        display:none;
+    }
+    .location-section{
+        display:none;
+    }
     .table td{
         padding: 8px 0;
         text-align: center;
     }
     .table th{
         text-align: center;
+    }
+    .form-check-input{
+        transform: scale(2.5);
+    }
+    .location-group{
+        background:rgba(0,0,0,0.1);
+        border-radius: .4rem;
     }
 </style>
 @endsection
@@ -50,7 +63,7 @@
                     @endif
 
                     @foreach($products as $p)
-                    <?php $img = config('app.static_host') . "/products/$p->slug/$p->img"; ?>
+                    <?php $img = $static_host . "/products/$p->slug/$p->img"; ?>
                     <tr>
                         <td style="width:100%">
                             <div>
@@ -75,24 +88,26 @@
                                             <td style="width:80px">
                                                 <span style="line-height: 24px">台幣+樂幣</span><br>
                                                 <span style="line-height: 24px"><font color="#ff5252">{{$p->pay_cash_price}}</font>+<font color="#fb8c00">{{$p->pay_cash_point}}</font></span><br>
-                                                <span style="line-height: 24px">台幣</span><br>
-                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span>
+                                                {{-- <span style="line-height: 24px">台幣</span><br>
+                                                <span style="line-height: 24px"><font color="#ff5252">{{$p->cash}}</font></span> --}}
                                             </td>
                                             <td>
                                                 <div>
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease quantity-btn" data-product-id="{{$p->id}}">◀</div>
+
                                                     <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
                                                     style="width:48px;line-height:32px" value="0" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
                                                     data-product-id="{{$p->id}}" min="0">
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
+
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase quantity-btn" data-product-id="{{$p->id}}">▶</div>
                                                 </div>
-                                                <div class="mb-1">
+                                                {{-- <div class="mb-1">
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>
                                                     <input type="number" class="input-cash-{{$p->id}} input-quantity form-control d-inline-block" 
                                                     style="width:48px;line-height: 32px" value="0" data-cash="{{$p->cash}}" 
                                                     data-product-id="{{$p->id}}" min="0">
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase" data-product-id="{{$p->id}}">▶</div>
-                                                </div>
+                                                </div> --}}
                                             </td>
                                             <td style="width:64px">
                                                 <span style="line-height: 24px">台幣</span><br>
@@ -112,18 +127,20 @@
 
         </div>
     </div>
+
     <hr>
-    <div class="row mb-2">
-        <div class="col-8 offset-4">
-            <h5>運費：{{$shipping_fee}}</h5>
-            <h5 class="m-0">總計</h5>
-            <hr class="mt-1 mb-1">
-            
-            <h5>台幣：<span id="total-cash" style="color:#ff5252">{{$shipping_fee}}</span></h5>
-            <h5>樂幣：<span id="total-point" style="color:#fb8c00">0</span></h5>
-            <h6 class="mt-4 text-secondary">剩餘樂幣：{{$wallet_remain}}</h6>
+
+    <div class="delivery-type-section pl-3">
+        <div class="form-check mb-3">
+            <input class="form-check-input radio_delivery_type" type="radio" name="delivery_type" id="delivery_type_0" value="0" checked>
+            <label class="form-check-label ml-2" for="delivery_type_0">據點取貨(免運費)</label>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input radio_delivery_type" type="radio" name="delivery_type" id="delivery_type_1" value="1">
+            <label class="form-check-label ml-2" for="delivery_type_1">宅配到我家</label>
         </div>
     </div>
+    
 
     @if(count($products) == 0)
     <div class="row step-1-section">
@@ -139,14 +156,32 @@
     </div>
     @endif
 
-    <div class="row step-2-section">
+    <div class="row mb-2 step-2-section">
         <div class="col-12">
+            <div class="btn btn-block btn-secondary btn-lg mb-4" onclick="toStepOne()">上一步</div>
+        </div>
+        
+        <div class="col-8 offset-4">
+            <h5 style="display: none" id="shipping-fee">運費：<span style="color:#ff5252">{{$shipping_fee}}</span></h5>
+            <h5 class="m-0">總計</h5>
+            <hr class="mt-1 mb-1">
+            
+            <h5>台幣：<span id="total-cash" style="color:#ff5252">0</span></h5>
+            <h5>樂幣：<span id="total-point" style="color:#fb8c00">0</span></h5>
+            <h6 class="mt-4 text-secondary">剩餘樂幣：{{$wallet_remain}}</h6>
+        </div>
+    </div>
+    
 
-            <div class="btn btn-block btn-light btn-lg" onclick="toStepOne()">上一步</div>
+    <div class="row delivery-section">
+        <div class="col-12">
 
             <form id="checkout-form" method="POST" action="/cart/checkOut">
                 {{ csrf_field() }}
+
+                <input id="delivery_type" type="hidden" name="delivery_type" value="">
                 <input type="hidden" name="quantityDict" value="">
+                <input type="hidden" name="locationDict" value="">
 
                 <div class="form-group">
                     <label for="exampleInputEmail1">收件人</label>
@@ -166,6 +201,35 @@
                 </div>
                 <div onclick="checkOutRequest()" class="btn btn-block btn-lg btn-primary">確定送出</div>
             </form>
+        </div>
+    </div>
+
+
+    <div class="row location-section mt-4">
+        <div class="col-12">
+            <table style="width:100%" class="mb-3">
+                @foreach($products as $p)
+                <?php $img = $static_host . "/products/$p->slug/$p->img"; ?>
+                <tr>
+                    <td style="width:80px">
+                        <div>
+                            <img style="height:auto;width:auto;max-height: 100%;max-width:100%" src="{{$img}}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="location-group pl-3 pt-3 pb-3">
+                            @foreach($locationDict[$p->id] as $location)
+                            <div class="form-check mb-3">
+                                <input id="location_{{$location->id}}" class="form-check-input radio_location" type="radio" data-product-id="{{$p->id}}" name="location_{{$p->id}}" value="{{$location->id}}">
+                                <label for="location_{{$location->id}}" class="form-check-label ml-2">{{$location->name}}</label>
+                            </div>
+                            @endforeach
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </table>
+            <div onclick="checkOutRequest()" class="btn btn-block btn-lg btn-primary">確定送出</div>
         </div>
     </div>
 
@@ -228,10 +292,8 @@
     function cacu_product(id){
         let point = 0;
         let cash = 0;
-
-        let input_cash = $('.input-cash-'+id);
-        cash += (input_cash.val() * input_cash.data('cash'));
-
+        // let input_cash = $('.input-cash-'+id);
+        // cash += (input_cash.val() * input_cash.data('cash'));
         let input_cash_point = $('.input-cash-point-'+id);
         point += (input_cash_point.val() * input_cash_point.data('point'));
         cash += (input_cash_point.val() * input_cash_point.data('cash'));
@@ -239,21 +301,10 @@
         $('#subtotal-point-'+id).html(point);
         $('#subtotal-cash-'+id).html(cash);
         
-        var total_point = 0;
-        var total_cash = shipping_fee;
-        $('.subtotal-point').each(function(index,item){
-            total_point += parseInt($(this).html());
-        });
-        $('.subtotal-cash').each(function(index,item){
-            total_cash += parseInt($(this).html());
-        });
-        $('#total-point').html(total_point);
-        $('#total-cash').html(total_cash);
     }
 
-    function checkOutRequest(){
-        
-        var quantityDict = {};
+    function getQuantityDict(){
+        let quantityDict = {};
         $('.input-quantity').each(function(index,item){
             let product_id = $(this).data('product-id');
             let quantity = $(this).val();
@@ -267,33 +318,29 @@
             }
         });
         console.log(quantityDict);
-        $("[name='quantityDict'").val(JSON.stringify(quantityDict));
+        return quantityDict;
+    }
+
+    function getLocationDict(){
+        let locationDict = {};
+        $('.radio_location').each(function(index,item){
+            let product_id = $(this).data('product-id');
+            let location_id = $(this).val();
+            if($(this).prop('checked')){
+                locationDict[product_id] = location_id;
+            }
+        });
+        console.log(locationDict);
+        return locationDict;
+    }
+
+    function checkOutRequest(){
+        let quantityDict = getQuantityDict();
+        let locationDict = getLocationDict();
+        $('#delivery_type').val($('.radio_delivery_type:checked').val());
+        $("[name='quantityDict']").val(JSON.stringify(quantityDict));
+        $("[name='locationDict']").val(JSON.stringify(locationDict));
         $('#checkout-form').submit();
-        // return;
-        // $.ajax({
-        //     type: "POST",
-        //     url: "/api/cart/checkOut",
-        //     headers:{
-        //         'Authorization': 'Bearer '+getCookie('token'),
-        //     },
-        //     data: {
-        //         'quantityDict':JSON.stringify(quantityDict),
-        //         'receiver_name':$("[name='receiver_name'").val(),
-        //         'receiver_phone':$("[name='receiver_phone'").val(),
-        //         'county':$("[name='county'").val(),
-        //         'district':$("[name='district'").val(),
-        //         'zipcode':$("[name='zipcode'").val(),
-        //         'address':$("[name='address'").val(),
-        //     },
-        //     dataType: "json",
-        //     success: function (response) {
-        //         if(response.s == 1){
-        //             location.href = '/order/thankyou/'+response.order_numero
-        //         }else{
-        //             alert(response.m);
-        //         }
-        //     }
-        // });
     }
 
     function delete_product(id){
@@ -311,16 +358,49 @@
         });
     }
 
+    function cacu_total(){
+        var total_point = 0;
+        var total_cash = 0;
+        $('.subtotal-point').each(function(index,item){
+            total_point += parseInt($(this).html());
+        });
+        $('.subtotal-cash').each(function(index,item){
+            total_cash += parseInt($(this).html());
+        });
+
+        if($('.radio_delivery_type:checked').val() == 1){
+            total_cash += shipping_fee;
+            $('#shipping-fee').show();
+        }else{
+            $('#shipping-fee').hide();
+        }
+
+        $('#total-point').html(total_point);
+        $('#total-cash').html(total_cash);
+    }
+
     function toStepTwo(){
+        if($('.radio_delivery_type:checked').val() == 1){
+            $('.delivery-section').show();
+        }else{
+            $('.location-section').show();
+        }
+        cacu_total();
+        $('.quantity-btn').hide();
         $('.step-1-section').hide();
         $('.step-2-section').show();
         $('.input-quantity').attr('disabled',true);
+        $('.radio_delivery_type').prop('disabled',true);
     }
 
     function toStepOne(){
+        $('.quantity-btn').show();
         $('.step-1-section').show();
         $('.step-2-section').hide();
+        $('.delivery-section').hide();
+        $('.location-section').hide();
         $('.input-quantity').attr('disabled',false);
+        $('.radio_delivery_type').prop('disabled',false);
     }
 
 </script>

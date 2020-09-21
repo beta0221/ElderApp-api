@@ -27,15 +27,22 @@ class Order extends Model
      * insert 進資料庫
      * * @param Int user_id 
      */
-    public static function insert_row($user_id,$order_delievery_id,$order_numero,Product $product,$cash_quantity,$point_cash_quantity){
+    public static function insert_row($user_id,$order_delievery_id,$location_id,$order_numero,Product $product,$cash_quantity,$point_cash_quantity){
         
         $total_quantity = (int)$cash_quantity + (int)$point_cash_quantity;
         $total_cash = (int)$point_cash_quantity * $product->pay_cash_price + (int)$cash_quantity * $product->cash;
         $total_point = (int)$point_cash_quantity * $product->pay_cash_point;
 
+        
+        $ship_status = static::STATUS_READY;
+        if($location_id){
+            $ship_status = static::STATUS_ARRIVE;
+        }
+
         Order::create([
             'user_id'=>$user_id,
             'order_delievery_id'=>$order_delievery_id,
+            'location_id'=>$location_id,
             'order_numero'=>$order_numero,
             //
             'firm_id'=>$product->firm_id,
@@ -53,6 +60,8 @@ class Order extends Model
             //
             'total_point'=>$total_point,
             'total_cash'=>$total_cash,
+            //
+            'ship_status'=>$ship_status,
         ]);
     }
 
