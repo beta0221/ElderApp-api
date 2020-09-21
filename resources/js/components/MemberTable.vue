@@ -272,7 +272,7 @@ export default {
         console.log(res);
       })
       .catch(error => {
-        console.log(error);
+        Exception.handle(error);
       });
       // if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
         

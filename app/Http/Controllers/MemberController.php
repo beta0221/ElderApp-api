@@ -203,6 +203,7 @@ class MemberController extends Controller
             $user->expiry_date = date('Y-m-d', strtotime('+1 years'));
             $user->valid = 1;
             PayDate::create(['user_id'=>$request->id]);
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'入會獎勵');
         }
         $user->save();
         return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d', strtotime('+1 years'))],Response::HTTP_ACCEPTED);
@@ -229,6 +230,10 @@ class MemberController extends Controller
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         
+        if(!$user->expiry_date){
+            return response('使用者尚未入會，因此無法進行續會',Response::HTTP_BAD_REQUEST);
+        }
+
         $now = time();
         $next_expiry_date = strtotime('+1 years');//已到期續會
         if($user->expiry_date){
