@@ -24,7 +24,7 @@ class ProductListResource extends JsonResource
             'slug'=>$this->slug,
             'img'=>$this->img,
             'public'=>$this->public,
-            'public_text'=>($this->public)?'上架':'下架',
+            //'public_text'=>($this->public)?'上架':'下架',
             'product_category_id'=>$this->product_category_id,
             'imgUrl'=>$imgUrl,
         ];

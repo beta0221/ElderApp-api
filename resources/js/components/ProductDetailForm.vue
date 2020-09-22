@@ -24,13 +24,23 @@
         </v-col>
 
         <div>
+          <label>兌換區</label>
           <v-switch
             class="mx-2"
             color="green"
-            v-model="public"
-            :label="(public)?'上架':'下架'"
+            v-model="exchange_public"
+            :label="(exchange_public)?'上架':'下架'"
           ></v-switch>
+          <label>商城</label>
+          <v-switch
+          class="mx-2"
+          color="green"
+          v-model="store_public"
+          :label="(store_public)?'上架':'下架'">
+          </v-switch>
         </div>
+
+
 
         <v-col cols="12" sm="6" md="3">
           <span>產品名稱</span>
@@ -128,12 +138,27 @@ import MyUploadAdapter from '../Helpers/MyUploadAdapter'
 export default {
   props: ["product_slug"],
   watch:{
-    public(value){
-      if(value){
-        this.form.public = 1;
-      }else{
-        this.form.public = 0;
+    exchange_public(value){
+      let is_public = 0;
+      if(value && this.store_public){
+        is_public = 4;
+      }else if(value){
+        is_public = 1;
+      }else if(this.store_public){
+        is_public = 2;
       }
+      this.form.public = is_public;
+    },
+    store_public(value){
+      let is_public = 0;
+      if(value && this.exchange_public){
+        is_public = 4;
+      }else if(value){
+        is_public = 2;
+      }else if(this.exchange_public){
+        is_public = 1;
+      }
+      this.form.public = is_public;
     }
   },
   data() {
@@ -151,7 +176,8 @@ export default {
       product_image: null,
       product_category: [],
       slug: "",
-      public:false,
+      exchange_public:false,
+      store_public:false,
       form: {
         name: "",
         public:0,
@@ -222,8 +248,13 @@ export default {
         .then(res => {
           if (res.status == 200) {
             this.form.name = res.data.product.name;
-            this.public = res.data.product.public;
             this.form.public = res.data.product.public;
+            if(this.form.public&5){
+              this.exchange_public = true;
+            }
+            if(this.form.public&6){
+              this.store_public = true;
+            }
             this.form.product_category_id = res.data.product.product_category_id;
             this.form.price = res.data.product.price;
             this.form.pay_cash_price = res.data.product.pay_cash_price;

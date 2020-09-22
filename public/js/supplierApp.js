@@ -12900,6 +12900,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -12950,7 +12964,9 @@ __webpack_require__.r(__webpack_exports__);
       recordId: "",
       itemKey: '',
       recordShow: false,
-      visibility: "all"
+      visibility: "all",
+      exchange_public: 0,
+      store_public: 0
     };
   },
   methods: {
@@ -13001,10 +13017,20 @@ __webpack_require__.r(__webpack_exports__);
 
       this.isNew = false;
       this.slug = slug;
+      this.exchange_public = 0;
+      this.store_public = 0;
       axios.get("/api/productDetail/".concat(slug)).then(function (res) {
         console.log(res);
         $("#productModal").modal("show");
         _this5.tempProduct = res.data.product;
+
+        if (_this5.tempProduct["public"] & 5) {
+          _this5.exchange_public = 1;
+        }
+
+        if (_this5.tempProduct["public"] & 6) {
+          _this5.store_public = 1;
+        }
 
         if (res.data.product.imgUrl) {
           _this5.product_imgUrl = res.data.product.imgUrl;
@@ -13046,7 +13072,7 @@ __webpack_require__.r(__webpack_exports__);
         });
 
         console.log(res);
-      })["catch"](function (err) {
+      })["catch"](function (error) {
         Exception.handle(error);
       });
     },
@@ -13056,7 +13082,7 @@ __webpack_require__.r(__webpack_exports__);
       var formdata = new FormData();
       var keysArray = Object.keys(this.tempProduct);
       keysArray.forEach(function (key) {
-        if (key == "imgUrl") {
+        if (key == "imgUrl" || key == 'buynowUrl') {
           return;
         }
 
@@ -13083,8 +13109,8 @@ __webpack_require__.r(__webpack_exports__);
         $("#productModal").modal("hide");
 
         _this8.getProducts();
-      })["catch"](function (err) {
-        console.error(err);
+      })["catch"](function (error) {
+        console.error(error);
         Exception.handler(error);
       });
     },
@@ -13101,8 +13127,8 @@ __webpack_require__.r(__webpack_exports__);
         $("#productModal").modal("hide");
 
         _this9.getProducts();
-      })["catch"](function (err) {
-        console.error(err);
+      })["catch"](function (error) {
+        console.error(error);
         Exception.handler(error);
       });
     },
@@ -13150,16 +13176,51 @@ __webpack_require__.r(__webpack_exports__);
       this.$set(this.tempProduct, "select_location", new_select_location);
       this.selected_location = new_select_location;
     },
-    putIntemp: function putIntemp(che) {
-      this.tempProduct["public"] = che;
+    change_exchange_public: function change_exchange_public(value) {
+      var is_public = 0;
+
+      if (value && this.store_public) {
+        is_public = 4;
+      } else if (value) {
+        is_public = 1;
+      } else if (this.store_public) {
+        is_public = 2;
+      }
+
+      this.tempProduct["public"] = is_public;
+
+      if (value) {
+        this.exchange_public = 1;
+      } else {
+        this.exchange_public = 0;
+      }
+    },
+    change_store_public: function change_store_public(value) {
+      var is_public = 0;
+
+      if (value && this.exchange_public) {
+        is_public = 4;
+      } else if (value) {
+        is_public = 2;
+      } else if (this.exchange_public) {
+        is_public = 1;
+      }
+
+      this.tempProduct["public"] = is_public;
+
+      if (value) {
+        this.store_public = 1;
+      } else {
+        this.store_public = 0;
+      }
     },
     openModal: function openModal() {
       $("#productModal").modal("show");
     }
   },
   created: function created() {
-    this.getProducts();
-    this.getProductDetail();
+    this.getProducts(); //this.getProductDetail();
+
     this.getLocation();
     this.getCategory();
   }
@@ -50712,11 +50773,11 @@ var render = function() {
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
-                          return _vm.getProducts(1)
+                          return _vm.getProducts(5)
                         }
                       }
                     },
-                    [_vm._v("上架中")]
+                    [_vm._v("兌換區")]
                   )
                 ]),
                 _vm._v(" "),
@@ -50728,11 +50789,11 @@ var render = function() {
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
-                          return _vm.getProducts(0)
+                          return _vm.getProducts(6)
                         }
                       }
                     },
-                    [_vm._v("未上架")]
+                    [_vm._v("商城")]
                   )
                 ]),
                 _vm._v(" "),
@@ -50772,13 +50833,37 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "align-middle" }, [
-                      item.public === 1
-                        ? _c("span", { staticClass: "text-success" }, [
-                            _vm._v(_vm._s(item.public_text))
-                          ])
-                        : _c("span", { staticClass: "text-danger" }, [
-                            _vm._v(_vm._s(item.public_text))
-                          ])
+                      _c(
+                        "span",
+                        {
+                          class:
+                            item.public & 5 ? "text-success" : "text-danger"
+                        },
+                        [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(item.public & 5 ? "上架" : "下架") +
+                              "\n              "
+                          )
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "align-middle" }, [
+                      _c(
+                        "span",
+                        {
+                          class:
+                            item.public & 6 ? "text-success" : "text-danger"
+                        },
+                        [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(item.public & 5 ? "上架" : "下架") +
+                              "\n              "
+                          )
+                        ]
+                      )
                     ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "align-middle" }, [
@@ -50893,7 +50978,7 @@ var render = function() {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-sm-12 form-group" }, [
                           _c("span", { staticClass: "col-sm-5 align-middle" }, [
-                            _vm._v("是否上架 :")
+                            _vm._v("上架兌換區 :")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -50904,8 +50989,29 @@ var render = function() {
                             },
                             [
                               _c("CheckboxBtn", {
-                                attrs: { isChecked: _vm.tempProduct.public },
-                                on: { getValue: _vm.putIntemp }
+                                attrs: { isChecked: _vm.exchange_public },
+                                on: { getValue: _vm.change_exchange_public }
+                              })
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-sm-12 form-group" }, [
+                          _c("span", { staticClass: "col-sm-5 align-middle" }, [
+                            _vm._v("上架商城 :")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              staticClass: "col-sm-5 align-middle",
+                              staticStyle: { display: "inline-block" }
+                            },
+                            [
+                              _c("CheckboxBtn", {
+                                attrs: { isChecked: _vm.store_public },
+                                on: { getValue: _vm.change_store_public }
                               })
                             ],
                             1
@@ -51355,7 +51461,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("圖片")]),
         _vm._v(" "),
-        _c("th", [_vm._v("狀態")]),
+        _c("th", [_vm._v("兌換區")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("商城")]),
         _vm._v(" "),
         _c("th", [_vm._v("名稱")]),
         _vm._v(" "),

@@ -35,8 +35,13 @@
             <img :src="props.item.imgUrl">
           </td>
           <td>
-            <span :class="(props.item.public)?'green--text':'red--text'">
-              {{props.item.public_text}}
+            <span :class="(props.item.public&5)?'green--text':'red--text'">
+              {{(props.item.public&5)?'上架':'下架'}}
+            </span>
+          </td>
+          <td>
+            <span :class="(props.item.public&6)?'green--text':'red--text'">
+              {{(props.item.public&6)?'上架':'下架'}}
             </span>
           </td>
           <td>{{product_category[props.item.product_category_id]}}</td>
@@ -70,7 +75,8 @@ export default {
             headers: [
                 { text:'#'},
                 { text: "圖片", value: "img" },
-                { text: "狀態", value: "public" },
+                { text: "兌換區" },
+                { text: "商城" },
                 { text: "類別", value: "product_category_id" },
                 { text: "名稱", value: "name" },
                 { text: "價錢", value: "price" },
@@ -78,8 +84,8 @@ export default {
             ],
             publicSelectItem:[
               {text:'全部',value:null},
-              {text:'上架',value:1},
-              {text:'下架',value:0},
+              {text:'兌換區',value:5},
+              {text:'商城',value:6},
             ]
         }
     },

@@ -24,10 +24,10 @@
               <a class="nav-link"  @click="getProducts(null)" href="#">全部</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"  @click="getProducts(1)" href="#">上架中</a>
+              <a class="nav-link"  @click="getProducts(5)" href="#">兌換區</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="getProducts(0)" href="#">未上架</a>
+              <a class="nav-link" @click="getProducts(6)" href="#">商城</a>
             </li>
             <span class="align-right ml-auto">
               <pagination
@@ -43,7 +43,8 @@
             <tr>
               <th>#</th>
               <th>圖片</th>
-              <th>狀態</th>
+              <th>兌換區</th>
+              <th>商城</th>
               <th>名稱</th>
               <th>編輯訂單</th>
             </tr>
@@ -55,8 +56,14 @@
                 <img class="thumbnail" :src="item.imgUrl" />
               </td>
               <td class="align-middle">
-                <span v-if="item.public===1" class="text-success">{{item.public_text}}</span>
-                <span v-else class="text-danger">{{item.public_text}}</span>
+                <span :class="(item.public&5)?'text-success':'text-danger'">
+                  {{(item.public&5)?'上架':'下架'}}
+                </span>
+              </td>
+              <td class="align-middle">
+                <span :class="(item.public&6)?'text-success':'text-danger'">
+                  {{(item.public&5)?'上架':'下架'}}
+                </span>
               </td>
               <td class="align-middle">{{item.name}}</td>
               <td class="align-middle">
@@ -124,9 +131,16 @@
                 </div>
 
                 <div class="col-sm-12 form-group">
-                  <span class="col-sm-5 align-middle">是否上架 :</span>
+                  <span class="col-sm-5 align-middle">上架兌換區 :</span>
                   <span style="display:inline-block" class="col-sm-5 align-middle">
-                    <CheckboxBtn  @getValue="putIntemp" :isChecked="tempProduct.public"></CheckboxBtn>
+                    <CheckboxBtn @getValue="change_exchange_public" :isChecked="exchange_public"></CheckboxBtn>
+                  </span>
+                </div>
+
+                <div class="col-sm-12 form-group">
+                  <span class="col-sm-5 align-middle">上架商城 :</span>
+                  <span style="display:inline-block" class="col-sm-5 align-middle">
+                    <CheckboxBtn @getValue="change_store_public" :isChecked="store_public"></CheckboxBtn>
                   </span>
                 </div>
 
@@ -304,6 +318,8 @@ export default {
       itemKey:'',
       recordShow:false,
       visibility:"all",
+      exchange_public:0,
+      store_public:0,
     };
   },
   methods: {
@@ -356,13 +372,20 @@ export default {
     getProductDetail(slug) {
       this.isNew = false;
       this.slug = slug;
+      this.exchange_public = 0;
+      this.store_public = 0;
       axios
         .get(`/api/productDetail/${slug}`)
         .then((res) => {
           console.log(res);
           $("#productModal").modal("show");
           this.tempProduct = res.data.product;
-
+          if(this.tempProduct.public&5){
+            this.exchange_public = 1;
+          }
+          if(this.tempProduct.public&6){
+            this.store_public = 1;
+          }
           if (res.data.product.imgUrl) {
             this.product_imgUrl = res.data.product.imgUrl;
           }
@@ -377,9 +400,9 @@ export default {
             this.selected_location = select_location;
           }
         })
-        .catch((error) => {
-          Exception.handle(error);
-        });
+        .catch(error => {
+          Exception.handle(error); 
+        })
     },
     getRecord(id,page){
       this.recordPage=page;
@@ -399,7 +422,7 @@ export default {
         })
         console.log(res);
       })
-      .catch(err => {
+      .catch(error => {
        Exception.handle(error); 
       })
     },
@@ -407,7 +430,7 @@ export default {
       let formdata = new FormData();
       let keysArray = Object.keys(this.tempProduct);
       keysArray.forEach((key) => {
-        if (key == "imgUrl") {
+        if (key == "imgUrl" || key == 'buynowUrl') {
           return;
         }
         let value = this.tempProduct[key];
@@ -432,8 +455,8 @@ export default {
           $("#productModal").modal("hide");
           this.getProducts();
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
           Exception.handler(error);
         });
     },
@@ -450,8 +473,8 @@ export default {
           $("#productModal").modal("hide");
           this.getProducts();
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
           Exception.handler(error);
         });
     },
@@ -500,8 +523,37 @@ export default {
       this.$set(this.tempProduct, "select_location", new_select_location);
       this.selected_location = new_select_location;
     },
-    putIntemp(che) {
-      this.tempProduct.public = che;
+    change_exchange_public(value){
+      let is_public = 0;
+      if(value && this.store_public){
+        is_public = 4;
+      }else if(value){
+        is_public = 1;
+      }else if(this.store_public){
+        is_public = 2;
+      }
+      this.tempProduct.public = is_public;
+      if(value){
+        this.exchange_public = 1;
+      }else{
+        this.exchange_public = 0;
+      }
+    },
+    change_store_public(value){
+      let is_public = 0;
+      if(value && this.exchange_public){
+        is_public = 4;
+      }else if(value){
+        is_public = 2;
+      }else if(this.exchange_public){
+        is_public = 1;
+      }
+      this.tempProduct.public = is_public;
+      if(value){
+        this.store_public = 1;
+      }else{
+        this.store_public = 0;
+      }
     },
     openModal() {
       $("#productModal").modal("show");
@@ -509,7 +561,7 @@ export default {
   },
   created() {
     this.getProducts();
-    this.getProductDetail();
+    //this.getProductDetail();
     this.getLocation();
     this.getCategory();
   },

@@ -43,7 +43,7 @@ class ProductController extends Controller
             $query = $query->where('firm_id',$user->id);
         }
         if($request->has('public')){
-            $query = $query->where('public',$request->public);
+            $query = $query->where('public','&',$request->public);
         }
 
         $total = $query->count();
@@ -364,8 +364,8 @@ class ProductController extends Controller
         $skip = ($page - 1) * $rows;
         $ascOrdesc = 'desc';
 
-        $total = Product::where('public',1)->count();
-        $productList = Product::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $total = Product::where('public','&',5)->count();
+        $productList = Product::where('public','&',5)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
         $productList = ProductListResource_User::collection($productList);
 
         $hasNextPage = true;
@@ -378,7 +378,7 @@ class ProductController extends Controller
 
     }
 
-
+    /**銀髮商城 */
     public function list(Request $req){
 
         $page = ($req->page)?$req->page:1;
@@ -390,7 +390,7 @@ class ProductController extends Controller
             Cookie::queue('token',$req->token,60);
         }
 
-        $total = Product::where('public',1)->count();
+        $total = Product::where('public','&',6)->count();
         if($rows > $total){
             $totalPage = 1;
         }else{
@@ -398,7 +398,7 @@ class ProductController extends Controller
             if($total % $rows != 0){ $totalPage += 1; }
         }
         
-        $products = Product::where('public',1)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $products = Product::where('public','&',6)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
         return view('product.list',[
             'products'=>$products,
