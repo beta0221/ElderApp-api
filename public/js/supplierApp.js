@@ -50642,7 +50642,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "align-middle" }, [
-                            _vm._v(_vm._s(item.cash_quantity))
+                            _vm._v(_vm._s(item.total_quantity))
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "align-middle" }, [

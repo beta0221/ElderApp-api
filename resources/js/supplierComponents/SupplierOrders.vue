@@ -155,7 +155,7 @@
                       <span>{{item.name}}</span><br>
                       <span><span>{{(locationDict[item.location_id])?locationDict[item.location_id]:''}}</span></span>
                     </td>
-                    <td class="align-middle">{{item.cash_quantity}}</td>
+                    <td class="align-middle">{{item.total_quantity}}</td>
                     <td class="align-middle">{{item.total_cash}}</td>
                   </tr>
                 </tbody>
