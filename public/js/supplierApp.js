@@ -12427,6 +12427,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -12451,6 +12456,7 @@ __webpack_require__.r(__webpack_exports__);
       orderNumero: "",
       productImageDict: "",
       locationDict: {},
+      userDict: {},
       btnClass: {
         "0": "btn btn-secondary",
         "1": "btn btn-info",
@@ -12543,6 +12549,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         _this.totalOrders = res.data.total;
         _this.orderList = res.data.orderList;
+        _this.userDict = res.data.userDict;
         _this.totalPage = Math.ceil(_this.totalOrders / _this.pagination.rowsPerPage);
         console.log(res);
       })["catch"](function (error) {
@@ -50479,6 +50486,16 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
+                    _c("td", [
+                      _vm.userDict[item.user_id]
+                        ? _c("div", [
+                            _c("span", [
+                              _vm._v(_vm._s(_vm.userDict[item.user_id]))
+                            ])
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
                     _c(
                       "td",
                       { staticClass: "align-middle" },
@@ -67924,7 +67941,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/beta/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
+module.exports = __webpack_require__(/*! /Users/movark/laravel/ElderApp-api/resources/js/supplierApp.js */"./resources/js/supplierApp.js");
 
 
 /***/ })

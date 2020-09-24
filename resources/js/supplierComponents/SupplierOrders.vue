@@ -82,6 +82,11 @@
                       @click="nextStatus(item.order_numero)"
                     >{{statusDict[item.ship_status]}}</button>
                   </td>
+                  <td>
+                      <div v-if="userDict[item.user_id]">
+                          <span>{{userDict[item.user_id]}}</span>
+                      </div>
+                  </td>
                   <td class="align-middle">
                     <div v-for="(detail,index) in item.list" :key="index">
                       {{detail.name}}
@@ -190,6 +195,7 @@ export default {
       orderNumero: "",
       productImageDict: "",
       locationDict:{},
+      userDict:{},
       btnClass: {
         "0": "btn btn-secondary",
         "1": "btn btn-info",
@@ -257,6 +263,7 @@ export default {
         .then((res) => {
           this.totalOrders = res.data.total;
           this.orderList = res.data.orderList;
+          this.userDict = res.data.userDict;
           this.totalPage = Math.ceil(
             this.totalOrders / this.pagination.rowsPerPage
           );

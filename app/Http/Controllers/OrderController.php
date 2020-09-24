@@ -32,6 +32,7 @@ class OrderController extends Controller
                 $_order->created_at = $order->created_at;
                 $_order->order_numero = $order->order_numero;
                 $_order->ship_status = $order->ship_status;
+                $_order->user_id = $order->user_id;
                 $_order->list = [];
                 $orderList[] = $_order;
                 $_dict[$order->order_numero] = count($orderList) - 1;
@@ -71,11 +72,23 @@ class OrderController extends Controller
         $total = $query->count();
         $orders = $query->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
 
+        $user_id_array = [];
+        foreach ($orders as $order) {
+            if(!in_array($order->user_id,$user_id_array)){$user_id_array[] = $order->user_id;}
+        }
+
+        $users = User::select(['id','name'])->whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) {
+            $userDict[$user->id] = $user->name;
+        }
+
         $orderList = $this->groupOrdersByNumero($orders);
 
         return response([
             'orderList'=>$orderList,
             'total'=>$total,
+            'userDict'=>$userDict
         ]);
     }
 

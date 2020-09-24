@@ -52,6 +52,11 @@
                     </v-btn>
                 </td>
                 <td>
+                    <div v-if="userDict[props.item.user_id]">
+                        <span>{{userDict[props.item.user_id]}}</span>
+                    </div>
+                </td>
+                <td>
                     <div v-for="product in props.item.list" v-bind:key="product.id">
                         <span>{{product.name}}</span>
                     </div>
@@ -107,6 +112,7 @@ export default {
                 { text:'#'},
                 { text:'選取'},
                 { text: "狀態", value: "ship_status" },
+                { text: "購買人" },
                 { text: "商品"},
                 { text: "訂單編號", value: "order_numero" },
                 { text: "日期", value: "created_at" },
@@ -114,6 +120,7 @@ export default {
             ],
             pagination: { sortBy: "id", descending: true },
             orderList:[],
+            userDict:{},
             totalOrders:0,
             loading: true,
             //
@@ -167,6 +174,7 @@ export default {
             .then(res => {
                 this.totalOrders = res.data.total;
                 this.orderList = res.data.orderList;
+                this.userDict = res.data.userDict;
                 this.loading=false;
             })  
         },

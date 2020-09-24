@@ -36,13 +36,7 @@ class LocationController extends Controller
             return abort(404);
         }
 
-        $_products = $location->products()->get();
-        $products = [];
-        foreach ($_products as $product) {
-            if($product->public == 1){
-                $products[] = $product;
-            }
-        }
+        $products = $location->products()->where('public','&',5)->get();
 
         return view('location.orderList',[
             'location'=>$location,
