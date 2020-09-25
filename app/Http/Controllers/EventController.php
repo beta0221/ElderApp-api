@@ -871,6 +871,19 @@ class EventController extends Controller
     }
 
 
+    public function universal_link(Request $request,$slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        $rewardDict = Event::getRewardDict();
+
+        $event = new EventResource($event);
+        $event = $event->configureDict($rewardDict);
+
+        return view('event.detail_link',[
+            'event'=>(object)$event->toArray($request)
+        ]);
+
+    }
+
 
     //----------------district-----------------
     public function GetDistrict(){

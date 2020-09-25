@@ -419,4 +419,13 @@ class ProductController extends Controller
         ]);
     }
 
+    public function universal_link($slug){
+        
+        $product = Product::where('slug',$slug)->firstOrFail();
+
+        return view('product.detail_link',[
+            'product'=>$product
+        ]);
+    }
+
 }

@@ -44,7 +44,6 @@
         <div class="col-sm-12">
             <div>
                 <?php $img = config('app.static_host') . "/products/$product->slug/$product->img"; ?>
-                
                 <img class="w-100" src="{{$img}}">
             </div>
         </div>
