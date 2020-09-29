@@ -43,6 +43,7 @@
 }
 /* happy alert */
 .happy-alert{
+    border: 4px solid orange;
     position: fixed;
     z-index: 10;
     top: 40%;
@@ -53,20 +54,18 @@
     padding: 36px 12px 80px 12px;
     background:#fff;
     transform: translate(-50%,-50%);
-    border-radius: .3rem;
+    border-radius: 8px;
     text-align: center;
     word-wrap: break-word;
 }
 .happy-alert .happy-btn{
     position: absolute;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     width: 100%;
     height: 56px;
     font-size: 20px;
-    background: lightgrey;
-    border-bottom-left-radius: .3rem;
-    border-bottom-right-radius: .3rem;
+    background: orange;
     color: #fff;
     line-height: 56px;
 }

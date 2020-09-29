@@ -59,9 +59,13 @@ class OrderController extends Controller
         $column = ($request->column) ? $request->column : null;
         $value = (isset($request->value)) ? $request->value : null;
         // $blurSearch = ($request->blurSearch) ? true : false;
-        $firm_id = Auth::user()->id;
+        $user = request()->user();
         
-        $query = Order::where('firm_id',$firm_id);
+        $query = new Order();
+        if(!$user->hasRole('admin')){
+            $query = Order::where('firm_id',$user->id);
+        }
+        
         if($column != null && $value != null){
             if($column == 'created_at'){
                 $query->whereDate($column,date('Y-m-d',strtotime($value)));
@@ -140,9 +144,12 @@ class OrderController extends Controller
         $this->validate($request,[
             'order_numero'=>'required',
         ]);
-        $firm_id = Auth::user()->id;
-        
-        $result = Order::updateToNextStatus($firm_id,$request->order_numero);
+        $user = request()->user();
+        if(!$user->hasRole('firm')){
+            return response('此操作身份必須為"廠商"',403);
+        }
+
+        $result = Order::updateToNextStatus($user->id,$request->order_numero);
 
         if($result == -1){
             return response(['s'=>0,'m'=>'已結案']);
@@ -219,9 +226,14 @@ class OrderController extends Controller
         
     }
 
-    public function view_thankyou($order_numero){
+    public function view_thankyou($order_numero_array){
+
+        $order_numero_array = explode(',',$order_numero_array);
+        if(empty($order_numero_array)){
+            return abort(404);
+        }
         return view('order.thankyou',[
-            'order_numero'=>$order_numero
+            'order_numero_array'=>$order_numero_array
         ]);
     }
 

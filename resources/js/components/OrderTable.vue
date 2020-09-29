@@ -224,7 +224,7 @@ export default {
                 }
             })
             .catch(err => {
-                console.error(err); 
+                Exception.handle(err);
             })
         },
         selectAll(){

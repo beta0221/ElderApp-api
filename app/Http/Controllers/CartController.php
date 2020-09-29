@@ -124,7 +124,7 @@ class CartController extends Controller
         $this->validate($request,$validate_rules);
 
         $ip = request()->ip();
-        $order_numero = rand(0,9) . time() . rand(0,9);
+        
         $user = User::web_user();
         $products = Cart::getProductsInCart($ip);
         
@@ -146,11 +146,17 @@ class CartController extends Controller
         }   
 
         $total_point = 0;   //總共要花多少樂幣
+        $order_numero_point_dict = [];
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
+            if(!isset($order_numero_point_dict[$product->firm_id])){ $order_numero_point_dict[$product->firm_id] = 0; }
+
             // $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
-            $total_point += (int)$point_cash_quantity * $product->pay_cash_point;
+            
+            $point = (int)$point_cash_quantity * $product->pay_cash_point;
+            $order_numero_point_dict[$product->firm_id] += $point;
+            $total_point += $point;
         }
 
         if($user->wallet < $total_point){
@@ -158,25 +164,39 @@ class CartController extends Controller
             return redirect()->route('cart_page');
         }
         
+        
+        $order_numero_dict = [];
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
-            $cash_quantity = (isset($quantityDict[$product->id]['cash']))?(int)$quantityDict[$product->id]['cash']:0;
+            //$cash_quantity = (isset($quantityDict[$product->id]['cash']))?(int)$quantityDict[$product->id]['cash']:0;
+            $cash_quantity = 0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
             if(($cash_quantity + $point_cash_quantity) <= 0){ continue; }
 
-            if($request->delivery_type == '1'){
+            if(!isset($order_numero_dict[$product->firm_id])){
+                $order_numero_dict[$product->firm_id] = rand(0,9) . time() . rand(0,9);
+            }
+            $order_numero = $order_numero_dict[$product->firm_id];
+            if($request->delivery_type == '1'){ //宅配
                 Order::insert_row($user->id,$order_delievery_id,null,$order_numero,$product,$cash_quantity,$point_cash_quantity);
-            }else{
+            }else{  //據點
                 if(!isset($locationDict[$product->id])){ continue; }
                 $location_id = $locationDict[$product->id];
                 Order::insert_row($user->id,null,$location_id,$order_numero,$product,$cash_quantity,$point_cash_quantity);
             }
         }
 
-        $user->update_wallet_with_trans(User::DECREASE_WALLET,$total_point,"訂單：$order_numero");
+        $order_numero_array = [];
+        foreach ($order_numero_dict as $firm_id => $order_numero) {
+            $order_numero_array[] = $order_numero;
+            $point = $order_numero_point_dict[$firm_id];
+            $user->update_wallet_with_trans(User::DECREASE_WALLET,$point,"訂單：$order_numero");    
+        }
+        
         Cart::clearCart($ip);
-
-        return redirect('/order/thankyou/'.$order_numero);
+        $order_numero_array = implode(',',$order_numero_array);
+        
+        return redirect('/order/thankyou/'.$order_numero_array);
 
     }
 
