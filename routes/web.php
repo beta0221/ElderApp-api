@@ -69,7 +69,7 @@ Route::group(['prefix'=>'order'],function(){
 
 Route::get('/app/product/{slug}','ProductController@universal_link');
 Route::get('/app/event/{slug}','EventController@universal_link');
-
+Route::get('/app/post/{slug}','PostController@universal_link');
 
 
 Route::view('/supplier/{any}','supplierAdmin');

@@ -283,6 +283,29 @@ class PostController extends Controller
         ]);
     }
 
+    public function universal_link(Request $request,$slug){
+        $post = Post::where('slug',$slug)->firstOrFail();
+        $post = new PostResource($post);
 
+        $commentList = Comment::where('post_id',$post->id)->orderBy('id','desc')->take(10)->get();
+        $user_id_array = [];
+        foreach ($commentList as $comment) {
+            if(!in_array($comment->user_id,$user_id_array)){
+                $user_id_array[] = $comment->user_id;
+            }
+        }
+
+        $users = User::whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) { $userDict[$user->id] = $user; }
+
+        $commentList = new CommentCollection($commentList);
+        $commentList = $commentList->configureDict($userDict);
+        
+        return view('post.detail_link',[
+            'post'=>(object)$post->toArray($request),
+            'commentList'=>$commentList->toArray($request),
+        ]);        
+    }
 
 }
