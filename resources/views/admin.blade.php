@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{csrf_token()}}">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
-    <title>銀髮學院-管理後台</title>
+    <title>樂幣-管理後台</title>
 </head>
 <body>
     <div id="app">

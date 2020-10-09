@@ -75,6 +75,9 @@ Route::get('/app/post/{slug}','PostController@universal_link');
 Route::view('/supplier/{any}','supplierAdmin');
 Route::view('/supplier/{any1}/{any}','supplierAdmin');
 
+Route::view('/association/{any}','associationAdmin');
+Route::view('/association/{any}/{any1}','associationAdmin');
+
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');
 

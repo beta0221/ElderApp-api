@@ -29,6 +29,8 @@ const routes = [
     {path:'/transaction', component: TransTable},
     {path:'/sendMoney', component: SendMoneyTable},
     {path:'/location', component: LocationTable},
+    //
+    {path:'/association/member', component: MemberTable},
 ]
 
 
