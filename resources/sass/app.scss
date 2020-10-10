@@ -11,3 +11,19 @@
 @import '~vuetify/dist/vuetify.min.css';
 
 @import '~simplemde/dist/simplemde.min.css';
+
+.side-bar{
+    position: absolute;
+    left: 0;
+    top :0;
+    width: 200px;
+    height: 100%;
+}
+.content{
+    position: absolute;
+    left: 200px;
+    top: 0;
+    height: 100%;
+    width: calc(100% - 200px);
+    overflow-y: scroll;
+}

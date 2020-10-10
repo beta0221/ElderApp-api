@@ -4,7 +4,7 @@
       <v-list>
         <v-list-tile>
           <v-list-tile-title class="title">
-            銀髮學院
+            樂幣中央管理平台
           </v-list-tile-title>
         </v-list-tile>
       </v-list>

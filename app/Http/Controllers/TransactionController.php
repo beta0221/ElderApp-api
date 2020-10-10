@@ -112,6 +112,10 @@ class TransactionController extends Controller
             ]);
         }
 
+        if(!$user->isSameAssociation()){
+            return response('錯誤操作', 403);
+        }
+
         $user->update_wallet_with_trans(User::INCREASE_WALLET,$request->amount,$request->event);
 
         return response()->json([

@@ -35,7 +35,6 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('get-members','MemberController@getMembers');
     Route::get('search-member','MemberController@searchMember');
     Route::post('changePayStatus','MemberController@changePayStatus');
-    // Route::post('executeExpired','MemberController@executeExpired');
     Route::get('getPayHistory/{id}','MemberController@getPayHistory');
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid')->middleware('role:accountant');

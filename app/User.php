@@ -120,6 +120,14 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
+    public function isSameAssociation(){
+        $request_user = request()->user();
+        if($request_user->association_id == $this->association_id){
+            return true;
+        }
+        return false;
+    }
+
     public function removeMemberFromGroup(){
         $user_level = $this->groupLevel();
         $lv = 'lv_' . $user_level;

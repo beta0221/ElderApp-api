@@ -39,11 +39,20 @@ class MemberController extends Controller
     {
         $searchColumn = ($request->searchColumn)?$request->searchColumn:'id_number';
         
-        if($request->searchColumn == 'name' && !empty($request->searchText)){
-            $user = User::where('name','like',"%$request->searchText%")->get();
+        $query = null;
+        if($request->searchColumn == 'name'){
+            $query = User::where('name','like',"%$request->searchText%");
         }else{
-            $user = User::where($searchColumn,$request->searchText)->get();
+            $query = User::where($searchColumn,$request->searchText);
         }
+
+        $request_user = request()->user();
+        if(!$request_user->isAdmin()){
+            $query->where('association_id',$request_user->association_id);
+        }
+
+        $user = $query->get();
+
         return response()->json($user);
     }
 
@@ -67,6 +76,11 @@ class MemberController extends Controller
         $query = DB::table('users')
             ->select('id','name','org_rank','email','tel','phone','gender','rank','inviter','inviter_phone','pay_status','created_at','expiry_date','valid','birthdate','id_number','id_code')
             ->orderBy($orderBy, $ascOrdesc);
+
+        $user = request()->user();
+        if(!$user->isAdmin()){
+            $query->where('association_id',$user->association_id);
+        }
 
         if($column != null && $value != null){
             if($blurSearch){
@@ -185,6 +199,10 @@ class MemberController extends Controller
         $user = User::where('id',$request->id)->firstOrFail();
         $p = $user->pay_status;
 
+        if(!$user->isSameAssociation()){
+            return response('錯誤操作', 403);
+        }
+
         if($p == 2){
             if(!Auth::user()->hasRole('accountant')){
                 return response([
@@ -230,6 +248,10 @@ class MemberController extends Controller
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         
+        if(!$user->isSameAssociation()){
+            return response('錯誤操作', 403);
+        }
+
         if(!$user->expiry_date){
             return response('使用者尚未入會，因此無法進行續會',Response::HTTP_BAD_REQUEST);
         }
@@ -610,6 +632,10 @@ class MemberController extends Controller
             ]);
         }
 
+        if(!$user->isSameAssociation()){
+            return response('錯誤操作', 403);
+        }
+
         if($user->email != $request->email){
             if(User::where('email',$request->email)->first()){
                 return response()->json([
@@ -644,6 +670,11 @@ class MemberController extends Controller
         if($request->adminCode == 'ji3g4ej03xu3m06'){
 
             $user = User::where('id_code',$id_code)->firstOrFail();
+
+            if(!$user->isSameAssociation()){
+                return response('錯誤操作', 403);
+            }
+
             $user->update([
                 'password'=>$request->password
             ]);

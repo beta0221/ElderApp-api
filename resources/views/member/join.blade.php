@@ -33,9 +33,8 @@
 
                 <div class="jumbotron jumbotron-fluid">
                         <div class="container">
-                          <h1 class="display-4 pl-4 pr-4">桃園市銀髮族協會</h1>
-                          <p class="lead pl-4 pr-4">桃園銀髮學院成立於2015年9月</p>
-                          <p class="lead pl-4 pr-4">本會主要成立宗旨為協助政府機關湍展銀髮族之權益・福利・政策與法令，並研究建議事項</p>
+                          <h1 class="display-4 pl-4 pr-4">註冊會員</h1>
+                          <p class="lead pl-4 pr-4">請確實選擇欲加入組織</p>
                         </div>
                 </div>
 
