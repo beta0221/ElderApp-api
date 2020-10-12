@@ -111,7 +111,7 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'association_id' => 'required',
+            'association_id' => 'required',
             'email' => 'required|unique:users|min:8',
             'password' => 'required',
             'name' => 'required',
@@ -123,7 +123,7 @@ class MemberController extends Controller
             'pay_method'=>'required',
         ]);
         
-        $request->merge(['association_id'=>1]);
+        // $request->merge(['association_id'=>1]);
 
         if($request->pay_method == 1){
             $inviter = User::where('phone',$request->inviter_id_code)->orWhere('id_code',$request->inviter_id_code)->firstOrFail();
@@ -320,6 +320,10 @@ class MemberController extends Controller
         $leader = User::find($request->leader_id);
         $addUser = User::find($request->user_id);
 
+        if($leader->association_id != $addUser->association_id){
+            return response('錯誤操作', 403);
+        }
+        
         if(!$addUser || !$leader){
             return response()->json([
                 's'=>0,'m'=>'會員帳號不存在',
@@ -441,6 +445,11 @@ class MemberController extends Controller
         if($user->isPrimaryLeaderOfGroup()){
             Session::flash('error', '無法將組織所有者移動');
             return redirect("member_tree/$user->id_code");
+        }
+
+        $target = User::find($request->target_user_id);
+        if($target->association_id != $user->association_id){
+            return response('錯誤操作', 403);
         }
 
         if(!$result = $user->removeMemberFromGroup()){
@@ -569,6 +578,11 @@ class MemberController extends Controller
                 's'=>0,'m'=>'查無使用者',
             ]);
         }
+
+        if(!$user->isSameAssociation()){
+            return response('錯誤操作', 403);
+        }
+
         if(!$result = $user->becomeRole('teacher')){
             return response()->json([
                 's'=>0,'m'=>'系統錯誤',
