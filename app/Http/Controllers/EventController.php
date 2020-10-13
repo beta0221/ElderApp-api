@@ -10,6 +10,7 @@ use App\User;
 use App\Category;
 use App\FreqEventUser;
 use App\Helpers\ImageResizer;
+use App\Helpers\Pagination;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\Facades\Storage;
@@ -31,29 +32,21 @@ class EventController extends Controller
     public function index(Request $request)
     {
         
-        $page = $request->page;
-        $rows = $request->rowsPerPage;
-        $skip = ($page - 1) * $rows;
-        if ($request->descending == null || $request->descending == 'false') {
-            $ascOrdesc = 'asc';
-        } else {
-            $ascOrdesc = 'desc';
+        $p = new Pagination($request);
+
+        $request_user = request()->user();
+        $query = DB::table('events')->orderBy($p->orderBy, $p->ascOrdesc);
+
+        if($request_user->hasRole('teacher')){
+            $query->where('owner_id',$request_user->id);
         }
-        $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
 
-        $events = DB::table('events')
-        ->select('*')
-        ->orderBy($orderBy, $ascOrdesc)
-        ->where(function($query){
-            if(Auth::user()->hasRole('teacher')){
-                $query->where('owner_id',Auth::user()->id);
-            }
-        })
-        ->skip($skip)
-        ->take($rows)
-        ->get();
+        if(!$request_user->hasRole('admin')){
+            $query->where('association_id',$request_user->association_id);
+        }
 
-        $total = DB::table('events')->count();
+        $total = $query->count();
+        $events = $query->skip($p->skip)->take($p->rows)->get();
 
         return response()->json([
             'events' => $events,
@@ -134,6 +127,7 @@ class EventController extends Controller
         }
 
         $user = request()->user();
+        $request['association_id'] = $user->association_id;
         if($user->hasRole('teacher')){
             $request['owner_id'] = $user->id;
             $request['reward_level_id'] = 1;

@@ -16,6 +16,7 @@ import SendMoneyTable from '../components/SendMoneyTable'
 import LocationTable from '../components/Location/LocationTable'
 
 import associationMemberTable from '../components/associationComponents/AssociationMemberTable'
+import associationEventTable from '../components/associationComponents/AssociationEventTable'
 
 const routes = [
     {path:'/dashboard', component: Dashboard},
@@ -32,7 +33,9 @@ const routes = [
     {path:'/sendMoney', component: SendMoneyTable},
     {path:'/location', component: LocationTable},
     //
+    {path:'/association/admin', component: associationMemberTable},
     {path:'/association/member', component: associationMemberTable},
+    {path:'/association/event', component: associationEventTable}
 ]
 
 

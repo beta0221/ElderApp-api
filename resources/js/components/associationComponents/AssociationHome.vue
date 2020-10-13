@@ -16,9 +16,9 @@ export default {
     created(){
         User.authOnly();
         
-        this.$router.push({
-            path: '/association/member'
-        });
+        // this.$router.push({
+        //     path: '/association/member'
+        // });
     }
 }
 </script>
