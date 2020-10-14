@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 import Dashboard from '../components/Dashboard/Dashboard'
 import MemberTable from '../components/MemberTable'
-import EventTable from '../components/EventTable'
+import EventPage from '../components/EventPage'
 import newEventForm from '../components/newEventForm'
 import Login from '../components/Login/Login'
 import ProductTable from '../components/ProductTable'
@@ -16,12 +16,13 @@ import SendMoneyTable from '../components/SendMoneyTable'
 import LocationTable from '../components/Location/LocationTable'
 
 import associationMemberTable from '../components/associationComponents/AssociationMemberTable'
-import associationEventTable from '../components/associationComponents/AssociationEventTable'
+import associationEventPage from '../components/associationComponents/AssociationEventPage'
+
 
 const routes = [
     {path:'/dashboard', component: Dashboard},
     {path:'/member', component: MemberTable},
-    {path:'/event', component: EventTable},
+    {path:'/event', component: EventPage},
     {path:'/login',name:'login',component: Login,props:true},
     {path:'/newEvent',component:newEventForm},
     {path:'/editEvent/:event_slug',component:newEventForm,props:true},
@@ -35,7 +36,7 @@ const routes = [
     //
     {path:'/association/admin', component: associationMemberTable},
     {path:'/association/member', component: associationMemberTable},
-    {path:'/association/event', component: associationEventTable}
+    {path:'/association/event', component: associationEventPage}
 ]
 
 

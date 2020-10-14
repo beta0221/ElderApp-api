@@ -1,17 +1,5 @@
 <template>
 <div class="event-table">
-  <!-- title bar -->
-  <div>
-    
-      <router-link class="white--text" to="/newEvent" style="text-decoration:none;">
-        <v-btn color="success">
-          新增活動
-        </v-btn>
-      </router-link>
-      
-  </div>
-
-
   <div>
     <v-dialog v-model="dialog" max-width="480px">
         <v-card>

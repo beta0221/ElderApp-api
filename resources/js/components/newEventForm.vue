@@ -4,7 +4,8 @@
     <v-card>
 
         
-        <router-link to='/event' class="grey--text " style="text-decoration:none;"><v-btn color="warning">返回</v-btn></router-link>
+        
+        <v-btn @click="$router.go(-1)" color="warning">返回</v-btn>
         <v-card-title class="headline">{{(edit_mode)?'編輯活動':'新增活動'}}</v-card-title>
       
 
