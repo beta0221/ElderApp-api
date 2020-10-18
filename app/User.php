@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Pagination;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -287,6 +288,10 @@ class User extends Authenticatable implements JWTSubject
         $users = $this->whereIn('id',$userIdArray)->get();
         return $users;
     }
+
+    /**
+     * 取得使用者
+     */
     public function getGroupUserRows($above_level=1)
     {
         if(!$row = DB::table('user_group')->select('group_id')->where('user_id',$this->id)->first()){

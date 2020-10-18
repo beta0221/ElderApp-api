@@ -120,6 +120,30 @@
 
         <div class="row">
             <div class="col-md-12">
+                @if ($pagination->page > 1)
+                    <div class="btn btn-primary" onclick="toPage({{$pagination->page - 1}})">上一頁</div>    
+                @endif
+                <div class="btn btn-light">{{$pagination->page}} / {{$pagination->totalPage}}頁（{{$pagination->total}}筆）</div>
+                @if ($pagination->hasNextPage)
+                    <div class="btn btn-primary" onclick="toPage({{$pagination->page + 1}})">下一頁</div>    
+                @endif
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <span class="ml-2">排序</span>
+                <select class="form-control" onchange="sortBy(this)">
+                    <option value="">排序</option>
+                    <option value="org_rank" {{(request()->sortBy == 'org_rank')?'selected':''}}>職位</option>
+                    <option value="valid" {{(request()->sortBy == 'valid')?'selected':''}}>會員資格</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
                 <table class="table table-striped">
                     <thead>
                       <tr>
@@ -262,6 +286,23 @@
             });
             return count;
         }
+    }
+
+
+    function toPage(page){
+        var url = new URL(window.location.href);
+        var searchParams = url.searchParams;
+        searchParams.set('page',page);
+        url.searchParams = searchParams;
+        window.location.href = url.href;
+    }
+    function sortBy(sender){
+        var url = new URL(window.location.href);
+        var searchParams = url.searchParams;
+        searchParams.set('page',1);
+        searchParams.set('sortBy',sender.value);
+        url.searchParams = searchParams;
+        window.location.href = url.href;
     }
 </script>
 </html>

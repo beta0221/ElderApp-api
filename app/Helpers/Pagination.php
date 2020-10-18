@@ -10,6 +10,11 @@ class Pagination{
     public $skip = 0;
     public $ascOrdesc = 'desc';
     public $orderBy = 'id';
+    //
+
+    public $total = 0;
+    public $hasNextPage = true;
+    public $totalPage = 0;
 
     public function __construct(Request $request)
     {
@@ -27,5 +32,19 @@ class Pagination{
         }
 
         $this->skip = ($this->page - 1) * $this->rows;
+    }
+
+
+    /**
+     * 計算總頁數
+     * @param int $total
+     * @return Void
+     */
+    public function cacuTotalPage(int $total){
+        $this->total = $total;
+        if(($this->skip + $this->rows) >= $total){
+            $this->hasNextPage = false;
+        }
+        $this->totalPage = ceil($total / $this->rows);
     }
 }

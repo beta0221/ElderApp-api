@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Association;
+use App\Helpers\Pagination;
 use Illuminate\Http\Request;
 use App\User;
 use App\PayDate;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cookie;
 
 class MemberController extends Controller
 {
@@ -764,27 +766,29 @@ class MemberController extends Controller
         ]);
 
     }
-    public function memberGroupMembers(){
+    public function memberGroupMembers(Request $request){
+
+        $p = new Pagination($request);
+        $p->rows = 20;
         $user = User::web_user();
-        if($user->org_rank < 3){
-            return '權限不足';
-        }
-
+        if($request->has('token')){ Cookie::queue('token',$request->token); }
+        if($user->org_rank < 3){ return '權限不足'; }
+        
         $group_users = $user->getGroupUserRows();
-        if(count($group_users)<=0){
-            return response('使用者並無所屬組織。');
-        }
+        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }
+        $p->cacuTotalPage(count($group_users));
 
-        $user_id_array = [];
+        $all_user_id_array = [];
         foreach ($group_users as $g_user) {
-            $user_id_array[] = $g_user->user_id;
+            $all_user_id_array[] = $g_user->user_id;
         }
 
-        $users = User::whereIn('id',$user_id_array)->get();
+        $users = User::whereIn('id',$all_user_id_array)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy, $p->ascOrdesc)->get();
+        $all_users = User::whereIn('id',$all_user_id_array)->get();
 
         $dic=[];
         $validDic=[];
-        foreach ($users as $user) {
+        foreach ($all_users as $user) {
             $dic[$user->id] = $user->name;
             $validDic[$user->id] = $user->valid;
         }
@@ -796,6 +800,7 @@ class MemberController extends Controller
         }
 
         return view('member.memberGroupMembers',[
+            'pagination'=>$p,
             'users'=>$users,
             'districtDict'=>$districtDict,
             'group_users'=>json_encode($group_users),
