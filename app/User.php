@@ -123,6 +123,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function isSameAssociation(){
         $request_user = request()->user();
+        if($request_user->isAdmin()){
+            return true;
+        }
         if($request_user->association_id == $this->association_id){
             return true;
         }

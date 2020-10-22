@@ -20,6 +20,14 @@
       </div>
 
       <div class="data-row">
+        <span>性別</span>
+        <select v-model="user.gender" :disabled="isReadMode">
+          <option value="0">女</option>
+          <option value="1">男</option>
+        </select>
+      </div>
+
+      <div class="data-row">
         <span>生日</span>
         <input type="text" v-model="user.birthdate" :disabled="isReadMode" />
       </div>
@@ -57,6 +65,11 @@
       <div class="data-row">
         <span>推薦人電話</span>
         <input type="text" v-model="user.inviter_phone" :disabled="isReadMode" />
+      </div>
+
+      <div class="data-row">
+        <span>地址</span>
+        <input type="text" v-model="user.address" :disabled="isReadMode" />
       </div>
 
       <div class="data-row">
@@ -198,7 +211,7 @@ export default {
   padding: 0 16px;
   margin-bottom: 4px;
 }
-#member-detail-dialog input {
+#member-detail-dialog input,#member-detail-dialog select {
   width: 100%;
   border: 1px solid lightgray;
   border-radius: 0.2rem;

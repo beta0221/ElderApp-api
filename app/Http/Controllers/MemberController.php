@@ -668,6 +668,7 @@ class MemberController extends Controller
         $user->phone = $request->phone;
         $user->tel = $request->tel;
         $user->address = $request->address;
+        $user->gender = (int)$request->gender;
         $user->valid = $request->valid;
         $user->invoice = $request->invoice;
         $user->save();
