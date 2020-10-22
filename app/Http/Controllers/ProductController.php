@@ -348,7 +348,7 @@ class ProductController extends Controller
      */
     public function getAllProduct(){
         
-        $products = Product::allAvailable();
+        $products = Product::where('public','&',5)->orderBy('id','desc')->get();
         $cats = ProductCategory::all();
 
         return response([

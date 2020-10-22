@@ -112,8 +112,5 @@ class Product extends Model
         return $productImageDict;
     }
 
-    public static function allAvailable(){
-        return DB::table('products')->where('public',1)->orderBy('id','desc')->get();
-    }
 
 }
