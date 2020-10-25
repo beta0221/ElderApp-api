@@ -177,38 +177,38 @@ class TransactionController extends Controller
 
     public function sendMoney(Request $request){
 
-        // $this->validate($request,[
-            // 'from' => 'required|integer',
-            // 'to' => 'required|integer',
+        $this->validate($request,[
+            'from' => 'required|integer',
+            'to' => 'required|integer',
             // 'event' => 'required',
             // 'amount' =>'required|integer|min:1',
-        // ]);
+        ]);
 
         
-        $sendArray = [
+        // $sendArray = [
             
-        ];
+        // ];
 
         
-        foreach ($sendArray as $send) {
+        // foreach ($sendArray as $send) {
 
-            $email = $send[0];
-            $amount = $send[1];
-            $event = $send[2];
+        //     $email = $send[0];
+        //     $amount = $send[1];
+        //     $event = $send[2];
 
-            $user = User::where('email',$email)->first();
-            if(!$user){ continue; }
+        //     $user = User::where('email',$email)->first();
+        //     if(!$user){ continue; }
 
-            $this->dispatch(new SendMoney($user,$amount,$event));
-        }
-
-        
-        // $users = User::where('id','>=',$request->from)->where('id','<=',$request->to)->where('valid',1)->get();
-        // foreach ($users as $user) {
         //     $this->dispatch(new SendMoney($user,$amount,$event));
         // }
+
         
-        return response('success');
+        $users = User::where('id','>=',$request->from)->where('id','<=',$request->to)->where('valid',1)->get();
+        foreach ($users as $user) {
+            $this->dispatch(new SendMoney($user,800,'九九重陽敬老禮金'));
+        }
+        
+        return response('from:'.$request->from.', to:'.$request->to.' (success)');
     }
 
 
