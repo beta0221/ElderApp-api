@@ -224,6 +224,10 @@ class OrderDetailController extends Controller
 
         $product = Product::findOrFail($orderDetail->product_id);
         $product->addOneQuantity($orderDetail->location_id);
+        
+        $user = User::find($orderDetail->user_id);
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,$product->price,"取消兌換-" . $product->name);
+
         $orderDetail->delete();
 
         return response([
