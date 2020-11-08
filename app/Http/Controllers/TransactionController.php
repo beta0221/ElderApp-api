@@ -203,9 +203,13 @@ class TransactionController extends Controller
         // }
 
         
-        $users = User::where('id','>=',$request->from)->where('id','<=',$request->to)->where('valid',1)->get();
+        $users = User::where('id','>=',$request->from)
+            ->where('id','<=',$request->to)
+            ->where('valid',1)
+            ->whereDate('created_at','<=','2020-10-01')
+            ->get();
         foreach ($users as $user) {
-            $this->dispatch(new SendMoney($user,800,'九九重陽敬老禮金'));
+            $this->dispatch(new SendMoney($user,600,'中秋節禮金'));
         }
         
         return response('from:'.$request->from.', to:'.$request->to.' (success)');
