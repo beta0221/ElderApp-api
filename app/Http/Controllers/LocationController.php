@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Location;
 use App\OrderDetail;
+use App\Product;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class LocationController extends Controller
         return response(Location::all(),200);
     }
 
-    public function orderListPage($slug){
+    public function view_productList($slug){
 
         if(!$location = Location::where('slug',$slug)->first()){
             return abort(404);
@@ -38,24 +39,42 @@ class LocationController extends Controller
 
         $products = $location->products()->where('public','&',5)->get();
 
-        return view('location.orderList',[
+        return view('location.productList',[
             'location'=>$location,
             'products'=>$products,
         ]);
     }
 
-    public function orderList($location_id,$product_id){
 
-        $orders = OrderDetail::where('location_id',$location_id)->where('product_id',$product_id)->where('receive',0)->select(['id','user_id','product_id'])->get();
-        foreach ($orders as $order) {
-            if($user = User::where('id',$order->user_id)->select(['name','id_code'])->first()){
-                $order['name'] = $user->name;
-                $order['id_code'] = $user->id_code;
-            }
+    public function view_orderList(Request $request,$location_slug,$product_slug){
+
+        $location = Location::where('slug',$location_slug)->firstOrFail();
+        $product = Product::where('slug',$product_slug)->firstOrFail();
+
+        $query = OrderDetail::where('location_id',$location->id)
+            ->where('product_id',$product->id)
+            ->where('receive',0);
+
+        $user_id_array = $query->pluck('user_id');
+        $orders = $query->select(['id','user_id','product_id'])->get();
+
+        $users = User::select(['id','name','id_code'])->whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) {
+            $userDict[$user->id] = $user;
         }
 
-        return response($orders,200);
+        foreach ($orders as $order) {
+            $order->name = $userDict[$order->user_id]['name'];
+            $order->id_code = $userDict[$order->user_id]['id_code'];
+        }
 
+        return view('location.orderList',[
+            'location'=>$location,
+            'product'=>$product,
+            'orders'=>$orders,
+            'userDict'=>$userDict,
+        ]);
     }
 
 

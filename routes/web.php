@@ -42,7 +42,8 @@ Route::post('/promoteLeader','MemberController@promoteLeader');
 Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_generate');
 
 //商品兌換據點網頁
-Route::get('/order-list/location/{slug}','LocationController@orderListPage');
+Route::get('/order-list/location/{location_slug}','LocationController@view_productList')->name('productList');
+Route::get('/order-list/location/{location_slug}/{product_slug}','LocationController@view_orderList')->name('orderList');
 
 //訂單
     //目前還沒有登入驗證所以傳四個參數提高一點安全性
