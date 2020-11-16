@@ -109,12 +109,17 @@
                 <a class="top-bar-button" href="{{route('productList',['location_slug'=>$location->slug])}}">＜Back</a>
                 <div class="title">{{$product->name}}</div>
             </div>
+
+            <div style="padding: 8px 12px 0 12px;">
+                <input id="search-input" type="text" style="width:100%;height:40px;padding:0 4px" placeholder="姓名">
+            </div>
+
             <div class="name-list">
             @if (count($orders) == 0)
                 <div id='no-order' class='name-cell'>目前無人兌換</div>
             @else
                 @foreach ($orders as $order)
-                <div class='name-cell'>
+                <div class='name-cell' data-name="{{$order->name}}">
                     <span>{{$order->name}} (編號:{{$order->id_code}}) </span>
                     <div order_id="{{$order->id}}" user_id="{{$order->user_id}}" product_id="{{$order->product_id}}" class='check-btn'>領取</div>
                 </div>
@@ -136,6 +141,18 @@ $(document).ready(function(){
         headers:{
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
         }
+    });
+
+    $('#search-input').on('keyup',function(){
+        var search_value = $(this).val();
+        $('.name-cell').each(function (index, item) { 
+            var name = $(item).data('name');
+             if(name.includes(search_value)){
+                $(item).show();
+             }else{
+                $(item).hide();
+             }
+        });
     });
 
     $(document).on('click','.check-btn',function(){
