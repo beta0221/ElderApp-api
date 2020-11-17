@@ -74,6 +74,7 @@ class LocationController extends Controller
             'product'=>$product,
             'orders'=>$orders,
             'userDict'=>$userDict,
+            'total'=>count($orders),
         ]);
     }
 

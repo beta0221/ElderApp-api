@@ -38,11 +38,13 @@
             height: 80px;
             background-color: lightgray;
             text-align: center;
+            overflow: hidden;
         }
         .top-bar .title{
             line-height: 80px;
-            font-size: 32px;
+            font-size: 24px;
             color: teal;
+            margin: 0 32px;
         }
         .name-list-outter .top-bar .top-bar-button{
             position:absolute;
@@ -113,6 +115,7 @@
             <div style="padding: 8px 12px 0 12px;">
                 <input id="search-input" type="text" style="width:100%;height:40px;padding:0 4px" placeholder="姓名">
             </div>
+            <div style="padding: 0 12px;color:gray;margin-top:8px">Total：{{$total}}</div>
 
             <div class="name-list">
             @if (count($orders) == 0)
