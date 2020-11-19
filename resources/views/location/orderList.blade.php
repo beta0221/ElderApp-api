@@ -146,7 +146,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#search-input').on('keyup',function(){
+    $('#search-input').on('keyup touchend',function(){
         var search_value = $(this).val();
         $('.name-cell').each(function (index, item) { 
             var name = $(item).data('name');
