@@ -138,13 +138,11 @@ export default {
                 this.getOrders();
             }
         },
-        watch:{
         pagination: {
             handler(){
                 this.getOrders();
             }
         }
-    },
     },
     created(){
         User.authOnly();
