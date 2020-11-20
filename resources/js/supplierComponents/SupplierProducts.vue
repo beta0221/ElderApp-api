@@ -173,16 +173,17 @@
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>各半支付（樂幣）</label>
-                    <input type="number" class="form-control" v-model="tempProduct.pay_cash_point" />
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
                     <label>各半支付（現金）</label>
                     <input type="number" class="form-control" v-model="tempProduct.pay_cash_price" />
                   </div>
                 </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>各半支付（樂幣）</label>
+                    <input type="number" class="form-control" v-model="tempProduct.pay_cash_point" />
+                  </div>
+                </div>
+                
 
                 <div class="col-sm-6">
                   <div class="form-group">

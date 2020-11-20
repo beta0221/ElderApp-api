@@ -93,13 +93,13 @@
                                             </td>
                                             <td>
                                                 <div>
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease quantity-btn" data-product-id="{{$p->id}}">◀</div>
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease quantity-btn" data-product-id="{{$p->id}}">-</div>
 
                                                     <input type="number" class="input-cash-point-{{$p->id}} input-quantity form-control d-inline-block" 
                                                     style="width:48px;line-height:32px" value="1" data-cash="{{$p->pay_cash_price}}" data-point="{{$p->pay_cash_point}}" 
                                                     data-product-id="{{$p->id}}" min="1">
 
-                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase quantity-btn" data-product-id="{{$p->id}}">▶</div>
+                                                    <div style="line-height: 32px" class="btn btn-sm btn-secondary input-increase quantity-btn" data-product-id="{{$p->id}}">+</div>
                                                 </div>
                                                 {{-- <div class="mb-1">
                                                     <div style="line-height: 32px" class="btn btn-sm btn-secondary input-decrease" data-product-id="{{$p->id}}">◀</div>

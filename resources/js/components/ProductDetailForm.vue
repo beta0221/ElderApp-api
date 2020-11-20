@@ -96,12 +96,12 @@
         
         <v-layout row wrap>
           <v-flex md3>
-              <label>樂幣抵用（各半）</label>
-              <v-text-field label="樂幣抵用（各半）" placeholder="樂幣抵用（各半）" solo v-model="form.pay_cash_point"></v-text-field>
-          </v-flex>
-          <v-flex md3>
               <label>現金支付（各半）</label>
               <v-text-field label="現金支付（各半）" placeholder="現金支付（各半）" solo v-model="form.pay_cash_price"></v-text-field>
+          </v-flex>
+          <v-flex md3>
+              <label>樂幣抵用（各半）</label>
+              <v-text-field label="樂幣抵用（各半）" placeholder="樂幣抵用（各半）" solo v-model="form.pay_cash_point"></v-text-field>
           </v-flex>
         </v-layout>
 

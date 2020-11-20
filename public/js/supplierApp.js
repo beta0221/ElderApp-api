@@ -12921,6 +12921,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -51181,40 +51182,6 @@ var render = function() {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-sm-6" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("label", [_vm._v("各半支付（樂幣）")]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.tempProduct.pay_cash_point,
-                                  expression: "tempProduct.pay_cash_point"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { type: "number" },
-                              domProps: {
-                                value: _vm.tempProduct.pay_cash_point
-                              },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.tempProduct,
-                                    "pay_cash_point",
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            })
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-sm-6" }, [
-                          _c("div", { staticClass: "form-group" }, [
                             _c("label", [_vm._v("各半支付（現金）")]),
                             _vm._v(" "),
                             _c("input", {
@@ -51239,6 +51206,40 @@ var render = function() {
                                   _vm.$set(
                                     _vm.tempProduct,
                                     "pay_cash_price",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-sm-6" }, [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("各半支付（樂幣）")]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.tempProduct.pay_cash_point,
+                                  expression: "tempProduct.pay_cash_point"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: {
+                                value: _vm.tempProduct.pay_cash_point
+                              },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.tempProduct,
+                                    "pay_cash_point",
                                     $event.target.value
                                   )
                                 }

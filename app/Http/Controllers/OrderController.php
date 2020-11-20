@@ -100,8 +100,16 @@ class OrderController extends Controller
      * 訂單詳情
      */
     public function getOrderDetail($order_numero){
-        $firm_id = Auth::user()->id;
-        if(!$orders = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->get()){
+
+        $user = request()->user();
+        $firm_id = $user->id;
+
+        $query = Order::where('order_numero',$order_numero);
+        if(!$user->isAdmin()){  //如果不是管理員
+            $query->where('firm_id',$firm_id);
+        }
+
+        if(!$orders = $query->get()){
             return response('error',500);
         }
 
