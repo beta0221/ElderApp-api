@@ -533,6 +533,11 @@ class EventController extends Controller
 
     public function CancelEvent(Request $request,$slug){
 
+        return response()->json([
+            's'=>0,
+            'm'=>'會員大會期間暫時無法退出活動。'
+        ]);
+
         $event=Event::where('slug',$slug)->first();
         if($event){
             $user=User::where('id',$request->id)->first();
