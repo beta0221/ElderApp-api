@@ -28,7 +28,7 @@ class TransactionController extends Controller
         ]);
 
         if($req->give_id == $req->take_id){
-            return response('無效操作');
+            return response('無效操作',400);
         }
 
         $give_user = User::find($req->give_id);
@@ -37,7 +37,7 @@ class TransactionController extends Controller
         if ($give_user->email == $req->give_email && $take_user->email == $req->take_email) {
             
             if($give_user->wallet < $req->amount){
-                return response('insufficient');
+                return response('insufficient',400);
             }
 
             $give_user->updateWallet(false,$req->amount);

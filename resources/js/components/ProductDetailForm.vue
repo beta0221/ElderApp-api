@@ -64,8 +64,8 @@
         
         <div v-for="(l,index) in location" v-bind:key="index" v-show="isSelected(l.id)">
           <span>據點庫存（{{l.name}}）：</span>
-          <v-text-field class="d-inline-block" label="Solo" placeholder="庫存數量" solo v-model="quantityDic[l.id]"></v-text-field>
-          <!-- <v-text-field class="d-inline-block" label="Solo" placeholder="現金購買庫存數量" solo v-model="payCashQuantityDict[l.id]"></v-text-field> -->
+          <span>兌換庫存</span><v-text-field class="d-inline-block" label="Solo" placeholder="兌換庫存" solo v-model="quantityDic[l.id]"></v-text-field>
+          <span>商城庫存</span><v-text-field class="d-inline-block" label="Solo" placeholder="商城庫存" solo v-model="payCashQuantityDict[l.id]"></v-text-field>
         </div>
 
         <div>
@@ -195,7 +195,7 @@ export default {
 
       location:[],
       quantityDic:{},
-      // payCashQuantityDict:{},
+      payCashQuantityDict:{},
     };
   },
   created() {
@@ -268,7 +268,7 @@ export default {
               res.data.location.forEach((item)=>{
                 this.form.select_location.push(item.location_id);
                 this.quantityDic[item.location_id] = item.quantity;
-                // this.payCashQuantityDict[item.location_id] = item.pay_cash_quantity;
+                this.payCashQuantityDict[item.location_id] = item.quantity_cash;
               });
             }
           }
@@ -284,7 +284,7 @@ export default {
       formData.append('file', this.file);
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
       formData.append('quantity',JSON.stringify(this.quantityDic));
-      // formData.append('payCashQuantity',JSON.stringify(this.payCashQuantityDict));
+      formData.append('quantity_cash',JSON.stringify(this.payCashQuantityDict));
       if(this.edit_mode){
         this.updateRequest(formData);
       }else{

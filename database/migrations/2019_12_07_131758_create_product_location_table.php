@@ -18,6 +18,7 @@ class CreateProductLocationTable extends Migration
             $table->integer('product_id');
             $table->integer('location_id');
             $table->integer('quantity')->default(0);
+            $table->integer('quantity_cash')->default(0);
             $table->timestamps();
         });
     }

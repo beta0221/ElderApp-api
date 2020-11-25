@@ -33,17 +33,15 @@ class Product extends Model
     }
 
     public function updateQuantity($location_id,$quantity){
-        
-        try {
-            DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
-                'quantity'=>(int)$quantity,
-                // 'pay_cash_quantity'=>(int)$payCashQuantity,
-            ]);
-        } catch (\Throwable $th) {
-            return $th;
-        }
-        return true;
+        DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
+            'quantity'=>(int)$quantity,
+        ]);
+    }
 
+    public function updateQuantityCash($location_id,$quantity_cash){
+        DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
+            'quantity_cash'=>(int)$quantity_cash,
+        ]);
     }
 
     public function minusOneQuantity($location_id){

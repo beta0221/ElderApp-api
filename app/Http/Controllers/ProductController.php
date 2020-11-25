@@ -95,7 +95,7 @@ class ProductController extends Controller
 
         $request->merge(['firm_id'=>Auth::user()->id]);
         try {
-            $product = Product::create($request->except('file','select_location','quantity'));
+            $product = Product::create($request->except('file','select_location','quantity','quantity_cash'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -103,20 +103,19 @@ class ProductController extends Controller
         if(!empty($request->select_location)){
             $location = explode(",",$request->select_location);
             $product->locations()->sync($location);
-            $result = true;
-            //$payCashQuantity = json_decode($request->payCashQuantity,true);
+            
             if(is_array($quantity = json_decode($request->quantity,true))){
-
                 foreach ($quantity as $key => $value) {
-                    $updated = $product->updateQuantity((int)$key,(int)$value);
-                    if($updated != true){
-                        $result = false;
-                    }
-                }
-                if(!$result){
-                    return response('數量更新錯誤',500);
+                    $product->updateQuantity((int)$key,(int)$value);
                 }
             }
+    
+            if(is_array($quantity_cash = json_decode($request->quantity_cash,true))){
+                foreach ($quantity_cash as $key => $value) {
+                    $product->updateQuantityCash((int)$key,(int)$value);
+                }
+            }
+
         }
         
 
@@ -208,7 +207,7 @@ class ProductController extends Controller
         }
 
         try {
-            $product->update($request->except('file','select_location','quantity'));
+            $product->update($request->except('file','select_location','quantity','quantity_cash'));
         } catch (\Throwable $th) {
             return response($th,500);
         }
@@ -220,18 +219,15 @@ class ProductController extends Controller
             $product->locations()->sync([]);
         }
 
-        $result = true;
-        // $payCashQuantity = json_decode($request->payCashQuantity,true);
         if(is_array($quantity = json_decode($request->quantity,true))){
-
             foreach ($quantity as $key => $value) {
-                $updated = $product->updateQuantity((int)$key,(int)$value);
-                if($updated != true){
-                    $result = false;
-                }
+                $product->updateQuantity((int)$key,(int)$value);
             }
-            if(!$result){
-                return response('數量更新錯誤',500);
+        }
+
+        if(is_array($quantity_cash = json_decode($request->quantity_cash,true))){
+            foreach ($quantity_cash as $key => $value) {
+                $product->updateQuantityCash((int)$key,(int)$value);
             }
         }
 
