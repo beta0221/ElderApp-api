@@ -608,6 +608,11 @@ class MemberController extends Controller
             $img = config('app.static_host') . "/users/$user->id_code/$user->img";
             $user->img = $img;
         }
+
+        if($user->hasRole('location_manager')){
+            $user->locationUrl = '/view_myLocation';
+        }
+
         return response()->json($user);
     }
 

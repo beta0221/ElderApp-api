@@ -21,6 +21,10 @@ class LocationController extends Controller
                 'locationList',
             ]
         ]);
+
+        $this->middleware(['webAuth','role:location_manager'], ['only' => ['view_myLocation','view_locationOrderList','view_locationOrderDetail','view_nextStatus']]);
+
+        
     }
 
 
@@ -257,9 +261,9 @@ class LocationController extends Controller
         }
 
         $query = Order::where('location_id',$location->id);
-        
+        $total = $query->count();
         $orderList = $query->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,'desc')->get();
-
+        
         $user_id_array = [];
         foreach ($orderList as $order) {
             if(!in_array($order->user_id,$user_id_array)){$user_id_array[] = $order->user_id;}
@@ -272,7 +276,6 @@ class LocationController extends Controller
         }
 
         $orderList = Order::groupOrdersByNumero($orderList);
-        $total = $query->count();
         $p->cacuTotalPage($total);
 
         return view('location.locationOrderList',[

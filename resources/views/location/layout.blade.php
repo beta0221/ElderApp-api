@@ -26,8 +26,9 @@
             overflow-y: scroll;
         }
         .data-cell{
-            background:#fb8c00;
-            color: #fff;
+            border:1px solid rgba(0,0,0,0.8);
+            background:#fff;
+            color: rgba(0,0,0,0.8);
             padding: 12px;
             margin-bottom: 12px;
             font-size: 28pt;

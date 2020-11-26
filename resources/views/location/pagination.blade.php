@@ -59,8 +59,8 @@
         @if ($hasNextDot)
             <li class="ml-1 mr-1">...</li>
         @endif
-
-        @if ($page != $totalPage)
+        
+        @if ($page != $totalPage && $totalPage != 0)
         <li class="page-item">
             <a class="page-link" href="{{$url}}?page={{$page+1}}" aria-label="Next">
                 <span class="sr-only">下頁</span>

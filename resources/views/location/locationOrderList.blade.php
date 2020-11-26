@@ -3,21 +3,7 @@
 @section('title',"| 據點訂單")
 
 @section('css')
-    <style>
-    ul li a{
-        color:#000;
-    }
-    li{
-        list-style: none;
-        float :left;
-    }
-    li.active{
-        background: gray
-    }
-    li.active a{
-        color:#fff;
-    }
-</style>
+    @include('location.pagination_style')
 @endsection
 
 @section('content')
@@ -49,7 +35,9 @@
         '4'=>'結案',
     ];
 ?>
-
+@if (empty($orderList))
+    <h1 style="margin:40px 0;text-align:center">目前無資料</h1>
+@endif
 @foreach ($orderList as $order)
 <div class="data-cell">
     <div>
