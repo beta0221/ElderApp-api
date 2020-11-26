@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use stdClass;
 
 class Order extends Model
 {
@@ -79,4 +80,28 @@ class Order extends Model
         ]);
         return 1;
     }
+
+    public static function groupOrdersByNumero($orders){
+        $_dict = [];
+        $orderList = [];
+        foreach ($orders as $order) {
+            if(!isset($_dict[$order->order_numero])){
+                $_order = new stdClass();
+                $_order->created_at = $order->created_at;
+                $_order->order_numero = $order->order_numero;
+                $_order->ship_status = $order->ship_status;
+                $_order->user_id = $order->user_id;
+                $_order->list = [];
+                //
+                $orderList[] = $_order;
+                $_dict[$order->order_numero] = count($orderList) - 1;
+            }
+        }
+        foreach ($orders as $order) {
+            $index = $_dict[$order->order_numero];
+            $orderList[$index]->list[] = $order;
+        }
+        return $orderList;
+    }
+
 }

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Pagination;
 use App\Location;
+use App\Order;
 use App\OrderDetail;
 use App\Product;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class LocationController extends Controller
 {
@@ -233,5 +236,94 @@ class LocationController extends Controller
         return response('success');
     }
 
+    public function view_myLocation(Request $request){
+        if($request->token){
+            Cookie::queue('token',$request->token,60);
+        }
+        $user = $request->user();
+        $locations = $user->locations()->get();
+
+        return view('location.myLocation',[
+            'locations'=>$locations
+        ]);
+    }
+
+    public function view_locationOrderList(Request $request,$slug){
+        $user = request()->user();
+        $p = new Pagination($request);
+        $location = Location::where('slug',$slug)->firstOrFail();
+        if(!$result = $location->managers()->find($user->id)){
+            return abort(403, "Fail");
+        }
+
+        $query = Order::where('location_id',$location->id);
+        
+        $orderList = $query->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,'desc')->get();
+
+        $user_id_array = [];
+        foreach ($orderList as $order) {
+            if(!in_array($order->user_id,$user_id_array)){$user_id_array[] = $order->user_id;}
+        }
+
+        $users = User::select(['id','name'])->whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) {
+            $userDict[$user->id] = $user->name;
+        }
+
+        $orderList = Order::groupOrdersByNumero($orderList);
+        $total = $query->count();
+        $p->cacuTotalPage($total);
+
+        return view('location.locationOrderList',[
+            'pagination'=>$p,
+            'orderList'=>$orderList,
+            'userDict'=>$userDict,
+            'slug'=>$slug,
+        ]);
+    }
+
+    public function view_locationOrderDetail($slug,$order_numero){
+
+        $user = request()->user();
+        
+        $location = Location::where('slug',$slug)->firstOrFail();
+        if(!$result = $location->managers()->find($user->id)){
+            return abort(403, "Fail");
+        }
+        
+        $orders = Order::where('order_numero',$order_numero)->where('location_id',$location->id)->get();
+        
+
+        $productIdArray = [];
+        foreach ($orders as $order) {
+            $productIdArray[] = $order->product_id;
+        }
+        $productImageDict = Product::getProductImageDict($productIdArray);
+
+
+        return view('location.locationOrderDetail',[
+            'orders'=>$orders,
+            'slug'=>$slug,
+            'productImageDict'=>$productImageDict,
+        ]);
+    }
+
+    public function view_nextStatus($slug,$order_numero){
+        
+        $user = request()->user();
+        $location = Location::where('slug',$slug)->firstOrFail();
+        if(!$result = $location->managers()->find($user->id)){
+            return abort(403, "Fail");
+        }
+
+        $orders = Order::where('order_numero',$order_numero)->where('location_id',$location->id)->get();
+        foreach ($orders as $order) {
+            $order->ship_status = Order::STATUS_CLOSE;
+            $order->save();
+        }
+
+        return redirect("/view_locationOrderList/$slug");
+    }
 
 }

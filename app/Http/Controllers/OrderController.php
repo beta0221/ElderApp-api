@@ -12,7 +12,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use stdClass;
 
 class OrderController extends Controller
 {
@@ -23,27 +22,6 @@ class OrderController extends Controller
         $this->middleware('webAuth',['only'=>['view_orderList','view_orderDetail']]);
     }
 
-    private function groupOrdersByNumero($orders){
-        $_dict = [];
-        $orderList = [];
-        foreach ($orders as $order) {
-            if(!isset($_dict[$order->order_numero])){
-                $_order = new stdClass();
-                $_order->created_at = $order->created_at;
-                $_order->order_numero = $order->order_numero;
-                $_order->ship_status = $order->ship_status;
-                $_order->user_id = $order->user_id;
-                $_order->list = [];
-                $orderList[] = $_order;
-                $_dict[$order->order_numero] = count($orderList) - 1;
-            }
-        }
-        foreach ($orders as $order) {
-            $index = $_dict[$order->order_numero];
-            $orderList[$index]->list[] = $order;
-        }
-        return $orderList;
-    }
 
     //api route
 
@@ -87,7 +65,7 @@ class OrderController extends Controller
             $userDict[$user->id] = $user->name;
         }
 
-        $orderList = $this->groupOrdersByNumero($orders);
+        $orderList = Order::groupOrdersByNumero($orders);
 
         return response([
             'orderList'=>$orderList,

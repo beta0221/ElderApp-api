@@ -44,6 +44,10 @@ Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_ge
 //商品兌換據點網頁
 Route::get('/order-list/location/{location_slug}','LocationController@view_productList')->name('productList');
 Route::get('/order-list/location/{location_slug}/{product_slug}','LocationController@view_orderList')->name('orderList');
+Route::get('/view_myLocation','LocationController@view_myLocation');
+Route::get('/view_locationOrderList/{slug}','LocationController@view_locationOrderList');
+Route::get('/view_locationOrderDetail/{slug}/{order_numero}','LocationController@view_locationOrderDetail');
+Route::post('/view_nextStatus/{slug}/{order_numero}','LocationController@view_nextStatus');
 
 //訂單
     //目前還沒有登入驗證所以傳四個參數提高一點安全性
