@@ -44,11 +44,17 @@
         <span>{{$userDict[$order->user_id]}}</span>
         <span style="border-radius:.3rem;font-size:24px;padding: 4px 8px;background:{{$colorDict[$order->ship_status]}}">{{$statusDict[$order->ship_status]}}</span>
     </div>
-    <div>
-        <span>編號：{{$order->order_numero}}</span>
+    <div style="line-height:24px">
+        <span style="font-size: 24px;">編號：</span>
     </div>
-    <div style="line-height: 20px">
-        <span style="font-size: 20px">日期：{{$order->created_at}}</span>
+    <div style="line-height:24px">
+        <span style="font-size: 24px;line-height:24px">{{$order->order_numero}}</span>
+    </div>
+    <div style="line-height: 24px">
+        <span style="font-size: 24px">日期：</span>
+    </div>
+    <div style="line-height: 24px">
+        <span style="font-size: 24px">{{$order->created_at}}</span>
     </div>
     <div style="margin-top: 8px">
         <a href="/view_locationOrderDetail/{{$slug}}/{{$order->order_numero}}" style="background:darkgray ">詳細</a>
