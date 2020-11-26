@@ -41,5 +41,16 @@ class rolesTableSeeder extends Seeder
         $role->name = 'firm';
         $role->description = 'firm';
         $role->save();
+
+        $role = new Role();
+        $role->name = 'local_admin';
+        $role->description = 'local_admin';
+        $role->save();
+
+        $role = new Role();
+        $role->name = 'location_manager';
+        $role->description = 'location_manager';
+        $role->save();
+
     }
 }

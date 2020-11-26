@@ -199,5 +199,39 @@ class LocationController extends Controller
 
 
 
+    public function getLocationManagers($slug){
+        $location = Location::where('slug',$slug)->firstOrFail();
+        $managers = $location->managers()->get();
+        return response($managers);
+    }
+
+    public function addManager(Request $request,$slug){
+        
+        $user = User::findOrFail($request->user_id);
+        $location = Location::where('slug',$slug)->firstOrFail();
+
+        if(!$result = $user->becomeRole('location_manager')){
+            return response('error',400);
+        }
+
+        $location->managers()->attach($user->id);
+
+        return response('success');
+    }
+
+    public function removeManager(Request $request,$slug){
+        
+        $user = User::findOrFail($request->user_id);
+        $location = Location::where('slug',$slug)->firstOrFail();
+
+        $location->managers()->detach($user->id);
+
+        if(count($user->locations()->get()) == 0){
+            $user->removeLocationManagerRole();
+        }
+
+        return response('success');
+    }
+
 
 }

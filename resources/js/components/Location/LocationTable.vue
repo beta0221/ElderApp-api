@@ -2,6 +2,7 @@
 
   <div>
       <location-detail-modal v-on:completion="getDataList"></location-detail-modal>
+      <LocationManagerModal></LocationManagerModal>
       <div>
         <v-btn color="success" @click="addNewLocation">新增據點</v-btn>
       </div>
@@ -30,6 +31,9 @@
                 <td>
                     {{location+`/order-list/location/${props.item.slug}`}}
                 </td>
+                <td class="manager-column">
+                    <v-icon @click="openManagerPanel(props.item)">account_circle</v-icon>
+                </td>
                 <td>
                     <v-btn @click="openPanel(props.item.slug)">開啟後台</v-btn>
                     <v-btn color="info" @click="editLocation(props.item)">編輯</v-btn>
@@ -44,10 +48,12 @@
 
 <script>
 import LocationDetailModal from "./LocationDetailModal";
+import LocationManagerModal from "./LocationManagerModal";
 
 export default {
     components:{
-        LocationDetailModal
+        LocationDetailModal,
+        LocationManagerModal,
     },
     data(){
         return{
@@ -57,6 +63,7 @@ export default {
                 { text: "地址", value: "address" },
                 { text: "地圖連結", value: "link" },
                 { text: '後台連結'},
+                { text: '負責人員'},
                 { text: '-'}
             ],
             pagination: { sortBy: "id", descending: true },
@@ -104,11 +111,16 @@ export default {
         openPanel(slug){
             let url = this.location+`/order-list/location/${slug}`
             window.open(url);
+        },
+        openManagerPanel(location){
+            EventBus.$emit('showLocationManagers',location);
         }
     }
 }
 </script>
 
 <style>
-
+.manager-column{
+  cursor: pointer;
+}
 </style>

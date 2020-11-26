@@ -105,6 +105,10 @@ class User extends Authenticatable implements JWTSubject
 
     //database relationship binding
 
+    public function locations(){
+        return $this->belongsToMany('App\Location','location_manager','user_id','location_id');
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);
@@ -457,6 +461,11 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return true;
+    }
+
+    public function removeLocationManagerRole(){
+        $role = Role::where('name','location_manager')->first();
+        $this->roles()->detach($role->id);
     }
 
 }

@@ -36,5 +36,9 @@ class Location extends Model
         }
         return $dict;
     }
+
+    public function managers(){
+        return $this->belongsToMany('App\User','location_manager','location_id','user_id');
+    }
     
 }
