@@ -34,6 +34,11 @@ class Pagination{
         $this->skip = ($this->page - 1) * $this->rows;
     }
 
+    public function setRows(int $rows){
+        $this->rows = $rows;
+        $this->skip = ($this->page - 1) * $this->rows;
+    }
+
 
     /**
      * 計算總頁數

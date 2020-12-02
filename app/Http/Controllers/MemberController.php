@@ -776,22 +776,22 @@ class MemberController extends Controller
     }
     public function memberGroupMembers(Request $request){
 
-        $p = new Pagination($request);
-        $p->rows = 20;
+        // $p = new Pagination($request);
+        // $p->setRows(20);
         $user = User::web_user();
         if($request->has('token')){ Cookie::queue('token',$request->token); }
         if($user->org_rank < 3){ return '權限不足'; }
         
         $group_users = $user->getGroupUserRows();
         if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }
-        $p->cacuTotalPage(count($group_users));
+        // $p->cacuTotalPage(count($group_users));
 
         $all_user_id_array = [];
         foreach ($group_users as $g_user) {
             $all_user_id_array[] = $g_user->user_id;
         }
 
-        $users = User::whereIn('id',$all_user_id_array)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy, $p->ascOrdesc)->get();
+        // $users = User::whereIn('id',$all_user_id_array)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy, $p->ascOrdesc)->get();
         $all_users = User::whereIn('id',$all_user_id_array)->get();
 
         $dic=[];
@@ -801,16 +801,16 @@ class MemberController extends Controller
             $validDic[$user->id] = $user->valid;
         }
 
-        $districts = DB::table('districts')->get();
-        $districtDict = [];
-        foreach ($districts as $district) {
-            $districtDict[$district->id] = $district->name;
-        }
+        // $districts = DB::table('districts')->get();
+        // $districtDict = [];
+        // foreach ($districts as $district) {
+        //     $districtDict[$district->id] = $district->name;
+        // }
 
-        return view('member.memberGroupMembers',[
-            'pagination'=>$p,
-            'users'=>$users,
-            'districtDict'=>$districtDict,
+        return view('member.memberGroupMembers2',[
+            // 'pagination'=>$p,
+            // 'users'=>$users,
+            // 'districtDict'=>$districtDict,
             'group_users'=>json_encode($group_users),
             'name_dic'=>json_encode($dic),
             'valid_dic'=>json_encode($validDic)
