@@ -171,6 +171,7 @@ export default {
         {text:'身分證',value:'id_number'},
         {text:'手機號碼',value:'phone'},
         {text:'會員狀態',value:'pay_status'},
+        {text:'推薦人',value:'inviter'},
         {text:'身份',value:'role'},
       ],
       show_level:false,
@@ -218,6 +219,7 @@ export default {
         case 'name':
         case 'id_number':
         case 'phone':
+        case 'inviter':
           this.show_searchText = true;
           this.blurSearch = true;
           break;

@@ -104,6 +104,12 @@ class CartController extends Controller
      *        }
      *  }
      * 
+     * locationDict = 
+     * {
+     *    'product_id':'location_id',
+     *    '30':22,
+     * }
+     * 
      */
     public function checkOut(Request $request){
         
@@ -147,6 +153,7 @@ class CartController extends Controller
 
         $total_point = 0;   //總共要花多少樂幣
         $order_numero_point_dict = [];
+        $product_new_stock = [];
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
             if(!isset($order_numero_point_dict[$product->firm_id])){ $order_numero_point_dict[$product->firm_id] = 0; }
@@ -154,6 +161,17 @@ class CartController extends Controller
             // $point_quantity = (isset($quantityDict[$product->id]['point']))?(int)$quantityDict[$product->id]['point']:0;
             $point_cash_quantity = (isset($quantityDict[$product->id]['point_cash']))?(int)$quantityDict[$product->id]['point_cash']:0;
             
+            //計算庫存夠不夠
+            $location_id = $locationDict[$product->id];
+            $location = $product->locations()->find($location_id);
+            $stock = $location->pivot->quantity_cash;
+            if($point_cash_quantity > $stock){
+                Session::flash('message','目前 "' . $product->name . '" 在 "' . $location->name . '" 據點的庫存數量剩餘:' . $stock);
+                return redirect()->route('cart_page');
+            }
+            //計算購買後剩餘的庫存
+            $product_new_stock[$product->id] = $stock - $point_cash_quantity;
+
             $point = (int)$point_cash_quantity * $product->pay_cash_point;
             $order_numero_point_dict[$product->firm_id] += $point;
             $total_point += $point;
@@ -183,6 +201,10 @@ class CartController extends Controller
                 if(!isset($locationDict[$product->id])){ continue; }
                 $location_id = $locationDict[$product->id];
                 Order::insert_row($user->id,null,$location_id,$order_numero,$product,$cash_quantity,$point_cash_quantity);
+
+                $new_stock = $product_new_stock[$product->id];
+                $product->locations()->updateExistingPivot($location_id,['quantity_cash'=>$new_stock]);
+
             }
         }
 

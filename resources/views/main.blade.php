@@ -43,7 +43,7 @@
         return localStorage.getItem('token');
     }
     function happyAlert(text){
-        $('body').append('<div class="happy-alert"><div><h3>'+text+'</h3></div><div class="happy-btn" onclick="closeHappyAlert()">確定</div></div>');
+        $('body').append('<div class="happy-alert"><div class="mb-4"><h3>'+text+'</h3></div><div class="happy-btn" style="background: lightgray" onclick="closeHappyAlert()">繼續購物</div><div class="happy-btn" onclick="location.href = '  +"'/cart'"+ '">前往結帳</div></div>');
     }
     function closeHappyAlert(){
         $('.happy-alert').remove();

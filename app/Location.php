@@ -11,7 +11,7 @@ class Location extends Model
 
 
     public function products(){
-        return $this->belongsToMany('App\Product','product_location','location_id','product_id');
+        return $this->belongsToMany('App\Product','product_location','location_id','product_id')->withPivot(['quantity','quantity_cash']);
     }
 
     /** abandoned */

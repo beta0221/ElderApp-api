@@ -74,9 +74,6 @@
 </div>
 
 <div class="float-area">
-    <div class="float-btn bg-danger">
-        <a href="/cart" style="color:#fff;"><span>前往結帳</span></a>
-    </div>
     <div class="float-btn bg-warning mb-2" onclick="add_to_cart()">
         <span>加入購物車</span>
     </div>

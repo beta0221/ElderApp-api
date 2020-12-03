@@ -23,7 +23,7 @@ class Product extends Model
     }
 
     public function locations(){
-        return $this->belongsToMany('App\Location','product_location','product_id','location_id');
+        return $this->belongsToMany('App\Location','product_location','product_id','location_id')->withPivot(['quantity','quantity_cash']);
     }
     //relations
 
