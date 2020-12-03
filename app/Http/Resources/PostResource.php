@@ -16,17 +16,23 @@ class PostResource extends JsonResource
     public function toArray($request)
     {
 
-        $user = User::find($this->user_id);
+        $user_name = '';
         $user_image = null;
-        $post_image = null;
-        if($user->img){
-            $user_image = config('app.static_host') . "/users/$user->id_code/$user->img";    
+
+        if($user = User::find($this->user_id)){
+            $user_name = $user->name;
+            if($user->img){
+                $user_image = config('app.static_host') . "/users/$user->id_code/$user->img";    
+            }
         }
+        
+        $post_image = null;
         if($this->images){
             $post_image = config('app.static_host') . "/posts/$this->slug/$this->images";    
         }
+        
         return [
-            'user_name' => $user->name,
+            'user_name' => $user_name,
             'user_image' => $user_image,
             'post_image' => $post_image,
             'title' => $this->title,
