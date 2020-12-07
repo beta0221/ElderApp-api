@@ -15,6 +15,7 @@ class Order extends Model
     const STATUS_SHIPPING = 2;
     const STATUS_ARRIVE = 3;
     const STATUS_CLOSE = 4;
+    const STATUS_VOID = 5;
 
     public static $shipStatusDict = [
         '0'=>'待出貨',
@@ -22,6 +23,7 @@ class Order extends Model
         '2'=>'已出貨',
         '3'=>'已到貨',
         '4'=>'結案',
+        '5'=>'作廢',
     ];
 
     /**
@@ -71,7 +73,7 @@ class Order extends Model
         if(!$first){
             return 0;
         }
-        if($first->ship_status == Order::STATUS_CLOSE){
+        if($first->ship_status == Order::STATUS_CLOSE || $first->ship_status == Order::STATUS_VOID){
             return -1;
         }
         $nextStatus = $first->ship_status + 1;

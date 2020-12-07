@@ -322,6 +322,8 @@ class LocationController extends Controller
 
         $orders = Order::where('order_numero',$order_numero)->where('location_id',$location->id)->get();
         foreach ($orders as $order) {
+            if($order->ship_status == Order::STATUS_VOID){ continue; }
+            
             $order->ship_status = Order::STATUS_CLOSE;
             $order->save();
         }

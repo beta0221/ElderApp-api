@@ -12462,14 +12462,16 @@ __webpack_require__.r(__webpack_exports__);
         "1": "btn btn-info",
         "2": "btn btn-primary",
         "3": "btn btn-success",
-        "4": "btn btn-danger"
+        "4": "btn btn-danger",
+        "5": "btn"
       },
       statusDict: {
         "0": "待出貨",
         "1": "準備中",
         "2": "已出貨",
         "3": "已到貨",
-        "4": "結案"
+        "4": "結案",
+        "5": "作廢"
       },
       statusList: [{
         text: "待出貨",
@@ -12486,6 +12488,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: "結案",
         value: 4
+      }, {
+        text: "作廢",
+        value: 5
       }],
       columns: [{
         text: "欄位",

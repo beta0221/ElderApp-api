@@ -26,6 +26,7 @@
         '2'=>'lightskyblue',
         '3'=>'cornflowerblue',
         '4'=>'forestgreen',
+        '5'=>'brown',
     ];                   
     $statusDict = [
         '0'=>'待出貨',
@@ -33,6 +34,7 @@
         '2'=>'已出貨',
         '3'=>'已到貨',
         '4'=>'結案',
+        '5'=>'作廢',
     ];
 ?>
 @if (empty($orderList))

@@ -93,6 +93,7 @@ export default {
                 '2':'info',
                 '3':'primary',
                 '4':'success',
+                '5':'gray',
             },
             statusDict:{
                 '0':'待出貨',
@@ -100,6 +101,7 @@ export default {
                 '2':'已出貨',
                 '3':'已到貨',
                 '4':'結案',
+                '5':'作廢',
             },
             statusList:[
                 {text:'待出貨',value:0},
@@ -107,6 +109,7 @@ export default {
                 {text:'已出貨',value:2},
                 {text:'已到貨',value:3},
                 {text:'結案',value:4},
+                {text:'作廢',value:5},
             ],
             headers: [
                 { text:'#'},

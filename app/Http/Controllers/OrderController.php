@@ -288,7 +288,7 @@ class OrderController extends Controller
         }
         $productImageDict = Product::getProductImageDict($productIdArray);
 
-        $orderList = $this->groupOrdersByNumero($orders);
+        $orderList = Order::groupOrdersByNumero($orders);
         
         return view('order.list',[
             'productImageDict'=>$productImageDict,
