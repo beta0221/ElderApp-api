@@ -776,41 +776,38 @@ class MemberController extends Controller
     }
     public function memberGroupMembers(Request $request){
 
-        // $p = new Pagination($request);
-        // $p->setRows(20);
         $user = User::web_user();
         if($request->has('token')){ Cookie::queue('token',$request->token); }
         if($user->org_rank < 3){ return '權限不足'; }
         
         $group_users = $user->getGroupUserRows();
-        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }
-        // $p->cacuTotalPage(count($group_users));
+        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }        
 
         $all_user_id_array = [];
         foreach ($group_users as $g_user) {
             $all_user_id_array[] = $g_user->user_id;
         }
 
-        // $users = User::whereIn('id',$all_user_id_array)->skip($p->skip)->take($p->rows)->orderBy($p->orderBy, $p->ascOrdesc)->get();
         $all_users = User::whereIn('id',$all_user_id_array)->get();
 
         $dic=[];
         $validDic=[];
+        $valid_amount = 0;
+        $invalid_amount = 0;
         foreach ($all_users as $user) {
             $dic[$user->id] = $user->name;
             $validDic[$user->id] = $user->valid;
+            if($user->valid){
+                $valid_amount++;
+            }else{
+                $invalid_amount++;
+            }
         }
 
-        // $districts = DB::table('districts')->get();
-        // $districtDict = [];
-        // foreach ($districts as $district) {
-        //     $districtDict[$district->id] = $district->name;
-        // }
-
         return view('member.memberGroupMembers2',[
-            // 'pagination'=>$p,
-            // 'users'=>$users,
-            // 'districtDict'=>$districtDict,
+            'total_amount'=>count($group_users),
+            'valid_amount'=>$valid_amount,
+            'invalid_amount'=>$invalid_amount,
             'group_users'=>json_encode($group_users),
             'name_dic'=>json_encode($dic),
             'valid_dic'=>json_encode($validDic)

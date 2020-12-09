@@ -96,6 +96,18 @@
         </div>
     </div>
 
+    <div>
+        <div>
+            <span>總人數：</span><span>{{$total_amount}}</span>
+        </div>
+        <div>
+            <span>有效：</span><span style="color: forestgreen">{{$valid_amount}}</span>
+        </div>
+        <div>
+            <span>無效：</span><span style="color: indianred">{{$invalid_amount}}</span>
+        </div>
+    </div>
+
     <table style="width: 100%">
         <thead>
             <tr>
