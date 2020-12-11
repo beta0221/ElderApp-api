@@ -393,7 +393,16 @@ class User extends Authenticatable implements JWTSubject
         return $dict;
     }
 
-
+    /**發送獎勵給推薦人（如果有推薦人的話） */
+    public function rewardInviter(){
+        if(!$this->inviter_id){ return; }
+        if(!$inviter = User::find($this->inviter_id)){ return; }
+        $reward = 300;
+        if($inviter->org_rank >= 2){ $reward += 200; }
+        if($inviter->org_rank >= 3){ $reward += 100; }
+        $event = "推薦獎勵:" . $this->name;
+        $inviter->update_wallet_with_trans(User::INCREASE_WALLET,$reward,$event);
+    }
 
 
     //user roles helper

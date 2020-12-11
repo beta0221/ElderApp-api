@@ -175,47 +175,6 @@ class TransactionController extends Controller
         return response('success');
     }
 
-    public function sendMoney(Request $request){
-
-        $this->validate($request,[
-            'from' => 'required|integer',
-            'to' => 'required|integer',
-            // 'event' => 'required',
-            // 'amount' =>'required|integer|min:1',
-        ]);
-
-        
-        // $sendArray = [
-            
-        // ];
-
-        
-        // foreach ($sendArray as $send) {
-
-        //     $email = $send[0];
-        //     $amount = $send[1];
-        //     $event = $send[2];
-
-        //     $user = User::where('email',$email)->first();
-        //     if(!$user){ continue; }
-
-        //     $this->dispatch(new SendMoney($user,$amount,$event));
-        // }
-
-        
-        $users = User::where('id','>=',$request->from)
-            ->where('id','<=',$request->to)
-            ->where('valid',1)
-            ->whereDate('created_at','<=','2020-10-01')
-            ->get();
-        foreach ($users as $user) {
-            $this->dispatch(new SendMoney($user,600,'中秋節禮金'));
-        }
-        
-        return response('from:'.$request->from.', to:'.$request->to.' (success)');
-    }
-
-
     
     public function list(Request $request)
     {

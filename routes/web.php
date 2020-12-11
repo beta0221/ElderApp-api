@@ -26,8 +26,6 @@ Route::get('web_login_page','AuthController@view_login')->name('web_login_page')
 Route::get('web_admin_login_page','AuthController@view_admin_login')->name('web_admin_login_page');
 Route::get('view_me','AuthController@view_me');
 
-// Route::get('/sendMoney','TransactionController@sendMoney');
-
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 
 Route::get('/member/join','MemberController@create');
