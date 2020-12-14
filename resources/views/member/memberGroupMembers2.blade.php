@@ -136,13 +136,30 @@
     var hasSelected = {};
 
     $(document).ready(function(){
+
+        group_users.sort(function(a,b){
+            for (let lv = 5; lv >= 2; lv--) {
+                let _lv = 'lv_' + lv;
+                if (a[_lv] > b[_lv]) {
+                    return -1;
+                }
+                if (a[_lv] < b[_lv]) {
+                    return 1;
+                }
+            }
+            return 0;
+        });
         
         maxLevel = group_users[0]['level'];
         genRowspanDict();
 
-        group_users.forEach(function (item, index) {
-            addRow(item);
-        });
+        for (let lv = 5; lv >= 1; lv--) {
+            group_users.forEach(function (item, index) {
+                if(item.level == lv){
+                    addRow(item);        
+                }       
+            });
+        }
 
         mergeRows();
 
