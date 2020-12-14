@@ -397,11 +397,26 @@ class User extends Authenticatable implements JWTSubject
     public function rewardInviter(){
         if(!$this->inviter_id){ return; }
         if(!$inviter = User::find($this->inviter_id)){ return; }
-        $reward = 300;
-        if($inviter->org_rank >= 2){ $reward += 200; }
-        if($inviter->org_rank >= 3){ $reward += 100; }
+
         $event = "推薦獎勵:" . $this->name;
-        $inviter->update_wallet_with_trans(User::INCREASE_WALLET,$reward,$event);
+        $inviter->update_wallet_with_trans(User::INCREASE_WALLET,300,$event);
+
+        if(!$group = DB::table('user_group')->where('user_id',$this->inviter_id)->first()){ return; }
+        
+        if($group->lv_2){
+            if($_user2 = User::find($group->lv_2)){
+                $event = "小天使推薦獎勵:" . $this->name;
+                $_user2->update_wallet_with_trans(User::INCREASE_WALLET,200,$event);
+            }
+        }
+
+        if($group->lv_3){
+            if($_user3 = User::find($group->lv_3)){
+                $event = "大天使推薦獎勵:" . $this->name;
+                $_user3->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
+            }
+        }
+
     }
 
 
