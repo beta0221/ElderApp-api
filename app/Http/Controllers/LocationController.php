@@ -38,6 +38,7 @@ class LocationController extends Controller
         return response(Location::all(),200);
     }
 
+    /** X據點上架在兌換區的所有商品 */
     public function view_productList($slug){
 
         if(!$location = Location::where('slug',$slug)->first()){
@@ -52,7 +53,7 @@ class LocationController extends Controller
         ]);
     }
 
-
+    /** X據點的Y商品兌換清單 */
     public function view_orderList(Request $request,$location_slug,$product_slug){
 
         $location = Location::where('slug',$location_slug)->firstOrFail();
@@ -85,6 +86,45 @@ class LocationController extends Controller
         ]);
     }
 
+    /** X據點的Y商品已領取清單 */
+    public function view_receiveList(Request $request,$location_slug,$product_slug){
+        $location = Location::where('slug',$location_slug)->firstOrFail();
+        $product = Product::where('slug',$product_slug)->firstOrFail();
+        $p = new Pagination($request);
+
+        $query = OrderDetail::where('location_id',$location->id)
+            ->where('product_id',$product->id)
+            ->where('receive',1);
+
+        $total = $query->count();
+        $p->cacuTotalPage($total);
+
+        $query = $query->orderBy($p->orderBy, $p->ascOrdesc)
+            ->skip($p->skip)
+            ->take($p->rows);
+
+        $user_id_array = $query->pluck('user_id');
+        $orders = $query->select(['id','user_id','product_id'])->get();
+
+        $users = User::select(['id','name','id_code'])->whereIn('id',$user_id_array)->get();
+        $userDict = [];
+        foreach ($users as $user) {
+            $userDict[$user->id] = $user;
+        }
+
+        foreach ($orders as $order) {
+            $order->name = $userDict[$order->user_id]['name'];
+            $order->id_code = $userDict[$order->user_id]['id_code'];
+        }
+
+        return view('location.receiveList',[
+            'location'=>$location,
+            'product'=>$product,
+            'orders'=>$orders,
+            'userDict'=>$userDict,
+            'pagination'=>$p,
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.

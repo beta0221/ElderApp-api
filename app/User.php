@@ -409,11 +409,16 @@ class User extends Authenticatable implements JWTSubject
                 $_user2->update_wallet_with_trans(User::INCREASE_WALLET,200,$event);
             }
         }
-
         if($group->lv_3){
             if($_user3 = User::find($group->lv_3)){
                 $event = "大天使推薦獎勵:" . $this->name;
                 $_user3->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
+            }
+        }
+        if($group->lv_4){
+            if($_user4 = User::find($group->lv_4)){
+                $event = "守護天使推薦獎勵:" . $this->name;
+                $_user4->update_wallet_with_trans(User::INCREASE_WALLET,50,$event);
             }
         }
 

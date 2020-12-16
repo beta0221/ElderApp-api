@@ -107,7 +107,7 @@ class OrderDetailController extends Controller
 
         // $id,$user_id,$product_id,$location_id
         $row = OrderDetail::where('id',$req->id)->where('user_id',$req->user_id)->where('product_id',$req->product_id)->where('location_id',$req->location_id)->firstOrFail();
-        $row->receive = true;
+        $row->receive = !$row->receive;
         $row->save();
         
         return response()->json('success');

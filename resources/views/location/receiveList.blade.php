@@ -21,26 +21,12 @@
         .top-bar .title{
             line-height: 80px;
             font-size: 24px;
-            color: teal;
+            color: orange;
             margin: 0 32px;
         }
         .name-list-outter .top-bar .top-bar-button{
             position:absolute;
             left:0;
-            top: 0;
-            width:120px;
-            height: 80px;
-            text-align: center;
-            line-height: 80px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #fff;
-            text-decoration: none;
-            z-index: 1;
-        }
-        .name-list-outter .top-bar .top-bar-right-button{
-            position:absolute;
-            right:0;
             top: 0;
             width:120px;
             height: 80px;
@@ -59,7 +45,7 @@
             padding: 12px;
             font-size: 24px;
             border-radius: .3rem;
-            background-color: teal;
+            background-color: orange;
             margin-bottom: 12px;
             color: #fff;
         }
@@ -71,7 +57,7 @@
             cursor: pointer;
             padding:4px 12px;
             background-color: #fff;
-            color: teal;
+            color: orange;
             border-radius: .3rem;
         }
         .isReceived{
@@ -94,29 +80,38 @@
             background-color: #fff;
         }
     </style>
+    @include('location.pagination_style')
 @endsection
 
 @section('content')
+    
 <div class="name-list-outter">
     <div class="top-bar">
-        <a class="top-bar-button" href="{{route('productList',['location_slug'=>$location->slug])}}">＜Back</a>
-        <div class="title">{{$product->name}}</div>
-        <a class="top-bar-right-button" href="{{route('receiveList',['location_slug'=>$location->slug,'product_slug'=>$product->slug])}}">領取紀錄</a>
+        <a class="top-bar-button" href="{{route('orderList',['location_slug'=>$location->slug,'product_slug'=>$product->slug])}}">＜Back</a>
+        <div class="title">領取紀錄-{{$product->name}}</div>
     </div>
 
-    <div style="padding: 8px 12px 0 12px;">
+    {{-- <div style="padding: 8px 12px 0 12px;">
         <input id="search-input" type="text" style="width:100%;height:40px;padding:0 4px" placeholder="姓名">
-    </div>
-    <div style="padding: 0 12px;color:gray;margin-top:8px">Total：{{$total}}</div>
+    </div> --}}
+
+    
 
     <div class="name-list">
+
+    @include('location.pagination',[
+        'totalPage'=>$pagination->totalPage,
+        'page'=>$pagination->page,
+        'url'=>Request::url(),
+    ])
+
     @if (count($orders) == 0)
-        <div id='no-order' class='name-cell'>目前無人兌換</div>
+        <div id='no-order' class='name-cell'>目前無人領取</div>
     @else
         @foreach ($orders as $order)
         <div class='name-cell' data-name="{{$order->name}}">
             <span>{{$order->name}} (編號:{{$order->id_code}}) </span>
-            <div order_id="{{$order->id}}" user_id="{{$order->user_id}}" product_id="{{$order->product_id}}" class='check-btn'>領取</div>
+            <div order_id="{{$order->id}}" user_id="{{$order->user_id}}" product_id="{{$order->product_id}}" class='check-btn'>回復</div>
         </div>
         @endforeach
     @endif
@@ -136,17 +131,17 @@
             }
         });
     
-        $('#search-input').on('keyup touchend',function(){
-            var search_value = $(this).val();
-            $('.name-cell').each(function (index, item) { 
-                var name = $(item).data('name');
-                 if(name.includes(search_value)){
-                    $(item).show();
-                 }else{
-                    $(item).hide();
-                 }
-            });
-        });
+        // $('#search-input').on('keyup touchend',function(){
+        //     var search_value = $(this).val();
+        //     $('.name-cell').each(function (index, item) { 
+        //         var name = $(item).data('name');
+        //          if(name.includes(search_value)){
+        //             $(item).show();
+        //          }else{
+        //             $(item).hide();
+        //          }
+        //     });
+        // });
     
         $(document).on('click','.check-btn',function(){
     
@@ -165,9 +160,7 @@
                 },
                 dataType: "json",
                 success: (res)=> {
-                    $(this).addClass('isReceived');
-                    $(this).removeClass('check-btn');
-                    $(this).html('已領取');
+                    window.location.reload();
                 },
                 error: function (error) {
                     alert('錯誤');
