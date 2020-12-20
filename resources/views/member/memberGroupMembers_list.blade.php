@@ -58,11 +58,13 @@
 <body>
     <div class="container">
 
+        @if ($showTreeButton)
         <a href="/memberGroupMembers">
             <div class="mt-4 btn btn-primary btn-block">
                 顯示樹狀圖
             </div>
-        </a>
+        </a>    
+        @endif
         
         <h3 class="mt-2 mb-2">組織人員表</h3>
 

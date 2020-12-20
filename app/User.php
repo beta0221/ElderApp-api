@@ -312,7 +312,16 @@ class User extends Authenticatable implements JWTSubject
         $group_users = $query->orderBy('level','desc')->get();
 
         return $group_users;
+    }
 
+    /**
+     * 取得使用者等級以下的組織人員
+     */
+    public function getSubGroupUserRows(){
+        if(!$row = DB::table('user_group')->where('user_id',$this->id)->first()){ return []; }
+        $level = 'lv_' . $row->level;
+        $group_users = DB::table('user_group')->where($level,$row->user_id)->where('level','<',$row->level)->get();
+        return $group_users;
     }
 
     public function payHistory()
