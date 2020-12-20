@@ -32,7 +32,10 @@ Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
 Route::get('/member/welcome','MemberController@welcome');
 Route::get('/member_tree/{id_code}','MemberController@memberTree');
+
 Route::get('/memberGroupMembers','MemberController@memberGroupMembers');
+Route::get('/memberGroupMembers_list','MemberController@memberGroupMembers_list');
+
 Route::get('getGroupMemberDetail/{id}','MemberController@getMemberDetail')->middleware('JWT');
 Route::post('/removeMemberFromGroup','MemberController@removeMemberFromGroup');
 Route::get('/moveMemberPage/{user_id}','MemberController@moveMemberPage');

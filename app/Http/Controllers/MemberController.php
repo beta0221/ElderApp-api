@@ -29,11 +29,12 @@ class MemberController extends Controller
             'moveMember',
             'promoteLeader',
             'updateMemberLevel',
+            'memberGroupMembers_list',
             'memberGroupMembers',
             'getAllAssociation',
             'countGroup'
         ]]);
-        $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers']]);
+        $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers','memberGroupMembers_list']]);
     }
 
     //管理後台的搜尋會員請求
@@ -775,14 +776,35 @@ class MemberController extends Controller
         ]);
 
     }
+
+    public function memberGroupMembers_list(Request $request){
+        $user = User::web_user();
+        if($user->org_rank < 2){ return '權限不足'; }
+
+        $group_users = $user->getGroupUserRows();
+        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }
+
+        $all_user_id_array = [];
+        foreach ($group_users as $g_user) {
+            $all_user_id_array[] = $g_user->user_id;
+        }
+
+        $all_users = User::whereIn('id',$all_user_id_array)->orderBy('org_rank','desc')->get();
+
+        return view('member.memberGroupMembers_list',[
+            'users'=>$all_users
+        ]);
+
+    }
+
     public function memberGroupMembers(Request $request){
 
         $user = User::web_user();
         if($request->has('token')){ Cookie::queue('token',$request->token); }
-        if($user->org_rank < 3){ return '權限不足'; }
+        if($user->org_rank < 2){ return '權限不足'; }
         
         $group_users = $user->getGroupUserRows();
-        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }        
+        if(count($group_users)<=0){ return response('使用者並無所屬組織。'); }
 
         $all_user_id_array = [];
         foreach ($group_users as $g_user) {
