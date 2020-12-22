@@ -60,6 +60,7 @@
       <div class="data-row">
         <span>推薦人</span>
         <input type="text" v-model="user.inviter" :disabled="isReadMode" />
+        <v-btn style="margin-left:0" @click="editInviter">編輯推薦人</v-btn>
       </div>
 
       <div class="data-row">
@@ -167,6 +168,9 @@ export default {
     editMode() {
       this.isReadMode = false;
       this.user_temp = JSON.parse(JSON.stringify(this.user));
+    },
+    editInviter(){
+      EventBus.$emit("showInviterPanel",this.user);
     },
     cancelEditMode(){
       this.isReadMode = true;

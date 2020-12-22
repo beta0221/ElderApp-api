@@ -39,6 +39,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('getMemberDetail/{id}','MemberController@getMemberDetail');
     Route::post('toValid','MemberController@toValid')->middleware('role:accountant');
     Route::post('addGroupMember','MemberController@addGroupMember');
+    Route::post('updateInviter','MemberController@updateInviter');
     
     Route::get('getUserLevel/{user_id}','MemberController@getUserLevel');
     Route::post('updateMemberAccount','MemberController@updateMemberAccount');

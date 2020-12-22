@@ -4,6 +4,7 @@
     <member-detail></member-detail>
     <member-tree></member-tree>
     <send-money-panel></send-money-panel>
+    <InviterPanel></InviterPanel>
 
     <div>
       
@@ -109,11 +110,13 @@
 import MemberDetail from "./MemberDetail";
 import MemberTree from "./MemberTree";
 import SendMoneyPanel from "./SendMoneyPanel";
+import InviterPanel from "./Member/InviterPanel"
 export default {
   components:{
     MemberDetail,
     MemberTree,
     SendMoneyPanel,
+    InviterPanel,
   },
   data() {
     return {

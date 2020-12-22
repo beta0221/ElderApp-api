@@ -5,27 +5,7 @@
           {{ location.name }} 管理人員
         </v-card-title>
 
-      <div class="border fill" style="padding: 8px">
-        <input
-          class="search-bar"
-          type="text"
-          placeholder="搜尋"
-          v-model.lazy="search_text"
-          @change="searchUser"/>
-        <div class="devider"></div>
-        <div class="border search-box">
-          <div
-            class="member-cell"
-            v-for="user in searchList"
-            v-bind:key="user.id"
-            @click="selectUser(user.id)">
-            {{ user.name }} {{user.email}} <span :class="(user.valid==1)?'green--text':'red--text'">{{(user.valid==1)?'有效':'無效'}}</span>
-          </div>
-        </div>
-      </div>
-
-      
-
+      <UserSearchbox v-on:clickUser="selectUser"></UserSearchbox>
 
     <p style="margin-top:20px">管理人員</p>
     <div class="border search-box">
@@ -49,7 +29,12 @@
 </template>
 
 <script>
+import UserSearchbox from '../UserSearchbox'
+
 export default {
+  components:{
+    UserSearchbox,
+  },
   created() {
     EventBus.$on("showLocationManagers", (location) => {
       this.showDialog = true;

@@ -913,6 +913,19 @@ class MemberController extends Controller
         ]);
     }
 
+    /**變更推薦人 */
+    public function updateInviter(Request $request){
+        if($request->user_id == $request->inviter_id){
+            return response('無法將推薦人設立為使用者本身',400);
+        }
+        $user = User::findOrFail($request->user_id);
+        $inviter = User::findOrFail($request->inviter_id);
+        $user->inviter_id = $inviter->id;
+        $user->inviter = $inviter->name;
+        $user->save();
+        return response('success');
+    }
+
     /**
      * 註冊完成 welcome page
      */
