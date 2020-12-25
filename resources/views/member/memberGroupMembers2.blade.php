@@ -75,7 +75,6 @@
             margin-top: .5rem !important;
             margin-bottom: .5rem !important;
             display: block;
-            width: 100%;
             color: #fff;
             background-color: #007bff;
             border-color: #007bff;
@@ -95,10 +94,27 @@
             border-radius: 0.25rem;
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+        .session-card{
+            font-size: 24px;
+            border-radius: .3rem;
+            position: fixed;
+            top: 8px;
+            right: 12px;
+            padding: 8px 16px;
+            z-index: 5;
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
+    @if(Session::has('error'))
+        <div style="background:orange" class="session-card">{{Session::get('error')}}</div>
+    @endif
+    @if(Session::has('success'))
+        <div style="background:limegreen" class="session-card">{{Session::get('success')}}</div>
+    @endif
+
 
     <div class="user-detail" style="display: none">
         <div class="user-detail-content">
@@ -106,6 +122,7 @@
                 
                 <p class="data-name"></p>
                 <hr>
+                <div class="primary-btn" onclick="moveMember()">移動組員</div>
                 <p>手機：</p>
                 <p class="p-data data-phone"></p>
                 <p>推薦人：</p>
@@ -123,7 +140,7 @@
     </div>
 
     <a href="/memberGroupMembers_list">
-        <div class="primary-btn">
+        <div class="primary-btn" style="width: 100%;">
             顯示列表
         </div>
     </a>
@@ -166,6 +183,7 @@
     
     var maxLevel;
     var hasSelected = {};
+    var detailUserId;
 
     $(document).ready(function(){
 
@@ -202,13 +220,23 @@
             }
         });
         
+        setTimeout(function(){ 
+            $('.session-card').remove();
+        }, 2000);
+        
     });
 
     function cancel(){
         $('.user-detail').hide();
     }
 
+    function moveMember(){
+        if(!detailUserId){ return; }
+        window.location.href = '/moveMemberPage/' + detailUserId + '?app=true';
+    }
+
     function showUserDetail(user_id){
+        detailUserId = user_id;
         $.ajax({
             type: "GET",
             url: "/getGroupMemberDetail/"+user_id,

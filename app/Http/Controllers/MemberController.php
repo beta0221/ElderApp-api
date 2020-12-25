@@ -32,7 +32,6 @@ class MemberController extends Controller
             'memberGroupMembers_list',
             'memberGroupMembers',
             'getAllAssociation',
-            'countGroup'
         ]]);
         $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers','memberGroupMembers_list']]);
     }
@@ -278,6 +277,7 @@ class MemberController extends Controller
         PayDate::create(['user_id'=>$request->id]);
 
         $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'續會獎勵');
+        //$user->rewardGroupForRenew();
 
         return response([
             's'=>1,
@@ -412,7 +412,7 @@ class MemberController extends Controller
     /**
      * 移動組織成員的操作頁面
      */
-    public function moveMemberPage($user_id){
+    public function moveMemberPage(Request $request,$user_id){
         if(!$user = User::find($user_id)){
             return response('no such user');
         }
@@ -431,6 +431,7 @@ class MemberController extends Controller
             'group_users'=>$group_users,
             'levelDict'=>json_encode($levelDict),
             'isLeader'=>$isLeader,
+            'app'=>$request->has('app'),
         ]);
     }
 
@@ -448,9 +449,14 @@ class MemberController extends Controller
             return response('no such user');
         }
 
+        $redirect = "member_tree/$user->id_code";
+        if($request->has('app')){
+            $redirect = "memberGroupMembers";
+        }
+
         if($user->isPrimaryLeaderOfGroup()){
             Session::flash('error', '無法將組織所有者移動');
-            return redirect("member_tree/$user->id_code");
+            return redirect($redirect);
         }
 
         $target = User::find($request->target_user_id);
@@ -460,16 +466,16 @@ class MemberController extends Controller
 
         if(!$result = $user->removeMemberFromGroup()){
             Session::flash('error', '系統錯誤');
-            return redirect("member_tree/$user->id_code");
+            return redirect($redirect);
         }
 
         if(!$result = $user->joinToGroup($request->target_user_id,$request->target_level)){
             Session::flash('error', '系統錯誤');
-            return redirect("member_tree/$user->id_code");
+            return redirect($redirect);
         }
         
         Session::flash('success', '完成');
-        return redirect("member_tree/$user->id_code");
+        return redirect($redirect);
     }
 
     /**
@@ -941,22 +947,6 @@ class MemberController extends Controller
         $page = ($request->page)?$request->page:1;
         $groupLeader = DB::table('user_group')->select('group_id')->groupBy('group_id')->get();
         return response()->json($groupLeader);
-    }
-
-    public function countGroup(Request $request){
-        
-        $user = User::find($request->leader_id);
-        $user_id_array = DB::table('user_group')->where('group_id',$request->leader_id)->pluck('user_id');
-        $count = User::whereIn('id',$user_id_array)->where('valid',1)->count();
-        // return response()->json([
-        //     '組長'=>$user->name,
-        //     '有效組員'=>$count,
-        // ]);
-
-        echo '組長:' .$user->name;
-        echo '<br>';
-        echo '有效組員:' .$count;
-
     }
     
 }
