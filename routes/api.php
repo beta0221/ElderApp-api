@@ -122,6 +122,9 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('/getLocationManagers/{slug}','LocationController@getLocationManagers');
     Route::post('/addManager/{slug}','LocationController@addManager');
     Route::post('/removeManager/{slug}','LocationController@removeManager');
+    Route::get('/location/{slug}/productList','LocationController@api_productList');
+    Route::post('/updateInventory','LocationController@updateInventory');
+    Route::get('/inventory/{location_id}/{product_id}','LocationController@getInventory');
     
     //App User
     Route::group(['prefix'=>'cart'],function(){

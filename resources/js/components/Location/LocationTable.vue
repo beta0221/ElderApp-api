@@ -3,6 +3,9 @@
   <div>
       <location-detail-modal v-on:completion="getDataList"></location-detail-modal>
       <LocationManagerModal></LocationManagerModal>
+      <ProductSelector></ProductSelector>
+      <InventoryPanel></InventoryPanel>
+
       <div>
         <v-btn color="success" @click="addNewLocation">新增據點</v-btn>
       </div>
@@ -37,6 +40,7 @@
                 <td>
                     <v-btn @click="openPanel(props.item.slug)">開啟後台</v-btn>
                     <v-btn color="info" @click="editLocation(props.item)">編輯</v-btn>
+                    <v-btn color="success" @click="manageInventory(props.item)">庫存管理</v-btn>
                 </td>
             </template>
 
@@ -49,11 +53,15 @@
 <script>
 import LocationDetailModal from "./LocationDetailModal";
 import LocationManagerModal from "./LocationManagerModal";
+import ProductSelector from "../Product/ProductSelector";
+import InventoryPanel from "./InventoryPanel";
 
 export default {
     components:{
         LocationDetailModal,
         LocationManagerModal,
+        ProductSelector,
+        InventoryPanel,
     },
     data(){
         return{
@@ -71,6 +79,7 @@ export default {
             loading: true,
             dataList:[],
             location:'',
+            inventory_location_id:null,
         }
     },
     watch:{
@@ -83,6 +92,9 @@ export default {
     created(){
         this.location = window.location.origin;
         User.authOnly();
+        EventBus.$on('selectProduct',product => {
+            this.showInventoryPanel(product.id);
+        });
     },
     methods:{
         getDataList(){
@@ -104,6 +116,17 @@ export default {
         },
         editLocation(location){
             EventBus.$emit('showLocationDetail',location);
+        },
+        manageInventory(location){
+            this.inventory_location_id = location.id;
+            let url = `/api/location/${location.slug}/productList`;
+            EventBus.$emit('showProductSelector',url);
+        },
+        showInventoryPanel(product_id){
+            EventBus.$emit('showInventoryPanel',{
+                'product_id':product_id,
+                'location_id':this.inventory_location_id,
+            });
         },
         addNewLocation(){
             EventBus.$emit('showLocationDetail');

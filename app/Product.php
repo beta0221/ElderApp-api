@@ -32,6 +32,10 @@ class Product extends Model
         return DB::table('product_location')->where('product_id',$this->id)->get();
     }
 
+    public function getQuantity($location_id){
+        return DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->first();
+    }
+
     public function updateQuantity($location_id,$quantity){
         DB::table('product_location')->where('product_id',$this->id)->where('location_id',(int)$location_id)->update([
             'quantity'=>(int)$quantity,

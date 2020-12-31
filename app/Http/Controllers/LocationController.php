@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\InventoryAction;
 use App\Helpers\Pagination;
+use App\Http\Resources\ProductDetailResource;
+use App\Inventory;
 use App\Location;
 use App\Order;
 use App\OrderDetail;
@@ -19,6 +22,7 @@ class LocationController extends Controller
         $this->middleware(['JWT','admin'],[
             'only'=>[
                 'locationList',
+                'api_productList',
             ]
         ]);
 
@@ -38,7 +42,7 @@ class LocationController extends Controller
         return response(Location::all(),200);
     }
 
-    /** X據點上架在兌換區的所有商品 */
+    /** X據點上架在兌換區的所有商品 view */
     public function view_productList($slug){
 
         if(!$location = Location::where('slug',$slug)->first()){
@@ -51,6 +55,17 @@ class LocationController extends Controller
             'location'=>$location,
             'products'=>$products,
         ]);
+    }
+
+    /** X據點上架在兌換區&商城的所有商品 api */
+    public function api_productList($slug){
+        if(!$location = Location::where('slug',$slug)->first()){
+            return abort(404);
+        }
+
+        $products = $location->products()->get();
+
+        return response($products);
     }
 
     /** X據點的Y商品兌換清單 */
@@ -371,4 +386,37 @@ class LocationController extends Controller
         return redirect("/view_locationOrderList/$slug");
     }
 
+
+    public function updateInventory(Request $request){
+        
+        $inventoryAction = new InventoryAction($request);
+        Inventory::updateInventory($inventoryAction);
+        
+        return response('success');
+
+    }
+
+    public function getInventory(Request $request,$location_id,$product_id){
+        $location = Location::findOrFail($location_id);
+        $product = Product::findOrFail($product_id);
+        if(!$quantityRow = $product->getQuantity($location_id)){ return response('error',500); }
+
+        $p = new Pagination($request);
+
+        $query = Inventory::where('location_id',$location_id)
+            ->where('product_id',$product_id);
+
+        $p->cacuTotalPage($query->count());
+
+        $inventoryLog = $query->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc)->get();
+
+        return response([
+            'location' => $location,
+            'product' => new ProductDetailResource($product),
+            'quantityRow' => $quantityRow,
+            'pagination'=> $p,
+            'inventoryLog' =>$inventoryLog,
+        ]);
+    }
+    
 }
