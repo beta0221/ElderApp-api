@@ -48,23 +48,24 @@ class Product extends Model
         ]);
     }
 
-    public function minusOneQuantity($location_id){
+    /**庫存是否足夠 */
+    public function isAvailable($location_id,$quantity,$target){
         if($row = DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->first()){
-            if($row->quantity <= 0){
-                return false;
+            
+            $inv_quantity = 0;
+            switch ($target) {
+                case Inventory::TARGET_GIFT:
+                    $inv_quantity = $row->quantity;
+                    break;
+                case Inventory::TARGET_CASH:
+                    $inv_quantity = $row->quantity_cash;
+                    break;
+                default:
+                    break;
             }
-            $q = $row->quantity -= 1;
-            DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->update(['quantity'=>$q]);
-            return true;
+            if($inv_quantity >= $quantity){ return true; }
         }
-        return false;
-    }
-    public function addOneQuantity($location_id){
-        if($row = DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->first()){
-            $q = $row->quantity += 1;
-            DB::table('product_location')->where('product_id',$this->id)->where('location_id',$location_id)->update(['quantity'=>$q]);
-            return true;
-        }
+
         return false;
     }
 

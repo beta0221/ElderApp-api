@@ -21,4 +21,18 @@ class InventoryAction{
         $this->comment = $request->comment;
     }
 
+    public static function getInstance($location_id,$product_id,$target,$action,$quantity,$comment){
+        $req = new Request();
+        $req->merge([
+            'location_id'=> $location_id,
+            'product_id'=> $product_id,
+            'target'=> $target,
+            'action'=> $action,
+            'quantity'=> $quantity,
+            'comment'=> $comment,
+        ]);
+        $inv = new static($req);
+        return $inv;
+    }
+
 }

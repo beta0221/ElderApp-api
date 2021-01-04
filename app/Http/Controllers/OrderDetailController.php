@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\InventoryAction;
 use App\Http\Resources\MyOrderCollection;
 use App\Http\Resources\ProductOrderCollection;
+use App\Inventory;
 use App\OrderDetail;
 use App\Product;
 use App\Location;
@@ -223,7 +225,8 @@ class OrderDetailController extends Controller
         }
 
         $product = Product::findOrFail($orderDetail->product_id);
-        $product->addOneQuantity($orderDetail->location_id);
+        $invAction = InventoryAction::getInstance($orderDetail->location_id,$product->id,Inventory::TARGET_GIFT,Inventory::ACTION_ADD,1,'系統-取消兌換訂單');
+        Inventory::updateInventory($invAction);
         
         $user = User::find($orderDetail->user_id);
         $user->update_wallet_with_trans(User::INCREASE_WALLET,$product->price,"取消兌換-" . $product->name);

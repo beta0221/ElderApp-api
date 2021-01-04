@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ImageResizer;
+use App\Helpers\InventoryAction;
 use App\Http\Resources\LocationQuantityCollection;
 use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductListResource;
@@ -13,6 +14,7 @@ use App\Location;
 use App\ProductCategory;
 use App\Transaction;
 use App\Helpers\Pagination;
+use App\Inventory;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -310,9 +312,11 @@ class ProductController extends Controller
         }
 
         //檢查產品庫存 if 足夠 => 扣庫存
-        if(!$product->minusOneQuantity($request->location_id)){
+        if(!$product->isAvailable($request->location_id,1,Inventory::TARGET_GIFT)){
             return response('非常抱歉，此據點目前庫存已兌換完畢。',400);
         }
+        $invAction = InventoryAction::getInstance($request->location_id,$product->id,Inventory::TARGET_GIFT,Inventory::ACTION_REMOVE,1,'系統-兌換商品');
+        Inventory::updateInventory($invAction);
 
         //user 扣款
         $user->updateWallet(false,$product->price);

@@ -135,10 +135,10 @@
             <input class="form-check-input radio_delivery_type" type="radio" name="delivery_type" id="delivery_type_0" value="0" checked>
             <label class="form-check-label ml-2" for="delivery_type_0">據點取貨(免運費)</label>
         </div>
-        <div class="form-check mb-3">
+        {{-- <div class="form-check mb-3">
             <input class="form-check-input radio_delivery_type" type="radio" name="delivery_type" id="delivery_type_1" value="1">
             <label class="form-check-label ml-2" for="delivery_type_1">宅配到我家</label>
-        </div>
+        </div> --}}
     </div>
     
 

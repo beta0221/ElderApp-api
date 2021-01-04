@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Cart;
+use App\Helpers\InventoryAction;
+use App\Inventory;
 use App\Order;
 use App\User;
 use App\OrderDelievery;
@@ -138,10 +140,12 @@ class CartController extends Controller
         $locationDict = json_decode($request->locationDict,true);
 
         if($request->delivery_type == '1'){
-            if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
-                Session::flash('message','系統錯誤');
-                return redirect()->route('cart_page');
-            }
+            Session::flash('message','目前暫不提供宅配服務');
+            return redirect()->route('cart_page');
+            // if(!$order_delievery_id = OrderDelievery::insert_row($user->id,$request)){
+            //     Session::flash('message','系統錯誤');
+            //     return redirect()->route('cart_page');
+            // }
         }else{
             foreach ($products as $product) {
                 if(!isset($locationDict[$product->id])){
@@ -153,7 +157,6 @@ class CartController extends Controller
 
         $total_point = 0;   //總共要花多少樂幣
         $order_numero_point_dict = [];
-        $product_new_stock = [];
         foreach ($products as $product) {
             if(!isset($quantityDict[$product->id])){ continue; }
             if(!isset($order_numero_point_dict[$product->firm_id])){ $order_numero_point_dict[$product->firm_id] = 0; }
@@ -169,8 +172,6 @@ class CartController extends Controller
                 Session::flash('message','目前 "' . $product->name . '" 在 "' . $location->name . '" 據點的庫存數量剩餘:' . $stock);
                 return redirect()->route('cart_page');
             }
-            //計算購買後剩餘的庫存
-            $product_new_stock[$product->id] = $stock - $point_cash_quantity;
 
             $point = (int)$point_cash_quantity * $product->pay_cash_point;
             $order_numero_point_dict[$product->firm_id] += $point;
@@ -195,15 +196,16 @@ class CartController extends Controller
                 $order_numero_dict[$product->firm_id] = rand(0,9) . time() . rand(0,9);
             }
             $order_numero = $order_numero_dict[$product->firm_id];
+            
             if($request->delivery_type == '1'){ //宅配
-                Order::insert_row($user->id,$order_delievery_id,null,$order_numero,$product,$cash_quantity,$point_cash_quantity);
+                // Order::insert_row($user->id,$order_delievery_id,null,$order_numero,$product,$cash_quantity,$point_cash_quantity);
             }else{  //據點
                 if(!isset($locationDict[$product->id])){ continue; }
                 $location_id = $locationDict[$product->id];
                 Order::insert_row($user->id,null,$location_id,$order_numero,$product,$cash_quantity,$point_cash_quantity);
 
-                $new_stock = $product_new_stock[$product->id];
-                $product->locations()->updateExistingPivot($location_id,['quantity_cash'=>$new_stock]);
+                $invAction = InventoryAction::getInstance($location_id,$product->id,Inventory::TARGET_CASH,Inventory::ACTION_REMOVE,$point_cash_quantity,'系統-商城購買商品');
+                Inventory::updateInventory($invAction);
 
             }
         }
