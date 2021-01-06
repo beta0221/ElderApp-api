@@ -49,14 +49,18 @@
         @endforeach
     </select><br><br>
 
-    <label for="">下階層職位：</label>
-    <select name="target_level" id="">
-        <option value="">選擇職位</option>
-        <option class="option-level option-level-4" value="4">守護天使</option>
-        <option class="option-level option-level-3" value="3">大天使</option>
-        <option class="option-level option-level-2" value="2">小天使</option>
-        <option class="option-level option-level-1" value="1">主人</option>
-    </select><br><br>
+    @if ($app)
+        <input type="hidden" name="target_level" value="1">
+    @else
+        <label for="">下階層職位：</label>
+        <select name="target_level" id="">
+            <option value="">選擇職位</option>
+            <option class="option-level option-level-4" value="4">守護天使</option>
+            <option class="option-level option-level-3" value="3">大天使</option>
+            <option class="option-level option-level-2" value="2">小天使</option>
+            <option class="option-level option-level-1" value="1">主人</option>
+        </select><br><br>
+    @endif
     <button type="submit">確定移動</button>
 </form>
 

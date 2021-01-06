@@ -70,30 +70,6 @@
             right: 12px;
             font-size: 24px;
         }
-        .primary-btn{
-            cursor: pointer;
-            margin-top: .5rem !important;
-            margin-bottom: .5rem !important;
-            display: block;
-            color: #fff;
-            background-color: #007bff;
-            border-color: #007bff;
-            display: inline-block;
-            font-weight: 400;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            border: 1px solid transparent;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: 0.25rem;
-            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        }
         .session-card{
             font-size: 24px;
             border-radius: .3rem;
@@ -103,6 +79,12 @@
             padding: 8px 16px;
             z-index: 5;
             color: #fff;
+        }
+        .switcher-selected{
+            display: block;background:#fff;margin:8px;border-radius: 3px;line-height:48px;text-decoration: none;color:gray
+        }
+        .switcher-unselected{
+            display: block;background:gray;margin:8px;border-radius: 3px;color:#fff;text-decoration: none;
         }
     </style>
 </head>
@@ -139,11 +121,16 @@
         </div>
     </div>
 
-    <a href="/memberGroupMembers_list">
-        <div class="primary-btn" style="width: 100%;">
-            顯示列表
+    <div style="background: gray;width:99.5%;text-align:center;border-radius: 3px">
+        <div style="display: inline-block;width:50%">
+            <a href="/memberGroupMembers_list" class="switcher-unselected">
+                顯示列表
+            </a>
+        </div><div style="display: inline-block;width:50%">
+            <span class="switcher-selected">顯示樹狀</span>
         </div>
-    </a>
+    </div>
+    
 
     <div>
         <div>

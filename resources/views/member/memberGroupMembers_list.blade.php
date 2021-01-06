@@ -45,6 +45,12 @@
         line-height: 32px;
         color: #000;
     }
+    .switcher-selected{
+        display: block;background:#fff;margin:8px;border-radius: 3px;line-height:48px;text-decoration: none;color:gray
+    }
+    .switcher-unselected{
+        display: block;background:gray;margin:8px;border-radius: 3px;color:#fff;
+    }
 </style>
 <?php
     $rank = [
@@ -59,11 +65,15 @@
     <div class="container">
 
         @if ($showTreeButton)
-        <a href="/memberGroupMembers">
-            <div class="mt-4 btn btn-primary btn-block">
-                顯示樹狀圖
+        <div class="mt-2" style="background: gray;width:99.5%;text-align:center;border-radius: 3px">
+            <div style="display: inline-block;width:50%">
+                <span class="switcher-selected">顯示列表</span>
+            </div><div style="display: inline-block;width:50%">
+                <a href="/memberGroupMembers" class="switcher-unselected">
+                    顯示樹狀
+                </a>
             </div>
-        </a>    
+        </div>    
         @endif
         
         <h3 class="mt-2 mb-2">組織人員表</h3>
