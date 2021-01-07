@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Cart;
 use App\Exports\OrderExport;
+use App\Exports\OrderExport_location;
+use App\Helpers\Pagination;
 use App\Location;
 use App\Order;
 use App\OrderDelievery;
@@ -26,14 +28,8 @@ class OrderController extends Controller
     //api route
 
     public function getOrders(Request $request){
-        $page = ($request->page)?$request->page:1;
-        $rows = ($request->rowsPerPage)?$request->rowsPerPage:15;
-        $skip = ($page - 1) * $rows;
-        $ascOrdesc = 'desc';
-        if ($request->descending == null || $request->descending == 'false') {
-            $ascOrdesc = 'asc';
-        }
-        // $orderBy = ($request->sortBy) ? $request->sortBy : 'id';
+        $p = new Pagination($request);
+        
         $column = ($request->column) ? $request->column : null;
         $value = (isset($request->value)) ? $request->value : null;
         // $blurSearch = ($request->blurSearch) ? true : false;
@@ -52,19 +48,11 @@ class OrderController extends Controller
             }
         }
         $total = $query->count();
-        $orders = $query->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $query->skip($p->skip)->take($p->rows)->orderBy('id',$p->ascOrdesc);
+        $user_id_array = $query->pluck('user_id');
+        $orders = $query->get();
 
-        $user_id_array = [];
-        foreach ($orders as $order) {
-            if(!in_array($order->user_id,$user_id_array)){$user_id_array[] = $order->user_id;}
-        }
-
-        $users = User::select(['id','name'])->whereIn('id',$user_id_array)->get();
-        $userDict = [];
-        foreach ($users as $user) {
-            $userDict[$user->id] = $user->name;
-        }
-
+        $userDict = User::getNameDictByIdArray($user_id_array);
         $orderList = Order::groupOrdersByNumero($orders);
 
         return response([
@@ -163,6 +151,31 @@ class OrderController extends Controller
     }
 
     //web route
+
+    public function excel_locationOrderExcel(Request $req){
+        
+        $location = Location::where('slug',$req->location_slug)->firstOrFail();
+        $fileName = '訂單資料-' . $location->name;
+        $query = Order::where('location_id',$location->id)
+            ->where('ship_status',Order::STATUS_CLOSE)
+            ->whereBetween('created_at',[date($req->from_date),date($req->to_date)]);
+
+        if($req->has('product_id')){
+            $product = Product::findOrFail($req->product_id);
+            $fileName .= '-' . $product->name;
+            $query->where('product_id',$req->product_id);
+        }
+            
+        $user_id_array = $query->pluck('user_id');
+        $orderList = $query->get();
+
+        if(!count($orderList)){ return response('此塞選條件查無資料。');}
+
+        $nameDict = User::getNameDictByIdArray($user_id_array);
+
+        return Excel::download(new OrderExport_location($orderList,$nameDict),$fileName .'.xlsx');
+
+    }
 
     public function excel_downloadOrderExcel(Request $request){
         $this->validate($request,[

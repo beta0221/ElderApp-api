@@ -1,6 +1,7 @@
 <template>
 <div>
     <order-detail></order-detail>
+    <OrderQueryPanel></OrderQueryPanel>
     <div>
         <v-btn color="info" @click="selectAll">
             全選
@@ -11,6 +12,7 @@
         <v-btn @click="groupExportExcel">
             匯出
         </v-btn>
+        
         <div style="display:inline-block;width:160px;margin-left:20px;">
             <v-select v-model="searchColumn" :items="columns" item-value="value" label="搜尋欄位"></v-select>
         </div>
@@ -30,6 +32,7 @@
             hide-details
             ></v-text-field>
         </div>
+        <v-btn @click="showOrderQueryPanel">多重條件匯出</v-btn>
     </div>
         <div>
             <v-data-table
@@ -74,10 +77,12 @@
 
 <script>
 import OrderDetail from "./OrderDetail";
+import OrderQueryPanel from "./Order/OrderQueryPanel"
 
 export default {
     components:{
         OrderDetail,
+        OrderQueryPanel
     },
     data(){
         return{
@@ -152,6 +157,9 @@ export default {
         this.getOrders();
     },
     methods:{
+        showOrderQueryPanel(){
+            EventBus.$emit('showOrderQueryPanel');
+        },
         showOrderDetail(order_numero){
             EventBus.$emit('showOrderDetail',order_numero);
         },

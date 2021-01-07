@@ -68,6 +68,7 @@ Route::group(['prefix'=>'cart'],function(){
 });
 
 Route::group(['prefix'=>'order'],function(){
+    Route::get('locationOrderExcel','OrderController@excel_locationOrderExcel');
     Route::get('downloadOrderExcel','OrderController@excel_downloadOrderExcel');
     Route::get('thankyou/{order_numero}','OrderController@view_thankyou');
     Route::get('detail/{order_numero}','OrderController@view_orderDetail');
