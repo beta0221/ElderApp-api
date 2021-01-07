@@ -40,5 +40,17 @@ class Location extends Model
     public function managers(){
         return $this->belongsToMany('App\User','location_manager','location_id','user_id');
     }
+
+    public function getProductQuantityDict(){
+        $rows = DB::table('product_location')->where('location_id',$this->id)->get();
+        $dict = [];
+        foreach ($rows as $row) {
+            $dict[$row->product_id] = [
+                'quantity'=>$row->quantity,
+                'quantity_cash'=>$row->quantity_cash,
+            ];
+        }
+        return $dict;
+    }
     
 }

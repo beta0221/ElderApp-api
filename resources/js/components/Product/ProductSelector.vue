@@ -7,7 +7,11 @@
             <div style="padding:8px">
                 <div v-for="product in productList" v-bind:key="product.id">
                     <div class="product-cell" @click="selectProduct(product)">
-                        {{product.name}}
+                        <span>{{product.name}}</span>
+                        <div style="float:right">
+                            <span v-if="product.quantity != 'undefinded'">兌換：{{product.quantity}}</span>
+                            <span v-if="product.quantity_cash != 'undefinded'">商城：{{product.quantity_cash}}</span>
+                        </div>
                     </div>
                 </div>
             </div>

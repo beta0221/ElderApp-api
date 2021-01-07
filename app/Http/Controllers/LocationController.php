@@ -63,7 +63,13 @@ class LocationController extends Controller
             return abort(404);
         }
 
+        $quantityDict = $location->getProductQuantityDict();
+
         $products = $location->products()->get();
+        foreach ($products as $product) {
+            $product->quantity = $quantityDict[$product->id]['quantity'];
+            $product->quantity_cash = $quantityDict[$product->id]['quantity_cash'];
+        }
 
         return response($products);
     }
