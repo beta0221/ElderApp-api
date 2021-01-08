@@ -42,13 +42,13 @@ class OrderController extends Controller
         
         if($column != null && $value != null){
             if($column == 'created_at'){
-                $query->whereDate($column,date('Y-m-d',strtotime($value)));
+                $query = $query->whereDate($column,date('Y-m-d',strtotime($value)));
             }else{
-                $query->where($column,$value);
+                $query = $query->where($column,$value);
             }
         }
         $total = $query->count();
-        $query->skip($p->skip)->take($p->rows)->orderBy('id',$p->ascOrdesc);
+        $query = $query->skip($p->skip)->take($p->rows)->orderBy('id',$p->ascOrdesc);
         $user_id_array = $query->pluck('user_id');
         $orders = $query->get();
 
