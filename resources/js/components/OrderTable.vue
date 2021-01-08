@@ -154,7 +154,6 @@ export default {
     },
     created(){
         User.authOnly();
-        this.getOrders();
     },
     methods:{
         showOrderQueryPanel(){
