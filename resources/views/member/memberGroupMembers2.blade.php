@@ -84,8 +84,33 @@
             display: block;background:#fff;margin:8px;border-radius: 3px;line-height:48px;text-decoration: none;color:gray
         }
         .switcher-unselected{
-            display: block;background:gray;margin:8px;border-radius: 3px;color:#fff;text-decoration: none;
+            display: block;background:#007bff;margin:8px;border-radius: 3px;color:#fff;text-decoration: none;
         }
+        .primary-btn{
+            cursor: pointer;
+            margin-top: .5rem !important;
+            margin-bottom: .5rem !important;
+            display: block;
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
     </style>
 </head>
 
@@ -121,7 +146,7 @@
         </div>
     </div>
 
-    <div style="background: gray;width:99.5%;text-align:center;border-radius: 3px">
+    <div style="background: #007bff;width:99.5%;text-align:center;border-radius: 3px">
         <div style="display: inline-block;width:50%">
             <a href="/memberGroupMembers_list" class="switcher-unselected">
                 顯示列表

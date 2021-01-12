@@ -49,7 +49,7 @@
         display: block;background:#fff;margin:8px;border-radius: 3px;line-height:48px;text-decoration: none;color:gray
     }
     .switcher-unselected{
-        display: block;background:gray;margin:8px;border-radius: 3px;color:#fff;
+        display: block;background:#007bff;margin:8px;border-radius: 3px;color:#fff;
     }
 </style>
 <?php
@@ -65,7 +65,7 @@
     <div class="container">
 
         @if ($showTreeButton)
-        <div class="mt-2" style="background: gray;width:99.5%;text-align:center;border-radius: 3px">
+        <div class="mt-2" style="background: #007bff;width:99.5%;text-align:center;border-radius: 3px">
             <div style="display: inline-block;width:50%">
                 <span class="switcher-selected">顯示列表</span>
             </div><div style="display: inline-block;width:50%">
