@@ -126,13 +126,17 @@
 </head>
 
 <body>
+    <div>
+        <button onclick="exportExcel()" style="color:#fff;background:#4caf50;padding:4px 8px;cursor:pointer;border-radius:.3rem">匯出excel</button>
+    </div>
+
     @if(Session::has('error'))
         <div style="background:orange" class="session-card">{{Session::get('error')}}</div>
     @endif
     @if(Session::has('success'))
         <div style="background:limegreen" class="session-card">{{Session::get('success')}}</div>
     @endif
-    <div style="margin-right:160px;">
+    <div style="margin-right:160px;margin-top:40px">
         <div id="tree">
             <div class="lv_5"></div>
             <div class="lv_4"></div>
@@ -301,6 +305,9 @@
         window.location.href = '/moveMemberPage/'+targetUserId;
     });
     
+    function exportExcel(){
+        window.open('/excel/memberGroupMembers?token='+localStorage.getItem('token') + '&user_id='+ UserId);
+    };
 </script>
 
 </html>

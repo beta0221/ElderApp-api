@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Association;
+use App\Exports\GroupMembers;
 use App\Helpers\Pagination;
 use Illuminate\Http\Request;
 use App\User;
@@ -12,6 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MemberController extends Controller
 {
@@ -781,6 +783,12 @@ class MemberController extends Controller
             'valid_dic'=>json_encode($validDic)
         ]);
 
+    }
+
+    public function excel_memberGroupMembers(Request $req){
+        $user = User::findOrFail($req->user_id);
+        $users = $user->getGroupUsers();
+        return Excel::download(new GroupMembers($users),$user->name . '_組織人員表.xlsx');
     }
 
     private function memberGroupMembers_sublist(User $user){
