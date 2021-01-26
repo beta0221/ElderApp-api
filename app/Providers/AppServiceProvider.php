@@ -11,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(UrlGenerator $url)
+    public function register()
     {
         if(config('app.env') == 'production'){
             \URL::forceScheme('https');
