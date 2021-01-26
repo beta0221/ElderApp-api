@@ -15,8 +15,8 @@ Route::get('/', function () {
     return view('admin');
 });
 
-Route::get('play',function(){
-    return view('playground');
+Route::get('/check',function(){
+    return response('alive');
 });
 
 
