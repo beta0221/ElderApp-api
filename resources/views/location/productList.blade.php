@@ -65,10 +65,11 @@
 <body>
     <div class="outter">
         <div class="product-list">
+            <?php $static_host = config('app.static_host'); ?>
             @foreach($products as $product)
             <div class="product-btn" onclick="location.href='{{route('orderList',['location_slug'=>$location->slug,'product_slug'=>$product->slug])}}'">
                 <span>
-                    <img src="/images/products/{{$product->slug}}/{{$product->img}}">
+                    <img src="{{$static_host}}/products/{{$product->slug}}/{{$product->img}}">
                 </span>
                 <span>
                     {{$product->name}}
