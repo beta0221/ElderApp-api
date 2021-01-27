@@ -56,32 +56,32 @@ jQuery(function(){
 })
 
 function updateCurrentDay(day){
-    if(parseInt(day) <= maxDays){
-        return
-    }
-    if(confirm('確認是否開啟第'+day+'堂課')){
-        $.ajax({
-            type: "POST",
-            url: "/api/updateEventCurrentDay/"+ slug,
-            data: {
-                'upToDay':day,
-            },
-            dataType: "json",
-            headers:{
-                'Authorization':token
-            },
-            success: function (response) {
-                if(response.s==1){
-                    window.location.reload();
-                }else{
-                    alert(response.m);
-                }
-            },
-            error:function(error){
-                alert(error);
+    if(parseInt(day) <= maxDays){ return; }
+    // if(!confirm('確認是否開啟第'+day+'堂課')){ return; }
+
+    $.ajax({
+        type: "POST",
+        url: "/api/updateEventCurrentDay/"+ slug,
+        data: {
+            'upToDay':day,
+        },
+        dataType: "json",
+        headers:{
+            'Authorization':token
+        },
+        success: function (response) {
+            if(response.s==1){
+                window.location.reload();
+            }else{
+                alert(response.m);
             }
-        });
-    }
+        },
+        error:function(error){
+            alert(error);
+        }
+    });
+
+
 }
 
 

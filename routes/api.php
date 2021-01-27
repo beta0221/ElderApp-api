@@ -87,8 +87,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::apiresource('event','EventController');
     Route::get('eventguests/{slug}','EventController@EventGuests');
     Route::get('getRewardLevel','EventController@getRewardLevel');
-    Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay')->middleware('BCP');
-    Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus')->middleware('BCP');
+    Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay');
+    Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus');
     
     //交易
     Route::post('transaction','TransactionController@transaction');
