@@ -15,6 +15,7 @@ use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cookie;
 
 class EventController extends Controller
 {
@@ -22,6 +23,7 @@ class EventController extends Controller
     {
         $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
         $this->middleware(['JWT'],['only'=>['myEventList','eventDetail','drawEventRewardV2']]);
+        $this->middleware(['webAuth','role:teacher'], ['only' => ['view_myCourse']]);
     }
 
     /**
@@ -890,6 +892,20 @@ class EventController extends Controller
         $districts = DB::table('districts')->get();
 
         return response()->json($districts);
+    }
+
+    public function view_myCourse(Request $request){
+        if($request->token){
+            Cookie::queue('token',$request->token,60);
+        }
+        $user = $request->user();
+
+        $eventList = Event::where('owner_id',$user->id)->get();
+        return view('event.eventList',[
+            'user'=>$user,
+            'eventList'=>$eventList,
+        ]);
+        
     }
 
 }

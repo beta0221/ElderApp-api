@@ -621,6 +621,8 @@ class MemberController extends Controller
 
         if($user->hasRole('location_manager')){
             $user->locationUrl = '/view_myLocation';
+        }else if($user->hasRole('teacher')){
+            $user->locationUrl = '/view_myCourse';
         }
 
         return response()->json($user);
