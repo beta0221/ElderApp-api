@@ -35,6 +35,9 @@ export default {
             this.getProductList(url);
         });
     },
+    destroyed(){
+        EventBus.$off('showProductSelector');
+    },
     data() {
         return {
             dialog: false,

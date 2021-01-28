@@ -74,6 +74,9 @@
 
 <script>
 export default {
+    destroyed(){
+        EventBus.$off('showMemberTree');
+    },
     created(){
         EventBus.$on("showMemberTree",user=>{
             this.group_tree_dialog = true;

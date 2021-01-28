@@ -96,6 +96,9 @@ export default {
             this.showInventoryPanel(product.id);
         });
     },
+    destroyed(){
+        EventBus.$off('selectProduct');
+    },
     methods:{
         getDataList(){
             this.loading = true;

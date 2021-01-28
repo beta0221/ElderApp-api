@@ -42,6 +42,9 @@ export default {
       this.getLocationManagers();
     });
   },
+  destroyed(){
+    EventBus.$off('showLocationManagers');
+  },
   data() {
     return {
       showDialog: false,

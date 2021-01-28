@@ -31,6 +31,9 @@ export default {
             this.user = user;
         });
     },
+    destroyed(){
+        EventBus.$off('showInviterPanel');
+    },
     data() {
         return {
             user:{},

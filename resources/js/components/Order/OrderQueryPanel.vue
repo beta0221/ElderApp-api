@@ -40,6 +40,9 @@ export default {
             this.dialog = true;
         });
     },
+    destroyed(){
+        EventBus.$off('showOrderQueryPanel');
+    },
     data() {
         return {
             dialog: false,

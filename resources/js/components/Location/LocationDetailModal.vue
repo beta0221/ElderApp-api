@@ -32,6 +32,9 @@
 
 <script>
 export default {
+  destroyed(){
+    EventBus.$off('showLocationDetail');
+  },
   created() {
     EventBus.$on("showLocationDetail", (location) => {
       this.showDialog = true;

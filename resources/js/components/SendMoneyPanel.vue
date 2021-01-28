@@ -45,6 +45,9 @@ export default {
   components:{
     SimplePagination,
   },
+  destroyed(){
+    EventBus.$off('showSendMoneyPanel');
+  },
   created() {
     EventBus.$on("showSendMoneyPanel", user => {
       this.dialog = true;

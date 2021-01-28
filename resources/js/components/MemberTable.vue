@@ -235,6 +235,9 @@ export default {
       }
     }
   },
+  destroyed(){
+    EventBus.$off('updateMemberSuccess');
+  },
   created() {
     this.search();
     User.authOnly();

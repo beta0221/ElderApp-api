@@ -109,7 +109,9 @@
 
 <script>
 export default {
-  
+  destroyed(){
+    EventBus.$off('showMemberDetail');
+  },
   created() {
     EventBus.$on("showMemberDetail", user => {
       this.dialog = true;

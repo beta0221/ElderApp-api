@@ -54,6 +54,9 @@
 
 <script>
 export default {
+    destroyed(){
+        EventBus.$off('showOrderDetail');
+    },
     created(){
         EventBus.$on("showOrderDetail", order_numero => {
             this.order_numero = order_numero;

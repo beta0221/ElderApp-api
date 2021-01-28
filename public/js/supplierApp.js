@@ -11788,6 +11788,9 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     SimplePagination: _simplePagination__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  destroyed: function destroyed() {
+    EventBus.$off('showProductOrderListPanel');
+  },
   created: function created() {
     var _this = this;
 

@@ -68,6 +68,9 @@ export default {
     components:{
         SimplePagination,
     },
+    destroyed(){
+        EventBus.$off('showInventoryPanel');
+    },
     created() {
         EventBus.$on("showInventoryPanel", data => {
             this.dialog = true;
