@@ -37,7 +37,7 @@
 
         @if($event->event_type == 2)
         <div>
-            <span>目前進度：</span><span>（{{$event->current_day}}/{{$event->current_day}}）</span>
+            <span>目前進度：</span><span>（{{$event->current_day}}/{{$event->days}}）</span>
         </div>
         @endif
         <hr>
