@@ -57,7 +57,7 @@ export default {
     destroyed(){
         EventBus.$off('showOrderDetail');
     },
-    created(){
+    mounted(){
         EventBus.$on("showOrderDetail", order_numero => {
             this.order_numero = order_numero;
             this.dialog = true;

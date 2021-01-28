@@ -71,7 +71,7 @@ export default {
     destroyed(){
         EventBus.$off('showInventoryPanel');
     },
-    created() {
+    mounted() {
         EventBus.$on("showInventoryPanel", data => {
             this.dialog = true;
             this.product_id = data.product_id;

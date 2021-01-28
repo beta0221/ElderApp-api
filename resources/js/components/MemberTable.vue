@@ -238,13 +238,14 @@ export default {
   destroyed(){
     EventBus.$off('updateMemberSuccess');
   },
+  mounted(){
+    EventBus.$on("updateMemberSuccess", user => {
+      this.search();
+    });
+  },
   created() {
     this.search();
     User.authOnly();
-    EventBus.$on("updateMemberSuccess", user => {
-      // this.$set(this.desserts,this.editingIndex,user);
-      this.search();
-    });
   },
   methods: {
     searchByColumn(){

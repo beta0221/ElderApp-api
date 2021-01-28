@@ -39,7 +39,7 @@ export default {
   destroyed(){
     EventBus.$off('showProductOrderListPanel');
   },
-  created() {
+  mounted() {
     EventBus.$on("showProductOrderListPanel", product => {
         this.dialog = true;
         this.product = product;

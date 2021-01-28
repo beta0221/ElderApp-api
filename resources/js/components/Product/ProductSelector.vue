@@ -28,7 +28,7 @@
 
 <script>
 export default {
-    created() {
+    mounted() {
         EventBus.$on("showProductSelector",url => {
             this.dialog = true;
             this.productList = [];

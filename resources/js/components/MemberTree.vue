@@ -77,7 +77,7 @@ export default {
     destroyed(){
         EventBus.$off('showMemberTree');
     },
-    created(){
+    mounted(){
         EventBus.$on("showMemberTree",user=>{
             this.group_tree_dialog = true;
             this.tree_src = '/member_tree/'+user.id_code;

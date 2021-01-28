@@ -25,7 +25,7 @@ export default {
     components:{
         UserSearchbox,
     },
-    created() {
+    mounted() {
         EventBus.$on("showInviterPanel", user => {
             this.dialog = true;
             this.user = user;

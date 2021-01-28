@@ -112,7 +112,7 @@ export default {
   destroyed(){
     EventBus.$off('showMemberDetail');
   },
-  created() {
+  mounted() {
     EventBus.$on("showMemberDetail", user => {
       this.dialog = true;
       this.getMemberDetail(user.id);

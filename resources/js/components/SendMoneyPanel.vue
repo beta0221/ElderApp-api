@@ -48,7 +48,7 @@ export default {
   destroyed(){
     EventBus.$off('showSendMoneyPanel');
   },
-  created() {
+  mounted() {
     EventBus.$on("showSendMoneyPanel", user => {
       this.dialog = true;
       this.user = user;

@@ -92,6 +92,8 @@ export default {
     created(){
         this.location = window.location.origin;
         User.authOnly();
+    },
+    mounted(){
         EventBus.$on('selectProduct',product => {
             this.showInventoryPanel(product.id);
         });

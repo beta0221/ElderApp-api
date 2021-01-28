@@ -35,7 +35,7 @@ export default {
   components:{
     UserSearchbox,
   },
-  created() {
+  mounted() {
     EventBus.$on("showLocationManagers", (location) => {
       this.showDialog = true;
       this.location = location;

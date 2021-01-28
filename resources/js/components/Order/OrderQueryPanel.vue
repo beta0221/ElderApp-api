@@ -34,7 +34,7 @@ export default {
     components:{
         
     },
-    created() {
+    mounted() {
         EventBus.$on("showOrderQueryPanel", () => {
             this.getLocations();
             this.dialog = true;
