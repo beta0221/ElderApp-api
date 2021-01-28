@@ -26,12 +26,21 @@
     
     @foreach ($eventList as $event)
     <div style="border:1px solid gray;padding:4px 8px;border-radius:.2rem;margin-bottom:8px">
-        <div style="font-size: 24px">{{$event->title}}</div>
+        <div style="font-size: 26px">{{$event->title}}</div>
         <div>
-            <span>狀態:</span>
-            <span style="color:{{($event->public)?'forestgreen':'gray'}}">{{($event->public)?'上架中':'已下架'}}</span>
+            <span style="color:gray">{{$event->created_at}}</span>
         </div>
+        <div>
+            <span>目前人數：</span><span>（{{$event->people}}/{{$event->maximum}}）</span>
+        </div>
+        
 
+        @if($event->event_type == 2)
+        <div>
+            <span>目前進度：</span><span>（{{$event->current_day}}/{{$event->current_day}}）</span>
+        </div>
+        @endif
+        <hr>
 
         @if ($event->public)
         <div class="btn bg-b" onclick="updateEventStatus({{$event->id}},0)">上架中</div>
