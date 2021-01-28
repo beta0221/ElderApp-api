@@ -34,9 +34,9 @@
 
 
         @if ($event->public)
-        <div class="btn bg-r" onclick="updateEventStatus({{$event->id}},0)">下架</div>
+        <div class="btn bg-b" onclick="updateEventStatus({{$event->id}},0)">上架中</div>
         @else
-        <div class="btn bg-b" onclick="updateEventStatus({{$event->id}},1)">上架</div>
+        <div class="btn bg-r" onclick="updateEventStatus({{$event->id}},1)">下架中</div>
         @endif
         
         

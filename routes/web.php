@@ -28,7 +28,7 @@ Route::get('view_me','AuthController@view_me');
 
 Route::get('event_reward_qrcode/{slug}','EventController@rewardQrCode');
 //老師管理後台
-Route::get('/view_myCourse','EventController@view_myCourse')->middleware('BCP');
+Route::get('/view_myCourse','EventController@view_myCourse');
 
 Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');

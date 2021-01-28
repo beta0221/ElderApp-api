@@ -900,7 +900,7 @@ class EventController extends Controller
         }
         $user = $request->user();
 
-        $eventList = Event::where('owner_id',$user->id)->get();
+        $eventList = Event::where('owner_id',$user->id)->orderBy('id','desc')->get();
         return view('event.eventList',[
             'user'=>$user,
             'eventList'=>$eventList,
