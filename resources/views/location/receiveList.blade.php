@@ -102,7 +102,7 @@
     @include('location.pagination',[
         'totalPage'=>$pagination->totalPage,
         'page'=>$pagination->page,
-        'url'=>Request::url(),
+        'url'=>'/receive-list/location/' . $location->slug . '/' . $product->slug,
     ])
 
     @if (count($orders) == 0)
