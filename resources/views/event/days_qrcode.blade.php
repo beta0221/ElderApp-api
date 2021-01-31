@@ -46,7 +46,7 @@
                 </div>
                 
                 @for($x = 1; $x <= $event->days;$x++)
-                    <div onclick="confirmUpdateCurrentDay({{$x}})" class="btn btn-lg btn-info d-block mb-2 {{($event->current_day>=$x)?'disabled':''}}">第 {{$x}} 堂課</div>
+                    <div onclick="confirmUpdateCurrentDay({{$x}})" class="btn btn-lg d-block mb-2 {{($event->current_day>=$x)?'disabled btn-secondary':'btn-info'}}">第 {{$x}} 堂課</div>
                 @endfor
             </div>
         </div>
@@ -87,7 +87,7 @@
 
 const maxDays = parseInt('{!!$event->current_day!!}');
 const slug = '{!!$event->slug!!}';
-const token = `Bearer ${localStorage.getItem('token')}`;
+//const token = `Bearer ${localStorage.getItem('token')}`;
 
 jQuery(function(){
     jQuery('#reward').qrcode("reward,{{$event->slug}}");
@@ -119,9 +119,9 @@ function updateCurrentDay(){
             'upToDay':updateDay,
         },
         dataType: "json",
-        headers:{
-            'Authorization':token
-        },
+        // headers:{
+        //     'Authorization':token
+        // },
         success: function (response) {
             if(response.s==1){
                 window.location.reload();
