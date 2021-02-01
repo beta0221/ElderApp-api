@@ -1,0 +1,15 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "V4C8JA4SFU.com.fullygarden.ElderAppiOS",
+                "paths": [
+                    "/app/post/*",
+		    "/app/event/*",
+		    "/app/product/*",
+                ]
+            }
+        ]
+    }
+}

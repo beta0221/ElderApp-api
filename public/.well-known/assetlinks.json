@@ -1,0 +1,9 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.elderApp.ElderApp",
+      "sha256_cert_fingerprints":
+      ["2A:C0:9A:45:6C:F1:D6:89:8C:A5:57:DB:72:C1:01:E8:EF:F2:5E:5A:71:AE:38:FE:F8:2F:88:31:97:86:1C:39"]
+    }
+  }]
