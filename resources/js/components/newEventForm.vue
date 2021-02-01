@@ -90,8 +90,8 @@
         </div>
 
         <v-col cols="12" sm="6" md="3">
-          <!-- <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor> -->
-          <markdown-editor v-model="form.body"></markdown-editor>
+          <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
+          <!-- <markdown-editor v-model="form.body"></markdown-editor> -->
         </v-col>
 
         <v-col cols="12" sm="6" md="3">

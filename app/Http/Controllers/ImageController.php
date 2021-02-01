@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\UploadEventBodyImageLog;
+use App\UploadProductInfoImageLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -47,6 +49,17 @@ class ImageController extends Controller
         }
 
         $imgUrl = config('app.static_host') . $filePath;
+
+        switch ($type) {
+            case 'eventContent':
+                UploadEventBodyImageLog::log($slug,$imgUrl,$filePath);
+                break;
+            case 'productContent':
+                UploadProductInfoImageLog::log($slug,$imgUrl,$filePath);
+                break;
+            default:
+                break;
+        }
 
         return response([
             'url'=>$imgUrl,
