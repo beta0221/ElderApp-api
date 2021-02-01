@@ -1,9 +1,25 @@
 [{
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.elderApp.ElderApp",
-      "sha256_cert_fingerprints":
-      ["13:D0:17:B3:E8:C2:5C:64:8D:00:57:0B:3D:A3:FB:86:FB:33:A2:C2:C7:5B:88:76:0A:22:D6:55:13:A3:C8:99"]
-    }
-  }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.elderApp.ElderApp",
+    "sha256_cert_fingerprints":
+    ["63:D1:85:96:F0:0B:65:CC:A2:61:0E:DB:E5:33:7F:C1:C7:93:F0:C2:54:71:99:30:2A:C4:CF:C8:AA:D5:2E:B8"]
+  }
+},
+{
+  "relation": ["delegate_permission/common.get_login_creds"],
+  "target": {
+    "namespace": "web",
+    "site": "https://app.happybi.com.tw"
+  }
+},
+{
+  "relation": ["delegate_permission/common.get_login_creds"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.elderApp.ElderApp",
+    "sha256_cert_fingerprints":
+    ["63:D1:85:96:F0:0B:65:CC:A2:61:0E:DB:E5:33:7F:C1:C7:93:F0:C2:54:71:99:30:2A:C4:CF:C8:AA:D5:2E:B8"]
+  }
+}]
