@@ -24,6 +24,10 @@ class Event extends Model
         return $this->belongsTo('App\Category');
     }
 
+    public function managers(){
+        return $this->belongsToMany('App\User','event_manager','event_id','user_id');
+    }
+
     public function numberOfPeople(){
         return DB::table('event_users')->where('event_id',$this->id)->count();
     }

@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="showDialog" max-width="480px">
     <v-card id="member-detail-dialog" style="padding: 0 12px">
-      <v-card-title v-if="location.name != 'undefinded'" class="headline">
-          {{ location.name }} 管理人員
+      <v-card-title v-if="name != 'undefinded'" class="headline">
+          {{ name }} 管理人員
         </v-card-title>
 
       <UserSearchbox v-on:clickUser="selectUser"></UserSearchbox>
@@ -32,13 +32,15 @@
 import UserSearchbox from '../UserSearchbox'
 
 export default {
+  props:['getUrl','postUrl','deleteUrl'],
   components:{
     UserSearchbox,
   },
   mounted() {
-    EventBus.$on("showLocationManagers", (location) => {
+    EventBus.$on("showLocationManagers", (data) => {
       this.showDialog = true;
-      this.location = location;
+      this.name = data.name;
+      this.slug = data.slug;
       this.getLocationManagers();
     });
   },
@@ -48,7 +50,8 @@ export default {
   data() {
     return {
       showDialog: false,
-      location: {},
+      name:'',
+      slug:'',
       managerList: [],
       searchList: [],
       search_text: "",
@@ -73,7 +76,7 @@ export default {
     },
     getLocationManagers() {
       axios
-        .get(`/api/getLocationManagers/${this.location.slug}`)
+        .get(`${this.getUrl}${this.slug}`)
         .then((res) => {
           this.managerList = res.data;
         })
@@ -82,7 +85,7 @@ export default {
         });
     },
     selectUser(user_id){
-        axios.post(`/api/addManager/${this.location.slug}`, {
+        axios.post(`${this.postUrl}${this.slug}`, {
             user_id:user_id   
         })
         .then((res) => {
@@ -93,7 +96,7 @@ export default {
         });
     },
     removeUser(user_id){
-        axios.post(`/api/removeManager/${this.location.slug}`, {
+        axios.post(`${this.deleteUrl}${this.slug}`, {
             user_id:user_id   
         })
         .then((res) => {

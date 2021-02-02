@@ -18,6 +18,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <LocationManagerModal :getUrl="'/api/event/getEventManagers/'" :postUrl="'/api/event/addManager/'" :deleteUrl="'/api/event/removeManager/'"></LocationManagerModal>
   </div>
   <!-- table -->
   <div>
@@ -51,6 +53,7 @@
           <v-icon @click="showEventMembers(props.item.slug,props.item.title)">account_circle</v-icon>
         </td>
         <td>
+          <v-btn color="success" @click="editManager(props.item)">管理員</v-btn>
           <v-btn color="info" @click="editEvent(props.item.slug)">編輯</v-btn>
         </td>
       </template>
@@ -63,9 +66,11 @@
 
 <script>
 import MemberDetail from "./MemberDetail";
+import LocationManagerModal from "./Location/LocationManagerModal";
 export default {
   components:{
     MemberDetail,
+    LocationManagerModal,
   },
   data() {
     return {
@@ -141,6 +146,9 @@ export default {
       .catch(err => {
         console.error(err); 
       })
+    },
+    editManager(event){
+      EventBus.$emit('showLocationManagers',{'name':event.title,'slug':event.slug});
     },
     editEvent(id){
       this.$router.push({path:'/editEvent/'+id})

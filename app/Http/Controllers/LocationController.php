@@ -282,7 +282,9 @@ class LocationController extends Controller
             return response('error',400);
         }
 
-        $location->managers()->attach($user->id);
+        if(!$manager = $location->managers()->find($user->id)){
+            $location->managers()->attach($user->id);
+        }
 
         return response('success');
     }

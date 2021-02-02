@@ -21,9 +21,9 @@ class EventController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel']]);
+        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel','getEventManagers','addManager','removeManager']]);
         $this->middleware(['JWT'],['only'=>['myEventList','eventDetail','drawEventRewardV2']]);
-        $this->middleware(['webAuth','role:teacher'], ['only' => ['view_myCourse']]);
+        $this->middleware(['webAuth'], ['only' => ['view_myCourse']]);
     }
 
     /**
@@ -901,11 +901,46 @@ class EventController extends Controller
         $user = $request->user();
 
         $eventList = Event::where('owner_id',$user->id)->orderBy('id','desc')->get();
+        $dict = [];
+        foreach ($eventList as $event) { $dict[$event->id] = true; }
+
+        //manage events
+        $manage_eventList = $user->manage_events()->get();
+        foreach ($manage_eventList as $event) {
+            if(!isset($dict[$event->id])){
+                $eventList[] = $event;
+            }
+        }
+
         return view('event.eventList',[
             'user'=>$user,
             'eventList'=>$eventList,
         ]);
         
+    }
+
+    //----------------managers-----------------
+
+    public function getEventManagers($slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        $managers = $event->managers()->get();
+        return response($managers);
+    }
+
+    public function addManager(Request $request,$slug){
+        $user = User::findOrFail($request->user_id);
+        $event = Event::where('slug',$slug)->firstOrFail();
+        if(!$manager = $event->managers()->find($user->id)){
+            $event->managers()->attach($user->id);
+        }
+        return response('success');
+    }
+
+    public function removeManager(Request $request,$slug){
+        $user = User::findOrFail($request->user_id);
+        $event = Event::where('slug',$slug)->firstOrFail();
+        $event->managers()->detach($user->id);
+        return response('success');
     }
 
 }

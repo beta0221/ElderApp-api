@@ -2,7 +2,7 @@
 
   <div>
       <location-detail-modal v-on:completion="getDataList"></location-detail-modal>
-      <LocationManagerModal></LocationManagerModal>
+      <LocationManagerModal :getUrl="'/api/getLocationManagers/'" :postUrl="'/api/addManager/'" :deleteUrl="'/api/removeManager/'"></LocationManagerModal>
       <ProductSelector></ProductSelector>
       <InventoryPanel></InventoryPanel>
 
@@ -141,7 +141,7 @@ export default {
             window.open(url);
         },
         openManagerPanel(location){
-            EventBus.$emit('showLocationManagers',location);
+            EventBus.$emit('showLocationManagers',{'name':location.name,'slug':location.slug});
         }
     }
 }

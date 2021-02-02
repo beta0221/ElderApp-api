@@ -109,6 +109,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\Location','location_manager','user_id','location_id');
     }
 
+    public function manage_events(){
+        return $this->belongsToMany('App\Event','event_manager','user_id','event_id');
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);

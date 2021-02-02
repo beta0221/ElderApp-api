@@ -89,6 +89,12 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('getRewardLevel','EventController@getRewardLevel');
     Route::post('updateEventCurrentDay/{slug}','EventController@updateEventCurrentDay');
     Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus');
+
+    Route::group(['prefix'=>'event'],function(){
+        Route::get('/getEventManagers/{slug}','EventController@getEventManagers');
+        Route::post('/addManager/{slug}','EventController@addManager');
+        Route::post('/removeManager/{slug}','EventController@removeManager');
+    });
     
     //交易
     Route::post('transaction','TransactionController@transaction');

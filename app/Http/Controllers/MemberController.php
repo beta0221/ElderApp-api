@@ -626,6 +626,9 @@ class MemberController extends Controller
         if($user->hasRole('teacher')){
             $user->locationUrl = '/view_myCourse';
             $user->myCourseUrl = '/view_myCourse';
+        }else if($user->manage_events()->first()){
+            $user->locationUrl = '/view_myCourse';
+            $user->myCourseUrl = '/view_myCourse';
         }
 
         return response()->json($user);
