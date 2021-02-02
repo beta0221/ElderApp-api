@@ -905,7 +905,7 @@ class EventController extends Controller
         foreach ($eventList as $event) { $dict[$event->id] = true; }
 
         //manage events
-        $manage_eventList = $user->manage_events()->get();
+        $manage_eventList = $user->manage_events()->orderBy('id','desc')->get();
         foreach ($manage_eventList as $event) {
             if(!isset($dict[$event->id])){
                 $eventList[] = $event;
