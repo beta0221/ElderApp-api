@@ -227,7 +227,7 @@ export default {
           }
         })
         .catch(err => {
-          console.error(err);
+          Exception.handle(err);
         });
     },
     getCategory() {
@@ -239,7 +239,7 @@ export default {
           }
         })
         .catch(err => {
-          console.error(err);
+          Exception.handle(err);
         });
     },
     loadProduct() {
@@ -274,7 +274,7 @@ export default {
           }
         })
         .catch(err => {
-          console.error(err);
+          Exception.handle(err);
         });
     },
     submitForm(){
@@ -305,8 +305,7 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error);
-          alert('系統錯誤');
+          Exception.handle(error);
         })
     },
     updateRequest(formData){
@@ -325,8 +324,7 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error);
-          alert('系統錯誤');
+          Exception.handle(error);
         })
     },
     

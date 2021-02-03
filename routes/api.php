@@ -117,6 +117,12 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('productList','ProductController@productList');
     //後台
     Route::get('productDetail/{slug}','ProductController@productDetail');
+    Route::group([
+        'prefix'=>'bcp/product',
+        'middleware'=>['JWT','FirmAndAdmin'],
+    ],function(){
+        Route::post('updateOrderWeight','ProductController@updateOrderWeight');
+    });
     //AppUser
     Route::get('product/productDetail/{slug}','ProductController@showV2');
 

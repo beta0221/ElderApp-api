@@ -20,6 +20,7 @@ class ProductListResource extends JsonResource
         }
         return [
             'id'=>$this->id,
+            'order_weight'=>$this->order_weight,
             'name'=>$this->name,
             'slug'=>$this->slug,
             'img'=>$this->img,

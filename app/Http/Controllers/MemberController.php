@@ -678,13 +678,12 @@ class MemberController extends Controller
         }
 
         if($user->email != $request->email){
-            if(User::where('email',$request->email)->first()){
-                return response()->json([
-                    's'=>0,
-                    'm'=>'帳號已存在',
-                ]);
-            }
             $user->email = $request->email;
+            if($existUser = User::where('email',$request->email)->first()){
+                if($user->id != $existUser->id){
+                    return response()->json(['s'=>0,'m'=>'帳號已存在',]);
+                }
+            }
         }
 
         $user->name = $request->name;

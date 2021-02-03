@@ -31,6 +31,9 @@
       >
         <template v-slot:items="props">
           <td>{{props.index + 1}}</td>
+          <td>
+            <v-text-field style="width:72px" label="Solo" placeholder="權重" solo v-model="props.item.order_weight" @keyup.native.enter="updateOrderWeight(props.index)" />
+          </td>
           <td class="column-img">
             <img :src="props.item.imgUrl">
           </td>
@@ -74,6 +77,7 @@ export default {
             loading: true,
             headers: [
                 { text:'#'},
+                { text: "排序權重", value: "order_weight" },
                 { text: "圖片", value: "img" },
                 { text: "兌換區" },
                 { text: "商城" },
@@ -110,6 +114,22 @@ export default {
       },
       showProductOrderListPanel(product){
         EventBus.$emit("showProductOrderListPanel",product);
+      },
+      updateOrderWeight(index){
+        let order_weight = this.productAray[index].order_weight;
+        let product_id = this.productAray[index].id;
+        axios.post("/api/bcp/product/updateOrderWeight", {
+          'product_id':product_id,
+          'order_weight':order_weight,
+        })
+        .then(res =>{
+          if(res.status == 200){
+            this.getData();
+          }
+        })
+        .catch(function (error) {
+          Exception.handle(error);
+        })
       },
       getCategory() {
         axios.get(`/api/product-category/`)

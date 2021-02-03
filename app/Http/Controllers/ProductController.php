@@ -49,7 +49,8 @@ class ProductController extends Controller
         }
 
         $total = $query->count();
-        $products = $query->orderBy($p->orderBy, $p->ascOrdesc)
+        $products = $query->orderBy('order_weight','desc')
+        ->orderBy($p->orderBy, $p->ascOrdesc)
         ->skip($p->skip)
         ->take($p->rows)
         ->get();
@@ -237,6 +238,14 @@ class ProductController extends Controller
         
     }
 
+    /**更新產品排序權重 */
+    public function updateOrderWeight(Request $request){
+        $product = Product::findOrFail($request->product_id);
+        $product->order_weight = $request->order_weight;
+        $product->save();
+        return response('success', 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -365,7 +374,7 @@ class ProductController extends Controller
         $ascOrdesc = 'desc';
 
         $total = Product::where('public','&',5)->count();
-        $productList = Product::where('public','&',5)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $productList = Product::where('public','&',5)->skip($skip)->take($rows)->orderBy('order_weight','desc')->orderBy('id',$ascOrdesc)->get();
         $productList = ProductListResource_User::collection($productList);
 
         $hasNextPage = true;
@@ -381,29 +390,25 @@ class ProductController extends Controller
     /**銀髮商城 */
     public function list(Request $req){
 
-        $page = ($req->page)?$req->page:1;
-        $rows = 6;
-        $skip = ($page - 1) * $rows;
-        $ascOrdesc = 'desc';
-
         if($req->token){
             Cookie::queue('token',$req->token,60);
         }
 
+        $p = new Pagination($req);
         $total = Product::where('public','&',6)->count();
-        if($rows > $total){
-            $totalPage = 1;
-        }else{
-            $totalPage = floor($total / $rows);
-            if($total % $rows != 0){ $totalPage += 1; }
-        }
+        $p->cacuTotalPage($total);
         
-        $products = Product::where('public','&',6)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $products = Product::where('public','&',6)
+            ->skip($p->skip)
+            ->take($p->rows)
+            ->orderBy('order_weight','desc')
+            ->orderBy('id',$p->ascOrdesc)
+            ->get();
 
         return view('product.list',[
             'products'=>$products,
-            'totalPage'=>$totalPage,
-            'page'=>$page,
+            'totalPage'=>$p->totalPage,
+            'page'=>$p->page,
         ]);
     }
 
