@@ -2,32 +2,25 @@
 
 namespace App\Jobs;
 
-use App\Transaction;
-use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
-class SendMoney implements ShouldQueue
+class TestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
-    protected $user;
-    protected $amount;
-    protected $event;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user,$amount,$event)
+    public function __construct()
     {
-        $this->user = $user;
-        $this->amount = $amount;
-        $this->event = $event;
-
+        //
     }
 
     /**
@@ -37,7 +30,6 @@ class SendMoney implements ShouldQueue
      */
     public function handle()
     {
-        sleep(3);
-        $this->user->update_wallet_with_trans(User::INCREASE_WALLET,$this->amount,$this->event);   
+        Log::info('Test Job executed.');
     }
 }
