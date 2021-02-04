@@ -59,54 +59,33 @@ class NotifyAppUser implements ShouldQueue
             ]
         ];
 
-        $request = new HttpRequest();
-        $request->setUrl('https://fcm.googleapis.com/v1/projects/elderapp-438e0/messages:send');
-        $request->setMethod(HTTP_METH_POST);
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://fcm.googleapis.com/v1/projects/elderapp-438e0/messages:send",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($postBody),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer " . $fcm_token,
+                "Cache-Control: no-cache",
+                "Content-Type: application/json",
+            ],
+        ]);
         
-        $request->setHeaders(array(
-          'Content-Type' => 'application/json',
-          'Authorization' => 'Bearer ' . $fcm_token,
-        ));
-        
-        $request->setBody(json_encode($postBody));
-        
-        try {
-            $response = $request->send();
-            Log::info(json_encode($response->getBody()));
-        } catch (HttpException $ex) {
-            Log::info($ex);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            Log::info(json_encode($err));
+        } else {
+            Log::info(json_encode($response));
         }
-
-
-
-
-
-        // $curl = curl_init();
-        // curl_setopt_array($curl, [
-        //     CURLOPT_URL => "https://fcm.googleapis.com/v1/projects/elderapp-438e0/messages:send",
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_ENCODING => "",
-        //     CURLOPT_MAXREDIRS => 10,
-        //     CURLOPT_TIMEOUT => 30,
-        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //     CURLOPT_CUSTOMREQUEST => "POST",
-        //     CURLOPT_POSTFIELDS => json_encode($postBody),
-        //     CURLOPT_HTTPHEADER => [
-        //         "Authorization: Bearer " . $fcm_token,
-        //         "Cache-Control: no-cache",
-        //         "Content-Type: application/json",
-        //     ],
-        // ]);
-        
-        // $response = curl_exec($curl);
-        // $err = curl_error($curl);
-        // curl_close($curl);
-
-        // if ($err) {
-        //     Log::info(json_encode($err));
-        // } else {
-        //     Log::info(json_encode($response));
-        // }
 
 
     }
