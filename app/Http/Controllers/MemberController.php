@@ -619,15 +619,15 @@ class MemberController extends Controller
             $user->img = $img;
         }
 
+        //據點管理
         if($user->hasRole('location_manager')){
             $user->locationUrl = '/view_myLocation';
         }
         
+        //課程管理
         if($user->hasRole('teacher')){
-            $user->locationUrl = '/view_myCourse';
             $user->myCourseUrl = '/view_myCourse';
         }else if($user->manage_events()->first()){
-            $user->locationUrl = '/view_myCourse';
             $user->myCourseUrl = '/view_myCourse';
         }
 
