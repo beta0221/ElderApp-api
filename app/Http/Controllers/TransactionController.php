@@ -46,10 +46,7 @@ class TransactionController extends Controller
             $store = $this->store($req);
             if ($store) {
                 $message = "收到來自" . $give_user->name ."的樂幣" . $req->amount . "點";
-                NotifyAppUser::dispatch($req->take_id,'來自好友的祝福',$message,[
-                    'updateWallet'=>'true',
-                    'message'=>$message,
-                ]);
+                NotifyAppUser::dispatch($req->take_id,'來自好友的祝福',$message);
                 return response('success',200);
             }
 

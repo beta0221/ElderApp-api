@@ -30,7 +30,16 @@ class NotifyAppUser implements ShouldQueue
         $this->user_id = $user_id;
         $this->title = $title;
         $this->body = $body;
-        $this->data = $data;
+        
+        if(is_null($data)){
+            $this->data = [
+                'updateWallet'=>'true',
+                'message'=>$body,
+            ];
+        }else{
+            $this->data = $data;
+        }
+        
     }
 
     /**

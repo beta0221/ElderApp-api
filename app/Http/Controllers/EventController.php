@@ -13,6 +13,7 @@ use App\Helpers\ImageResizer;
 use App\Helpers\Pagination;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
+use App\Jobs\NotifyAppUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cookie;
@@ -829,15 +830,14 @@ class EventController extends Controller
         }
 
         $rewardAmount = $event->rewardAmount();
-        Log::channel('translog')->info('user '.$user->id.' get money '.$rewardAmount);
-        try {
-            $event->drawReward($user->id);//註記已領取
-            $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);//使用者加錢
-        } catch (\Throwable $th) {
-            return response($th);
-        }
+        $event->drawReward($user->id);//註記已領取
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);//使用者加錢
+        $user->increaseRank(1);//經驗值
+        NotifyAppUser::dispatch($user->id,'恭喜您！','由於您積極參與活動於是榮譽點數提升了。');
 
+        Log::channel('translog')->info('user '.$user->id.' get money '.$rewardAmount);
         Log::channel('eventlog')->info('user '.$user->id.' draw event '.$event->id.' reward success');
+        
         return response()->json([
             's'=>1,'m'=>'您已成功領取活動參與獎勵。'
         ]);
