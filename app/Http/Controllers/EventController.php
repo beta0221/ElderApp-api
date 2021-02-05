@@ -769,17 +769,14 @@ class EventController extends Controller
 
         $user = User::find($user_id);
         $rewardAmount = $event->rewardAmount();
-        Log::channel('translog')->info('user '.$user_id.' get money '.$rewardAmount);
-        try {
-            //註記已領取
-            $event->drawReward($user_id);
-            //使用者加錢
-            $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);
-        } catch (\Throwable $th) {
-            return response($th);
-        }
+        $event->drawReward($user->id);//註記已領取
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,$rewardAmount,"活動獎勵-".$event->title);//使用者加錢
+        $user->increaseRank(1);//經驗值
+        NotifyAppUser::dispatch($user->id,'恭喜您！','由於您積極參與活動於是榮譽點數提升了。');
 
-        Log::channel('eventlog')->info('user '.$user_id.' draw event '.$event->id.' reward success');
+        Log::channel('translog')->info('user '.$user->id.' get money '.$rewardAmount);
+        Log::channel('eventlog')->info('user '.$user->id.' draw event '.$event->id.' reward success');
+
         return response()->json([
             's'=>1,'m'=>'您已成功領取活動參與獎勵。'
         ]);
