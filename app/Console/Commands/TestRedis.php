@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\NotifyAppUser;
 use App\Jobs\TestJob;
 use Illuminate\Console\Command;
 
@@ -42,6 +41,5 @@ class TestRedis extends Command
     public function handle()
     {
         TestJob::dispatch();
-        NotifyAppUser::dispatch(2252,'test title','test body');
     }
 }

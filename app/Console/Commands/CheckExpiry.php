@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\NotifyAppUser;
 
 class CheckExpiry extends Command
 {
@@ -44,7 +45,8 @@ class CheckExpiry extends Command
         $now = strtotime(date('Y-m-d'));
         $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
         foreach ($users as $user) {
-            Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');    
+            Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');
+            NotifyAppUser::dispatch($user->id,'會員效期通知','您的會員效期已到期。');
         }
         DB::update("UPDATE users SET valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
     }

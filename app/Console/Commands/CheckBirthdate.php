@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\User;
+use App\Jobs\NotifyAppUser;
 
 class CheckBirthdate extends Command
 {
@@ -45,6 +46,7 @@ class CheckBirthdate extends Command
         foreach ($users as $user) {
             Log::channel('birthdaylog')->info('today is user '.$user->name.'('.$user->id.')'.' birthday');
             $user->update_wallet_with_trans(User::INCREASE_WALLET,800,'壽星生日禮');
+            NotifyAppUser::dispatch($user->id,'銀髮學院祝福您生日快樂~','您將獲得-壽星生日禮800點。');
         }
     }
 }

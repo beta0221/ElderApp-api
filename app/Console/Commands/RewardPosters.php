@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Post;
 use App\User;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\NotifyAppUser;
 
 class RewardPosters extends Command
 {
@@ -47,6 +48,7 @@ class RewardPosters extends Command
                 $user->update_wallet_with_trans(User::INCREASE_WALLET,$reward,'社群活躍獎勵');
                 $user->increaseRank($reward);
                 Log::info("User $user->name gets $reward reward");
+                NotifyAppUser::dispatch($user->id,'社群活躍獎勵',"您發佈的文章獲得了-社群活躍獎勵 $reward 點");
             }
         }
     }

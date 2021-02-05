@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendMoney;
+use App\Jobs\NotifyAppUser;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
@@ -45,6 +45,11 @@ class TransactionController extends Controller
             
             $store = $this->store($req);
             if ($store) {
+                $message = "收到來自" . $give_user->name ."的樂幣" . $req->amount . "點";
+                NotifyAppUser::dispatch($req->take_id,'來自好友的祝福',$message,[
+                    'updateWallet'=>'true',
+                    'message'=>$message,
+                ]);
                 return response('success',200);
             }
 
