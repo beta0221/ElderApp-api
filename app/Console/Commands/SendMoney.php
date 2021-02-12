@@ -40,7 +40,7 @@ class SendMoney extends Command
     public function handle()
     {
 
-        //發送:牛年大吉-新年紅包
+        //發送:組織服務獎勵
 
         $from = $this->argument('from');
         $to = $this->argument('to');
@@ -53,7 +53,7 @@ class SendMoney extends Command
 
         foreach ($users as $user) {
             $this->info('user:' . $user->name . '(' . $user->id . ')');
-            AppSendMoney::dispatch($user,800,'牛年大吉-新年紅包')->onQueue('sendMoney');
+            AppSendMoney::dispatch($user,0,'')->onQueue('sendMoney');
         }
 
         $this->info('from:'.$from.', to:'.$to.' (success)');

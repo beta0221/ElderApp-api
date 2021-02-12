@@ -415,6 +415,15 @@ class User extends Authenticatable implements JWTSubject
             }
         }
     }
+    /**續會的推薦人獎勵 */
+    public function rewardInviterForRenew(){
+        if($this->inviter_id){
+            if($inviter = User::find($this->inviter_id)){
+                $event = "續會服務獎勵:" . $this->name;
+                $inviter->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
+            }
+        }
+    }
 
     /** 發送獎勵給組織中的各個職位 */
     public function rewardGroupMembers(){
@@ -449,21 +458,6 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function rewardGroupForRenew(){
-        $event = "續會服務獎勵:" . $this->name;
-        if($this->inviter_id){
-            if($inviter = User::find($this->inviter_id)){
-                $inviter->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
-            }
-        }
-        if(!$group = DB::table('user_group')->where('user_id',$this->id)->first()){ return; }
-        for ($i = $group->level + 1; $i <= 5; $i++) { 
-            $lv = 'lv_' . $i;
-            if(!$group->{$lv}){ continue; }
-            if(!$user = User::find($group->{$lv})){ continue; }
-            $user->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
-        }
-    }
 
 
     //user roles helper

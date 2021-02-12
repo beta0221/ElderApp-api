@@ -37,7 +37,8 @@ class SendMoney implements ShouldQueue
     public function handle()
     {
         sleep(2);
-        $this->user->update_wallet_with_trans(User::INCREASE_WALLET,$this->amount,$this->event);   
-        NotifyAppUser::dispatch($this->user->id,'銀髮學院祝您新年快樂~','您將獲得-新年紅包800點');
+        $this->user->rewardGroupMembers();
+        // $this->user->update_wallet_with_trans(User::INCREASE_WALLET,$this->amount,$this->event);   
+        // NotifyAppUser::dispatch($this->user->id,'銀髮學院祝您新年快樂~','您將獲得-新年紅包800點');
     }
 }

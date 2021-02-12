@@ -228,7 +228,8 @@ class MemberController extends Controller
             $user->valid = 1;
             PayDate::create(['user_id'=>$request->id]);
             $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'入會獎勵');
-            //$user->rewardInviter();
+            $user->rewardInviter();
+            //$user->rewardGroupMembers();
         }
         $user->save();
         return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d', strtotime('+1 years'))],Response::HTTP_ACCEPTED);
@@ -279,7 +280,8 @@ class MemberController extends Controller
         PayDate::create(['user_id'=>$request->id]);
 
         $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'續會獎勵');
-        //$user->rewardGroupForRenew();
+        $user->rewardInviterForRenew();
+        //$user->rewardGroupMembers();
 
         return response([
             's'=>1,
