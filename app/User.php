@@ -406,7 +406,7 @@ class User extends Authenticatable implements JWTSubject
         return $dict;
     }
 
-    /**發送獎勵給推薦人（如果有推薦人的話）&組織中的各個職位 */
+    /**發送獎勵給推薦人（如果有推薦人的話） */
     public function rewardInviter(){
         if($this->inviter_id){
             if($inviter = User::find($this->inviter_id)){
@@ -414,6 +414,10 @@ class User extends Authenticatable implements JWTSubject
                 $inviter->update_wallet_with_trans(User::INCREASE_WALLET,300,$event);
             }
         }
+    }
+
+    /** 發送獎勵給組織中的各個職位 */
+    public function rewardGroupMembers(){
         if(!$group = DB::table('user_group')->where('user_id',$this->id)->first()){ return; }
         for ($i = $group->level + 1; $i <= 5; $i++) { 
             $lv = 'lv_' . $i;
@@ -423,19 +427,19 @@ class User extends Authenticatable implements JWTSubject
             $reward = 0;
             switch ($i) {
                 case 2:
-                    $event = "小天使推薦獎勵:" . $this->name;
+                    $event = "小天使-服務會員獎勵:" . $this->name;
                     $reward = 200;
                     break;
                 case 3:
-                    $event = "大天使推薦獎勵:" . $this->name;
+                    $event = "大天使-服務會員獎勵:" . $this->name;
                     $reward = 100;
                     break;
                 case 4:
-                    $event = "守護天使推薦獎勵:" . $this->name;
+                    $event = "守護天使-服務會員獎勵:" . $this->name;
                     $reward = 100;
                     break;
                 case 5:
-                    $event = "領航天使推薦獎勵:" . $this->name;
+                    $event = "領航天使-服務會員獎勵:" . $this->name;
                     $reward = 50;
                     break;
                 default:
