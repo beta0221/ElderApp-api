@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendMoney as AppSendMoney;
 use App\User;
 use Illuminate\Console\Command;
 
@@ -38,18 +39,21 @@ class SendMoney extends Command
      */
     public function handle()
     {
+
+        //發送:牛年大吉-新年紅包
+
         $from = $this->argument('from');
         $to = $this->argument('to');
 
         $users = User::where('id','>=',$from)
         ->where('id','<=',$to)
         ->where('valid',1)
-        ->whereNotNull('inviter_id')
         ->get();
+        // ->whereNotNull('inviter_id')
 
         foreach ($users as $user) {
             $this->info('user:' . $user->name . '(' . $user->id . ')');
-            $user->rewardInviter();
+            AppSendMoney::dispatch($user,800,'牛年大吉-新年紅包')->onQueue('sendMoney');
         }
 
         $this->info('from:'.$from.', to:'.$to.' (success)');
