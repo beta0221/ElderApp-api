@@ -419,7 +419,7 @@ class User extends Authenticatable implements JWTSubject
     public function rewardInviterForRenew(){
         if($this->inviter_id){
             if($inviter = User::find($this->inviter_id)){
-                $event = "續會服務獎勵:" . $this->name;
+                $event = "推薦人-續會服務獎勵:" . $this->name;
                 $inviter->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
             }
         }
@@ -450,6 +450,35 @@ class User extends Authenticatable implements JWTSubject
                 case 5:
                     $event = "領航天使-服務會員獎勵:" . $this->name;
                     $reward = 50;
+                    break;
+                default:
+                    break;
+            }
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,$reward,$event);
+        }
+    }
+
+    /** 發送續會服務獎勵給組織中的各個職位 */
+    public function rewardGroupMembersForRenew(){
+        if(!$group = DB::table('user_group')->where('user_id',$this->id)->first()){ return; }
+        for ($i = $group->level + 1; $i <= 5; $i++) { 
+            $lv = 'lv_' . $i;
+            if(!$group->{$lv}){ continue; }
+            if(!$user = User::find($group->{$lv})){ continue; }
+            $event = '';
+            $reward = 100;
+            switch ($i) {
+                case 2:
+                    $event = "小天使-會員續會獎勵:" . $this->name;
+                    break;
+                case 3:
+                    $event = "大天使-會員續會獎勵:" . $this->name;
+                    break;
+                case 4:
+                    $event = "守護天使-會員續會獎勵:" . $this->name;
+                    break;
+                case 5:
+                    $event = "領航天使-會員續會獎勵:" . $this->name;
                     break;
                 default:
                     break;
