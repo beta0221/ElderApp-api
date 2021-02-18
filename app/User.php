@@ -419,7 +419,7 @@ class User extends Authenticatable implements JWTSubject
     public function rewardInviterForRenew(){
         if($this->inviter_id){
             if($inviter = User::find($this->inviter_id)){
-                $event = "推薦人-續會服務獎勵:" . $this->name;
+                $event = "推薦人-會員續會獎勵:" . $this->name;
                 $inviter->update_wallet_with_trans(User::INCREASE_WALLET,100,$event);
             }
         }
