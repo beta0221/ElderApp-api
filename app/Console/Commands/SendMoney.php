@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\SendMoney as AppSendMoney;
+use App\PayDate;
 use App\User;
 use Illuminate\Console\Command;
 
@@ -40,16 +41,23 @@ class SendMoney extends Command
     public function handle()
     {
 
-        //發送:組織服務獎勵
+        //發送:續會獎勵
 
         $from = $this->argument('from');
         $to = $this->argument('to');
 
-        $users = User::where('id','>=',$from)
+
+
+        $user_id_array = PayDate::where('id','>=',$from)
         ->where('id','<=',$to)
-        ->where('valid',1)
-        ->get();
-        // ->whereNotNull('inviter_id')
+        ->pluck('user_id');
+
+        $users = User::whereIn('id',$user_id_array)->get();
+
+        // $users = User::where('id','>=',$from)
+        // ->where('id','<=',$to)
+        // ->where('valid',1)
+        // ->get();
 
         foreach ($users as $user) {
             $this->info('user:' . $user->name . '(' . $user->id . ')');
