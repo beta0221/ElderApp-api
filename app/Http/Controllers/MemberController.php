@@ -281,7 +281,7 @@ class MemberController extends Controller
 
         $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'續會獎勵');
         $user->rewardInviterForRenew();
-        // $user->rewardGroupMembersForRenew();
+        $user->rewardGroupMembersForRenew();
 
         return response([
             's'=>1,
