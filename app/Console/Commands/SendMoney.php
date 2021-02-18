@@ -60,6 +60,8 @@ class SendMoney extends Command
         // ->get();
 
         foreach ($users as $user) {
+            $count = PayDate::where('user_id',$user->id)->count();
+            if($count <= 1){ continue; }
             $this->info('user:' . $user->name . '(' . $user->id . ')');
             AppSendMoney::dispatch($user,0,'')->onQueue('sendMoney');
         }
