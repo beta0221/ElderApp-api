@@ -48,20 +48,20 @@ class SendMoney extends Command
 
 
 
-        $user_id_array = PayDate::where('id','>=',$from)
-        ->where('id','<=',$to)
-        ->pluck('user_id');
-
-        $users = User::whereIn('id',$user_id_array)->get();
-
-        // $users = User::where('id','>=',$from)
+        // $user_id_array = PayDate::where('id','>=',$from)
         // ->where('id','<=',$to)
-        // ->where('valid',1)
-        // ->get();
+        // ->pluck('user_id');
+
+        // $users = User::whereIn('id',$user_id_array)->get();
+
+        $users = User::where('id','>=',$from)
+        ->where('id','<=',$to)
+        ->where('valid',1)
+        ->get(); 
 
         foreach ($users as $user) {
-            $count = PayDate::where('user_id',$user->id)->count();
-            if($count <= 1){ continue; }
+            // $count = PayDate::where('user_id',$user->id)->count();
+            // if($count <= 1){ continue; }
             $this->info('user:' . $user->name . '(' . $user->id . ')');
             AppSendMoney::dispatch($user,0,'')->onQueue('sendMoney');
         }
