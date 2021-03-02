@@ -40,6 +40,7 @@
           :color="(props.item.public)?'success':'warning'">{{(props.item.public)?'上架':'下架'}}</v-btn>
         </td>
         <td>{{eventCat[props.item.category_id]}}</td>
+        <td>{{props.item.owner}}</td>
         <td class="image-td">
           <img :src="staticHost + '/events/'+props.item.slug+'/'+props.item.image">
         </td>
@@ -89,6 +90,7 @@ export default {
         { text:'#'},
         { text: "-",width:"1%"},
         { text: "類別", value: "category_id" },
+        { text: "老師", value: "owner" },
         { text: "-", value: "image" },
         { text: "活動", value: "title" },
         { text: "地點", value: "location" },

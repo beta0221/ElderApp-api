@@ -49,7 +49,17 @@ class EventController extends Controller
         }
 
         $total = $query->count();
-        $events = $query->skip($p->skip)->take($p->rows)->get();
+        $query->skip($p->skip)->take($p->rows);
+        $owner_id_array = $query->pluck('owner_id');
+        $events = $query->get();
+
+        $nameDict = User::getNameDictByIdArray($owner_id_array);
+        foreach ($events as $event) {
+            $event->owner = null;
+            if(isset($nameDict[$event->owner_id])){
+                $event->owner = $nameDict[$event->owner_id];
+            }
+        }
 
         return response()->json([
             'events' => $events,
