@@ -19,16 +19,16 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware('JWT', ['only' => 
-            [
-                'myPostList',
-                'makeNewPost',
-                'likePost',
-                'unLikePost',
-                'commentOnPost',
-                'removeComment',
-            ]
-        ]);
+        $this->middleware('JWT',['only'=>[
+            'myPostList',
+        ]]);
+        $this->middleware(['JWT','valid'], ['only' => [
+            'makeNewPost',
+            'likePost',
+            'unLikePost',
+            'commentOnPost',
+            'removeComment',
+        ]]);
     }
 
     /**文章內頁 */

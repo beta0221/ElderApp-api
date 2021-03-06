@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'BCP' => \App\Http\Middleware\BackendControlPanel::class,
         'FirmAndAdmin' => \App\Http\Middleware\FirmAndAdminMiddleware::class,
         'webAuth'=> \App\Http\Middleware\WebAuthenticate::class,
+        'valid' => \App\Http\Middleware\ValidMember::class,
     ];
 
     /**
