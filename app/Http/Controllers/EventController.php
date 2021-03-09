@@ -48,6 +48,10 @@ class EventController extends Controller
             $query->where('association_id',$request_user->association_id);
         }
 
+        if($request->has('public')){
+            $query->where('public',$request->public);
+        }
+
         $total = $query->count();
         $query->skip($p->skip)->take($p->rows);
         $owner_id_array = $query->pluck('owner_id');

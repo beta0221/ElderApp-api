@@ -1,29 +1,14 @@
 <template>
 <div class="event-table">
   <div>
-    <v-dialog v-model="dialog" max-width="480px">
-        <v-card>
-          <v-card-title class="headline">活動：{{dialogName}}</v-card-title>
-
-          <span style="padding:2px 16px" v-if="eventGuests.length == 0">目前無人參加此活動。</span>
-          <div style="padding:2px 16px" v-for="guest in eventGuests" v-bind:key="guest.id">
-            <span :class="gender[guest.gender]">{{guest.name}}</span>
-            <span>手機:{{guest.phone}}</span>
-            <span>家電:{{guest.tel}}</span>
-          </div>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
+      <EventMemberModal></EventMemberModal>
       <LocationManagerModal :getUrl="'/api/event/getEventManagers/'" :postUrl="'/api/event/addManager/'" :deleteUrl="'/api/event/removeManager/'"></LocationManagerModal>
   </div>
   <!-- table -->
   <div>
-    <member-detail></member-detail>
+    <div style="width:140px;padding:0 8px">
+      <v-select @change="getTableData" v-model="public_selected" :items="public_select_options" item-value="value" label="上下架"></v-select>
+    </div>
     <v-data-table
       :headers="headers"
       :items="eventArray"
@@ -66,19 +51,15 @@
 </template>
 
 <script>
-import MemberDetail from "./MemberDetail";
+import EventMemberModal from "./Event/EventMemberModal";
 import LocationManagerModal from "./Location/LocationManagerModal";
 export default {
   components:{
-    MemberDetail,
+    EventMemberModal,
     LocationManagerModal,
   },
   data() {
     return {
-      dialog: false,
-      dialogName: "",
-      eventGuests:[],
-
       gender: { 1: "blue--text", 0: "red--text" },
       pagination: { sortBy: "id", descending: true },
       totalEvent: 0,
@@ -102,15 +83,18 @@ export default {
         { text: "-",width:"1%"},
       ],
       staticHost:'',
+      public_selected:1,
+      public_select_options:[
+        {text:'上架',value:1},
+        {text:'全部',value:null},
+        {text:'下架',value:0},
+      ],
     };
   },
   watch: {
     pagination: {
       handler() {
-        this.getDataFromApi().then(data => {
-          this.eventArray = data.items;
-          this.totalEvent = data.total;
-        });
+        this.getTableData();
       }
     }
   },
@@ -126,7 +110,7 @@ export default {
         event_id:event.id,
         public:!event.public,
       })
-      .catch(error=> { console.log(error); })
+      .catch(error=> { Exception.handle(error); })
       .then(res=>{
         if(res.data.s==1){
           this.eventArray[index].public = res.data.public;
@@ -135,19 +119,8 @@ export default {
       
     },
     showEventMembers(event_slug,event_name){
-      
-      this.dialog = true;
-      this.dialogName = event_name;
-      axios.get(`/api/eventguests/${event_slug}`)
-      .then(res => {
-        if(res.data.s == 1){
-          this.eventGuests = res.data.guests;
-        }
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err); 
-      })
+      let data = {event_slug,event_name};
+      EventBus.$emit('showEventMemberModal',data);
     },
     editManager(event){
       EventBus.$emit('showLocationManagers',{'name':event.title,'slug':event.slug});
@@ -183,56 +156,25 @@ export default {
       var win = window.open(`/event_reward_qrcode/${slug}`,'_blank');
       win.focus();
     },
-    getDataFromApi() {
+    getTableData() {
       this.loading = true;
-      return new Promise((resolve, reject) => {
-        const { sortBy, descending, page, rowsPerPage } = this.pagination;
-        // console.log(this.pagination);
-         axios
-          .get("/api/event", {
-            params: {
-              page: this.pagination.page,
-              rowsPerPage: this.pagination.rowsPerPage,
-              descending: this.pagination.descending,
-              sortBy: this.pagination.sortBy
-            }
-          })
-          .then(res => {
-            // console.log(res.data);
-            // return false;
-            let items = res.data.events;
-            this.staticHost = res.data.staticHost;
-            const total = res.data.total;
-
-            if (this.pagination.sortBy) {
-              items = items.sort((a, b) => {
-                const sortA = a[sortBy];
-                const sortB = b[sortBy];
-
-                if (descending) {
-                  if (sortA < sortB) return 1;
-                  if (sortA > sortB) return -1;
-                  return 0;
-                } else {
-                  if (sortA < sortB) return -1;
-                  if (sortA > sortB) return 1;
-                  return 0;
-                }
-              });
-            }
-
-            setTimeout(() => {
-              this.loading = false;
-              resolve({
-                items,
-                total
-              });
-            }, 200);
-          })
-          .catch(error => {
-            Exception.handle(error);
-            // User.logout();
-          })
+      axios.get("/api/event", {
+        params: {
+          page: this.pagination.page,
+          rowsPerPage: this.pagination.rowsPerPage,
+          descending: this.pagination.descending,
+          sortBy: this.pagination.sortBy,
+          public: this.public_selected,
+        }   
+      })
+      .then(res => {
+        this.staticHost = res.data.staticHost;
+        this.totalEvent = res.data.total;
+        this.eventArray = res.data.events;
+        this.loading=false;
+      })
+      .catch(error => {
+        Exception.handle(error);
       });
     },
 
