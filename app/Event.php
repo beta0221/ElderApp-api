@@ -17,6 +17,10 @@ class Event extends Model
     const TYPE_FREQUENTLY = 2;
     const MIN_DAYS = 8;
     
+    public function certificate(){
+        return $this->hasOne('App\EventCertificate','event_id');
+    }
+
     public function guests(){
         return $this->belongsToMany('App\User','event_users','event_id','user_id');
     }

@@ -60,7 +60,6 @@ export default {
   },
   data() {
     return {
-      gender: { 1: "blue--text", 0: "red--text" },
       pagination: { sortBy: "id", descending: true },
       totalEvent: 0,
       loading: true,

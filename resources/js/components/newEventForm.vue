@@ -1,17 +1,15 @@
 <template>
   <!-- dialog -->
   <div>
-    <v-card>
 
-        
-        
-        <v-btn @click="$router.go(-1)" color="warning">返回</v-btn>
-        <v-card-title class="headline">{{(edit_mode)?'編輯活動':'新增活動'}}</v-card-title>
-      
+    <EventCertificateModal></EventCertificateModal>
+
+    <v-card>
 
       <div style="padding:0 24px 24px 24px;">
 
-        
+        <v-btn @click="$router.go(-1)" color="warning">返回</v-btn>
+        <v-card-title class="headline">{{(edit_mode)?'編輯活動':'新增活動'}}</v-card-title>
 
         <v-col cols="12" sm="6" md="3">
           <img v-if="(event_image)?true:false" :src="event_image"/><br>
@@ -21,6 +19,10 @@
           <input style="display:none;" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
           <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn>
         </v-col>
+
+        <div class="mb-2" v-if="edit_mode">
+          <v-btn color="cyan" class="white--text" @click="showEventCertificateModal">設定結業證書</v-btn>
+        </div>
 
         <v-col cols="12" sm="6" md="3">
           <v-text-field label="Solo" placeholder="活動標題" solo v-model="form.title"></v-text-field>
@@ -106,8 +108,12 @@
 
 <script>
 import MyUploadAdapter from '../Helpers/MyUploadAdapter'
+import EventCertificateModal from './Event/EventCertificateModal'
 export default {
   props:['event_slug'],
+  components:{
+    EventCertificateModal
+  },
   data() {
     return {
       editor:ClassicEditor,
@@ -254,13 +260,13 @@ export default {
         }
       })
       .catch(err => {
-        console.error(err); 
+        Exception.handle(err);
       })
 
     },
     getRewardLevel(){
       axios.get('/api/getRewardLevel')
-      .catch(err => {console.error(err); })
+      .catch(err => {Exception.handle(err); })
       .then(res => {
         this.rewardLevel = res.data;
       })
@@ -275,7 +281,7 @@ export default {
         this.district = res.data
       })
       .catch(err => {
-        console.error(err); 
+        Exception.handle(err);
       })
     },
     getCat() {
@@ -288,7 +294,7 @@ export default {
           }
         })
         .catch(err => {
-          console.error(err);
+          Exception.handle(err);
         });
     },
     submitForm(){
@@ -318,8 +324,7 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error);
-          alert('系統錯誤');
+          Exception.handle(error);
         })
     },
     updateRequest(formData){
@@ -338,9 +343,11 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error);
-          alert('系統錯誤');
+          Exception.handle(error);
         })
+    },
+    showEventCertificateModal(){
+      EventBus.$emit('showEventCertificateModal',{'slug':this.event_slug});
     }
 
   }

@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Category;
+use App\EventCertificate;
 use App\FreqEventUser;
 use App\Helpers\ImageResizer;
 use App\Helpers\Pagination;
@@ -22,7 +23,7 @@ class EventController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel','getEventManagers','addManager','removeManager']]);
+        $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel','getEventManagers','addManager','removeManager','show_certificate']]);
         $this->middleware(['JWT'],['only'=>['myEventList','eventDetail','drawEventRewardV2']]);
         $this->middleware(['webAuth'], ['only' => ['view_myCourse']]);
     }
@@ -204,11 +205,11 @@ class EventController extends Controller
     /**
      * 存入圖檔(目前在導入file sever 階段 必須同時執行 本地 以及 file sever 處理速度會很慢，等舊版本App更新才能完全轉移)
      */
-    private function imageHandler($file,$event_slug){
+    private function imageHandler($file,$event_slug,$type = 'events'){
         
         $filename = time() . '.' . $file->getClientOriginalExtension();
-        $path = "/images/events/" . $event_slug . "/";
-        $ftpPath = "/events/$event_slug/";
+        //$path = "/images/events/" . $event_slug . "/";
+        $ftpPath = "/$type/$event_slug/";
 
         // if(Storage::disk('local')->exists($path)){
         //     $result = Storage::deleteDirectory($path);
@@ -231,7 +232,9 @@ class EventController extends Controller
             return false;
         }
 
-        return $filename;//成功：回傳檔名
+        if($type == 'events'){ return $filename; }  //成功：回傳檔名
+        return config('app.static_host'). $ftpPath . $filename;
+        
     }
 
 
@@ -948,5 +951,61 @@ class EventController extends Controller
         $event->managers()->detach($user->id);
         return response('success');
     }
+
+
+
+    //--------------------Certificates-------------------
+
+    public function show_certificate($slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        if($event->certificate){
+            return response($event->certificate);
+        }
+        return response('no certificate');
+    }
+
+
+    public function store_certificate(Request $request,$slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        if($event->certificate){
+            return response('已存在活動認證',400);
+        }
+
+        if($request->hasFile('image')){
+            if(!$filename = $this->imageHandler($request->file('image'),$slug,'eventCertificates')){
+                return response('檔案無法儲存',500);
+            }
+        }
+
+        $certificate = new EventCertificate([
+            'reward'=>$request->reward,
+            'image'=>$filename,
+        ]);
+
+        $event->certificate()->save($certificate);
+        return response('success');
+    }
+
+
+    public function update_certificate(Request $request,$slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        if(!$event->certificate){ return response('無活動認證',404); }
+
+        $certificate = [
+            'reward' => $request->reward,
+        ];
+
+        if($request->hasFile('image')){
+            if(!$filename = $this->imageHandler($request->file('image'),$slug,'eventCertificates')){
+                return response('檔案無法儲存',500);
+            }
+            $certificate['image'] = $filename;
+        }
+
+        $event->certificate()->update($certificate);
+        return response('success');
+    }
+
+
 
 }

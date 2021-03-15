@@ -91,6 +91,9 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('updateEventPublicStatus','EventController@updateEventPublicStatus');
 
     Route::group(['prefix'=>'event'],function(){
+        Route::get('/{slug}/certificate','EventController@show_certificate');
+        Route::post('/{slug}/certificate','EventController@store_certificate');
+        Route::post('/{slug}/certificate/update','EventController@update_certificate');
         Route::get('/getEventManagers/{slug}','EventController@getEventManagers');
         Route::post('/addManager/{slug}','EventController@addManager');
         Route::post('/removeManager/{slug}','EventController@removeManager');

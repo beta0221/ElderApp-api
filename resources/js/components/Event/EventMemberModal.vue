@@ -7,7 +7,7 @@
 
             <span style="padding:2px 16px" v-if="eventGuests.length == 0">目前無人參加此活動。</span>
             <div style="padding:2px 16px" v-for="guest in eventGuests" v-bind:key="guest.id">
-                <span :class="gender[guest.gender]">{{guest.name}}</span>
+                <span :class="(guest.gender == 1)?'blue--text':'red--text'">{{guest.name}}</span>
                 <span>手機:{{guest.phone}}</span>
                 <span>家電:{{guest.tel}}</span>
             </div>
