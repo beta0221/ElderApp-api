@@ -50,6 +50,16 @@
                 @endfor
             </div>
         </div>
+
+        @if ($event->certificate)
+        <hr>
+        <div class="row">
+            <div class="offset-md-3 col-md-6 col-sm-12">
+                <div class="btn btn-success btn-block mb-4 btn-lg" onclick="confirmIssueCertificate()">頒發結業證書</div>
+            </div>
+        </div>
+        @endif
+
     </div>
 
 
@@ -61,9 +71,10 @@
             <span id="message">訊息</span>
         </div>
         <div>
-            <div onclick="cancleDialog()" class="btn btn-secondary btn-lg" style="display:inline-block;width:49%">取消
+            <div onclick="cancelDialog()" class="btn btn-secondary btn-lg" style="display:inline-block;width:49%">取消
             </div><div style="display: inline-block;width:2%">
-            </div><div onclick="updateCurrentDay()" class="btn btn-primary btn-lg" style="display:inline-block;width:49%">確定</div>
+            </div><div onclick="updateCurrentDay()" class="updateCurrentDay-btn btn btn-primary btn-lg" style="display:inline-block;width:49%">確定
+            </div><div onclick="issueCertificate()" class="issueCertificate-btn btn btn-success btn-lg" style="display:inline-block;width:49%">確定</div>
         </div>
     </div>
 
@@ -75,7 +86,7 @@
             <span id="message">訊息</span>
         </div>
         <div>
-            <div onclick="cancleDialog()" class="btn btn-primary btn-lg" style="display: block">確定</div>
+            <div onclick="cancelDialog()" class="btn btn-primary btn-lg" style="display: block">確定</div>
         </div>
     </div>
 
@@ -97,10 +108,19 @@ var updateDay = null;
 function confirmUpdateCurrentDay(day){
     updateDay = day;
     $('.confirm #message').html('確認是否開啟第 ' + day + ' 堂課');
+    $('.updateCurrentDay-btn').show();
+    $('.issueCertificate-btn').hide();
     $('.confirm').show();
 };
 
-function cancleDialog(){
+function confirmIssueCertificate(){
+    $('.confirm #message').html('確認是否發放結業證書並結束課程。');
+    $('.updateCurrentDay-btn').hide();
+    $('.issueCertificate-btn').show();
+    $('.confirm').show();
+};
+
+function cancelDialog(){
     $('.alert-box').hide();
 };
 
@@ -111,7 +131,7 @@ function customeAlert(message){
 
 function updateCurrentDay(){
     if(parseInt(updateDay) <= maxDays){ return; }
-    cancleDialog();
+    cancelDialog();
     $.ajax({
         type: "POST",
         url: "/api/updateEventCurrentDay/"+ slug,
@@ -130,12 +150,32 @@ function updateCurrentDay(){
             }
         },
         error:function(error){
-            customeAlert(error);
+            customeAlert(error.responseText);
         }
     });
-
-
 };
+
+function issueCertificate(){
+    cancelDialog();
+    $.ajax({
+        type: "POST",
+        url: "/api/event/"+ slug + "/certificate/issue",
+        // dataType: "json",
+        // headers:{
+        //     'Authorization':token
+        // },
+        success: function (response) {
+            if(response == 'success'){
+                customeAlert('發送成功');
+            }else{
+                customeAlert(response);    
+            }
+        },
+        error:function(error){
+            customeAlert(error.responseText);
+        }
+    });
+}
 
 
 

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Helpers\Pagination;
+use App\Jobs\NotifyAppUser;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -107,6 +107,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function locations(){
         return $this->belongsToMany('App\Location','location_manager','user_id','location_id');
+    }
+
+    public function certificates(){
+        return $this->belongsToMany('App\EventCertificate','user_certificate','user_id','certificate_id');
     }
 
     public function manage_events(){
@@ -485,6 +489,14 @@ class User extends Authenticatable implements JWTSubject
             }
             $user->update_wallet_with_trans(User::INCREASE_WALLET,$reward,$event);
         }
+    }
+
+
+    /**頒發結業證書 */
+    public function issueCertificate(EventCertificate $cert){
+        $this->certificates()->attach($cert->id);
+        $this->update_wallet_with_trans(User::INCREASE_WALLET,$cert->reward,$cert->getTitle());
+        NotifyAppUser::dispatch($this->id,'恭喜您！','您獲得了畢業證書及獎勵。');
     }
 
 

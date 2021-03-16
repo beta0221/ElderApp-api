@@ -86,6 +86,30 @@ class Event extends Model
         ]);
     }
 
+    /**課程進度是否結束 */
+    public function isFinished(){
+        if($this->days <= $this->current_day){
+            return true;
+        }
+        return false;
+    }
+
+    /**查詢有沒有發布紀錄 */
+    public function hasIssued(){
+        if($row = $this->certificate()->find($this->certificate->id)){
+            return true;
+        }
+        return false;
+    }
+
+    /**頒發結業證書 */
+    public function issueCertificateToUsers(){
+        $users = $this->guests()->get();
+        foreach ($users as $user) {
+            $user->issueCertificate($this->certificate);
+        }
+    }
+
     public static function getDistrictDict($idArray){
         $districts = DB::table('districts')->whereIn('id',$idArray)->get();
         $dict = [];

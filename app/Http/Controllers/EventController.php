@@ -1006,6 +1006,22 @@ class EventController extends Controller
         return response('success');
     }
 
+    /**發送畢業認證 */
+    public function issue_certificate($slug){
+        $event = Event::where('slug',$slug)->firstOrFail();
+        if(!$event->isFinished()){
+            return response('課程尚未結束，無法頒發結業證書。',400);
+        }
 
+        if($event->hasIssued()){
+            return response('課程已頒發過結業證書。',400);
+        }
+
+        $event->issueCertificateToUsers();
+        $event->public = 0;
+        $event->save();
+        
+        return response('success');
+    }
 
 }
