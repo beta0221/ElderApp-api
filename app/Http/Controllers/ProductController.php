@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ControllerTrait;
 use App\Helpers\ImageResizer;
 use App\Helpers\InventoryAction;
 use App\Http\Resources\LocationQuantityCollection;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
+    use ControllerTrait;
+
     public function __construct()
     {
         $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['index','store','destroy','update']]);
@@ -97,6 +100,7 @@ class ProductController extends Controller
 
 
         $request->merge(['firm_id'=>Auth::user()->id]);
+        $request->merge(['info'=>$this->resizeHtmlImg($request->info)]);
         try {
             $product = Product::create($request->except('file','select_location','quantity','quantity_cash'));
         } catch (\Throwable $th) {
@@ -209,6 +213,7 @@ class ProductController extends Controller
             $request->request->remove('exchange_max');
         }
 
+        $request->merge(['info'=>$this->resizeHtmlImg($request->info)]);
         try {
             $product->update($request->except('file','select_location','quantity','quantity_cash'));
         } catch (\Throwable $th) {

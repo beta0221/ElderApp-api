@@ -10,6 +10,7 @@ use App\User;
 use App\Category;
 use App\EventCertificate;
 use App\FreqEventUser;
+use App\Helpers\ControllerTrait;
 use App\Helpers\ImageResizer;
 use App\Helpers\Pagination;
 use App\Http\Resources\EventCollection;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Cookie;
 
 class EventController extends Controller
 {
+
+    use ControllerTrait;
+    
     public function __construct()
     {
         $this->middleware(['JWT','BCP'], ['only' => ['index','store','destroy','update','getRewardLevel','getEventManagers','addManager','removeManager','show_certificate']]);
@@ -189,6 +193,7 @@ class EventController extends Controller
 
 
         //--------------------------------------------------
+        $request->merge(['body'=>$this->resizeHtmlImg($request->body)]);
         try {
             $event=Event::create($request->except('file'));
         } catch (\Throwable $th) {
@@ -345,7 +350,7 @@ class EventController extends Controller
             unset($request['maximum']);
         }
 
-
+        $request->merge(['body'=>$this->resizeHtmlImg($request->body)]);
         try {
             $event->update($request->except(['file']));
         } catch (\Throwable $th) {
