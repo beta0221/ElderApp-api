@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\InventoryAction;
+use App\Helpers\Tracker;
 use App\Http\Resources\MyOrderCollection;
 use App\Http\Resources\ProductOrderCollection;
 use App\Inventory;
@@ -214,6 +215,8 @@ class OrderDetailController extends Controller
      * 取消樂幣兌換的訂單
      */
     public function deleteOrderDetail(Request $request){
+        Tracker::log($request);
+
         $this->validate($request,[
             'order_detail_id'=>'required'
         ]);

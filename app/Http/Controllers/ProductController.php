@@ -15,6 +15,7 @@ use App\Location;
 use App\ProductCategory;
 use App\Transaction;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
 use App\Inventory;
 use Illuminate\Http\Request;
 use DB;
@@ -75,6 +76,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        Tracker::log($request);
+
         $this->validate($request,[
             'name'=>'required',
             'product_category_id'=>'required',
@@ -200,6 +203,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        Tracker::log($request);
+        
         if($request->hasFile('file')){
             $filename = $this->imageHandler($request->file('file'),$product->slug);
             if($filename){

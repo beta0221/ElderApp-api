@@ -6,6 +6,7 @@ use App\Cart;
 use App\Exports\OrderExport;
 use App\Exports\OrderExport_location;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
 use App\Location;
 use App\Order;
 use App\OrderDelievery;
@@ -115,6 +116,8 @@ class OrderController extends Controller
      * 更新訂單狀態到下一個階段（單一訂單號碼）
      */
     public function nextStatus(Request $request){
+        Tracker::log($request);
+        
         $this->validate($request,[
             'order_numero'=>'required',
         ]);
@@ -138,6 +141,8 @@ class OrderController extends Controller
      * 更新訂單狀態到下一個階段（批次更新）
      */
     public function groupNextStatus(Request $request){
+        Tracker::log($request);
+        
         $this->validate($request,[
             'order_numero_array'=>'required',
         ]);

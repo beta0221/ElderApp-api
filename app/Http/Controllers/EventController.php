@@ -13,6 +13,7 @@ use App\FreqEventUser;
 use App\Helpers\ControllerTrait;
 use App\Helpers\ImageResizer;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use App\Jobs\NotifyAppUser;
@@ -134,6 +135,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        Tracker::log($request);
+        
         try{
             $this->validate($request,[
                 'title'=>'required',
@@ -300,6 +303,7 @@ class EventController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        Tracker::log($request);
         
         if(!$event=Event::where('slug',$slug)->first()){
             return response()->json([
@@ -387,11 +391,13 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy($slug)
+    public function destroy(Request $request,$slug)
     {
+        Tracker::log($request);
+        
         $event=Event::where('slug',$slug)->first();
         if($event){
-            $event->delete();
+            // $event->delete();
             return response()->json([
                 's'=>1,
                 'm'=>'delete success!'
@@ -942,6 +948,8 @@ class EventController extends Controller
     }
 
     public function addManager(Request $request,$slug){
+        Tracker::log($request);
+
         $user = User::findOrFail($request->user_id);
         $event = Event::where('slug',$slug)->firstOrFail();
         if(!$manager = $event->managers()->find($user->id)){
@@ -951,6 +959,8 @@ class EventController extends Controller
     }
 
     public function removeManager(Request $request,$slug){
+        Tracker::log($request);
+
         $user = User::findOrFail($request->user_id);
         $event = Event::where('slug',$slug)->firstOrFail();
         $event->managers()->detach($user->id);

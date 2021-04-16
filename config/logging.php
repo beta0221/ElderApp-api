@@ -109,6 +109,12 @@ return [
             'path' => storage_path('logs/birthday.log'),
             'level' => 'debug',
         ],
+        'track'=>[
+            'driver' => 'daily',
+            'path' => storage_path('logs/track.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ]
     ],
 
 ];

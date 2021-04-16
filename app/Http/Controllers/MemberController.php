@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Association;
 use App\Exports\GroupMembers;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
 use Illuminate\Http\Request;
 use App\User;
 use App\PayDate;
@@ -201,6 +202,8 @@ class MemberController extends Controller
 
     //更新會員付款狀態
     public function changePayStatus(Request $request){
+        Tracker::log($request);
+
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         $p = $user->pay_status;
@@ -252,6 +255,7 @@ class MemberController extends Controller
      *更新會員資格（無效會員變成有效會員） 
      */
     public function toValid(Request $request){
+        Tracker::log($request);
 
         date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
@@ -322,7 +326,7 @@ class MemberController extends Controller
      *大天使小天使加入組織請求 
      */
     public function addGroupMember(Request $request){
-
+        Tracker::log($request);
         // leader_id
         //user_id
         //level
@@ -527,6 +531,7 @@ class MemberController extends Controller
      * 指派使用者為某階級
      */
     public function makeGroupLeader(Request $request){
+        Tracker::log($request);
         //user_id
         //level
         if(!$user = User::find($request->user_id)){
@@ -553,6 +558,7 @@ class MemberController extends Controller
      * 移除使用者為職務
      */
     public function removeGroupLeader(Request $request){
+        Tracker::log($request);
         //user_id
         if(!$user = User::find($request->user_id)){
             return response()->json([
@@ -588,6 +594,8 @@ class MemberController extends Controller
      * 指派為老師
      */
     public function makeTeacher(Request $request){
+        Tracker::log($request);
+
         //user_id
         if(!$user = User::find($request->user_id)){
             return response()->json([
@@ -666,6 +674,8 @@ class MemberController extends Controller
      * 更新基本資料請求
      */
     public function updateMemberAccount(Request $request){
+        Tracker::log($request);
+
         $user = User::find($request->id);
 
         if(!$user){
@@ -709,6 +719,7 @@ class MemberController extends Controller
      * 管理後台 幫會員變更密碼 請求
      */
     public function updateMemberPassword(Request $request,$id_code){
+        Tracker::log($request);
         
         if($request->adminCode == 'ji3g4ej03xu3m06'){
 
@@ -877,6 +888,7 @@ class MemberController extends Controller
     }
 
     public function updateMemberLevel(Request $request){
+        Tracker::log($request);
 
         $this->validate($request,[
             'user_id'=>'required',
@@ -938,6 +950,8 @@ class MemberController extends Controller
 
     /**變更推薦人 */
     public function updateInviter(Request $request){
+        Tracker::log($request);
+
         if($request->user_id == $request->inviter_id){
             return response('無法將推薦人設立為使用者本身',400);
         }

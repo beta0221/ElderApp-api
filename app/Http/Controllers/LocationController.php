@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\InventoryAction;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
 use App\Http\Resources\ProductDetailResource;
 use App\Inventory;
 use App\Location;
@@ -239,6 +240,8 @@ class LocationController extends Controller
         ]);
     }
     public function updateLocation(Request $request){
+        Tracker::log($request);
+
         $this->validateRequest($request);
         
         $location = Location::findOrFail($request->id);
@@ -251,6 +254,8 @@ class LocationController extends Controller
     }
 
     public function insertLocation(Request $request){
+        Tracker::log($request);
+
         $this->validateRequest($request);
         
         $slug = 'L' . uniqid();
@@ -274,6 +279,7 @@ class LocationController extends Controller
     }
 
     public function addManager(Request $request,$slug){
+        Tracker::log($request);
         
         $user = User::findOrFail($request->user_id);
         $location = Location::where('slug',$slug)->firstOrFail();
@@ -290,6 +296,7 @@ class LocationController extends Controller
     }
 
     public function removeManager(Request $request,$slug){
+        Tracker::log($request);
         
         $user = User::findOrFail($request->user_id);
         $location = Location::where('slug',$slug)->firstOrFail();
@@ -396,6 +403,7 @@ class LocationController extends Controller
 
 
     public function updateInventory(Request $request){
+        Tracker::log($request);
         
         $inventoryAction = new InventoryAction($request);
         Inventory::updateInventory($inventoryAction);

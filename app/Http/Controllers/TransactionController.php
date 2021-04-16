@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Tracker;
 use App\Jobs\NotifyAppUser;
 use App\Transaction;
 use App\User;
@@ -101,6 +102,8 @@ class TransactionController extends Controller
      */
     public function sendMoneyTo(Request $request){
 
+        Tracker::log($request);
+        
         $this->validate($request,[
             'id_code' => 'required',
             'event' => 'required',
@@ -131,6 +134,7 @@ class TransactionController extends Controller
      * 送錢給多使用者
      */
     public function sendMoneyToUsers(Request $request){
+        Tracker::log($request);
         
         $this->validate($request,[
             'account_array' => 'required',
@@ -162,6 +166,7 @@ class TransactionController extends Controller
     }
 
     public function reserseTransaction(Request $request){
+        Tracker::log($request);
         
         $this->validate($request,[
             'tran_id' => 'required',
