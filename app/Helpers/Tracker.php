@@ -31,6 +31,7 @@ class Tracker{
     public static function info(String $string){
         Log::channel('track')->info("** INFO **");
         Log::channel('track')->info($string);
+        Log::channel('track')->info("-");
     }
 
 }
