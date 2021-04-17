@@ -173,6 +173,8 @@ class TransactionController extends Controller
         ]);
 
         $transaction = Transaction::where('tran_id',$request->tran_id)->first();
+        Tracker::info(json_encode($transaction));
+        
         try {
             $transaction->reverse();
         } catch (\Throwable $th) {

@@ -204,6 +204,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         Tracker::log($request);
+        Tracker::info(json_encode($product));
         
         if($request->hasFile('file')){
             $filename = $this->imageHandler($request->file('file'),$product->slug);

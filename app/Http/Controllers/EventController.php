@@ -310,6 +310,7 @@ class EventController extends Controller
                 's'=>0,'m'=>'Event not found!'
             ]);
         }
+        Tracker::info(json_encode($event));
         
         $user = request()->user();
         if($user->hasRole('teacher')){

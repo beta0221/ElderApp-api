@@ -677,6 +677,7 @@ class MemberController extends Controller
         Tracker::log($request);
 
         $user = User::find($request->id);
+        Tracker::info(json_encode($user));
 
         if(!$user){
             return response()->json([
@@ -956,6 +957,8 @@ class MemberController extends Controller
             return response('無法將推薦人設立為使用者本身',400);
         }
         $user = User::findOrFail($request->user_id);
+        Tracker::info(json_encode($user));
+
         $inviter = User::findOrFail($request->inviter_id);
         $user->inviter_id = $inviter->id;
         $user->inviter = $inviter->name;

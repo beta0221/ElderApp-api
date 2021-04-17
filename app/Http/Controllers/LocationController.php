@@ -245,6 +245,8 @@ class LocationController extends Controller
         $this->validateRequest($request);
         
         $location = Location::findOrFail($request->id);
+        Tracker::info(json_encode($location));
+
         $location->name = $request->name;
         $location->address = $request->address;
         $location->link = $request->link;
