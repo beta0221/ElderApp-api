@@ -8,7 +8,7 @@
                     "/app/post/*",
 		            "/app/event/*",
 		            "/app/product/*",
-                    "/line/login",
+                    "/app/line/login",
                 ]
             }
         ]
