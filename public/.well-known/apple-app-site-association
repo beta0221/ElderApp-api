@@ -6,8 +6,9 @@
                 "appID": "V4C8JA4SFU.com.fullygarden.ElderAppiOS",
                 "paths": [
                     "/app/post/*",
-		    "/app/event/*",
-		    "/app/product/*",
+		            "/app/event/*",
+		            "/app/product/*",
+                    "/line/login",
                 ]
             }
         ]
