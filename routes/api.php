@@ -18,6 +18,7 @@ Route::group([
 ], function ($router) {
     Route::post('set_pushtoken','AuthController@set_pushtoken');
     Route::post('login', 'AuthController@login');
+    Route::post('line_login', 'AuthController@line_login');
     Route::post('signup', 'AuthController@signup');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
@@ -25,6 +26,7 @@ Route::group([
     Route::post('myAccount','MemberController@myAccount');
     Route::post('updateAccount','MemberController@updateAccount');
     Route::post('uploadImage','AuthController@uploadImage');
+    Route::post('bind_lineAccount','AuthController@bind_lineAccount');
 });
 
 

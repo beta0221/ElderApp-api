@@ -573,4 +573,39 @@ class User extends Authenticatable implements JWTSubject
         $this->roles()->detach($role->id);
     }
 
+    /**
+     * 綁定line id 
+     * @param string $line_id 
+     * @return bool 是否成功
+     * */
+    public function bindLineAccount(string $line_id){
+        if($row = DB::table('user_line')->where('user_id',$this->id)->first()){
+            return false;   //已存在
+        }
+        if($row = DB::table('user_line')->where('line_id',$line_id)->first()){
+            return false;   //已存在
+        }
+        DB::table('user_line')->insert([
+            'user_id'=>$this->id,
+            'line_id'=>$line_id
+        ]);
+        return true;
+    }
+
+    /**
+     * 用 line的 userID 登入
+     * @param string $line_id
+     * @return User
+     */
+    public static function lineLogin(string $line_id){
+        if(!$row = DB::table('user_line')->where('line_id',$line_id)->first()){
+            return false;   //尚未綁定
+        }
+        if(!$user = User::find($row->user_id)){
+            return false;
+        }
+        return $user;
+    }
+    
+
 }

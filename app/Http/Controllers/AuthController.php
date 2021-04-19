@@ -9,6 +9,7 @@ use App\Role;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -27,6 +28,7 @@ class AuthController extends Controller
     {
         $this->middleware('JWT', ['except' => [
             'login',
+            'line_login',
             'signup',
             'web_login',
             'web_admin_login',
@@ -49,15 +51,8 @@ class AuthController extends Controller
      */
     public function login()
     {
-        if($iOSVer = request('iOSVer')){
-            if(static::iOSVer_requirement > (int)$iOSVer){
-                return $this->pleaseUpdateResponse();
-            }
-        }
-        if($androidVer = request('androidVer')){
-            if(static::androidVer_requirement > (int)$androidVer){
-                return $this->pleaseUpdateResponse();
-            }
+        if($this->isVersionBehind()){
+            return $this->pleaseUpdateResponse(); 
         }
 
         $credentials = request(['email', 'password']);
@@ -69,6 +64,40 @@ class AuthController extends Controller
         $hasRole = (request('hasRole'))?true:false;
 
         return $this->respondWithToken($token,$hasRole);
+    }
+
+
+    public function line_login(Request $request){
+
+        $this->validate($request,[
+            'userID' =>'required',
+        ]);
+
+        if($this->isVersionBehind()){
+            return $this->pleaseUpdateResponse(); 
+        }
+
+        if(!$user = User::lineLogin($request->userID)){
+            return response(['error' => 'Unauthorized'], 401);
+        }
+
+        $token = JWTAuth::fromUser($user);
+        return $this->respondWithToken($token,false);
+
+    }
+
+    private function isVersionBehind(){
+        if($iOSVer = request('iOSVer')){
+            if(static::iOSVer_requirement > (int)$iOSVer){
+                return true;
+            }
+        }
+        if($androidVer = request('androidVer')){
+            if(static::androidVer_requirement > (int)$androidVer){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function web_login(){
@@ -264,5 +293,19 @@ class AuthController extends Controller
         $user->set_pushtoken($request->pushtoken);
         return response('success');
     }
+
+    /**綁定line user id */
+    public function bind_lineAccount(Request $request){
+        $this->validate($request,[
+            'userID' =>'required',
+        ]);
+        $user = $request->user();
+        $result = $user->bindLineAccount($request->userID);
+        if($result){
+            return response('success');
+        }
+        return response('error',400);
+    }
+
 
 }
