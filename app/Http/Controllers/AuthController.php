@@ -9,6 +9,7 @@ use App\Role;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Jobs\NotifyAppUser;
 
 class AuthController extends Controller
 {
@@ -303,6 +304,9 @@ class AuthController extends Controller
         $user = $request->user();
         $result = $user->bindLineAccount($request->userID);
         if($result){
+            $amount = 200;
+            $user->update_wallet_with_trans(User::INCREASE_WALLET,$amount,"Line帳號綁定獎勵");
+            NotifyAppUser::dispatch($user->id,'恭喜您！','獲得綁定獎勵'.$amount.'點。');
             return response('success');
         }
         return response('error',400);
