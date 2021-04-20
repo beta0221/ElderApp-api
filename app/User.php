@@ -593,6 +593,16 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * 是否已綁定line帳號
+     */
+    public function isLineAccountBinded(){
+        if($row = DB::table('user_line')->where('user_id',$this->id)->first()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 用 line的 userID 登入
      * @param string $line_id
      * @return User

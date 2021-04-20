@@ -641,6 +641,9 @@ class MemberController extends Controller
             $user->myCourseUrl = '/view_myCourse';
         }
 
+        //是否綁定Line
+        $user->isLineAccountBinded = $user->isLineAccountBinded();
+
         return response()->json($user);
     }
 
