@@ -8,8 +8,7 @@ use App\User;
 use App\Role;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
