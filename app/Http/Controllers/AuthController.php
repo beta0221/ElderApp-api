@@ -81,7 +81,7 @@ class AuthController extends Controller
         }
 
         $token = JWTAuth::fromUser($user);
-        return $this->respondWithToken($token,false);
+        return $this->respondWithToken($token,false,$user);
 
     }
 
@@ -207,7 +207,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(auth()->refresh(),false);
     }
 
     /**
@@ -217,10 +217,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token,$hasRole)
+    protected function respondWithToken($token,$hasRole,$user = null)
     {
 
-        $user = auth()->user();
+        if(!$user){
+            $user = auth()->user();
+        }
         $result = [
             'access_token' => $token,
             'user_id'=>$user->id,
