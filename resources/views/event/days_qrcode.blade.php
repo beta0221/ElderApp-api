@@ -38,16 +38,39 @@
     <div class="container mt-4 mb-4">
         <div class="row">
             <div class="offset-md-3 col-md-6 col-sm-12">
-
+                <h3 class="mb-4">總堂數：{{($event->days)}}堂</h3>
                 <h3 class="mb-4">目前活動進度：{{($event->current_day)?"第 $event->current_day 堂":"未開始"}}</h3>
                 <div style="text-align:left;">
                     <p>1.課程進度一旦開啟則無法返回。</p>
                     <p>2.每堂課每位參與者只能領取一次獎勵。</p>
                 </div>
                 
-                @for($x = 1; $x <= $event->days;$x++)
+                
+
+                <?php 
+                    $topdot = false;
+                    $bottomdot = false;
+                    $from = $event->current_day - 5;
+                    $to = $event->current_day + 5;
+                    if($from > 1){ $topdot = true; }
+                    if ($from < 1) { $from = 1; }
+                    if($to < $event->days){ $bottomdot = true; }
+                    if ($to > $event->days) { $to = $event->days; }
+                ?>
+
+                @if ($topdot)
+                .<br>.<br>.<br>
+                @endif
+
+                @for($x = $from; $x <= $to;$x++)
                     <div onclick="confirmUpdateCurrentDay({{$x}})" class="btn btn-lg d-block mb-2 {{($event->current_day>=$x)?'disabled btn-secondary':'btn-info'}}">第 {{$x}} 堂課</div>
                 @endfor
+
+                @if ($bottomdot)
+                .<br>.<br>.<br>
+                @endif
+
+
             </div>
         </div>
 
