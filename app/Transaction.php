@@ -18,7 +18,11 @@ class Transaction extends Model
             return;
         }
 
-        $give_take = !$this->give_take;
+        $give_take = User::INCREASE_WALLET;
+        if($this->give_take == 1){
+            $give_take = User::DECREASE_WALLET;
+        }
+        
         $user = User::find($this->user_id);
         $user->updateWallet($give_take,$this->amount);
 

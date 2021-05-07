@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('event');
             $table->integer('amount')->unsigned();
             $table->boolean('give_take');
-            $table->string('target_id');
+            $table->integer('target_id')->unsigned();
             $table->timestamps();
         });
     }
