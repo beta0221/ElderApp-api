@@ -41,18 +41,10 @@ class SendMoney extends Command
     public function handle()
     {
 
-        //發送:續會獎勵
+        //發送:中秋節禮金
 
         $from = $this->argument('from');
         $to = $this->argument('to');
-
-
-
-        // $user_id_array = PayDate::where('id','>=',$from)
-        // ->where('id','<=',$to)
-        // ->pluck('user_id');
-
-        // $users = User::whereIn('id',$user_id_array)->get();
 
         $users = User::where('id','>=',$from)
         ->where('id','<=',$to)
@@ -60,10 +52,8 @@ class SendMoney extends Command
         ->get(); 
 
         foreach ($users as $user) {
-            // $count = PayDate::where('user_id',$user->id)->count();
-            // if($count <= 1){ continue; }
             $this->info('user:' . $user->name . '(' . $user->id . ')');
-            AppSendMoney::dispatch($user,0,'')->onQueue('sendMoney');
+            AppSendMoney::dispatch($user,600,'中秋節禮金')->onQueue('sendMoney');
         }
 
         $this->info('from:'.$from.', to:'.$to.' (success)');
