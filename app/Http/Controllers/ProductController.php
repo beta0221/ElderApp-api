@@ -377,6 +377,8 @@ class ProductController extends Controller
         ],200);
 
     }
+
+    /**兌換區商品列表 */
     public function productList(Request $request){
 
         $page = ($request->page)?$request->page:1;
@@ -396,6 +398,22 @@ class ProductController extends Controller
             'hasNextPage'=>$hasNextPage
         ]);
 
+    }
+
+    /**商城商品列表 */
+    public function marketProductList(Request $request){
+        
+        $total = Product::where('public','&',6)->count();
+        $p = new Pagination($request);
+        $p->cacuTotalPage($total);
+        
+        $productList = Product::where('public','&',6)->skip($p->skip)->take($p->rows)->orderBy('order_weight','desc')->orderBy('id',$p->ascOrdesc)->get();
+        $productList = ProductListResource_User::collection($productList);
+
+        return response([
+            'productList'=>$productList,
+            'hasNextPage'=>$p->hasNextPage
+        ]);
     }
 
     /**銀髮商城 */

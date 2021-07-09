@@ -121,6 +121,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     
     Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
     Route::get('productList','ProductController@productList');
+    Route::get('/marketProductList','ProductController@marketProductList');
+
     //後台
     Route::get('productDetail/{slug}','ProductController@productDetail');
     Route::group([
