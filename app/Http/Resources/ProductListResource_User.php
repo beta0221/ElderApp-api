@@ -23,6 +23,9 @@ class ProductListResource_User extends JsonResource
             'slug'=>$this->slug,
             'price'=>$this->price,
             'pay_cash_price'=>$this->pay_cash_price,
+            'pay_cash_point'=>$this->pay_cash_point,
+            'original_cash'=>$this->original_cash,
+            'cash'=>$this->cash,
             'imgUrl'=>$imgUrl,
         ];
     }
