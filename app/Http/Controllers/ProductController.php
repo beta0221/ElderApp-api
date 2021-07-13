@@ -308,6 +308,7 @@ class ProductController extends Controller
         return $filename;//成功：回傳檔名
     }
 
+    /**兌換 */
     public function purchase(Request $request, $product_slug){
 
         $this->validate($request,[
@@ -362,6 +363,48 @@ class ProductController extends Controller
         return response('success',200);
 
     }
+
+    /**現金購買 */
+    public function purchaseByCash(Request $request, $product_slug){
+        $this->validate($request,[
+            'location_id'=>'required',
+            'quantity'=>'required',
+        ]);
+
+        if(!$product = Product::where('slug',$product_slug)->first()){
+            return response('產品不存在',400);
+        }
+
+        //檢查user樂幣是否足夠
+        $user = Auth::user();
+        $totalPoint = (int)$request->quantity * $product->pay_cash_point;
+        if($user->wallet < $totalPoint){
+            return response('樂必餘額不足，無法兌換',400);
+        }
+
+        //檢查產品庫存
+        if(!$product->isAvailable($request->location_id,(int)$request->quantity,Inventory::TARGET_CASH)){
+            return response('非常抱歉，目前此據點庫存不足。',400);
+        }
+
+        //if 足夠 => 扣庫存
+        $invAction = InventoryAction::getInstance($request->location_id,$product->id,Inventory::TARGET_CASH,Inventory::ACTION_REMOVE,(int)$request->quantity,'系統-商城購買商品');
+        Inventory::updateInventory($invAction);
+
+        //成立訂單
+        $order_numero = rand(0,9) . time() . rand(0,9);
+        Order::insert_row($user->id,null,$request->location_id,$order_numero,$product,0,(int)$request->quantity);
+
+        //user 扣點數
+        $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order_numero");
+
+        return response([
+            's'=>1,
+            'order_numero'=>$order_numero
+        ]);
+
+    }
+
 
     /**
      * 舊的api, app更新後要移除
