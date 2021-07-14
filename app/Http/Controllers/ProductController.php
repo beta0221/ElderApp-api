@@ -18,6 +18,7 @@ use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Inventory;
 use App\Order;
+use App\User;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
