@@ -15,6 +15,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cookie;
 
 class OrderController extends Controller
 {
@@ -243,6 +244,10 @@ class OrderController extends Controller
 
     public function view_orderDetail(Request $req,$order_numero){
         
+        if($req->token){
+            Cookie::queue('token',$req->token,60);
+        }
+
         if(!$orders = Order::where('order_numero',$order_numero)->get()){
             return view('errors.404');
         }
