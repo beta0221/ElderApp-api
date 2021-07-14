@@ -10,10 +10,16 @@
 
 @section('content')
 
-    @include('component.titlebar',[
-        'url'=>'/product/list',
-        'title'=>'產品首頁',
-    ])
+
+    @if (isset($noFooter) && $noFooter == 1)
+            {{-- no footer --}}
+    @else
+        @include('component.titlebar',[
+            'url'=>'/product/list',
+            'title'=>'產品首頁',
+        ])
+    @endif
+    
 
     <div class="container">
 
@@ -57,7 +63,14 @@
                                         <td>{{$o->name}}</td>
                                         @if ($index == 0)
                                         <td style="width: 56px" rowspan="{{count($order->list)}}">
-                                            <a href="/order/detail/{{$order->order_numero}}"><div class="btn btn-primary btn-sm">詳情</div></a>
+                                            <?php 
+                                                $href = "/order/detail/".$order->order_numero;
+
+                                                if (isset($noFooter) && $noFooter == 1){
+                                                    $href .= "?noFooter=1";
+                                                }
+                                            ?>
+                                            <a href="{{$href}}"><div class="btn btn-primary btn-sm">詳情</div></a>
                                         </td>
                                         @endif
                                     </tr>

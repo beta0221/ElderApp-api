@@ -1,3 +1,13 @@
+
+@if (isset($noFooter) && $noFooter == 1)
+            {{-- no footer --}}
+@else
+<?php 
+    $noFooter = 0;
+?>
+    
+@endif
+
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
 
@@ -36,7 +46,7 @@
 
         @if ($page != 1)
         <li class="page-item">
-            <a class="page-link" href="{{$url}}?page={{$page-1}}" aria-label="Previous">
+            <a class="page-link" href="{{$url}}?page={{$page-1}}&noFooter={{$noFooter}}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
@@ -51,7 +61,7 @@
 
         @for($i = $min;$i <= $max;$i++)
             <li class="page-item {{($i==$page)?'active':''}}">
-                <a class="page-link" href="{{$url}}?page={{$i}}">{{$i}}</a>
+                <a class="page-link" href="{{$url}}?page={{$i}}&noFooter={{$noFooter}}">{{$i}}</a>
             </li>    
         @endfor
 
@@ -61,7 +71,7 @@
 
         @if ($page != $totalPage && $totalPage != 0)
         <li class="page-item">
-            <a class="page-link" href="{{$url}}?page={{$page+1}}" aria-label="Next">
+            <a class="page-link" href="{{$url}}?page={{$page+1}}&noFooter={{$noFooter}}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>

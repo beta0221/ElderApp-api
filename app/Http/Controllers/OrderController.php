@@ -241,7 +241,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function view_orderDetail($order_numero){
+    public function view_orderDetail(Request $req,$order_numero){
         
         if(!$orders = Order::where('order_numero',$order_numero)->get()){
             return view('errors.404');
@@ -276,6 +276,7 @@ class OrderController extends Controller
             'orders'=>$orders,
             'orderDelievery'=>$orderDelievery,
             'locationDict'=>$locationDict,
+            'noFooter'=>$req->noFooter
         ]);
 
     }
@@ -314,6 +315,7 @@ class OrderController extends Controller
             'orders'=>$orders,
             'totalPage'=>$totalPage,
             'page'=>$page,
+            'noFooter'=>$req->noFooter
         ]);
     }
     

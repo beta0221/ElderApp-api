@@ -10,10 +10,19 @@
 
 @section('content')
 
-    @include('component.titlebar',[
-        'url'=>'/order/list',
-        'title'=>'訂單列表',
-    ])
+    @if (isset($noFooter) && $noFooter == 1)
+        @include('component.titlebar',[
+            'url'=>'/order/list?noFooter=1',
+            'title'=>'訂單列表',
+        ])
+    @else
+        @include('component.titlebar',[
+            'url'=>'/order/list',
+            'title'=>'訂單列表',
+        ])
+    @endif
+
+    
 
     <div class="container">
         <div class="row">

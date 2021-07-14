@@ -16,7 +16,13 @@
     <div class="wrapper">
         {{-- @include('component.navbar') --}}
         @yield('content')
-        @include('component.footer')
+        
+        @if (isset($noFooter) && $noFooter == 1)
+            {{-- no footer --}}
+        @else
+            @include('component.footer')
+        @endif
+        
     </div>
 
 </body>
