@@ -287,6 +287,10 @@ class OrderController extends Controller
     }
     public function view_orderList(Request $req){
 
+        if($req->token){
+            Cookie::queue('token',$req->token,60);
+        }
+        
         $page = ($req->page)?$req->page:1;
         $rows = 6;
         $skip = ($page - 1) * $rows;
