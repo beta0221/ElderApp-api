@@ -1,6 +1,6 @@
 <template>
 <div>
-    <order-detail></order-detail>
+    <order-detail v-on:refreshTable="getOrders"></order-detail>
     <OrderQueryPanel></OrderQueryPanel>
     <div>
         <v-btn color="info" @click="selectAll">

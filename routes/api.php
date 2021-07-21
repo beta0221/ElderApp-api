@@ -167,6 +167,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::get('getOrderDetail/{order_numero}','OrderController@getOrderDetail');
         Route::post('nextStatus','OrderController@nextStatus');
         Route::post('groupNextStatus','OrderController@groupNextStatus');
+        Route::post('{order_numero}/void','OrderController@voidOrder');
     });
     
     //後台 儀表板

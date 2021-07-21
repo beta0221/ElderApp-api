@@ -42,6 +42,10 @@
             </table>
         </div>
 
+        <div>
+            <v-btn color="red" @click="voidOrderRequest">作廢</v-btn>
+        </div>
+
 
         <v-card-actions>
             <v-spacer></v-spacer>
@@ -61,7 +65,7 @@ export default {
         EventBus.$on("showOrderDetail", order_numero => {
             this.order_numero = order_numero;
             this.dialog = true;
-            this.getOrderDetail(order_numero);
+            this.getOrderDetail();
         });
     },
     data(){
@@ -75,15 +79,26 @@ export default {
         };
     },
     methods:{
-        getOrderDetail(order_numero){
-            axios.get('/api/order/getOrderDetail/'+order_numero)
-            .catch(error => {console.log(error);})
+        getOrderDetail(){
+            axios.get('/api/order/getOrderDetail/'+this.order_numero)
+            .catch(error => {
+                Exception.handle(err);
+            })
             .then(res => {
                 this.orders = res.data.orders;
                 this.orderDelievery = res.data.orderDelievery;
                 this.productImageDict = res.data.productImageDict;
                 this.locationDict = res.data.locationDict;
             });
+        },
+        voidOrderRequest(){
+            axios.post(`/api/order/${this.order_numero}/void`)
+            .then(res => {
+                this.$emit('refreshTable');
+            })
+            .catch(err => {
+                Exception.handle(err);
+            })
         }
     }
 }

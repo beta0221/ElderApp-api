@@ -68,6 +68,7 @@ class Order extends Model
         ]);
     }
 
+    /**訂單進入下階段狀態 */
     public static function updateToNextStatus($firm_id,$order_numero){
         $first = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->first();
         if(!$first){
@@ -81,6 +82,12 @@ class Order extends Model
             'ship_status'=>$nextStatus
         ]);
         return 1;
+    }
+
+    /**作廢訂單 */
+    public function voidOrder(){
+        $this->ship_status = Order::STATUS_VOID;
+        $this->save();
     }
 
     public static function groupOrdersByNumero($orders){

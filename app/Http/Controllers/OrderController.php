@@ -22,7 +22,7 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','getOrderDetail','nextStatus','groupNextStatus','excel_downloadOrderExcel']]);
+        $this->middleware(['JWT','FirmAndAdmin'], ['only' => ['getOrders','getOrderDetail','nextStatus','groupNextStatus','voidOrder','excel_downloadOrderExcel']]);
         $this->middleware('webAuth',['only'=>['view_orderList','view_orderDetail']]);
     }
 
@@ -136,6 +136,26 @@ class OrderController extends Controller
         }
 
         return response(['s'=>1,'m'=>'更新成功']);
+    }
+
+    /**作廢訂單 */
+    public function voidOrder(Request $request,$order_numero){
+        $query = Order::where('order_numero',$order_numero);
+        $user = request()->user();
+        
+        if(!$user->isAdmin()){  //如果不是管理員
+            $query->where('firm_id',$user->id);
+        }
+
+        if(!$orders = $query->get()){
+            return response('error',500);
+        }
+
+        foreach ($orders as $order) {
+            $order->voidOrder();
+        }
+
+        return response('success');
     }
 
     /**
