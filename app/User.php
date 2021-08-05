@@ -410,7 +410,7 @@ class User extends Authenticatable implements JWTSubject
         return $dict;
     }
 
-    /**發送獎勵給推薦人（如果有推薦人的話） */
+    /**發送獎勵給推薦人（如果有推薦人的話） (入會)*/
     public function rewardInviter(){
         if($this->inviter_id){
             if($inviter = User::find($this->inviter_id)){
@@ -419,7 +419,7 @@ class User extends Authenticatable implements JWTSubject
             }
         }
     }
-    /**續會的推薦人獎勵 */
+    /**續會的推薦人獎勵 (續會)*/
     public function rewardInviterForRenew(){
         if($this->inviter_id){
             if($inviter = User::find($this->inviter_id)){
@@ -429,7 +429,7 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    /** 發送獎勵給組織中的各個職位 */
+    /** 發送獎勵給組織中的各個職位 (入會)*/
     public function rewardGroupMembers(){
         if(!$group = DB::table('user_group')->where('user_id',$this->id)->first()){ return; }
         for ($i = $group->level + 1; $i <= 5; $i++) { 
@@ -462,7 +462,7 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    /** 發送續會服務獎勵給組織中的各個職位 */
+    /** 發送續會服務獎勵給組織中的各個職位 (續會) */
     public function rewardGroupMembersForRenew(){
         if(!$group = DB::table('user_group')->where('user_id',$this->id)->first()){ return; }
         for ($i = $group->level + 1; $i <= 5; $i++) { 

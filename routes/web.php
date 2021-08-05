@@ -11,9 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('admin');
-});
 
 Route::get('/check',function(){
     return response('alive');
@@ -90,6 +87,7 @@ Route::view('/supplier/{any1}/{any}','supplierAdmin');
 Route::view('/association/{any}','associationAdmin');
 Route::view('/association/{any}/{any1}','associationAdmin');
 
+Route::view('/','admin');
 Route::view('/{any}','admin');
 Route::view('/{any}/{any1}','admin');
 

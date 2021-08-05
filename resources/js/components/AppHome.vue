@@ -13,12 +13,12 @@
 
 <script>
 import sidebar from './SideBar'
-import login from "./Login/Login"
+// import login from "./Login/Login"
 
 export default {
     components:{ 
         sidebar,
-        login
+        // login
     }
 }
 </script>

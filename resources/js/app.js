@@ -41,13 +41,15 @@ window.EventBus = new Vue();
 
 Vue.component('app-home', require('./components/AppHome.vue').default);
 Vue.component('association-home',require('./components/associationComponents/AssociationHome.vue').default);
+// Vue.component('app-login',require('./components/Login/Login.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import router from './router/router.js'
-import Token from './Helpers/Token';
+// import Token from './Helpers/Token';
 const app = new Vue({
     el: '#app',
     router,
