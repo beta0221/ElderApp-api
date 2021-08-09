@@ -12,7 +12,7 @@ class InsuranceController extends Controller
     /**後台index */
     public function index(Request $request){
         $p = new Pagination($request);
-        $query = Insurance::skip($p->skip)->take($p->rows)->orderBy($p->orderBy,$p->ascOrdesc);
+        $query = Insurance::orderBy($p->orderBy,$p->ascOrdesc);
 
         if($request->has('status')){
             $query->where('status',$request->status);
@@ -22,8 +22,8 @@ class InsuranceController extends Controller
             $query->where('name','LIKE',"%$request->name%");
         }
 
-        $insuranceList = $query->get();
         $total = $query->count();
+        $insuranceList = $query->skip($p->skip)->take($p->rows)->get();
 
         return response([
             'items' => $insuranceList,
@@ -70,6 +70,33 @@ class InsuranceController extends Controller
         return response('success');
     }
 
+    /**作廢 */
+    public function void($id,Request $request){
+        $insurance = Insurance::findOrFail($id);
+        $insurance->void();
+        return response('success');
+    }
+
+    /**App 使用者申請保險 */
+    public function apply(Request $request){
+
+        $this->validate($request,[
+            'name'=>'required',
+            'identityNumber'=>'required',
+            'phone'=>'required',
+            'birthdate'=>'required',
+        ]);
+        
+        $user = $request->user();
+        $user->insurances()->create([
+            'name'=>$request->name,
+            'identity_number'=>$request->identityNumber,
+            'phone'=>$request->phone,
+            'birthdate'=>$request->birthdate,
+        ]);
+
+        return response(['s'=>1, 'm'=>'success']);
+    }
 
 
 

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Jobs\NotifyAppUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -104,6 +105,11 @@ class User extends Authenticatable implements JWTSubject
 
 
     //database relationship binding
+
+    /**保險 */
+    public function insurances(){
+        return $this->hasMany('App\Insurance');
+    }
 
     public function locations(){
         return $this->belongsToMany('App\Location','location_manager','user_id','location_id');

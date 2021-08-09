@@ -14,7 +14,6 @@
             <span>生效日：</span>
             <input type="date" v-model="issueDate">
             <v-btn @click="issueInsurance" color="success">生效</v-btn>
-
         </div>
         
         <DataTable ref="DataTable" :dict="dict" :headers="headers" :requestUrl="requestUrl" />
@@ -48,12 +47,14 @@ export default {
                         'processing':'處理中',
                         'verified':'已核帳',
                         'close':'完成',
+                        'void':'作廢',
                     },
                     color:{
                         'pending':'grey',
                         'processing':'orange',
                         'verified':'#2196f3',
                         'close':'#7ec365',
+                        'void':'red',
                     }
                 }
             },
@@ -64,7 +65,8 @@ export default {
                     {value:'pending',text:'待處理'},
                     {value:'processing',text:'處理中'},
                     {value:'verified',text:'已核帳'},
-                    {value:'close',text:'完成'}
+                    {value:'close',text:'完成'},
+                    {value:'void',text:'作廢'},
                 ]
             },
             issueDate:null
@@ -103,7 +105,7 @@ export default {
             .catch(err => {
                 Exception.handle(error);
             })
-        }
+        },
     }
 }
 </script>

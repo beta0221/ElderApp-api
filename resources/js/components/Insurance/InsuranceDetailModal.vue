@@ -17,12 +17,17 @@
                 </div>
 
                 <div class="data-row">
-                    <span>狀態:{{data.status}}</span>
+                    <span>生日:{{data.birthdate}}</span>
+                </div>
+
+                <div class="data-row">
+                    <span>狀態:{{statusDict[data.status]}}</span>
                 </div>
 
             </div>
 
             <v-card-actions>
+                <v-btn @click="voidInsurance" color="red">作廢</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn @click="show = false">關閉</v-btn>
             </v-card-actions>
@@ -46,7 +51,14 @@ export default {
         return {
             id:null,
             data:{},
-            show:false,  
+            show:false,
+            statusDict:{
+                'pending':'待處理',
+                'processing':'處理中',
+                'verified':'已核帳',
+                'close':'完成',
+                'void':'作廢',
+            },
         };
     },
     methods:{
@@ -56,6 +68,16 @@ export default {
                 this.data = res.data;
             })
             .catch(error => {
+                Exception.handle(error);
+            })
+        },
+        voidInsurance(){
+            axios.post(`/api/insurance/${this.id}/void`)
+            .then(res => {
+                this.getData();
+                EventBus.$emit('reloadData');
+            })
+            .catch(err => {
                 Exception.handle(error);
             })
         }

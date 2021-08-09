@@ -20,8 +20,9 @@ class CreateInsurancesTable extends Migration
             $table->string('name',50);
             $table->string('identity_number',50);
             $table->string('phone',50);
+            $table->date('birthdate');
 
-            $table->enum('status',['pending','processing','verified','close'])->default('pending');
+            $table->enum('status',['pending','processing','verified','close','void'])->default('pending');
             $table->timestamps();
         });
     }

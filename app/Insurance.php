@@ -11,7 +11,9 @@ class Insurance extends Model
     const STATUS_PROCESSING = 'processing';
     const STATUS_VERIFIED = 'verified';
     const STATUS_CLOSE = 'close';
+    const STATUS_VOID = 'void';
 
+    protected $guarded=[];
 
     public function user(){
         return $this->belongsTo('App\User');
@@ -32,6 +34,12 @@ class Insurance extends Model
             default:
                 break;
         }
+        $this->save();
+    }
+
+    /**作廢 */
+    public function void(){
+        $this->status = static::STATUS_VOID;
         $this->save();
     }
 

@@ -213,6 +213,11 @@ Route::group(['middleware' => ['JWT','admin']], function () {
             Route::get('/{id}','InsuranceController@show');
             Route::post('nextStatus','InsuranceController@nextStatus');
             Route::post('issue','InsuranceController@issue');
+            Route::post('/{id}/void','InsuranceController@void');
+        });
+
+        Route::group(['middleware'=>['JWT']],function(){
+            Route::post('apply','InsuranceController@apply');
         });
  
     });
