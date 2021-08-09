@@ -14,6 +14,7 @@ import OrderTable from '../components/OrderTable'
 import TransTable from '../components/TransTable'
 import SendMoneyTable from '../components/SendMoneyTable'
 import LocationTable from '../components/Location/LocationTable'
+import InsurancePage from '../components/Insurance/InsurancePage'
 
 import associationMemberTable from '../components/associationComponents/AssociationMemberTable'
 import associationEventPage from '../components/associationComponents/AssociationEventPage'
@@ -33,6 +34,7 @@ const routes = [
     {path:'/transaction', component: TransTable},
     {path:'/sendMoney', component: SendMoneyTable},
     {path:'/location', component: LocationTable},
+    {path:'/insurance', component: InsurancePage},
     //
     {path:'/association/admin', component: associationMemberTable},
     {path:'/association/member', component: associationMemberTable},

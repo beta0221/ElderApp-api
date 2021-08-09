@@ -205,3 +205,14 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         Route::post('removeComment','PostController@removeComment');
         Route::get('commentList/{slug}','PostController@commentList');
     });
+
+    Route::group(['prefix'=>'insurance'],function(){
+        
+        Route::group(['middleware'=>['JWT','admin']],function(){
+            Route::get('/','InsuranceController@index');
+            Route::get('/{id}','InsuranceController@show');
+            Route::post('nextStatus','InsuranceController@nextStatus');
+            Route::post('issue','InsuranceController@issue');
+        });
+ 
+    });

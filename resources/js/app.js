@@ -41,6 +41,8 @@ window.EventBus = new Vue();
 
 Vue.component('app-home', require('./components/AppHome.vue').default);
 Vue.component('association-home',require('./components/associationComponents/AssociationHome.vue').default);
+Vue.component('DataTable',require('./components/DataTable').default);
+
 // Vue.component('app-login',require('./components/Login/Login.vue').default);
 
 /**

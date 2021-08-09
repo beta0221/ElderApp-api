@@ -49,6 +49,7 @@
           { title: '交易紀錄', icon: 'history',url:'/transaction' },
           { title: '發送樂幣', icon: 'monetization_on',url:'/sendMoney' },
           { title: '據點管理', icon: 'location_on',url:'/location' },
+          { title: '保險申請表', icon: 'description',url:'/insurance' },
         ],
         right: null
       }
