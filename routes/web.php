@@ -40,6 +40,8 @@ Route::get('getGroupMemberDetail/{id}','MemberController@getMemberDetail')->midd
 Route::post('/removeMemberFromGroup','MemberController@removeMemberFromGroup');
 Route::get('/moveMemberPage/{user_id}','MemberController@moveMemberPage');
 Route::post('/moveMember/{user_id}','MemberController@moveMember');
+Route::get('/sendGroupRewardPage/{user_id}','MemberController@sendGroupRewardPage');
+Route::post('/sendGroupReward/{user_id}','MemberController@sendGroupReward');
 Route::post('/promoteLeader','MemberController@promoteLeader');
 Route::get('/coupon/generate/{quantity}/{amount}','PromocodeController@coupon_generate');
 
@@ -75,6 +77,10 @@ Route::group(['prefix'=>'order'],function(){
     Route::get('list','OrderController@view_orderList');
 });
 
+
+Route::group(['prefix'=>'insurance'],function(){
+    Route::get('/print','InsuranceController@view_print');
+});
 
 Route::get('/app/product/{slug}','ProductController@universal_link');
 Route::get('/app/event/{slug}','EventController@universal_link');

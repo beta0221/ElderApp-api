@@ -284,7 +284,7 @@
         if (specificDiv.is(event.target)){
             let user_id = $(event.target).attr('user_id');
             let user_name = name_dic[user_id];
-            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li id='moveMember' class='event'>移動</li><li id='removeMemberFromGroup' class='event'>從組織移除</li></ul></div>");
+            $(event.target).append("<div id='event-menu'><ul><li class='user-name'>"+user_name+"</li><li id='moveMember' class='event'>移動</li><li id='removeMemberFromGroup' class='event'>從組織移除</li><li id='sendGroupReward' class='event'>補發組織獎勵</li></ul></div>");
             $('#user-id-input').val(user_id);
             targetUserId = user_id;
         }
@@ -304,6 +304,11 @@
         }
         window.location.href = '/moveMemberPage/'+targetUserId;
     });
+
+    $(document).on('click','#sendGroupReward',function(){
+        window.location.href = '/sendGroupRewardPage/'+targetUserId;
+    });
+    
     
     function exportExcel(){
         window.open('/excel/memberGroupMembers?token='+localStorage.getItem('token') + '&user_id='+ UserId);

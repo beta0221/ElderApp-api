@@ -16,12 +16,22 @@
         <div class="data-row">
           <v-btn v-show="!(pagination.descending)" @click="setOrder(true)">▲</v-btn>
           <v-btn v-show="(pagination.descending)" @click="setOrder(false)">▼</v-btn>
+
+          <v-text-field style="display:inline-block;width:140px" type="text" placeholder="關鍵字" 
+            v-model="queryEvent" @keyup.native.enter="getTransactionHistory"/>
         </div>
 
         <div class="data-row" style="height:200px;margin-top:12px;">
           <div style="height:100%;">
             <div style="height:100%;overflow-y:scroll;border:.5px solid gray;padding:8px">
-              <p style="margin-bottom:4px" v-for="t in transList" v-bind:key="t.id" v-html="t.created_at + ' => ' + t.event + ' (' + ((t.give_take)?'+':'-') + t.amount + ')'"></p>
+              <div v-for="t in transList" v-bind:key="t.id">
+                
+                <p style="margin-bottom:4px" >
+                  <button style="background:red;color:#fff;padding:2px 4px;" v-if="t.target_id==0" @click="reverseTransaction(t.tran_id)">回朔</button>
+                  {{t.created_at}} => {{t.event}} ({{((t.give_take)?'+':'-')}}{{t.amount}})
+                </p>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -70,6 +80,7 @@ export default {
           descending:true
         },
         total:0,
+        queryEvent:null,
     };
   },
   methods: {
@@ -79,7 +90,7 @@ export default {
               'event':this.event,
               'amount':this.amount
           })
-          .catch(err => {console.error(err); })
+          .catch(err => {Exception.handle(err); })
           .then(res => {
               alert(res.data.m);
               if(res.data.s==1){
@@ -99,13 +110,27 @@ export default {
         this.getTransactionHistory();
       },
       getTransactionHistory(){
+        let params = Object.assign({},this.pagination);
+        params['queryEvent'] = this.queryEvent;
         axios.get('/api/transaction/history/'+this.user.id,{
-          params:this.pagination
+          params,
         })
-        .catch(err => {console.error(err); })
+        .catch(err => {Exception.handle(error); })
         .then(res => {
             this.transList = res.data.transList;
             this.total = res.data.total;
+        })
+      },
+      reverseTransaction(tran_id){
+        if(!confirm('確定回朔？')){ return; }
+        axios.post('/api/reserseTransaction', {
+          'tran_id':tran_id
+        })
+        .then(res=>{
+          this.getTransactionHistory();
+        })
+        .catch(error => {
+          Exception.handle(error);
         })
       }
   }

@@ -58,6 +58,11 @@
       </div>
 
       <div class="data-row">
+        <span>保險到期日</span>
+        <input type="text" v-model="user.insurance_date" disabled/>
+      </div>
+
+      <div class="data-row">
         <span>推薦人</span>
         <input type="text" v-model="user.inviter" :disabled="isReadMode" />
         <v-btn style="margin-left:0" @click="editInviter">編輯推薦人</v-btn>
@@ -164,7 +169,7 @@ export default {
           console.log(res);
         })
         .catch(error => {
-          console.log(error);
+          Exception.handle(error);
         });
     },
     editMode() {
@@ -199,7 +204,7 @@ export default {
         console.log(res);
       })
       .catch(error=>{
-        alert(error);
+        Exception.handle(error);
       });
     }
   }

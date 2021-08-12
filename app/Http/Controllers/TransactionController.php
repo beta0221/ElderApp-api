@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Jobs\NotifyAppUser;
 use App\Transaction;
@@ -307,16 +308,17 @@ class TransactionController extends Controller
      */
     public function history(Request $request,$user_id){
         
-        $page = ($request->page)?$request->page:1;
-        $rows = 20;
-        $skip = ($page - 1) * $rows;
-        $ascOrdesc = 'desc';
-        if ($request->descending == null || $request->descending == 'false') {
-            $ascOrdesc = 'asc';
+        $request->merge(['rowsPerPage'=>20]);
+        $p = new Pagination($request);
+
+        $query = Transaction::where('user_id',$user_id)->orderBy($p->orderBy,$p->ascOrdesc);
+
+        if($request->has('queryEvent')){
+            $query->where('event','LIKE',"%$request->queryEvent%");
         }
 
-        $total = Transaction::where('user_id',$user_id)->count();
-        $transList = Transaction::where('user_id',$user_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get();
+        $total = $query->count();
+        $transList = $query->skip($p->skip)->take($p->rows)->get();
 
         return response([
             'total'=>$total,

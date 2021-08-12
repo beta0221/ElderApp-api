@@ -58,7 +58,7 @@ class InsuranceController extends Controller
     public function issue(Request $request){
         
         if(!$request->has('issueDate')){ return response('error',500); }
-        $issueDate = date('Y-m-d',strtotime($request->issueDate));
+        $issueDate = date('Y-m-d',strtotime($request->issueDate));  //加一年？
         $insuranceList = Insurance::whereIn('id',$request->id_array)->get();
 
         foreach ($insuranceList as $insurance) {
@@ -98,6 +98,10 @@ class InsuranceController extends Controller
         return response(['s'=>1, 'm'=>'success']);
     }
 
+    /**列印書面 */
+    public function view_print(Request $request){
+        return view('insurance.print');
+    }
 
 
 }

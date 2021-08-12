@@ -29,6 +29,8 @@ class MemberController extends Controller
             'store',
             'memberTree',
             'moveMemberPage',
+            'sendGroupRewardPage',
+            'sendGroupReward',
             'moveMember',
             'promoteLeader',
             'updateMemberLevel',
@@ -484,6 +486,40 @@ class MemberController extends Controller
         
         Session::flash('success', '完成');
         return redirect($redirect);
+    }
+
+
+    /**補發組織獎勵操作頁面 */
+    public function sendGroupRewardPage(Request $request,$user_id){
+        if(!$user = User::find($user_id)){
+            return response('no such user');
+        }
+        $aboveGroupUsers = $user->getAboveGroupUsers();
+        return view('member.sendGroupRewardPage',[
+            'user'=>$user,
+            'aboveGroupUsers'=>$aboveGroupUsers
+        ]);
+    }
+
+    /**補發組織獎勵請求 */
+    public function sendGroupReward(Request $request,$user_id){
+        if(!$user = User::find($user_id)){
+            return response('no such user');
+        }
+
+        switch ($request->action) {
+            case 'renew':
+                $user->rewardGroupMembersForRenew();
+                break;
+            case 'join':
+                $user->rewardGroupMembers();
+                break;
+            default:
+                break;
+        }
+
+        Session::flash('success', '發送完成');
+        return redirect("/member_tree/$user->id_code");
     }
 
     /**

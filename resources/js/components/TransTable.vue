@@ -100,8 +100,7 @@ export default {
                 this.getTrans();
             })
             .catch(error => {
-                console.log(error);
-                alert('錯誤');
+                Exception.handle(error);
             })
         }
     }

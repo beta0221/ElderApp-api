@@ -69,6 +69,14 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
+    public static $groupLevelName = [
+        'lv_1'=>'主人',
+        'lv_2'=>'小天使',
+        'lv_3'=>'大天使',
+        'lv_4'=>'守護天使',
+        'lv_5'=>'領航天使',
+    ];
+
     // Rest omitted for brevity
 
     /**
@@ -336,6 +344,21 @@ class User extends Authenticatable implements JWTSubject
         $level = 'lv_' . $row->level;
         $group_users = DB::table('user_group')->where($level,$row->user_id)->where('level','<',$row->level)->get();
         return $group_users;
+    }
+
+    /**取得使用者等級以上的組織人員 */
+    public function getAboveGroupUsers(){
+        if(!$row = DB::table('user_group')->where('user_id',$this->id)->first()){ return []; }
+        $aboveGroupUsers = [];
+        for ($i = $row->level + 1; $i <= 5 ; $i++) { 
+            $level = 'lv_' . $i;
+            if($user_id = $row->{$level}){
+                if(!$user = User::find($user_id)){ continue; }
+                $levelName = static::$groupLevelName[$level];
+                $aboveGroupUsers[$levelName] = $user->name;
+            }
+        }
+        return $aboveGroupUsers;
     }
 
     public function payHistory()
