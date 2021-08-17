@@ -85,6 +85,14 @@ class InsuranceController extends Controller
             'identityNumber'=>'required',
             'phone'=>'required',
             'birthdate'=>'required',
+            'occupation'=>'required',
+            'relation'=>'required',
+            'q_1'=>'required',
+            'q_2'=>'required',
+            'q_3'=>'required',
+            'q_4'=>'required',
+            'q_5'=>'required',
+            'agree'=>'required',
         ]);
         
         $user = $request->user();
@@ -93,14 +101,40 @@ class InsuranceController extends Controller
             'identity_number'=>$request->identityNumber,
             'phone'=>$request->phone,
             'birthdate'=>$request->birthdate,
+            'occupation'=>$request->occupation,
+            'relation'=>$request->relation,
+            'q_1'=>$request->q_1,
+            'q_2'=>$request->q_2,
+            'q_3'=>$request->q_3,
+            'q_4'=>$request->q_4,
+            'q_5'=>$request->q_5,
+            'description'=>$request->description,
         ]);
 
-        return response(['s'=>1, 'm'=>'success']);
+        return view('insurance.success');
+    }
+    
+
+    /**App 申請表頁面 */
+    public function view_apply(Request $request){
+        
+        $user = $request->user();
+
+        return view('insurance.apply',[
+            'user'=>$user,
+            'token'=>$request->token
+        ]);
     }
 
     /**列印書面 */
     public function view_print(Request $request){
-        return view('insurance.print');
+
+        $id_array = explode(',',$request->id_array);
+        $insuranceList = Insurance::whereIn('id',$id_array)->get();
+
+        return view('insurance.print',[
+            'insuranceList'=>$insuranceList
+        ]);
     }
 
 

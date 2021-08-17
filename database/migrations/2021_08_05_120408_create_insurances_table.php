@@ -22,6 +22,15 @@ class CreateInsurancesTable extends Migration
             $table->string('phone',50);
             $table->date('birthdate');
 
+            $table->string('occupation',50);
+            $table->string('relation',50);
+            $table->boolean('q_1');
+            $table->boolean('q_2');
+            $table->boolean('q_3');
+            $table->boolean('q_4');
+            $table->boolean('q_5');
+            $table->string('description')->nullable();
+
             $table->enum('status',['pending','processing','verified','close','void'])->default('pending');
             $table->timestamps();
         });

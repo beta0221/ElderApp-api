@@ -215,9 +215,5 @@ Route::group(['middleware' => ['JWT','admin']], function () {
             Route::post('issue','InsuranceController@issue');
             Route::post('/{id}/void','InsuranceController@void');
         });
-
-        Route::group(['middleware'=>['JWT']],function(){
-            Route::post('apply','InsuranceController@apply');
-        });
- 
+        
     });

@@ -79,7 +79,11 @@ Route::group(['prefix'=>'order'],function(){
 
 
 Route::group(['prefix'=>'insurance'],function(){
+    Route::get('/apply','InsuranceController@view_apply');
     Route::get('/print','InsuranceController@view_print');
+    Route::group(['middleware'=>['JWT']],function(){
+        Route::post('/apply','InsuranceController@apply');
+    });
 });
 
 Route::get('/app/product/{slug}','ProductController@universal_link');
