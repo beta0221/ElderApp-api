@@ -43,9 +43,9 @@ class InsuranceController extends Controller
         $insuranceList = Insurance::whereIn('id',$request->id_array)->get();
         
         foreach ($insuranceList as $insurance) {
-            if($insurance->status == Insurance::STATUS_VERIFIED){
+            if($insurance->status == Insurance::STATUS_CLOSE && $isAccountant == false){
                 continue;
-            }else if($insurance->status == Insurance::STATUS_PROCESSING && $isAccountant == false){
+            }else if($insurance->status != Insurance::STATUS_PENDING){
                 continue;
             }
             $insurance->nextStatus();
@@ -58,11 +58,13 @@ class InsuranceController extends Controller
     public function issue(Request $request){
         
         if(!$request->has('issueDate')){ return response('error',500); }
-        $issueDate = date('Y-m-d',strtotime($request->issueDate));  //加一年？
+
+        $issueDate = date('Y-m-d',strtotime('+1 years -1 day' ,strtotime($request->issueDate)));  //加一年
+        
         $insuranceList = Insurance::whereIn('id',$request->id_array)->get();
 
         foreach ($insuranceList as $insurance) {
-            if($insurance->status != Insurance::STATUS_VERIFIED){ continue; }
+            if($insurance->status != Insurance::STATUS_PROCESSING){ continue; }
             $insurance->nextStatus();
             $insurance->issue($issueDate);
         }
@@ -113,7 +115,7 @@ class InsuranceController extends Controller
 
         return view('insurance.success');
     }
-    
+
 
     /**App 申請表頁面 */
     public function view_apply(Request $request){

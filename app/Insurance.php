@@ -9,8 +9,8 @@ class Insurance extends Model
 
     const STATUS_PENDING = 'pending';
     const STATUS_PROCESSING = 'processing';
-    const STATUS_VERIFIED = 'verified';
     const STATUS_CLOSE = 'close';
+    const STATUS_VERIFIED = 'verified';
     const STATUS_VOID = 'void';
 
     protected $guarded=[];
@@ -26,10 +26,10 @@ class Insurance extends Model
                 $this->status = static::STATUS_PROCESSING;
                 break;
             case static::STATUS_PROCESSING:
-                $this->status = static::STATUS_VERIFIED;
-                break;
-            case static::STATUS_VERIFIED:
                 $this->status = static::STATUS_CLOSE;
+                break;
+            case static::STATUS_CLOSE:
+                $this->status = static::STATUS_VERIFIED;
                 break;
             default:
                 break;

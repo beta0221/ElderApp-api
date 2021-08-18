@@ -65,8 +65,8 @@ export default {
                     {value:null,text:'狀態'},
                     {value:'pending',text:'待處理'},
                     {value:'processing',text:'處理中'},
-                    {value:'verified',text:'已核帳'},
                     {value:'close',text:'完成'},
+                    {value:'verified',text:'已核帳'},
                     {value:'void',text:'作廢'},
                 ]
             },
