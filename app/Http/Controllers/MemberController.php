@@ -90,7 +90,7 @@ class MemberController extends Controller
         }
 
         if($column != null && $value != null){
-            if($column == 'id' && strpos($value,',') == true){
+            if(($column == 'id' || $column == 'name') && strpos($value,',') == true){
                 $idArray = explode(',',$value);
                 $query->whereIn($column,$idArray);
             }else{
@@ -732,6 +732,9 @@ class MemberController extends Controller
         $user->gender = (int)$request->gender;
         $user->valid = $request->valid;
         $user->invoice = $request->invoice;
+        if($user->pay_status != 3 && $request->pay_status != 3){
+            $user->pay_status = $request->pay_status;
+        }
         $user->save();
 
         return response()->json([

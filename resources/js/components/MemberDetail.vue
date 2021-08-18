@@ -15,6 +15,16 @@
       </div>
 
       <div class="data-row">
+        <span>會員狀態</span>
+        <select v-model="user.pay_status" :disabled="isReadMode">
+          <option value="0">免費</option>
+          <option value="1">申請中</option>
+          <option value="2">已繳清</option>
+          <option value="3">完成</option>
+        </select>
+      </div>
+
+      <div class="data-row">
         <span>身分證</span>
         <input type="text" v-model="user.id_number" :disabled="isReadMode" />
       </div>

@@ -5,6 +5,7 @@
     <member-tree></member-tree>
     <send-money-panel></send-money-panel>
     <InviterPanel></InviterPanel>
+    <MemberCart ref="memberCart" />
 
     <div>
       
@@ -38,7 +39,8 @@
     <div>
       <v-btn color="info" @click="selectAll">全選</v-btn>
       <v-btn @click="nextStatusRequest">下階段</v-btn>
-      <v-btn @click="exportIdArray">匯出會員編號</v-btn>
+      <v-btn @click="addUserToCart">加入清單</v-btn>
+      <v-btn @click="showMemberCart" color="warning">選取清單</v-btn>
     </div>
 
 
@@ -120,12 +122,15 @@ import MemberDetail from "./MemberDetail";
 import MemberTree from "./MemberTree";
 import SendMoneyPanel from "./SendMoneyPanel";
 import InviterPanel from "./Member/InviterPanel"
+import MemberCart from "./Member/memberCart.vue"
+
 export default {
   components:{
     MemberDetail,
     MemberTree,
     SendMoneyPanel,
     InviterPanel,
+    MemberCart,
   },
   data() {
     return {
@@ -182,7 +187,7 @@ export default {
         {text:'欄位',value:null},
         {text:'id(以,分隔)',value:'id'},
         {text:'職務',value:'org_rank'},
-        {text:'姓名',value:'name'},
+        {text:'姓名(以,分隔)',value:'name'},
         {text:'身分證',value:'id_number'},
         {text:'手機號碼',value:'phone'},
         {text:'會員狀態',value:'pay_status'},
@@ -435,10 +440,16 @@ export default {
       });
       
     },
-    exportIdArray(){
-      let idArray = this.getSelectedArray();
-      let idArrayString = idArray.join();
-      alert(idArray);
+    showMemberCart(){
+      this.$refs.memberCart.showModal();
+    },
+    addUserToCart(){
+      this.desserts.forEach((item)=>{
+        if(item.isCheck != true){ return; }
+          if(item.id != undefined){
+            this.$refs.memberCart.add(item);
+          }
+      });
     }
   }
 };
