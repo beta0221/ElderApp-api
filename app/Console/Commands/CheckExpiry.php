@@ -47,7 +47,9 @@ class CheckExpiry extends Command
         foreach ($users as $user) {
             Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');
             NotifyAppUser::dispatch($user->id,'會員效期通知','您的會員效期已到期。');
+            $user->valid = 0;
+            $user->pay_status = 0;
+            $user->save();
         }
-        DB::update("UPDATE users SET valid = 0 WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
     }
 }

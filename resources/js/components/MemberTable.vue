@@ -35,6 +35,12 @@
       </v-btn>
     </div>
 
+    <div>
+      <v-btn color="info" @click="selectAll">全選</v-btn>
+      <v-btn @click="nextStatusRequest">下階段</v-btn>
+      <v-btn @click="exportIdArray">匯出會員編號</v-btn>
+    </div>
+
 
     <div>
       <v-dialog v-model="dialog" max-width="480px">
@@ -68,6 +74,9 @@
       >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.index + 1 }}</td>
+          <td>
+            <input type="checkbox" v-model="props.item.isCheck">
+          </td>
           <td class="text-xs-left org_rank">
             {{ (org_rank[props.item.org_rank])?org_rank[props.item.org_rank]:'無'}}
           </td>
@@ -125,6 +134,7 @@ export default {
       dialogName: "",
       dialogText: "",
       editingIndex:null,
+      isSelectAll:false,
 
       blurSearch:false,
       searchColumn:null,
@@ -158,6 +168,7 @@ export default {
       },
       headers: [
         { text: "#", value: "id" },
+        { text: "勾選"},
         { text: "職務", value: "org_rank" },
         { text: "組織", value: "" },
         { text: "姓名", value: "name" },
@@ -169,6 +180,7 @@ export default {
       ],
       columns:[
         {text:'欄位',value:null},
+        {text:'id(以,分隔)',value:'id'},
         {text:'職務',value:'org_rank'},
         {text:'姓名',value:'name'},
         {text:'身分證',value:'id_number'},
@@ -181,6 +193,7 @@ export default {
       show_payStatus:false,
       show_searchText:false,
       show_role:false,
+      show_id:false,
       level:[
         {text:'職位',value:null},
         {text:'小天使',value:2},
@@ -226,6 +239,10 @@ export default {
           this.show_searchText = true;
           this.blurSearch = true;
           break;
+        case 'id':
+          this.show_searchText = true;
+          this.blurSearch = false;
+          break;
         case 'role':
           this.show_role = true;
           break;
@@ -256,6 +273,7 @@ export default {
     if(this.loading == true){
       return;
     }
+    this.isSelectAll = false;
     this.loading = true;
       this.getDataFromApi().then(data => {
           this.desserts = data.items;
@@ -274,11 +292,7 @@ export default {
         id: id
       })
       .then(res => {
-        if (res.data.s == 1) {
-          this.desserts[index]["valid"] = 1;
-          this.desserts[index]["expiry_date"] = res.data.d;
-        }
-        console.log(res);
+        this.search();
       })
       .catch(error => {
         Exception.handle(error);
@@ -342,19 +356,10 @@ export default {
             id: id
           })
           .then(res => {
-            if (res.data.s == 1) {
-              this.desserts[index]["pay_status"]++;
-              if (this.desserts[index]["pay_status"] == 3) {
-                this.desserts[index]["expiry_date"] = res.data.d;
-                this.desserts[index]["valid"] = 1;
-              }
-            }
-            if(res.data.s == 0){
-              alert(res.data.m);
-            }
+            this.search();
           })
           .catch(error => {
-            console.log(error);
+            Exception.handle(error);
           });
       }
     },
@@ -402,6 +407,38 @@ export default {
             Exception.handle(error);
           })
       });
+    },
+    selectAll(){
+      this.isSelectAll = !this.isSelectAll;
+      this.desserts.forEach((item,i)=>{
+        this.$set(this.desserts[i],'isCheck',this.isSelectAll);
+      });
+    },
+    getSelectedArray(){
+      let selectedArray = [];
+      this.desserts.forEach((item)=>{
+        if(item.isCheck != true){ return; }
+          if(item.id != undefined){
+            selectedArray.push(item.id);
+          }
+        });
+      return selectedArray;
+    },
+    nextStatusRequest(){
+      axios
+      .post("/api/changePayStatus", {
+        id: this.getSelectedArray(),
+      })
+      .catch(error => { Exception.handle(error); })
+      .then(res => {
+        this.search();
+      });
+      
+    },
+    exportIdArray(){
+      let idArray = this.getSelectedArray();
+      let idArrayString = idArray.join();
+      alert(idArray);
     }
   }
 };

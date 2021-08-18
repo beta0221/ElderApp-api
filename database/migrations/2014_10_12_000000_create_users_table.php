@@ -47,7 +47,7 @@ class CreateUsersTable extends Migration
             $table->string('emg_phone')->nullable();
             $table->integer('org_rank')->nullable();
             $table->integer('role')->nullable();
-            $table->integer('pay_status')->default(0);
+            $table->integer('pay_status')->default(1);
             $table->integer('pay_method')->nullable();
             $table->date('join_date')->nullable();
             $table->date('expiry_date')->nullable();

@@ -90,10 +90,15 @@ class MemberController extends Controller
         }
 
         if($column != null && $value != null){
-            if($blurSearch){
-                $query->where($column,'like','%'.$value.'%');
+            if($column == 'id' && strpos($value,',') == true){
+                $idArray = explode(',',$value);
+                $query->whereIn($column,$idArray);
             }else{
-                $query->where($column,$value);
+                if($blurSearch){
+                    $query->where($column,'like','%'.$value.'%');
+                }else{
+                    $query->where($column,$value);
+                }
             }
         }    
         $total = $query->count();
@@ -206,38 +211,41 @@ class MemberController extends Controller
     public function changePayStatus(Request $request){
         Tracker::log($request);
 
-        date_default_timezone_set('Asia/Taipei');
-        $user = User::where('id',$request->id)->firstOrFail();
-        $p = $user->pay_status;
-
-        if(!$user->isSameAssociation()){
-            return response('錯誤操作', 403);
+        $isAccountant = $request->user()->hasRole('accountant');
+                
+        if(is_array($request->id)){
+            $users = User::whereIn('id',$request->id)->get();
+            foreach ($users as $user) {
+                $this->handlePayStatus($user,$isAccountant);
+            }
+        }else{
+            $user = User::where('id',$request->id)->firstOrFail();
+            $this->handlePayStatus($user,$isAccountant);
         }
 
-        if($p == 2){
-            if(!Auth::user()->hasRole('accountant')){
-                return response([
-                    's'=>0,
-                    'm'=>'權限不足，此操作限會計人員。'
-                ]);
+        return response('success');
+    }
+
+    /**處理會員下階段狀態 */
+    private function handlePayStatus(User $user,$isAccountant){
+        
+        // if(!$user->isSameAssociation()){
+        //     return response('錯誤操作', 403);
+        // }
+        
+        $p = $user->pay_status;
+        if ($p < 2) {
+            $p++;
+            $user->update(['pay_status'=>$p]);
+        }else if($p == 2){
+            if(!$isAccountant){ return; }
+
+            if(is_null($user->expiry_date)){    //新入會
+                $user->welcome();
+            }else{  //續會
+                $user->renew();
             }
         }
-
-        if ($p < 3) {
-            $p++;
-            $user->pay_status =$p;
-        }
-
-        if($p == 3){
-            $user->expiry_date = date('Y-m-d', strtotime('+1 years'));
-            $user->valid = 1;
-            PayDate::create(['user_id'=>$request->id]);
-            $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'入會獎勵');
-            $user->rewardInviter();
-            $user->rewardGroupMembers();
-        }
-        $user->save();
-        return response(['s'=>1,'m'=>'Updated','d'=>date('Y-m-d', strtotime('+1 years'))],Response::HTTP_ACCEPTED);
     }
 
     //取得會員付款歷史紀錄
@@ -258,8 +266,6 @@ class MemberController extends Controller
      */
     public function toValid(Request $request){
         Tracker::log($request);
-
-        date_default_timezone_set('Asia/Taipei');
         $user = User::where('id',$request->id)->firstOrFail();
         
         if(!$user->isSameAssociation()){
@@ -270,30 +276,9 @@ class MemberController extends Controller
             return response('使用者尚未入會，因此無法進行續會',Response::HTTP_BAD_REQUEST);
         }
 
-        $now = time();
-        $next_expiry_date = strtotime('+1 years');//已到期續會
-        if($user->expiry_date){
-            if($now < strtotime($user->expiry_date)){    //如果還沒過期了
-                $next_expiry_date = strtotime('+1 years',strtotime($user->expiry_date));//未到期續會
-            }
-        }
-        
-        $user->update([
-            'valid'=>1,
-            'expiry_date'=>date('Y-m-d',$next_expiry_date),
-        ]);
+        $user->renew();
 
-        PayDate::create(['user_id'=>$request->id]);
-
-        $user->update_wallet_with_trans(User::INCREASE_WALLET,500,'續會獎勵');
-        $user->rewardInviterForRenew();
-        $user->rewardGroupMembersForRenew();
-
-        return response([
-            's'=>1,
-            'm'=>'Updated',
-            'd'=>date('Y-m-d',$next_expiry_date)
-        ],Response::HTTP_ACCEPTED);
+        return response('success');
 
     }
 

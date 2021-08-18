@@ -439,6 +439,46 @@ class User extends Authenticatable implements JWTSubject
         return $dict;
     }
 
+    /**新入會 */
+    public function welcome(){
+        date_default_timezone_set('Asia/Taipei');
+
+        $expiry_date = strtotime('+1 years');;
+        $this->update([
+            'valid'=>1,
+            'expiry_date'=>date('Y-m-d',$expiry_date),
+            'pay_status'=>3
+        ]);
+
+        PayDate::create(['user_id'=>$this->id]);
+        $this->update_wallet_with_trans(User::INCREASE_WALLET,500,'入會獎勵');
+        $this->rewardInviter();
+        $this->rewardGroupMembers();
+    }
+
+    /**會員進行續會 */
+    public function renew(){
+        if(!$this->expiry_date){ return; }
+        date_default_timezone_set('Asia/Taipei');
+
+        $now = time();
+        $next_expiry_date = strtotime('+1 years');//已到期續會
+        if($now < strtotime($this->expiry_date)){    //如果還沒過期了
+            $next_expiry_date = strtotime('+1 years',strtotime($this->expiry_date));//未到期續會
+        }
+
+        $this->update([
+            'valid'=>1,
+            'expiry_date'=>date('Y-m-d',$next_expiry_date),
+            'pay_status'=>3
+        ]);
+
+        PayDate::create(['user_id'=>$this->id]);
+        $this->update_wallet_with_trans(User::INCREASE_WALLET,500,'續會獎勵');
+        $this->rewardInviterForRenew();
+        $this->rewardGroupMembersForRenew();
+    }
+
     /**發送獎勵給推薦人（如果有推薦人的話） (入會)*/
     public function rewardInviter(){
         if($this->inviter_id){
