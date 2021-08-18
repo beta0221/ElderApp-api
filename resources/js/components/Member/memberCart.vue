@@ -9,6 +9,10 @@
 
                 <div style="padding:8px 12px">
                     
+                    <div>
+                        <h3>總數：{{count}}</h3>
+                    </div>
+
                     <div class="border member-cart-box">
                         <div
                             class="member-cell"
@@ -61,6 +65,11 @@ export default {
             nameArray:'',
             idArray:'',
         };
+    },
+    computed:{
+        count(){
+            return this.userList.length;
+        }
     },
     methods:{
         showModal(){
