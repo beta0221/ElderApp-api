@@ -18,6 +18,14 @@ class InsuranceController extends Controller
             $query->where('status',$request->status);
         }
 
+        if($request->has('q_4')){
+            $query->where('q_4',$request->q_4);
+        }
+
+        if($request->has('q_5')){
+            $query->where('q_5',$request->q_5);
+        }
+
         if($request->has('name')){
             $query->where('name','LIKE',"%$request->name%");
         }
@@ -34,6 +42,28 @@ class InsuranceController extends Controller
     /** Insurance 詳細資料 */
     public function show($id,Request $request){
         $insurance = Insurance::findOrFail($id);
+        $insurance->user;
+        return response($insurance);
+    }
+
+    /** Insurance 更新 */
+    public function update($id,Request $request){
+        $insurance = Insurance::findOrFail($id);
+
+        $insurance->update([
+            'identity_number'=>$request->identity_number,
+            'phone'=>$request->phone,
+            'birthdate'=>$request->birthdate,
+            'occupation'=>$request->occupation,
+            'relation'=>$request->relation,
+            'q_1'=>$request->q_1,
+            'q_2'=>$request->q_2,
+            'q_3'=>$request->q_3,
+            'q_4'=>$request->q_4,
+            'q_5'=>$request->q_5,
+            'description'=>$request->description,
+        ]);
+        
         return response($insurance);
     }
 
@@ -97,6 +127,10 @@ class InsuranceController extends Controller
             'agree'=>'required',
         ]);
         
+        if($request->occupation == '其他'){}{
+            $request->occupation = $request->occupation_other;
+        }
+
         $user = $request->user();
         $user->insurances()->create([
             'name'=>$request->name,

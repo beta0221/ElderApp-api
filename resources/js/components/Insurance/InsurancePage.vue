@@ -68,6 +68,16 @@ export default {
                     {value:'close',text:'完成'},
                     {value:'verified',text:'已核帳'},
                     {value:'void',text:'作廢'},
+                ],
+                q_4:[
+                    {value:null,text:'Q4'},
+                    {value:'1',text:'是'},
+                    {value:'0',text:'否'},
+                ],
+                q_5:[
+                    {value:null,text:'Q5'},
+                    {value:'1',text:'是'},
+                    {value:'0',text:'否'},
                 ]
             },
             issueDate:null
