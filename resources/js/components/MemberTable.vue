@@ -287,13 +287,36 @@ export default {
     }
     this.isSelectAll = false;
     this.loading = true;
-      this.getDataFromApi().then(data => {
-          this.desserts = data.items;
-          this.totalDesserts = data.total;
-          setTimeout(() => {  
-            this.loading = false;    
-          }, 300);
-      });
+      axios
+          .get("/api/get-members", {
+            params: {
+              page: this.pagination.page,
+              rowsPerPage: this.pagination.rowsPerPage,
+              descending: this.pagination.descending,
+              sortBy: this.pagination.sortBy,
+              column:this.searchColumn,
+              value:this.searchValue,
+              blurSearch:this.blurSearch
+            }
+          })
+          .then(res => {
+            this.desserts = res.data.users;
+            this.totalDesserts = res.data.total;
+            setTimeout(() => {  
+              this.loading = false;    
+            }, 300);
+            if(res.data.queryResult != null){
+              alert(`
+                查無資料：
+                ${res.data.queryResult.nameNotFound.join()}
+                重複姓名：
+                ${res.data.queryResult.nameRepeat.join()}
+              `);
+            }
+          })
+          .catch(error => {
+            Exception.handle(error);
+          })
     },
     toValid(id, index) {
       if(!confirm('確定增加會員效期？')){
@@ -309,9 +332,6 @@ export default {
       .catch(error => {
         Exception.handle(error);
       });
-      // if (this.desserts[index]["valid"] == 0 && this.desserts[index]["expiry_date"] != null) {
-        
-      // }
     },
     addGroupMember() {
       axios
@@ -374,51 +394,6 @@ export default {
             Exception.handle(error);
           });
       }
-    },
-    getDataFromApi() {
-      return new Promise((resolve, reject) => {
-        const { sortBy, descending, page, rowsPerPage } = this.pagination;
-        axios
-          .get("/api/get-members", {
-            params: {
-              page: this.pagination.page,
-              rowsPerPage: this.pagination.rowsPerPage,
-              descending: this.pagination.descending,
-              sortBy: this.pagination.sortBy,
-              column:this.searchColumn,
-              value:this.searchValue,
-              blurSearch:this.blurSearch
-            }
-          })
-          .then(res => {
-            let items = res.data.users;
-            const total = res.data.total;
-
-            if (this.pagination.sortBy) {
-              items = items.sort((a, b) => {
-                const sortA = a[sortBy];
-                const sortB = b[sortBy];
-
-                if (descending) {
-                  if (sortA < sortB) return 1;
-                  if (sortA > sortB) return -1;
-                  return 0;
-                } else {
-                  if (sortA < sortB) return -1;
-                  if (sortA > sortB) return 1;
-                  return 0;
-                }
-              });
-            }
-            resolve({
-              items,
-              total
-            });
-          })
-          .catch(error => {
-            Exception.handle(error);
-          })
-      });
     },
     selectAll(){
       this.isSelectAll = !this.isSelectAll;

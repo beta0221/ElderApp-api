@@ -103,11 +103,59 @@ class MemberController extends Controller
         }    
         $total = $query->count();
         $users = $query->skip($skip)->take($rows)->get();
+        
+        $queryResult = null;
+        if($column == 'name' && strpos($value,',') == true){
+            $nameArray = explode(',',$value);
+            $queryResult = $this->handleQueryResult($nameArray,$users);
+        }
 
         return response()->json([
             'users' => $users,
             'total' => $total,
+            'queryResult' => $queryResult,
         ]);
+    }
+
+    /**整理查無名單＆重複名單 */
+    private function handleQueryResult($nameArray,$users){
+        $queryResult = null;
+        $nameNotFound = [];
+        
+        foreach ($nameArray as $name) {
+            $found = false;
+            foreach ($users as $user) {
+                if($user->name == $name){$found = true;}
+            }
+            if(!$found){
+                $nameNotFound[] = $name;
+            }
+        }
+        
+        $nameCount = [];
+        foreach ($users as $user) {
+            if(isset($nameCount[$user->name])){
+                $nameCount[$user->name] += 1;
+            }else{
+                $nameCount[$user->name] = 1;
+            }
+        }
+        
+        $nameRepeat = [];
+        foreach ($nameCount as $name => $count) {
+            if($count > 1){
+                $nameRepeat[] = $name;
+            }
+        }
+
+        if(!empty($nameNotFound) || !empty($nameRepeat)){
+            $queryResult = [
+                'nameNotFound'=>$nameNotFound,
+                'nameRepeat'=>$nameRepeat,
+            ];
+        }
+
+        return $queryResult;
     }
 
     public function create()
