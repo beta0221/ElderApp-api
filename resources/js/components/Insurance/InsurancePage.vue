@@ -10,6 +10,7 @@
             <v-btn color="info" @click="selectAll">全選</v-btn>
             <v-btn @click="nextStatusRequest">下階段</v-btn>
             <v-btn @click="printPage">列印</v-btn>
+            <v-btn @click="exportCSV">輸出csv</v-btn>
 
             <span style="margin:0 24px">|</span>
             <span>生效日：</span>
@@ -120,6 +121,10 @@ export default {
         printPage(){
             let id_array = this.$refs.DataTable.getSelectedArray().join();
             window.open(`/insurance/print?id_array=${id_array}`);
+        },
+        exportCSV(){
+            let id_array = this.$refs.DataTable.getSelectedArray().join();
+            window.open(`/insurance/export?id_array=${id_array}`);
         }
     }
 }

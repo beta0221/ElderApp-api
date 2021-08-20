@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InsuranceExport;
 use App\Helpers\Pagination;
 use App\Insurance;
+use App\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InsuranceController extends Controller
 {
@@ -171,6 +174,16 @@ class InsuranceController extends Controller
         return view('insurance.print',[
             'insuranceList'=>$insuranceList
         ]);
+    }
+
+    /**輸出csv */
+    public function view_export(Request $request){
+        $id_array = explode(',',$request->id_array);
+        $insuranceList = Insurance::whereIn('id',$id_array)->get();
+        $nameDict = User::getNameDictByIdArray($id_array);
+
+        $export = new InsuranceExport($insuranceList,$nameDict);
+        return Excel::download($export,'保險申請.csv');
     }
 
 
