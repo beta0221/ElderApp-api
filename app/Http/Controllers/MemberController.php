@@ -90,7 +90,12 @@ class MemberController extends Controller
         }
 
         if($column != null && $value != null){
-            if(($column == 'id' || $column == 'name') && strpos($value,',') == true){
+            if($column == 'name' && strpos($value,',') == true){
+                
+                $nameArray = explode(',',$value);
+                return $this->handleQueryResult($nameArray);
+
+            }else if($column == 'id' && strpos($value,',') == true){
                 $idArray = explode(',',$value);
                 $query->whereIn($column,$idArray);
             }else{
@@ -104,11 +109,6 @@ class MemberController extends Controller
         $total = $query->count();
         $users = $query->skip($skip)->take($rows)->get();
         
-        
-        if($column == 'name' && strpos($value,',') == true){    
-            $nameArray = explode(',',$value);
-            return $this->handleQueryResult($nameArray);
-        }
 
         return response()->json([
             'users' => $users,
