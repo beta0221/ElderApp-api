@@ -104,50 +104,35 @@ class MemberController extends Controller
         $total = $query->count();
         $users = $query->skip($skip)->take($rows)->get();
         
-        $queryResult = null;
-        if($column == 'name' && strpos($value,',') == true){
+        
+        if($column == 'name' && strpos($value,',') == true){    
             $nameArray = explode(',',$value);
-            $queryResult = $this->handleQueryResult($nameArray,$users);
+            return $this->handleQueryResult($query,$nameArray);
         }
 
         return response()->json([
             'users' => $users,
             'total' => $total,
-            'queryResult' => $queryResult,
+            'queryResult' => null,
         ]);
     }
 
     /**整理查無名單＆重複名單 */
-    private function handleQueryResult($nameArray,$users){
+    private function handleQueryResult($query,$nameArray){
         $queryResult = null;
         $nameNotFound = [];
-        
-        foreach ($nameArray as $name) {
-            $found = false;
-            foreach ($users as $user) {
-                if($user->name == $name){$found = true;}
-            }
-            if(!$found){
-                $nameNotFound[] = $name;
-            }
-        }
-        
-        $nameCount = [];
-        foreach ($users as $user) {
-            if(isset($nameCount[$user->name])){
-                $nameCount[$user->name] += 1;
-            }else{
-                $nameCount[$user->name] = 1;
-            }
-        }
-        
         $nameRepeat = [];
-        foreach ($nameCount as $name => $count) {
-            if($count > 1){
+        $users = [];
+        foreach ($nameArray as $name) {
+            $count = DB::table('users')->where('name',$name)->count();
+            if($count == 0){
+                $nameNotFound[] = $name;
+            }else if($count > 1){
                 $nameRepeat[] = $name;
+            }else{
+                $users[] = $query->where('name',$name)->first();
             }
         }
-
         if(!empty($nameNotFound) || !empty($nameRepeat)){
             $queryResult = [
                 'nameNotFound'=>$nameNotFound,
@@ -155,7 +140,11 @@ class MemberController extends Controller
             ];
         }
 
-        return $queryResult;
+        return response()->json([
+            'users' => $users,
+            'total' => count($users),
+            'queryResult' => $queryResult,
+        ]);
     }
 
     public function create()
