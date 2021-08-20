@@ -307,9 +307,11 @@ export default {
             }, 300);
             if(res.data.queryResult != null){
               alert(`
-                查無資料：
+                ＊查無資料：
+
                 ${res.data.queryResult.nameNotFound.join()}
-                重複姓名：
+                
+                ＊重複姓名：
                 ${res.data.queryResult.nameRepeat.join()}
               `);
             }
