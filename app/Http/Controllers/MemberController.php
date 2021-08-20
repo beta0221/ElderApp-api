@@ -107,7 +107,7 @@ class MemberController extends Controller
         
         if($column == 'name' && strpos($value,',') == true){    
             $nameArray = explode(',',$value);
-            return $this->handleQueryResult($query,$nameArray);
+            return $this->handleQueryResult($nameArray);
         }
 
         return response()->json([
@@ -118,7 +118,7 @@ class MemberController extends Controller
     }
 
     /**整理查無名單＆重複名單 */
-    private function handleQueryResult($query,$nameArray){
+    private function handleQueryResult($nameArray){
         $queryResult = null;
         $nameNotFound = [];
         $nameRepeat = [];
@@ -130,7 +130,7 @@ class MemberController extends Controller
             }else if($count > 1){
                 $nameRepeat[] = $name;
             }else{
-                $users[] = $query->where('name',$name)->first();
+                $users[] = DB::table('users')->select('id','name','org_rank','email','tel','phone','gender','rank','inviter','inviter_phone','pay_status','created_at','expiry_date','valid','birthdate','id_number','id_code')->where('name',$name)->first();
             }
         }
         if(!empty($nameNotFound) || !empty($nameRepeat)){
