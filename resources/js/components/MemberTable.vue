@@ -1,6 +1,7 @@
 <template>
   <div>
 
+    <FlashAlert/>
     <member-detail></member-detail>
     <member-tree></member-tree>
     <send-money-panel></send-money-panel>
@@ -39,7 +40,7 @@
     <div>
       <v-btn color="info" @click="selectAll">全選</v-btn>
       <v-btn @click="nextStatusRequest">下階段</v-btn>
-      <v-btn @click="addUserToCart">加入清單</v-btn>
+      <v-btn @click="addAllUsersToCart">加入清單</v-btn>
       <v-btn @click="showMemberCart" color="warning">選取清單</v-btn>
     </div>
 
@@ -78,6 +79,9 @@
           <td class="text-xs-left">{{ props.index + 1 }}</td>
           <td>
             <input type="checkbox" v-model="props.item.isCheck">
+          </td>
+          <td>
+            <v-btn fab small @click="addToCart(props.item)">+</v-btn>
           </td>
           <td class="text-xs-left org_rank">
             {{ (org_rank[props.item.org_rank])?org_rank[props.item.org_rank]:'無'}}
@@ -123,6 +127,7 @@ import MemberTree from "./MemberTree";
 import SendMoneyPanel from "./SendMoneyPanel";
 import InviterPanel from "./Member/InviterPanel"
 import MemberCart from "./Member/memberCart.vue"
+import FlashAlert from "./FlashAlert.vue"
 
 export default {
   components:{
@@ -131,6 +136,7 @@ export default {
     SendMoneyPanel,
     InviterPanel,
     MemberCart,
+    FlashAlert
   },
   data() {
     return {
@@ -174,6 +180,7 @@ export default {
       headers: [
         { text: "#", value: "id" },
         { text: "勾選"},
+        { text: "加入清單"},
         { text: "職務", value: "org_rank" },
         { text: "組織", value: "" },
         { text: "姓名", value: "name" },
@@ -443,7 +450,10 @@ export default {
     showMemberCart(){
       this.$refs.memberCart.showModal();
     },
-    addUserToCart(){
+    addToCart(user){
+      this.$refs.memberCart.add(user);
+    },
+    addAllUsersToCart(){
       this.desserts.forEach((item)=>{
         if(item.isCheck != true){ return; }
           if(item.id != undefined){

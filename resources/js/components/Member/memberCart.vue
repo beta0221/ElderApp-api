@@ -76,10 +76,14 @@ export default {
             this.show = true;
         },
         add(user){
-            if(this.userDict[user.id]){ return; }
+            if(this.userDict[user.id]){ 
+                EventBus.$emit('flashAlert',`已存在:${user.name}`,'warning');
+                return; 
+            }
             this.userList.push(user);
             this.userDict[user.id] = true;
             this.refreshTextarea();
+            EventBus.$emit('flashAlert',`成功加入:${user.name}`);
         },
         clickUser(index,id){
             delete this.userDict[id];
