@@ -7,6 +7,7 @@
     <send-money-panel></send-money-panel>
     <InviterPanel></InviterPanel>
     <MemberCart ref="memberCart" />
+    <TextareaModal />
 
     <div>
       
@@ -128,6 +129,7 @@ import SendMoneyPanel from "./SendMoneyPanel";
 import InviterPanel from "./Member/InviterPanel"
 import MemberCart from "./Member/memberCart.vue"
 import FlashAlert from "./FlashAlert.vue"
+import TextareaModal from "./TextareaModal.vue"
 
 export default {
   components:{
@@ -136,7 +138,8 @@ export default {
     SendMoneyPanel,
     InviterPanel,
     MemberCart,
-    FlashAlert
+    FlashAlert,
+    TextareaModal
   },
   data() {
     return {
@@ -306,15 +309,10 @@ export default {
               this.loading = false;    
             }, 300);
             if(res.data.queryResult != null){
-              alert(`
-                ＊查無資料：
+              let content = `＊查無資料：\n${res.data.queryResult.nameNotFound.join()}\n＊重複姓名：\n${res.data.queryResult.nameRepeat.join()}
+              `;
+              EventBus.$emit('showTextAreaModal',content);
 
-                ${res.data.queryResult.nameNotFound.join()}
-
-                ＊重複姓名：
-                
-                ${res.data.queryResult.nameRepeat.join()}
-              `);
             }
           })
           .catch(error => {
