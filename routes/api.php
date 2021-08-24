@@ -218,3 +218,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         });
 
     });
+
+    Route::apiresource('clinic','ClinicController')->middleware(['JWT','admin']);
+    Route::group(['prefix'=>'clinic'],function(){
+        Route::group(['middleware'=>['JWT','admin']],function(){
+            
+        });
+    });
