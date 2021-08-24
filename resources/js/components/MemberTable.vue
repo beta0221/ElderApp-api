@@ -42,6 +42,7 @@
       <v-btn color="info" @click="selectAll">全選</v-btn>
       <v-btn @click="nextStatusRequest">下階段</v-btn>
       <v-btn @click="addAllUsersToCart">加入清單</v-btn>
+      <v-btn @click="renewGroupUsers" color="success">批次續會</v-btn>
       <v-btn @click="showMemberCart" color="warning">選取清單</v-btn>
     </div>
 
@@ -395,6 +396,19 @@ export default {
             Exception.handle(error);
           });
       }
+    },
+    renewGroupUsers(){
+      if(!confirm('確定增加會員效期？')){ return; }
+      axios
+      .post("/api/toValid", {
+        id: this.getSelectedArray(),
+      })
+      .then(res => {
+        this.search();
+      })
+      .catch(error => {
+        Exception.handle(error);
+      });
     },
     selectAll(){
       this.isSelectAll = !this.isSelectAll;

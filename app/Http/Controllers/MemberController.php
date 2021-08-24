@@ -303,18 +303,24 @@ class MemberController extends Controller
      */
     public function toValid(Request $request){
         Tracker::log($request);
+
+        if(is_array($request->id)){
+            $users = User::whereIn('id',$request->id)->get();
+            foreach ($users as $user) {
+                if(!$user->expiry_date){ continue; }
+                $user->renew();
+            }
+            return response('success');
+        }
+
         $user = User::where('id',$request->id)->firstOrFail();
-        
         if(!$user->isSameAssociation()){
             return response('錯誤操作', 403);
         }
-
         if(!$user->expiry_date){
             return response('使用者尚未入會，因此無法進行續會',Response::HTTP_BAD_REQUEST);
         }
-
         $user->renew();
-
         return response('success');
 
     }
