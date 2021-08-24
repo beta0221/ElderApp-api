@@ -17,7 +17,8 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn @click="exportExcel" color="green darken-1">輸出</v-btn>
+                <v-btn @click="exportExchangeExcel" color="info">輸出兌換</v-btn>
+                <v-btn @click="exportOrderExcel" color="green">輸出訂單</v-btn>
                 <v-btn @click="clearQuery">清除</v-btn>
                 <v-btn color="gray darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
             </v-card-actions>
@@ -71,18 +72,26 @@ export default {
                 this.products = res.data;
             })
         },
-        exportExcel(){
+        exportExchangeExcel(){
             if(!this.location_slug || !this.from_date || !this.to_date){ alert('請選擇據點及日期');return; }
+            let urlString = this.getUrlString('/order/locationExchangeExcel');
+            window.open(urlString);
+        },
+        exportOrderExcel(){
+            if(!this.location_slug || !this.from_date || !this.to_date){ alert('請選擇據點及日期');return; }
+            let urlString = this.getUrlString('/order/locationOrderExcel');
+            window.open(urlString);
+        },
+        getUrlString(pathname){
             let openUrl = new URL(window.location.href);
-            //openUrl.host = window.host;
-            openUrl.pathname = '/order/locationOrderExcel';
+            openUrl.pathname = pathname;
             openUrl.searchParams.set('location_slug',this.location_slug);
             openUrl.searchParams.set('from_date',this.from_date);
             openUrl.searchParams.set('to_date',this.to_date);
             if(this.product_id){
                 openUrl.searchParams.set('product_id',this.product_id);
             }
-            window.open(openUrl.toString());
+            return openUrl.toString();
         },
         clearQuery(){
             this.location_slug = null;

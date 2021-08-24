@@ -90,6 +90,7 @@ class Product extends Model
         return $productDictionary;
     }
 
+    /** 字典 */
     public static function getProductDict($idArray){
         $products = Product::whereIn('id',$idArray)->get();
         $dict = [];
@@ -100,6 +101,15 @@ class Product extends Model
     }
 
     
+    /** 產品名稱字典 */
+    public static function getNameDict($idArray){
+        $products = Product::whereIn('id',$idArray)->get();
+        $dict = [];
+        foreach ($products as $product) {
+            $dict[$product->id] = $product->name;
+        }
+        return $dict;
+    }
 
     /**
      * 取得產品的圖片url字典

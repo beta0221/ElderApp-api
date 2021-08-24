@@ -52,5 +52,10 @@ class rolesTableSeeder extends Seeder
         $role->description = 'location_manager';
         $role->save();
 
+        $role = new Role();
+        $role->name = 'clinic_manager';
+        $role->description = 'clinic_manager';
+        $role->save();
+
     }
 }

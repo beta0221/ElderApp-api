@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cart;
+use App\Exports\ExchangeExport_location;
 use App\Exports\OrderExport;
 use App\Exports\OrderExport_location;
 use App\Helpers\Pagination;
@@ -10,6 +11,7 @@ use App\Helpers\Tracker;
 use App\Location;
 use App\Order;
 use App\OrderDelievery;
+use App\OrderDetail;
 use App\Product;
 use App\User;
 use Illuminate\Http\Request;
@@ -178,6 +180,36 @@ class OrderController extends Controller
 
     //web route
 
+    /*匯出 據點 兌換紀錄 */
+    public function excel_locationExchangeExcel(Request $request){
+        $location = Location::where('slug',$request->location_slug)->firstOrFail();
+        $fileName = '兌換資料-' . $location->name;
+        
+        $query = OrderDetail::where('location_id',$location->id)
+            ->whereBetween('created_at',[date($request->from_date),date($request->to_date)]);
+
+        if($request->has('product_id')){
+            $product = Product::findOrFail($request->product_id);
+            $fileName .= '-' . $product->name;
+            $query->where('product_id',$request->product_id);
+        }
+
+        $user_id_array = $query->pluck('user_id');
+        $product_id_array = $query->pluck('product_id');
+        $orderDetailList = $query->get();
+
+        if(!count($orderDetailList)){ return response('此塞選條件查無資料。');}
+
+        $userNameDict = User::getNameDictByIdArray($user_id_array);
+        $productNameDict = Product::getNameDict($product_id_array);
+
+
+        $file = new ExchangeExport_location($orderDetailList,$userNameDict,$productNameDict);
+        return Excel::download($file,"$fileName.xlsx");
+
+    }
+
+    /*匯出 據點 訂單記錄 */
     public function excel_locationOrderExcel(Request $req){
         
         $location = Location::where('slug',$req->location_slug)->firstOrFail();
