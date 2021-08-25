@@ -123,6 +123,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\Location','location_manager','user_id','location_id');
     }
 
+    public function clinics(){
+        return $this->belongsToMany('App\Clinic','clinic_manager','user_id','clinic_id');
+    }
+
     public function certificates(){
         return $this->belongsToMany('App\EventCertificate','user_certificate','user_id','certificate_id');
     }
@@ -637,8 +641,8 @@ class User extends Authenticatable implements JWTSubject
         return true;
     }
 
-    public function removeLocationManagerRole(){
-        $role = Role::where('name','location_manager')->first();
+    public function removeRole($role_name){
+        $role = Role::where('name',$role_name)->first();
         $this->roles()->detach($role->id);
     }
 

@@ -13,4 +13,9 @@ class Clinic extends Model
         return 'slug';
     }
 
+    public function managers(){
+        return $this->belongsToMany('App\User','clinic_manager','clinic_id','user_id');
+    }
+
+
 }

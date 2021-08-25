@@ -306,7 +306,7 @@ class LocationController extends Controller
         $location->managers()->detach($user->id);
 
         if(count($user->locations()->get()) == 0){
-            $user->removeLocationManagerRole();
+            $user->removeRole('location_manager');
         }
 
         return response('success');

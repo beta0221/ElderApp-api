@@ -19,6 +19,12 @@
                     <input type="checkbox" v-model="props.item.isCheck">
                 </span>
 
+                <span v-if="header.text == '-'">
+                    <v-btn @click="clickEventButton(props.index,header.eventName,header.eventParam)">
+                        {{header.btnName}}
+                    </v-btn>
+                </span>
+
                 <div v-else>
                     <span v-if="dict[header.value] != undefined">
                         <span :style="'color:'+ dict[header.value]['color'][props.item[header.value]]">
@@ -131,6 +137,13 @@ export default {
             this.items.forEach((item,i)=>{
                 this.$set(this.items[i],'isCheck',this.isSelectAll);
             });
+        },
+        clickEventButton(index,eventName,eventParam){
+            let param = {};
+            eventParam.forEach(column=>{
+                param[column] = this.items[index][column];
+            });
+            EventBus.$emit(eventName,param);
         }
     },
 };

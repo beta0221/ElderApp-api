@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Clinic;
 use App\Helpers\Pagination;
+use App\Helpers\Tracker;
+use App\User;
 use Illuminate\Http\Request;
 
 class ClinicController extends Controller
@@ -108,4 +110,47 @@ class ClinicController extends Controller
     {
         //
     }
+
+
+    /**診所管理員 */
+    public function getManagers($slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $managers = $clinic->managers()->get();
+        return response($managers);
+    }
+
+    /**新增診所管理員 */
+    public function addManager(Request $request,$slug){
+        Tracker::log($request);
+        
+        $user = User::findOrFail($request->user_id);
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+
+        if(!$result = $user->becomeRole('clinic_manager')){
+            return response('error',400);
+        }
+
+        if(!$manager = $clinic->managers()->find($user->id)){
+            $clinic->managers()->attach($user->id);
+        }
+
+        return response('success');
+    }
+
+    /**移除診所管理員 */
+    public function removeManager(Request $request,$slug){
+        Tracker::log($request);
+        
+        $user = User::findOrFail($request->user_id);
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        
+        $clinic->managers()->detach($user->id);
+        if(count($user->clinics()->get()) == 0){
+            $user->removeRole('clinic_manager');
+        }
+
+        return response('success');
+    }
+
+
 }
