@@ -7,6 +7,8 @@ use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 
 class ClinicController extends Controller
 {
@@ -145,12 +147,88 @@ class ClinicController extends Controller
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
         
         $clinic->managers()->detach($user->id);
-        if(count($user->clinics()->get()) == 0){
+        if(count($user->managerClinics()->get()) == 0){
             $user->removeRole('clinic_manager');
         }
 
         return response('success');
     }
+
+
+    /**診所志工*/
+    public function getUsers($slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $users = $clinic->users()->get();
+        return response($users);
+    }
+
+    /**新增診所志工 */
+    public function addUser(Request $request,$slug){
+        Tracker::log($request);
+        
+        if(!$user = User::where('id_code',$request->id_code)->first()){
+            Session::flash('error','會員編號不存在。');
+            Session::flash('id_code',$request->id_code);
+            return redirect()->route('manageClinic',['slug'=>$slug]);    
+        }
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+
+        if($clinicUser = $clinic->users()->find($user->id)){
+            Session::flash('success','志工已存在。');
+            return redirect()->route('manageClinic',['slug'=>$slug]);
+        }
+
+        $clinic->users()->attach($user->id);
+        Session::flash('success','成功加入。');
+
+        return redirect()->route('manageClinic',['slug'=>$slug]);    
+    }
+
+    /**移除診所志工 */
+    public function removeUser(Request $request,$slug){
+        Tracker::log($request);
+        
+        $user = User::where('id_code',$request->id_code)->firstOrFail();
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $clinic->users()->detach($user->id);
+        Session::flash('success','成功移除。');
+
+        return redirect()->route('manageClinic',['slug'=>$slug]);
+    }
+
+    /**完成志工服務 */
+    public function doneVolunteering(Request $request,$slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $user = User::where('id_code',$request->id_code)->firstOrFail();
+        date_default_timezone_set('Asia/Taipei');
+
+        $clinic->userLogs()->create([
+            'user_id'=>$user->id,
+            'session_date'=>date('Y-m-d')
+        ]);
+
+        Session::flash('success','完成志工服務。');
+        return redirect()->route('manageClinic',['slug'=>$slug]);
+    }
+
+
+    /**診所管理時段介面 */
+    public function view_manageClinic(Request $request,$slug){
+        
+        if($request->has('token')){
+            Cookie::queue('token',$request->token,60);
+        }
+
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $users = $clinic->users()->get();
+
+        return view('clinic.manage',[
+            'clinic' => $clinic,
+            'users' => $users
+        ]);
+    }
+
+    
 
 
 }

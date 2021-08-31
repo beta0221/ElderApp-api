@@ -123,8 +123,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\Location','location_manager','user_id','location_id');
     }
 
-    public function clinics(){
+    public function managerClinics(){
         return $this->belongsToMany('App\Clinic','clinic_manager','user_id','clinic_id');
+    }
+
+    public function userClinics(){
+        return $this->belongsToMany('App\Clinic','clinic_user','user_id','clinic_id');
     }
 
     public function certificates(){

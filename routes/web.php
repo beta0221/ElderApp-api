@@ -88,6 +88,15 @@ Route::group(['prefix'=>'insurance'],function(){
     });
 });
 
+Route::group(['prefix'=>'clinic'],function(){
+    Route::get('{slug}/manage','ClinicController@view_manageClinic')->name('manageClinic');
+    Route::group(['middleware'=>['webAuth','role:clinic_manager']],function(){
+        Route::post('addUser/{slug}','ClinicController@addUser');
+        Route::post('removeUser/{slug}','ClinicController@removeUser');
+        Route::post('doneVolunteering/{slug}','ClinicController@doneVolunteering');    
+    });
+});
+
 Route::get('/app/product/{slug}','ProductController@universal_link');
 Route::get('/app/event/{slug}','EventController@universal_link');
 Route::get('/app/post/{slug}','PostController@universal_link');

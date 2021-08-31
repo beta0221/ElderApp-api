@@ -10,13 +10,17 @@
         class="elevation-1">
 
         <template v-slot:items="props">
-            <td v-for="header in headers" v-bind:key="header.text">
+            <td v-for="(header,i) in headers" v-bind:key="i">
                 <span v-if="header.text == '#'">{{props.index + 1}}</span>
-                <span v-if="header.text == '顯示'">
-                    <v-btn @click="showDetail(props.item)">顯示</v-btn>
-                </span>
+
                 <span v-if="header.text == '勾選'">
                     <input type="checkbox" v-model="props.item.isCheck">
+                </span>
+
+                <span v-if="header.text == '連結'">
+                    <v-btn @click="clickOpenLinkButton(props.index,header.url,header.keyParam)">
+                        {{header.btnName}}
+                    </v-btn>
                 </span>
 
                 <span v-if="header.text == '-'">
@@ -108,9 +112,6 @@ export default {
                 Exception.handle(error);
             });
         },
-        showDetail(item) {
-            EventBus.$emit("showDetailModal", item);
-        },
         deleteItem(item){
             axios.post(this.requestUrl + "/" + item.id, {
                 '_method':'DELETE'
@@ -144,6 +145,11 @@ export default {
                 param[column] = this.items[index][column];
             });
             EventBus.$emit(eventName,param);
+        },
+        clickOpenLinkButton(index,url,keyParam){
+            let _keyParam = this.items[index][keyParam];
+            url = url.replace(`{${keyParam}}`,_keyParam);
+            window.open(url);
         }
     },
 };
