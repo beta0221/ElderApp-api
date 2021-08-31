@@ -241,7 +241,18 @@ class ClinicController extends Controller
 
 
 
-    
+    public function view_volunteerLog(Request $request){
+        $user = $request->user();
+        $logs = $user->clinicLogs()->paginate(10);
+
+
+        
+
+        return view('clinic.logs',[
+            'user' => $user,
+            'logs' => $logs
+        ]);
+    }
 
 
 }
