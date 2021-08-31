@@ -697,6 +697,11 @@ class MemberController extends Controller
         if($user->hasRole('location_manager')){
             $user->locationUrl = '/view_myLocation';
         }
+
+        //診所志工管理
+        if($user->hasRole('clinic_manager')){
+            $user->clinicUrl = '/clinic/all';
+        }
         
         //課程管理
         if($user->hasRole('teacher')){

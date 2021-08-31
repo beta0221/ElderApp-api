@@ -212,12 +212,23 @@ class ClinicController extends Controller
     }
 
 
-    /**診所管理時段介面 */
-    public function view_manageClinic(Request $request,$slug){
-        
+    /**診所管理員的診所列表 */
+    public function view_allClinic(Request $request){
         if($request->has('token')){
             Cookie::queue('token',$request->token,60);
         }
+
+        $user = $request->user();
+        $clinicList = $user->managerClinics()->get();
+        
+        return view('clinic.all',[
+            'clinicList' => $clinicList
+        ]);
+
+    }
+
+    /**診所管理時段介面 */
+    public function view_manageClinic(Request $request,$slug){
 
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
         $users = $clinic->users()->get();
@@ -227,6 +238,8 @@ class ClinicController extends Controller
             'users' => $users
         ]);
     }
+
+
 
     
 

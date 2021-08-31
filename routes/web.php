@@ -91,6 +91,7 @@ Route::group(['prefix'=>'insurance'],function(){
 Route::group(['prefix'=>'clinic'],function(){
     Route::get('{slug}/manage','ClinicController@view_manageClinic')->name('manageClinic');
     Route::group(['middleware'=>['webAuth','role:clinic_manager']],function(){
+        Route::get('all','ClinicController@view_allClinic');
         Route::post('addUser/{slug}','ClinicController@addUser');
         Route::post('removeUser/{slug}','ClinicController@removeUser');
         Route::post('doneVolunteering/{slug}','ClinicController@doneVolunteering');    
