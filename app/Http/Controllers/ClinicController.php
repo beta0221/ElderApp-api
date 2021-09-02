@@ -213,6 +213,24 @@ class ClinicController extends Controller
         return redirect()->route('manageClinic',['slug'=>$slug]);
     }
 
+    /**掃描志工QR Code請求 */
+    public function api_scanQRCode(Request $request,$slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $user = $request->user();
+
+        if(!$clinic->users()->where('id',$user->id)->first()){
+            return response('您不在此診所的志工名單。',403);
+        }
+
+        date_default_timezone_set('Asia/Taipei');
+        $clinic->userLogs()->create([
+            'user_id'=>$user->id,
+            'session_date'=>date('Y-m-d')
+        ]);
+
+        return response('success');
+    }
+
 
     /**診所管理員的診所列表 */
     public function view_allClinic(Request $request){
@@ -237,7 +255,8 @@ class ClinicController extends Controller
 
         return view('clinic.manage',[
             'clinic' => $clinic,
-            'users' => $users
+            'users' => $users,
+            'qrCodeString' => $clinic->QRCodeString()
         ]);
     }
 

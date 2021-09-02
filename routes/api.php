@@ -228,4 +228,8 @@ Route::group(['middleware' => ['JWT','admin']], function () {
             Route::post('removeManager/{slug}','ClinicController@removeManager');
             
         });
+
+        Route::group(['middleware'=>['JWT']],function(){
+            Route::post('scanQRCode/{slug}','ClinicController@api_scanQRCode');
+        });
     });

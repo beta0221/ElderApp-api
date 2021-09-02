@@ -36,5 +36,12 @@ class Clinic extends Model
         return $dict;
     }
 
+    /**診所 QRcode 字串 */
+    public function QRCodeString(){
+        $query = "clinic,$this->slug";
+        $query = base64_encode($query) . rand(0,9) . rand(0,9);
+        return config('app.url') . "?query=$query";
+    }
+
 
 }
