@@ -218,7 +218,7 @@ class ClinicController extends Controller
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
         $user = $request->user();
 
-        if(!$clinic->users()->where('id',$user->id)->first()){
+        if(!$clinic->users()->where('user_id',$user->id)->first()){
             return response('您不在此診所的志工名單。',403);
         }
 
