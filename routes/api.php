@@ -230,6 +230,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
         });
 
         Route::group(['middleware'=>['JWT']],function(){
-            Route::post('scanQRCode/{slug}','ClinicController@api_scanQRCode');
+            Route::post('scanQRCode/{slug}/onDuty','ClinicController@api_scanQRCode_onDuty');
+            Route::post('scanQRCode/{slug}/offDuty','ClinicController@api_scanQRCode_offDuty');
         });
     });

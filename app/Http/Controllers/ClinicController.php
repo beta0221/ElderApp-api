@@ -206,15 +206,14 @@ class ClinicController extends Controller
 
         $clinic->userLogs()->create([
             'user_id'=>$user->id,
-            'session_date'=>date('Y-m-d')
         ]);
 
         Session::flash('success','完成志工服務。');
         return redirect()->route('manageClinic',['slug'=>$slug]);
     }
 
-    /**掃描志工QR Code請求 */
-    public function api_scanQRCode(Request $request,$slug){
+    /**掃描志工QR Code 簽到 */
+    public function api_scanQRCode_onDuty(Request $request,$slug){
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
         $user = $request->user();
 
@@ -225,10 +224,32 @@ class ClinicController extends Controller
         date_default_timezone_set('Asia/Taipei');
         $clinic->userLogs()->create([
             'user_id'=>$user->id,
-            'session_date'=>date('Y-m-d')
         ]);
 
-        return response('success');
+        return response('成功簽到');
+    }
+
+    
+    /**掃描志工QR Code 簽退 */
+    public function api_scanQRCode_offDuty(Request $request,$slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $user = $request->user();
+
+        if(!$clinic->users()->where('user_id',$user->id)->first()){
+            return response('您不在此診所的志工名單。',403);
+        }
+
+        if(!$log = $clinic->userLogs()->where('user_id',$user->id)->where('is_complete',0)->first()){
+            return response('請先進行簽到',403);
+        }
+
+        date_default_timezone_set('Asia/Taipei');
+        $log->update([
+            'is_complete'=>1,
+            'complete_at'=>date('Y-m-d H:i:s')
+        ]);
+
+        return response('成功簽退');
     }
 
 
@@ -256,7 +277,8 @@ class ClinicController extends Controller
         return view('clinic.manage',[
             'clinic' => $clinic,
             'users' => $users,
-            'qrCodeString' => $clinic->QRCodeString()
+            'onDutyQRCodeString' => $clinic->onDutyQRCodeString(),
+            'offDutyQRCodeString' => $clinic->offDutyQRCodeString(),
         ]);
     }
 

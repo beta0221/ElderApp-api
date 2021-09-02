@@ -26,7 +26,7 @@ export default {
                 { text: "#"},
                 { text: "姓名", value: "user_name" },
                 { text: "診所", value: "clinic_name" },
-                { text: "日期", value: "session_date" },
+                { text: "日期", value: "created_at" },
                 
                 
             ],

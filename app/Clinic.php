@@ -36,9 +36,16 @@ class Clinic extends Model
         return $dict;
     }
 
-    /**診所 QRcode 字串 */
-    public function QRCodeString(){
-        $query = "clinic,$this->slug";
+    /**診所簽到 QRcode 字串 */
+    public function onDutyQRCodeString(){
+        $query = "clinicOnDuty,$this->slug";
+        $query = base64_encode($query) . rand(0,9) . rand(0,9);
+        return config('app.url') . "?query=$query";
+    }
+
+    /**診所簽退 QRcode 字串 */
+    public function offDutyQRCodeString(){
+        $query = "clinicOffDuty,$this->slug";
         $query = base64_encode($query) . rand(0,9) . rand(0,9);
         return config('app.url') . "?query=$query";
     }

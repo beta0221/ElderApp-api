@@ -29,7 +29,7 @@
 
                 @foreach ($logs as $i => $log)
                     <div class="cell alert alert-primary">
-                        <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->session_date}}</span>
+                        <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->created_at}}</span>
                     </div>
                     
                 @endforeach

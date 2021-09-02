@@ -40,8 +40,8 @@ class ClinicUserLogResource extends JsonResource
             'clinic_name' => $this->clinicName,
             'user_name' => $this->userName,
             'user_id' => $this->user_id,
-            'session_date' => $this->session_date,
-            'session' => $this->session,
+            'is_complete' => $this->is_complete,
+            'complete_at' => $this->complete_at,
             'created_at' => $this->created_at->format('Y-m-d')
         ];
     }

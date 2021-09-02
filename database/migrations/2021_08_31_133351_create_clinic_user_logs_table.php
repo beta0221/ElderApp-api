@@ -17,8 +17,8 @@ class CreateClinicUserLogsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('clinic_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->date('session_date')->nullable();
-            $table->integer('session')->nullable();
+            $table->boolean('is_complete')->default(false);
+            $table->dateTime('complete_at')->nullable();
             $table->timestamps();
         });
     }

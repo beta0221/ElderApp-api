@@ -33,7 +33,11 @@
                 </div>
                 <h1 style="margin-top:40px">{{$clinic->name}}</h1>
 
-                <div id="clinic-qrcode"></div>
+                <span>簽到</span>
+                <div id="clinic-onDuty-qrcode"></div>
+
+                <span>簽退</span>
+                <div id="clinic-offDuty-qrcode"></div>
 
                 <div style="margin-top: 120px"></div>
 
@@ -65,7 +69,7 @@
                     <div class="user-cell p-1">
                         <button class="btn btn-sm btn-danger" onclick="removeUser('{{$user->id_code}}','{{$user->name}}')">移除</button>
                         {{$i + 1 }}.{{$user->name}}({{$user->email}})
-                        <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">完成服務</button>
+                        {{-- <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">完成服務</button> --}}
                     </div>
                 @endforeach
             </div>
@@ -138,7 +142,8 @@
     <script>
 
         jQuery(function(){
-            jQuery('#clinic-qrcode').qrcode("{{$qrCodeString}}");
+            jQuery('#clinic-onDuty-qrcode').qrcode("{{$onDutyQRCodeString}}");
+            jQuery('#clinic-offDuty-qrcode').qrcode("{{$offDutyQRCodeString}}");
             
         })
 
