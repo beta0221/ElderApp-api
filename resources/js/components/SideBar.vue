@@ -51,6 +51,7 @@
           { title: '據點管理', icon: 'location_on',url:'/location' },
           { title: '保險申請表', icon: 'description',url:'/insurance' },
           { title: '診所管理', icon: 'photo_filter',url:'/clinic' },
+          { title: '志工紀錄', icon: 'history',url:'/clinicLog' },
         ],
         right: null
       }

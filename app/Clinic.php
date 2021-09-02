@@ -24,4 +24,17 @@ class Clinic extends Model
     public function userLogs(){
         return $this->hasMany('App\ClinicUserLog','clinic_id','id');
     }
+
+
+    //取得字典
+    public static function getDictByIdArray($id_array,$column){
+        $clinicList = Clinic::whereIn('id',$id_array)->get();
+        $dict = [];
+        foreach ($clinicList as $clinic) {
+            $dict[$clinic->id] = $clinic->{$column};
+        }
+        return $dict;
+    }
+
+
 }

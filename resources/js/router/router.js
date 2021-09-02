@@ -16,6 +16,7 @@ import SendMoneyTable from '../components/SendMoneyTable'
 import LocationTable from '../components/Location/LocationTable'
 import InsurancePage from '../components/Insurance/InsurancePage'
 import ClinicPage from '../components/Clinic/ClinicPage'
+import ClinicLogPage from '../components/Clinic/ClinicLogPage'
 
 import associationMemberTable from '../components/associationComponents/AssociationMemberTable'
 import associationEventPage from '../components/associationComponents/AssociationEventPage'
@@ -37,6 +38,7 @@ const routes = [
     {path:'/location', component: LocationTable},
     {path:'/insurance', component: InsurancePage},
     {path:'/clinic', component: ClinicPage},
+    {path:'/clinicLog', component: ClinicLogPage},
     //
     {path:'/association/admin', component: associationMemberTable},
     {path:'/association/member', component: associationMemberTable},

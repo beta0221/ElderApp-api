@@ -20,6 +20,13 @@
     <div class="container mt-4 mb-4">
         <div class="row">
             <div class="offset-md-3 col-md-6 col-sm-12">
+
+                @if (count($logs) == 0)
+                    <div class="cell alert alert-secondary">
+                        <span>目前尚無服務記錄</span>
+                    </div>    
+                @endif
+
                 @foreach ($logs as $i => $log)
                     <div class="cell alert alert-primary">
                         <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->session_date}}</span>

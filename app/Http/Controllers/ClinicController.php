@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Clinic;
+use App\ClinicUserLog;
 use App\Helpers\Pagination;
 use App\Helpers\Tracker;
+use App\Http\Resources\ClinicUserLogCollection;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -240,17 +242,35 @@ class ClinicController extends Controller
     }
 
 
-
+    /**使用者的志工紀錄頁面 */
     public function view_volunteerLog(Request $request){
         $user = $request->user();
         $logs = $user->clinicLogs()->paginate(10);
 
-
-        
-
         return view('clinic.logs',[
             'user' => $user,
             'logs' => $logs
+        ]);
+    }
+
+
+    /** 志工服務列表 */
+    public function api_clinicUserLog(Request $request){
+        $p = new Pagination($request);
+        $query = ClinicUserLog::orderBy($p->orderBy,$p->ascOrdesc);
+
+        if($request->has('user_name')){
+            $user_id_array = User::where('name','LIKE',"%$request->user_name%")->pluck('id');
+            $query->whereIn('user_id',$user_id_array);
+        }
+
+        $total = $query->count();
+        $items =  $query->skip($p->skip)->take($p->rows)->get();
+        $items = new ClinicUserLogCollection($items);
+        
+        return response([
+            'items' => $items,
+            'total' => $total,
         ]);
     }
 

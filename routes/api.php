@@ -222,8 +222,10 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::apiresource('clinic','ClinicController')->middleware(['JWT','admin']);
     Route::group(['prefix'=>'clinic'],function(){
         Route::group(['middleware'=>['JWT','admin']],function(){
+            Route::get('/user/log','ClinicController@api_clinicUserLog');
             Route::get('getManagers/{slug}','ClinicController@getManagers');
             Route::post('addManager/{slug}','ClinicController@addManager');
             Route::post('removeManager/{slug}','ClinicController@removeManager');
+            
         });
     });
