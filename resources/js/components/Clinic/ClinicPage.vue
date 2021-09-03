@@ -33,7 +33,8 @@ export default {
                 // { text: "志工日期", value: "session_date" },
                 // { text: "志工時段", value: "session" },
                 { text: "連結" , btnName:'時段管理' , url:'/clinic/{slug}/manage', keyParam:'slug'},
-                { text: "-" , btnName:'顯示',eventName:'showDetailModal',eventParam:['slug','name']},
+                { text: "連結" , btnName:'QRCode' , url:'/clinic/{slug}/QRCode', keyParam:'slug'},
+                // { text: "-" , btnName:'顯示',eventName:'showDetailModal',eventParam:['slug','name']},
                 { text: "-" , btnName:'管理員',eventName:'showLocationManagers',eventParam:['slug','name']},
             ],
             dict:{

@@ -277,6 +277,15 @@ class ClinicController extends Controller
         return view('clinic.manage',[
             'clinic' => $clinic,
             'users' => $users,
+        ]);
+    }
+
+    /**診所列印qrcode頁面 */
+    public function view_QRCode(Request $request,$slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+
+        return view('clinic.QRCode',[
+            'clinic' => $clinic,
             'onDutyQRCodeString' => $clinic->onDutyQRCodeString(),
             'offDutyQRCodeString' => $clinic->offDutyQRCodeString(),
         ]);

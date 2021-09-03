@@ -28,9 +28,11 @@
                 @endif
 
                 @foreach ($logs as $i => $log)
+                    @if ($log->is_complete)
                     <div class="cell alert alert-primary">
-                        <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->created_at}}</span>
-                    </div>
+                        <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->complete_at}}</span>
+                    </div>    
+                    @endif
                     
                 @endforeach
             </div>

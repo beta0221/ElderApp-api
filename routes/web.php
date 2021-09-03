@@ -90,6 +90,7 @@ Route::group(['prefix'=>'insurance'],function(){
 
 Route::group(['prefix'=>'clinic'],function(){
     Route::get('{slug}/manage','ClinicController@view_manageClinic')->name('manageClinic');
+    Route::get('{slug}/QRCode','ClinicController@view_QRCode');
     Route::group(['middleware'=>['webAuth','role:clinic_manager']],function(){
         Route::get('all','ClinicController@view_allClinic');
         Route::post('addUser/{slug}','ClinicController@addUser');
