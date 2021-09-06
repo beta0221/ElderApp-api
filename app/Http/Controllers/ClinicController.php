@@ -242,7 +242,7 @@ class ClinicController extends Controller
         date_default_timezone_set('Asia/Taipei');
         $now = date('Y-m-d H:i:s');
 
-        if(!$log = $clinic->userLogs()->orderBy('id','desc')->where('user_id',$user->id)->where('is_complete',0)->whereDate('created_at',$now)->first()){
+        if(!$log = $clinic->userLogs()->orderBy('id','desc')->where('user_id',$user->id)->where('is_complete',0)->whereDate('created_at',date('Y-m-d'))->first()){
             return response('請先進行簽到',403);
         }
 
