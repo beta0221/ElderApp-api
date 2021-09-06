@@ -251,7 +251,7 @@ class ClinicController extends Controller
         $total_hours = floor($to - $from / (60 * 60));
 
         if($total_hours > 8){   //時數過長無效
-            return response('請先進行簽到',403);
+            return response('時數過長，請重新簽到',403);
         }
 
         $log->update([
