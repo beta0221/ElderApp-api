@@ -30,6 +30,7 @@
                 @foreach ($logs as $i => $log)
                     @if ($log->is_complete)
                     <div class="cell alert alert-primary">
+                        <h6>時數：{{$log->total_hours}}</h6>
                         <span class="ml-1 mr-1">{{$log->clinic->name}}:{{$log->complete_at}}</span>
                     </div>    
                     @endif

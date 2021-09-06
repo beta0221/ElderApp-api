@@ -239,14 +239,25 @@ class ClinicController extends Controller
             return response('您不在此診所的志工名單。',403);
         }
 
-        if(!$log = $clinic->userLogs()->where('user_id',$user->id)->where('is_complete',0)->first()){
+        date_default_timezone_set('Asia/Taipei');
+        $now = date('Y-m-d H:i:s');
+
+        if(!$log = $clinic->userLogs()->orderBy('id','desc')->where('user_id',$user->id)->where('is_complete',0)->whereDate('created_at',$now)->first()){
             return response('請先進行簽到',403);
         }
 
-        date_default_timezone_set('Asia/Taipei');
+        $from = strtotime($log->created_at->format('Y-m-d H:i:s'));
+        $to = strtotime($now);
+        $total_hours = floor($to - $from / (60 * 60));
+
+        if($total_hours > 8){   //時數過長無效
+            return response('請先進行簽到',403);
+        }
+
         $log->update([
             'is_complete'=>1,
-            'complete_at'=>date('Y-m-d H:i:s')
+            'complete_at'=>$now,
+            'total_hours'=>$total_hours
         ]);
 
         return response('成功簽退');

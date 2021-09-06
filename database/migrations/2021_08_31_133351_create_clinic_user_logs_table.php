@@ -19,6 +19,7 @@ class CreateClinicUserLogsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->boolean('is_complete')->default(false);
             $table->dateTime('complete_at')->nullable();
+            $table->integer('total_hours')->unsigned()->nullable();
             $table->timestamps();
         });
     }
