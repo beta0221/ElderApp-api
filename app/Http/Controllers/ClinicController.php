@@ -248,7 +248,7 @@ class ClinicController extends Controller
 
         $from = strtotime($log->created_at->format('Y-m-d H:i:s'));
         $to = strtotime($now);
-        $total_hours = floor($to - $from / (60 * 60));
+        $total_hours = floor(($to - $from) / (60 * 60));
 
         if($total_hours > 8){   //時數過長無效
             return response('時數過長，請重新簽到',403);
