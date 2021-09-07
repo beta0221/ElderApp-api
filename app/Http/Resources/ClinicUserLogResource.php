@@ -42,7 +42,8 @@ class ClinicUserLogResource extends JsonResource
             'user_id' => $this->user_id,
             'is_complete' => $this->is_complete,
             'complete_at' => $this->complete_at,
-            'created_at' => $this->created_at->format('Y-m-d')
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'total_hours' => $this->total_hours
         ];
     }
 

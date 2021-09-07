@@ -95,7 +95,8 @@ Route::group(['prefix'=>'clinic'],function(){
         Route::get('all','ClinicController@view_allClinic');
         Route::post('addUser/{slug}','ClinicController@addUser');
         Route::post('removeUser/{slug}','ClinicController@removeUser');
-        Route::post('doneVolunteering/{slug}','ClinicController@doneVolunteering');    
+        Route::post('doneVolunteering/{slug}','ClinicController@doneVolunteering');
+        Route::get('{slug}/volunteers/logs','ClinicController@view_volunteersLogs');
     });
     Route::group(['middleware'=>['webAuth']],function(){
         Route::get('volunteer/log','ClinicController@view_volunteerLog');

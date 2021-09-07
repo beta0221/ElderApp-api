@@ -21,10 +21,12 @@
             <div class="offset-md-3 col-md-6 col-sm-12">
                 @foreach ($clinicList as $i => $clinic)
                     <div class="clinic-cell alert alert-primary">
-                        <button class="btn btn-sm btn-primary">{{$i+1}}</button>
-                        <span class="ml-1 mr-1">{{$clinic->name}}</span>
-                        <a class="float-right btn btn-sm btn-primary text-white"
-                            href="/clinic/{{$clinic->slug}}/manage">管理</a>
+                        <h4 class="ml-1 mr-1">{{$clinic->name}}</h4>
+                        <a class="btn btn-sm btn-primary text-white"
+                            href="/clinic/{{$clinic->slug}}/manage">志工管理</a>
+
+                        <a class="btn btn-sm btn-warning text-white"
+                            href="/clinic/{{$clinic->slug}}/volunteers/logs">服務紀錄</a>
                     </div>
                     
                 @endforeach

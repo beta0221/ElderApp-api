@@ -20,14 +20,9 @@
     <div class="container mt-4 mb-4">
         <div class="row">
             <div class="offset-md-3 col-md-6 col-sm-12">
-                
-                <div class="text-left mb-2">
-                    <a href="/clinic/all" class="btn btn-sm btn-secondary">回上頁</a>
-                </div>
-
 
                 {{$links}}
-                
+
                 @if (count($logs) == 0)
                     <div class="cell alert alert-secondary">
                         <span>目前尚無服務記錄</span>
@@ -38,16 +33,17 @@
                     <?php $log = (object)$log ?>
                     @if ($log->is_complete)
                     <div class="cell alert alert-primary">
-                        <h5>{{$log->user_name}}</h5>
+                        <h5>{{$log->clinic_name}}</h5>
                         <h6>時數：{{$log->total_hours}}</h6>
                         <span>{{$log->created_at}} ~ {{$log->complete_at}}</span>
                     </div>    
                     @endif
-                
+                    
                 @endforeach
 
                 {{$links}}
             </div>
+            
         </div>
     </div>
 </body>

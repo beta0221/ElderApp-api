@@ -306,11 +306,29 @@ class ClinicController extends Controller
     /**使用者的志工紀錄頁面 */
     public function view_volunteerLog(Request $request){
         $user = $request->user();
-        $logs = $user->clinicLogs()->paginate(10);
+        $logs = $user->clinicLogs()->orderBy('id','desc')->paginate(10);
+        
+        $links = $logs->links();
+        $logs = new ClinicUserLogCollection($logs);
+
+        return view('clinic.myLogs',[
+            'logs' => $logs->toArray($request),
+            'links' => $links
+        ]);
+    }
+
+    /**診所的志工紀錄頁面 */
+    public function view_volunteersLogs(Request $request,$slug){
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+
+        $logs = $clinic->userLogs()->orderBy('id','desc')->paginate(10);
+
+        $links = $logs->links();
+        $logs = new ClinicUserLogCollection($logs);
 
         return view('clinic.logs',[
-            'user' => $user,
-            'logs' => $logs
+            'logs' => $logs->toArray($request),
+            'links' => $links
         ]);
     }
 
