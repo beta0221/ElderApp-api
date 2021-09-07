@@ -221,6 +221,10 @@ class ClinicController extends Controller
             return response('您不在此診所的志工名單。',403);
         }
 
+        if($log = $clinic->userLogs()->where('user_id',$user->id)->where('is_complete',0)->first()){
+            $log->delete();
+        }
+
         date_default_timezone_set('Asia/Taipei');
         $clinic->userLogs()->create([
             'user_id'=>$user->id,
