@@ -7,6 +7,7 @@ use App\ClinicUserLog;
 use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Http\Resources\ClinicUserLogCollection;
+use App\Jobs\NotifyAppUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -254,8 +255,12 @@ class ClinicController extends Controller
         $to = strtotime($now);
         $total_hours = floor(($to - $from) / (60 * 60));
 
-        if($total_hours > 8){   //時數過長無效
+        if($total_hours > 4){   //時數過長無效
             return response('時數過長，請重新簽到',403);
+        }
+
+        if($total_hours < 1){   //時數過短無效
+            return response('未達最低時數，無法簽退',403);
         }
 
         $log->update([
@@ -263,6 +268,10 @@ class ClinicController extends Controller
             'complete_at'=>$now,
             'total_hours'=>$total_hours
         ]);
+
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,100,"志工獎勵-".$clinic->name);//使用者加錢
+        $user->increaseRank(1);
+        NotifyAppUser::dispatch($user->id,'恭喜您！','收到志工獎勵，同時也累計了志工時數。');
 
         return response('成功簽退');
     }
