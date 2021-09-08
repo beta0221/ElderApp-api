@@ -310,14 +310,18 @@ class ClinicController extends Controller
     /**使用者的志工紀錄頁面 */
     public function view_volunteerLog(Request $request){
         $user = $request->user();
-        $logs = $user->clinicLogs()->orderBy('id','desc')->paginate(10);
+        $query = $user->clinicLogs()->orderBy('id','desc');
+        
+        $sum_total_hours = $query->sum('total_hours');
+        $logs = $query->paginate(10);
         
         $links = $logs->links();
         $logs = new ClinicUserLogCollection($logs);
 
         return view('clinic.myLogs',[
             'logs' => $logs->toArray($request),
-            'links' => $links
+            'links' => $links,
+            'sum_total_hours' => $sum_total_hours
         ]);
     }
 

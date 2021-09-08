@@ -21,6 +21,13 @@
         <div class="row">
             <div class="offset-md-3 col-md-6 col-sm-12">
 
+                <div class="alert alert-warning" role="alert">
+                    <h2 class="alert-heading">愛心撲滿</h2>
+                    <h5>目前累計時數</h5>
+                    <hr>
+                    <h3 class="mb-0">{{$sum_total_hours}} 小時</h3>
+                </div>
+
                 {{$links}}
 
                 @if (count($logs) == 0)
