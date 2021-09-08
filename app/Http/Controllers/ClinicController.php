@@ -324,10 +324,16 @@ class ClinicController extends Controller
     /**診所的志工紀錄頁面 */
     public function view_volunteersLogs(Request $request,$slug){
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
+        $query = $clinic->userLogs()->orderBy('id','desc');
 
-        $logs = $clinic->userLogs()->orderBy('id','desc')->paginate(10);
+        if($request->has('user_name')){
+            $user_id_array = User::where('name','LIKE',"%$request->user_name%")->pluck('id');
+            $query->whereIn('user_id',$user_id_array);
+        }
 
-        $links = $logs->links();
+        $logs = $query->paginate(10);
+
+        $links = $logs->appends($request->all())->links();
         $logs = new ClinicUserLogCollection($logs);
 
         return view('clinic.logs',[
@@ -338,13 +344,18 @@ class ClinicController extends Controller
 
 
     /** 志工服務列表 */
-    public function api_clinicUserLog(Request $request){
+    public function api_allLog(Request $request){
         $p = new Pagination($request);
         $query = ClinicUserLog::orderBy($p->orderBy,$p->ascOrdesc);
 
         if($request->has('user_name')){
             $user_id_array = User::where('name','LIKE',"%$request->user_name%")->pluck('id');
             $query->whereIn('user_id',$user_id_array);
+        }
+
+        if($request->has('clinic_name')){
+            $clinic_id_array = Clinic::where('name','LIKE',"%$request->clinic_name%")->pluck('id');
+            $query->whereIn('clinic_id',$clinic_id_array);
         }
 
         $total = $query->count();
@@ -354,6 +365,42 @@ class ClinicController extends Controller
         return response([
             'items' => $items,
             'total' => $total,
+        ]);
+    }
+
+    public function api_userLog(Request $request,$user_id){
+        $user = User::findOrFail($user_id);
+
+        $p = new Pagination($request);
+        $query = $user->clinicLogs()->orderBy($p->orderBy,$p->ascOrdesc);
+
+        $total = $query->count();
+        $logs = $query->skip($p->skip)->take($p->rows)->get();
+
+        $logs = new ClinicUserLogCollection($logs);
+
+        return response([
+            'total'=>$total,
+            'logs'=>$logs,
+            'user'=>$user
+        ]);
+    }
+
+    public function api_clinicLog(Request $request,$clinic_id){
+        $clinic = Clinic::findOrFail($clinic_id);
+
+        $p = new Pagination($request);
+        $query = $clinic->userLogs()->orderBy($p->orderBy,$p->ascOrdesc);
+
+        $total = $query->count();
+        $logs = $query->skip($p->skip)->take($p->rows)->get();
+
+        $logs = new ClinicUserLogCollection($logs);
+
+        return response([
+            'total'=>$total,
+            'logs'=>$logs,
+            'clinic'=>$clinic
         ]);
     }
 

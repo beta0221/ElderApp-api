@@ -10,22 +10,31 @@
     </div>
 
     <DataTable ref="DataTable" :dict="dict" :headers="headers" :requestUrl="requestUrl" />
+    <UserLogModal/>
+    <ClinicLogModal/>
 </div>
 </template>
 
 <script>
 import FilterBar from '../FilterBar'
+import UserLogModal from './UserLogModal.vue'
+import ClinicLogModal from './ClinicLogModal.vue'
+
 export default {
     components:{
         FilterBar,
+        UserLogModal,
+        ClinicLogModal,
     },
     data(){
         return{
-            requestUrl:"/api/clinic/user/log",
+            requestUrl:"/api/clinic/all/log",
             headers:[
                 { text: "#"},
                 { text: "姓名", value: "user_name" },
+                { text: "-" , btnName:'紀錄',eventName:'showUserLogs',eventParam:['user_id']},
                 { text: "診所", value: "clinic_name" },
+                { text: "-" , btnName:'診所紀錄',eventName:'showClinicLogs',eventParam:['clinic_id']},
                 { text: "日期", value: "created_at" },
                 { text: "完成", value: "complete_at" },
             ],
@@ -34,6 +43,7 @@ export default {
             },
             filterColumns:{
                 user_name:'姓名',
+                clinic_name:'診所',
             },
         }
     },
