@@ -29,13 +29,13 @@
                 <div class="mb-2">
                     <form action="/{{Request::path()}}" method="GET">
                         <div class="form-row">
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <input type="text" class="form-control" placeholder="姓名" name="user_name" value="{{(Request::has('user_name'))?Request::get('user_name'):''}}">
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-3">
                                 <button class="btn btn-primary btn-block">搜尋</button>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-3">
                                 <a class="btn btn-secondary btn-block" href="/{{Request::path()}}">清除</a>
                             </div>
                         </div>
