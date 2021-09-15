@@ -334,7 +334,8 @@ class ProductController extends Controller
             return response('樂必餘額不足，無法兌換',400);
         }
 
-        if($exchange_max = $product->exchange_max){
+        if($product->exchange_max != 0 && !is_null($product->exchange_max)){
+            $exchange_max = $product->exchange_max;
             $hasExchangedSum = $product->hasExchangedSumBy($user->id);
             if($exchange_max <= $hasExchangedSum){
                 return response("已達此商品兌換上限:$exchange_max",400);
@@ -397,9 +398,10 @@ class ProductController extends Controller
         }
 
         //檢查購買上限
-        if($purchase_max = $product->purchase_max){
+        if($product->purchase_max != 0 && !is_null($product->purchase_max)){
+            $purchase_max = $product->purchase_max;
             $hasPurchasedSum = $product->hasPurchasedSumBy($user->id);
-            if($purchase_max <= $hasPurchasedSum){
+            if($purchase_max < ($hasPurchasedSum + (int)$request->quantity)){
                 return response("已達此商品購買上限:$purchase_max",400);
             }
         }
