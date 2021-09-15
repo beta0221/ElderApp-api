@@ -7,12 +7,12 @@
       <v-card-title class="headline">{{(edit_mode)?'編輯產品':'新增產品'}}</v-card-title>
 
       <div style="padding:0 24px 24px 24px;">
-        <v-col cols="12" sm="6" md="3">
+        <div cols="12" sm="6" md="3">
           <img v-if="(product_image)?true:false" :src="product_image" />
           <br />
-        </v-col>
+        </div>
 
-        <v-col cols="12" sm="6" md="3">
+        <div cols="12" sm="6" md="3">
           <input
             style="display:none;"
             type="file"
@@ -21,7 +21,7 @@
             v-on:change="onChangeFileUpload()"
           />
           <v-btn color="success" @click="$refs.file.click()">上傳圖片</v-btn>
-        </v-col>
+        </div>
 
         <div>
           <label>兌換區</label>
@@ -42,12 +42,12 @@
 
 
 
-        <v-col cols="12" sm="6" md="3">
+        <div cols="12" sm="6" md="3">
           <span>產品名稱</span>
           <v-text-field label="Solo" placeholder="產品名稱" solo v-model="form.name"></v-text-field>
-        </v-col>
+        </div>
 
-        <v-col>
+        <div>
           <span>經銷據點</span>
           <v-select
             v-model="form.select_location"
@@ -59,7 +59,7 @@
             multiple
             solo
           ></v-select>
-        </v-col>
+        </div>
 
         
         <div v-for="(l,index) in location" v-bind:key="index" v-show="isSelected(l.id)">
@@ -71,7 +71,7 @@
         <div>
           <span>產品類別</span>
         </div>
-        <v-col class="d-flex" cols="12" sm="6">
+        <div class="d-flex" cols="12" sm="6">
           <v-select
             :items="product_category"
             item-text="name"
@@ -80,11 +80,14 @@
             solo
             v-model="form.product_category_id"
           ></v-select>
-        </v-col>
+        </div>
 
         
-        <label>每人最多兌換(非必填)</label>
-        <v-text-field label="每人最多兌換(非必填)" placeholder="每人最多兌換(非必填)" solo v-model="form.exchange_max"></v-text-field>
+        <label>兌換上限(非必填)</label>
+        <v-text-field label="兌換上限(非必填))" placeholder="兌換上限(非必填)" solo v-model="form.exchange_max"></v-text-field>
+
+        <label>商城購買上限(非必填)</label>
+        <v-text-field label="商城購買上限(非必填)" placeholder="商城購買上限(非必填)" solo v-model="form.purchase_max"></v-text-field>
         
         <v-layout row wrap>
           <v-flex md3>
@@ -119,15 +122,15 @@
         </v-layout>
         
 
-        <v-col cols="12" sm="6" md="3">
+        <div cols="12" sm="6" md="3">
           <ckeditor id="editor" :editor="editor" v-model="form.info" :config="editorConfig"></ckeditor>
           <!-- <markdown-editor v-model="form.info"></markdown-editor> -->
-        </v-col>
+        </div>
 
-        <v-col cols="12" sm="6" md="3">
+        <div cols="12" sm="6" md="3">
           <v-btn v-show="!edit_mode" block color="success" @click="submitForm">新增</v-btn>
           <v-btn v-show="edit_mode" block color="info" @click="submitForm">確定送出</v-btn>
-        </v-col>
+        </div>
       </div>
     </v-card>
   </div>
@@ -189,6 +192,7 @@ export default {
         original_cash:null,
         cash:null,
         exchange_max:null,
+        purchase_max:null,
         info:"",
       },
       file:'',
@@ -262,6 +266,7 @@ export default {
             this.form.original_cash = res.data.product.original_cash;
             this.form.cash = res.data.product.cash;
             this.form.exchange_max = res.data.product.exchange_max;
+            this.form.purchase_max = res.data.product.purchase_max;
             this.form.info = res.data.product.info;
             if(res.data.product.imgUrl){ this.product_image = res.data.product.imgUrl; }
             if(res.data.location){

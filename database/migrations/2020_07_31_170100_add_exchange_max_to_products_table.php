@@ -16,6 +16,7 @@ class AddExchangeMaxToProductsTable extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->integer('cash')->default(0)->after('pay_cash_point');
             $table->integer('exchange_max')->nullable()->after('img');
+            $table->integer('purchase_max')->nullable()->after('exchange_max');
         });
     }
 
@@ -29,6 +30,7 @@ class AddExchangeMaxToProductsTable extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('cash');
             $table->dropColumn('exchange_max');
+            $table->dropColumn('purchase_max');
         });
     }
 }

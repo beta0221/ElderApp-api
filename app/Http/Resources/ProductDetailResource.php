@@ -25,6 +25,7 @@ class ProductDetailResource extends JsonResource
             'slug'=>$this->slug,
             'img'=>$this->img,
             'exchange_max'=>$this->exchange_max,
+            'purchase_max'=>$this->purchase_max,
             'public'=>$this->public,
             'price'=>$this->price,
             'pay_cash_point'=>$this->pay_cash_point,

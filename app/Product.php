@@ -73,6 +73,11 @@ class Product extends Model
     public function hasExchangedSumBy($user_id){
         return OrderDetail::where('product_id',$this->id)->where('user_id',$user_id)->count();
     }
+    
+    /** 使用者已經購買的商品總數*/
+    public function hasPurchasedSumBy($user_id){
+        return Order::where('product_id',$this->id)->where('user_id',$user_id)->sum('total_quantity');
+    }
 
     /** abandoned */
     public static function getProductDictionary_abandoned(){

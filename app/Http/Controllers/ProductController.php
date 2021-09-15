@@ -90,6 +90,9 @@ class ProductController extends Controller
         if($request->exchange_max == null || $request->exchange_max == 'null'){
             $request->request->remove('exchange_max');
         }
+        if($request->purchase_max == null || $request->purchase_max == 'null'){
+            $request->request->remove('purchase_max');
+        }
         
         $slug = 'P'.time();
         $request->merge(['slug'=>$slug]);
@@ -219,6 +222,10 @@ class ProductController extends Controller
         
         if($request->exchange_max == null || $request->exchange_max == 'null'){
             $request->request->remove('exchange_max');
+        }
+
+        if($request->purchase_max == null || $request->purchase_max == 'null'){
+            $request->request->remove('purchase_max');
         }
 
         $request->merge(['info'=>$this->resizeHtmlImg($request->info)]);
@@ -387,6 +394,14 @@ class ProductController extends Controller
         //檢查產品庫存
         if(!$product->isAvailable($request->location_id,(int)$request->quantity,Inventory::TARGET_CASH)){
             return response('非常抱歉，目前此據點庫存不足。',400);
+        }
+
+        //檢查購買上限
+        if($purchase_max = $product->purchase_max){
+            $hasPurchasedSum = $product->hasPurchasedSumBy($user->id);
+            if($purchase_max <= $hasPurchasedSum){
+                return response("已達此商品購買上限:$purchase_max",400);
+            }
         }
 
         //if 足夠 => 扣庫存
