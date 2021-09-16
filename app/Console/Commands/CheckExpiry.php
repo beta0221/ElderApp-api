@@ -49,7 +49,12 @@ class CheckExpiry extends Command
             NotifyAppUser::dispatch($user->id,'會員效期通知','您的會員效期已到期。');
             $user->valid = 0;
             $user->pay_status = 0;
-            $user->save();
+            try {
+                $user->save();
+            } catch (\Throwable $th) {
+                Log::channel('expirelog')->info('Error on user '.$user->name.'(' . $user->id .')');
+            }
+            
         }
     }
 }
