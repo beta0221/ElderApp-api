@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\NotifyAppUser;
+use App\User;
+use Carbon\Carbon;
 
 class CheckExpiry extends Command
 {
@@ -42,8 +43,10 @@ class CheckExpiry extends Command
     {
         Log::info('expire check');
         date_default_timezone_set('Asia/Taipei');
-        $now = strtotime(date('Y-m-d'));
-        $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
+
+        $today = Carbon::today();
+        $users = User::whereDate('expiry_date','<',$today)->where('valid',1)->get();
+        // $users = DB::select("SELECT * FROM users WHERE UNIX_TIMESTAMP(expiry_date) < $now AND valid = 1");
         foreach ($users as $user) {
             Log::channel('expirelog')->info('user '.$user->name.'(' . $user->id .') expired');
             NotifyAppUser::dispatch($user->id,'會員效期通知','您的會員效期已到期。');
