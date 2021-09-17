@@ -169,7 +169,12 @@ class ClinicController extends Controller
     public function addUser(Request $request,$slug){
         Tracker::log($request);
         
-        if(!$user = User::where('id_code',$request->id_code)->first()){
+        $user = User::where('email',$request->id_code)->first();
+        if(!$user){
+            $user = User::where('id_code',$request->id_code)->first();
+        }
+
+        if(!$user){
             Session::flash('error','會員編號不存在。');
             Session::flash('id_code',$request->id_code);
             return redirect()->route('manageClinic',['slug'=>$slug]);    

@@ -48,7 +48,7 @@
 
                 <form action="/clinic/addUser/{{$clinic->slug}}" method="POST">
                     {{ csrf_field() }}
-                    <input class="form-control" type="text" placeholder="會員編號" name="id_code" value="{{Session::has('id_code')?Session::get('id_code'):''}}">
+                    <input class="form-control" type="text" placeholder="會員帳號或會員編號" name="id_code" value="{{Session::has('id_code')?Session::get('id_code'):''}}">
                     <button class="mt-2 btn-block btn btn-success">加入志工</button>
                 </form>
             </div>
