@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\InventoryAction;
 use Illuminate\Database\Eloquent\Model;
 use stdClass;
 
@@ -88,6 +89,9 @@ class Order extends Model
     public function voidOrder(){
         $this->ship_status = Order::STATUS_VOID;
         $this->save();
+
+        $invAction = InventoryAction::getInstance($this->location_id,$this->product_id,Inventory::TARGET_CASH,Inventory::ACTION_ADD,$this->total_quantity,'系統-訂單作廢');
+        Inventory::updateInventory($invAction);
     }
 
     public static function groupOrdersByNumero($orders){
