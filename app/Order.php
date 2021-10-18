@@ -27,6 +27,10 @@ class Order extends Model
         '5'=>'作廢',
     ];
 
+    public function user(){
+        return $this->hasOne('App\User','id','user_id');
+    }
+
     /**
      * insert 進資料庫
      * * @param Int user_id 
@@ -92,6 +96,9 @@ class Order extends Model
 
         $invAction = InventoryAction::getInstance($this->location_id,$this->product_id,Inventory::TARGET_CASH,Inventory::ACTION_ADD,$this->total_quantity,'系統-訂單作廢');
         Inventory::updateInventory($invAction);
+        
+        $eventName = "訂單作廢：" . $this->order_numero;
+        $this->user->update_wallet_with_trans(User::INCREASE_WALLET,$this->total_point,$eventName);
     }
 
     public static function groupOrdersByNumero($orders){
@@ -100,7 +107,7 @@ class Order extends Model
         foreach ($orders as $order) {
             if(!isset($_dict[$order->order_numero])){
                 $_order = new stdClass();
-                $_order->created_at = $order->created_at;
+                $_order->created_at = $order->created_at->format('Y-m-d');
                 $_order->order_numero = $order->order_numero;
                 $_order->ship_status = $order->ship_status;
                 $_order->user_id = $order->user_id;

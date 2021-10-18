@@ -154,6 +154,7 @@ class OrderController extends Controller
         }
 
         foreach ($orders as $order) {
+            if($order->ship_status == Order::STATUS_VOID){ continue; }
             $order->voidOrder();
         }
 

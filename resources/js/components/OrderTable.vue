@@ -62,6 +62,7 @@
                 <td>
                     <div v-for="product in props.item.list" v-bind:key="product.id">
                         <span>{{product.name}}</span>
+                        <span>({{product.total_quantity}})</span>
                     </div>
                 </td>
                 <td>{{props.item.order_numero}}</td>
