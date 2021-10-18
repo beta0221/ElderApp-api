@@ -25,6 +25,7 @@
                     <a href="/clinic/all" class="btn btn-sm btn-secondary">回上頁</a>
                 </div>
 
+                <h3>{{$clinic->name}}</h3>
 
                 <div class="mb-2">
                     <form action="/{{Request::path()}}" method="GET">

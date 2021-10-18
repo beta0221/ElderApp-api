@@ -355,6 +355,7 @@ class ClinicController extends Controller
         $logs = new ClinicUserLogCollection($logs);
 
         return view('clinic.logs',[
+            'clinic' => $clinic,
             'logs' => $logs->toArray($request),
             'links' => $links
         ]);
