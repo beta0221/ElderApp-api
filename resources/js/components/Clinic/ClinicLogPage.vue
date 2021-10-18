@@ -35,6 +35,7 @@ export default {
                 { text: "-" , btnName:'紀錄',eventName:'showUserLogs',eventParam:['user_id']},
                 { text: "診所", value: "clinic_name" },
                 { text: "-" , btnName:'診所紀錄',eventName:'showClinicLogs',eventParam:['clinic_id']},
+                { text: "時數", value: "total_hours" },
                 { text: "日期", value: "created_at" },
                 { text: "完成", value: "complete_at" },
             ],
