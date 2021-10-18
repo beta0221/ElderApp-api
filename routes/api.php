@@ -221,6 +221,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
 
     Route::apiresource('clinic','ClinicController')->middleware(['JWT','admin']);
     Route::group(['prefix'=>'clinic'],function(){
+        Route::get('/android/decode','ClinicController@api_decode');
         Route::group(['middleware'=>['JWT','admin']],function(){
             Route::get('/all/log','ClinicController@api_allLog');
             Route::get('/user/{user_id}/log','ClinicController@api_userLog');

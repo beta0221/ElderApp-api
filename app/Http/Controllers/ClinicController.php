@@ -281,6 +281,11 @@ class ClinicController extends Controller
         return response('成功簽退');
     }
 
+    /**後端輔助Android解碼 */
+    public function api_decode(Request $request){
+        return response(base64_decode($request->text));
+    }
+
 
     /**診所管理員的診所列表 */
     public function view_allClinic(Request $request){
