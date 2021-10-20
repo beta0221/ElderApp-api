@@ -27,7 +27,7 @@
               <div v-for="t in transList" v-bind:key="t.id">
                 
                 <p style="margin-bottom:4px" >
-                  <button style="background:red;color:#fff;padding:2px 4px;" v-if="t.target_id==0" @click="reverseTransaction(t.tran_id)">回朔</button>
+                  <button style="background:red;color:#fff;padding:2px 4px;" v-if="t.target_id==0" @click="reverseTransaction(t.id)">回朔</button>
                   {{t.created_at}} => {{t.event}} ({{((t.give_take)?'+':'-')}}{{t.amount}})
                 </p>
               </div>

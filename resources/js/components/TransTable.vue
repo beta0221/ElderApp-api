@@ -29,7 +29,7 @@
                     <span>{{props.item.created_at}}</span>
                 </td>
                 <td>
-                    <v-btn v-if="props.item.target_id == 0" color="error" @click="reverseTran(props.item.tran_id)">回朔</v-btn>
+                    <v-btn v-if="props.item.target_id == 0" color="error" @click="reverseTran(props.item.id)">回朔</v-btn>
                 </td>
             </template>
         </v-data-table>

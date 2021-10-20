@@ -173,7 +173,7 @@ class TransactionController extends Controller
             'tran_id' => 'required',
         ]);
 
-        $transaction = Transaction::where('tran_id',$request->tran_id)->first();
+        $transaction = Transaction::findOrFail($request->tran_id);
         Tracker::info(json_encode($transaction));
         
         try {
