@@ -8,11 +8,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class GroupMembers implements FromCollection,WithHeadings
 {
     private $cellData;
+    private $orgRankDict = [
+        1=>'主人',
+        2=>'小天使',
+        3=>'大天使',
+        4=>'守護天使',
+        5=>'領航天使',
+    ];
+
     public function __construct($cellData){
         foreach ($cellData as $index => $row) {
             $no = $index+1;
             $status = '待付費';
             if($row->valid){ $status = '有效'; }
+            $orgTitle = (isset($this->orgRankDict[$row->org_rank]))?$this->orgRankDict[$row->org_rank]:'主人';
+
             $this->cellData[] = [
                 $no,
                 $row->name,
@@ -21,6 +31,7 @@ class GroupMembers implements FromCollection,WithHeadings
                 $row->inviter,
                 $row->expiry_date,
                 $status,
+                $orgTitle
             ];
         }
     }
@@ -35,6 +46,7 @@ class GroupMembers implements FromCollection,WithHeadings
             '推薦人',
             '到期日',
             '狀態',
+            '職位'
         ];
     }
 
