@@ -12,10 +12,19 @@ class ExchangeExport_location implements FromCollection,WithHeadings
 
     public function __construct($cellData,$userNameDict,$productNameDict)
     {
+        $receiveTotal = 0;
+        $unreceiveTotal = 0;
+
         foreach ($cellData as $index => $row) {
             if(!isset($userNameDict[$row->user_id])){ continue; }
             if(!isset($productNameDict[$row->product_id])){ continue; }
             
+            if($row->receive){
+                $receiveTotal += 1;
+            }else{
+                $unreceiveTotal += 1;
+            }
+
             $no = $index+1;
             $this->cellData[] = [
                 $no,
@@ -25,6 +34,8 @@ class ExchangeExport_location implements FromCollection,WithHeadings
                 $row->created_at->format('Y-m-d'),
             ];
         }
+
+        $this->cellData[] = ['','','',"已領取：$receiveTotal","未領取：$unreceiveTotal"];
     }
 
 
