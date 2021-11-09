@@ -92,12 +92,13 @@ Route::group(['prefix'=>'clinic'],function(){
     Route::get('{slug}/manage','ClinicController@view_manageClinic')->name('manageClinic');
     Route::get('{slug}/QRCode','ClinicController@view_QRCode');
     Route::group(['middleware'=>['webAuth','role:clinic_manager']],function(){
+        Route::post('/{slug}/volunteering/done','ClinicController@doneVolunteering');
         Route::get('all','ClinicController@view_allClinic');
         Route::post('addUser/{slug}','ClinicController@addUser');
         Route::post('removeUser/{slug}','ClinicController@removeUser');
-        Route::post('doneVolunteering/{slug}','ClinicController@doneVolunteering');
         Route::get('{slug}/volunteers/logs','ClinicController@view_volunteersLogs')->name('manageVolunteersLogs');
         Route::post('{slug}/log/update','ClinicController@updateLog');
+        
     });
     Route::group(['middleware'=>['webAuth']],function(){
         Route::get('volunteer/log','ClinicController@view_volunteerLog');

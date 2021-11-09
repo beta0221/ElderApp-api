@@ -210,8 +210,15 @@ class ClinicController extends Controller
         $user = User::where('id_code',$request->id_code)->firstOrFail();
         date_default_timezone_set('Asia/Taipei');
 
+        $created_at = date('Y-m-d h:i:s',strtotime("$request->date $request->from:00:00"));
+        $complete_at = date('Y-m-d h:i:s',strtotime($created_at)+(60*60*$request->total_hours));
+
         $clinic->userLogs()->create([
             'user_id'=>$user->id,
+            'created_at' => $created_at,
+            'complete_at' => $complete_at,
+            'total_hours' => $request->total_hours,
+            'is_complete' => 1
         ]);
 
         Session::flash('success','完成志工服務。');

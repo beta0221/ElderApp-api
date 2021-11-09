@@ -62,7 +62,7 @@
                     <div class="user-cell p-1">
                         <button class="btn btn-sm btn-danger" onclick="removeUser('{{$user->id_code}}','{{$user->name}}')">移除</button>
                         {{$i + 1 }}.{{$user->name}}({{$user->email}})
-                        {{-- <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">完成服務</button> --}}
+                        <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">完成服務</button>
                     </div>
                 @endforeach
             </div>
@@ -75,10 +75,6 @@
         </form>
 
 
-        <form id="done-volunteering-form" action="/clinic/doneVolunteering/{{$clinic->slug}}" method="POST" class="d-none">
-            {{ csrf_field() }}
-            <input id="done-idCode" type="text" name="id_code">
-        </form>
 
 
         <div id="done-volunteering-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -90,14 +86,36 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <h5><span id="volunteer-name"></span> 志工</h5>
-                        <p>完成了一次志工服務？</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="submitDoneVolunteering()">確定送出</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                    </div>
+
+                    <form action="/clinic/{{$clinic->slug}}/volunteering/done" method="POST">
+                        {{ csrf_field() }}
+                        <input id="done-idCode" type="hidden" name="id_code">
+                        <div class="modal-body">
+                            <h5><span id="volunteer-name"></span> 志工</h5>
+                            <p>完成了一次志工服務？</p>
+                            
+                            <div style="text-align:left">
+                                <span>日期</span>
+                                <input type="date" class="form-control" name="date">
+                            </div>
+
+                            <div style="text-align:left">
+                                <span>開始時間（24小時）</span>
+                                <input class="form-control" type="number" min="0" max="24" value="0" name="from">
+                            </div>
+
+                            <div style="text-align:left">
+                                <span>服務時數</span>
+                                <input class="form-control" type="number" min="1"  value="0" name="total_hours">
+                            </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" >確定送出</button>
+                            <div type="button" class="btn btn-secondary" data-dismiss="modal">關閉</div>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -149,14 +167,9 @@
         function doneVolunteering(id_code,name){
             $('#volunteer-name').html(name);
             $('#done-volunteering-modal').modal('show');
-            idCode = id_code;
+            $('#done-idCode').val(id_code);
         }
 
-        function submitDoneVolunteering(){
-            if(idCode == null){ return; }
-            $('#done-idCode').val(idCode);
-            $('#done-volunteering-form').submit();
-        }
 
 
     </script>
