@@ -221,6 +221,10 @@ class ClinicController extends Controller
             'is_complete' => 1
         ]);
 
+        $user->update_wallet_with_trans(User::INCREASE_WALLET,100,"志工獎勵-".$clinic->name);
+        $user->increaseRank(1);
+        NotifyAppUser::dispatch($user->id,'恭喜您！','收到志工獎勵，同時也累計了志工時數。');
+
         Session::flash('success','完成志工服務。');
         return redirect()->route('manageClinic',['slug'=>$slug]);
     }
