@@ -61,8 +61,8 @@
                 @foreach ($users as $i => $user)
                     <div class="user-cell p-1">
                         <button class="btn btn-sm btn-danger" onclick="removeUser('{{$user->id_code}}','{{$user->name}}')">移除</button>
-                        {{$i + 1 }}.{{$user->name}}({{$user->email}})
-                        <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">完成服務</button>
+                        {{$i + 1 }}.{{$user->name}}({{$user->phone}})
+                        <button class="float-right btn btn-sm btn-primary" onclick="doneVolunteering('{{$user->id_code}}','{{$user->name}}')">新增服務</button>
                     </div>
                 @endforeach
             </div>
