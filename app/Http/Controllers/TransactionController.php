@@ -36,26 +36,31 @@ class TransactionController extends Controller
         $give_user = User::find($req->give_id);
         $take_user = User::find($req->take_id);
 
-        if ($give_user->email == $req->give_email && $take_user->email == $req->take_email) {
-            
-            if($give_user->wallet < $req->amount){
-                return response('insufficient',400);
-            }
-
-            $give_user->updateWallet(false,$req->amount);
-            $take_user->updateWallet(true,$req->amount);
-            
-            $store = $this->store($req);
-            if ($store) {
-                $message = "收到來自" . $give_user->name ."的樂幣" . $req->amount . "點";
-                NotifyAppUser::dispatch($req->take_id,'來自好友的祝福',$message);
-                return response('success',200);
-            }
-
-            return response($store,400);
+        if ($give_user->email != $req->give_email || $take_user->email != $req->take_email) {
+            return response('data uncorrect',400);
         }
-        
-        return response('data uncorrect',400);
+
+        if($give_user->wallet < $req->amount){ return response('insufficient',400); }
+
+        $message = "收到來自" . $give_user->name ."的樂幣" . $req->amount . "點";
+        $title = "來自好友的祝福";
+        $data = null;
+
+        //如果是特約交易
+        if($take_user->hasRole('partner_store')){
+            $title = "入帳通知";
+            $data = [
+                'updateWallet'=>'true',
+                'message'=>$message,
+                'actionUrl'=>'/transaction/myTransactionHistory'
+            ];
+        }
+
+        $give_user->update_wallet_with_trans(User::DECREASE_WALLET,$req->amount,$req->event,$take_user->id);
+        $take_user->update_wallet_with_trans(User::INCREASE_WALLET,$req->amount,$req->event,$give_user->id);
+            
+        NotifyAppUser::dispatch($take_user->id,$title,$message,$data);
+        return response('success',200);
         
     }
 
