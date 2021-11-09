@@ -13,6 +13,17 @@
         .cell{
             text-align: left;
         }
+        .edit-form{
+            z-index: 100;
+            text-align: left!important;
+            position: fixed;
+            top: 25%;
+            left: 50%;  
+            width: 90%;
+            transform: translate(-50%,-50%);
+            background-color: lightgray;
+            border-radius: .3rem;
+        }
     </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -56,7 +67,7 @@
                     @if ($log->is_complete)
                     <div class="cell alert alert-primary">
                         <h5>{{$log->user_name}}</h5>
-                        <h6>時數：{{$log->total_hours}}</h6>
+                        <h6>時數：{{$log->total_hours}}<div class="btn btn-sm btn-warning text-white ml-2" onclick="editLog({{$i}})">編輯</div></h6>
                         <span>{{$log->created_at}} ~ {{$log->complete_at}}</span>
                     </div>    
                     @endif
@@ -67,5 +78,36 @@
             </div>
         </div>
     </div>
+
+    <div class="edit-form p-3" style="display: none"">
+        <form action="/clinic/{{$clinic->slug}}/log/update" method="POST">
+            {{ csrf_field() }}
+            <input id="log-id" type="hidden" name="id">
+            <div id="log-user" class="p-2">-</div>
+            <div id="log-date" class="p-2">-</div>
+            <input id="log-total-hours" name="total_hours" class="form-control mb-3" type="number" placeholder="時數">
+            <button class="btn btn-primary btn-block">變更</button>
+            <div class="btn btn-secondary btn-block" onclick="cancelEdit()">取消</div>
+        </form>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>
+        const logs = {!!$logs!!};
+
+        function editLog(i){
+            $('.edit-form').show();
+            let log = logs[i];
+            $('#log-id').val(log.id);
+            $('#log-user').html(log.user_name);
+            $('#log-date').html(log.created_at + '~' + log.complete_at);
+            $('#log-total-hours').val(log.total_hours);
+
+        }
+        function cancelEdit(){
+            $('.edit-form').hide();
+        }
+    </script>
 </body>
 </html>

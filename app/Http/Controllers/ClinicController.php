@@ -218,6 +218,23 @@ class ClinicController extends Controller
         return redirect()->route('manageClinic',['slug'=>$slug]);
     }
 
+    /**編輯志工時數 */
+    public function updateLog(Request $request,$slug){
+        $log = ClinicUserLog::findOrFail($request->id);
+        $clinic = Clinic::where('slug',$slug)->firstOrFail();
+
+        if($log->clinic_id != $clinic->id){
+            return redirect()->route('manageVolunteersLogs',['slug'=>$slug]);
+        }
+
+        if($request->has('total_hours')){
+            $log->update([
+                'total_hours' => $request->total_hours
+            ]);
+        }
+        return redirect()->route('manageVolunteersLogs',['slug'=>$slug]);
+    }
+
     /**掃描志工QR Code 簽到 */
     public function api_scanQRCode_onDuty(Request $request,$slug){
         $clinic = Clinic::where('slug',$slug)->firstOrFail();
@@ -258,7 +275,9 @@ class ClinicController extends Controller
 
         $from = strtotime($log->created_at->format('Y-m-d H:i:s'));
         $to = strtotime($now);
-        $total_hours = floor(($to - $from) / (60 * 60));
+        $total_seconds = $to - $from;
+        $total_minutes = $total_seconds / 60;
+        $total_hours = floor(($total_minutes + 10 ) / 60);  //十分鐘緩衝時間
 
         if($total_hours > 4){   //時數過長無效
             return response('時數過長，請重新簽到',403);
