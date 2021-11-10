@@ -333,6 +333,16 @@ class LocationController extends Controller
         }
 
         $query = Order::where('location_id',$location->id);
+        if($request->has('ship_status')){
+            if($request->ship_status == 'close'){
+                $query->where('ship_status',Order::STATUS_CLOSE);
+            }else if($request->ship_status == 'void'){
+                $query->where('ship_status',Order::STATUS_VOID);
+            }
+        }else{
+            $query->where('ship_status',Order::STATUS_ARRIVE);
+        }
+
         $total = $query->count();
         $orderList = $query->skip($p->skip)->take($p->rows)->orderBy($p->orderBy,'desc')->get();
         

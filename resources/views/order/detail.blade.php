@@ -17,7 +17,7 @@
         ])
     @else
         @include('component.titlebar',[
-            'url'=>'/order/list',
+            'url'=>url()->previous(),
             'title'=>'訂單列表',
         ])
     @endif

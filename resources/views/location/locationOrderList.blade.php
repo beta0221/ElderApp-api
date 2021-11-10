@@ -4,6 +4,18 @@
 
 @section('css')
     @include('location.pagination_style')
+    <style>
+        .condition-btn{
+            display: inline-block;
+            padding:4px 8px;
+            border-radius: .3rem;
+            background: lightgray;
+            cursor: pointer;
+        }
+        .condition-btn-current{
+            background: gray;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -12,6 +24,42 @@
         'url'=>"/view_myLocation",
         'title'=>'據點列表',
     ])
+
+
+    <?php 
+        $url = url()->current();
+        $concatChar = '?';
+        if(strpos($url,'?')){
+            $concatChar = '&';
+        }
+        $url_close = $url . $concatChar . "ship_status=close";
+        $url_void = $url . $concatChar . "ship_status=void";
+        $url_all = $url . $concatChar . "ship_status=all";
+        
+        $full_url = url()->full();
+        $current = 'open';
+        if(strpos($full_url,'close')){
+            $current = 'close';
+        }else if(strpos($full_url,'void')){
+            $current = 'void';
+        }else if(strpos($full_url,'all')){
+            $current = 'all';
+        }
+    ?>
+    <div style="margin-bottom:8px;">
+        <div class="condition-btn {{($current == 'open'?'condition-btn-current':'')}}">
+            <a href="{{$url}}">未結帳</a>
+        </div>
+        <div class="condition-btn {{($current == 'close'?'condition-btn-current':'')}}">
+            <a href="{{$url_close}}">已結帳</a>
+        </div>
+        <div class="condition-btn {{($current == 'void'?'condition-btn-current':'')}}">
+            <a href="{{$url_void}}">作廢</a>
+        </div>
+        <div class="condition-btn {{($current == 'all'?'condition-btn-current':'')}}">
+            <a href="{{$url_all}}">全部</a>
+        </div>
+    </div>
 
     @include('location.pagination',[
         'totalPage'=>$pagination->totalPage,
