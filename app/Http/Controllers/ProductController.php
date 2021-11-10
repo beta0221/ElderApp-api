@@ -346,28 +346,29 @@ class ProductController extends Controller
         if(!$product->isAvailable($request->location_id,1,Inventory::TARGET_GIFT)){
             return response('非常抱歉，此據點目前庫存已兌換完畢。',400);
         }
+
+        //年會禮判斷
+        $anualProductIdArray = [52,53,54];
+        if(in_array($product->id,$anualProductIdArray)){
+            //已兌換過的年會禮
+            $_count = OrderDetail::where('user_id',$user->id)->whereIn('product_id',$anualProductIdArray)->count();
+            if($_count > 0){
+                return response('非常抱歉，年會好禮不可重複兌換。',400);
+            }
+        }
+        
+        //user 扣款
+        $user->update_wallet_with_trans(User::DECREASE_WALLET,$product->price,"兌換-$product->name");
+
+        //扣庫存
         $invAction = InventoryAction::getInstance($request->location_id,$product->id,Inventory::TARGET_GIFT,Inventory::ACTION_REMOVE,1,'系統-兌換商品');
         Inventory::updateInventory($invAction);
-
-        //user 扣款
-        $user->updateWallet(false,$product->price);
         
         //新增訂單購買紀錄
         OrderDetail::create([
             'user_id'=>$user->id,
             'product_id'=>$product->id,
             'location_id'=>$request->location_id,
-        ]);
-
-        //增加transaction 紀錄
-        $tran_id = time() . rand(10,99);
-        Transaction::create([
-            'tran_id'=>$tran_id,
-            'user_id'=>$user->id,
-            'event' =>'兌換-'.$product->name,
-            'amount'=>$product->price,
-            'target_id'=>0,
-            'give_take'=>false,
         ]);
 
         return response('success',200);
