@@ -302,7 +302,7 @@ class OrderController extends Controller
         }
 
         if(!$orders = Order::where('order_numero',$order_numero)->get()){
-            return view('errors.404');
+            abort(404);
         }
 
         $productIdArray = [];
@@ -323,7 +323,7 @@ class OrderController extends Controller
             }
         }else{
             if(!$orderDelievery = OrderDelievery::find($orders[0]->order_delievery_id)){
-                return view('errors.404');
+                abort(404);
             }
         }
 
@@ -360,7 +360,7 @@ class OrderController extends Controller
         }
         
         if(!$orders=Order::where('user_id',$user_id)->skip($skip)->take($rows)->orderBy('id',$ascOrdesc)->get()){
-            return view('errors.404');
+            abort(404);
         }
 
         $productIdArray = [];

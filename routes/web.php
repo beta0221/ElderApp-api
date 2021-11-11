@@ -78,6 +78,10 @@ Route::group(['prefix'=>'order'],function(){
     Route::get('list','OrderController@view_orderList');
 });
 
+Route::group(['prefix'=>'partner'],function(){
+    Route::get('{id_code}','TransactionController@view_parterStoreTransList');
+});
+
 
 Route::group(['prefix'=>'insurance'],function(){
     Route::get('/apply','InsuranceController@view_apply');

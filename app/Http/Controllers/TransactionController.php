@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Pagination;
 use App\Helpers\Tracker;
+use App\Http\Resources\TransCollection;
 use App\Jobs\NotifyAppUser;
 use App\Transaction;
 use App\User;
@@ -190,7 +191,7 @@ class TransactionController extends Controller
         return response('success');
     }
 
-    
+    /**後台交易總列表 */
     public function list(Request $request)
     {
         $page = ($request->page)?$request->page:1;
@@ -328,6 +329,29 @@ class TransactionController extends Controller
         return response([
             'total'=>$total,
             'transList'=>$transList
+        ]);
+
+    }
+
+    /**
+     * 夥伴商店使用 收款紀錄
+     */
+    public function view_parterStoreTransList(Request $request,$id_code){
+        $user = User::where('id_code',$id_code)->firstOrFail();
+        if(!$user->hasRole('partner_store')){
+            abort(404);
+        }
+        $query = Transaction::where('user_id',$user->id)->orderBy('id','desc');
+
+        $_transList = $query->paginate(10);
+        $links = $_transList->links();
+
+        $transList = new TransCollection($_transList);
+
+        return view('partner.transList',[
+            'user' => $user,
+            'transList' => $transList->toArray(null),
+            'links' => $links,
         ]);
 
     }
