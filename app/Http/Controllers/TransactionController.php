@@ -43,6 +43,10 @@ class TransactionController extends Controller
 
         if($give_user->wallet < $req->amount){ return response('insufficient',400); }
 
+        if($give_user->hasRole('partner_store')){
+            return response('無效操作',400);
+        }
+
         $message = "收到來自" . $give_user->name ."的樂幣" . $req->amount . "點";
         $title = "來自好友的祝福";
         $data = null;
