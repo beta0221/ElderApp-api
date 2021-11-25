@@ -80,10 +80,21 @@ class LocationController extends Controller
 
         $location = Location::where('slug',$location_slug)->firstOrFail();
         $product = Product::where('slug',$product_slug)->firstOrFail();
+        // $request->merge(['rowsPerPage'=>20]);
+        $p = new Pagination($request);
 
         $query = OrderDetail::where('location_id',$location->id)
             ->where('product_id',$product->id)
             ->where('receive',0);
+
+        if($request->has('name')){
+            $_user_id_array = User::where('name','LIKE',"%$request->name%")->pluck('id');
+            $query->whereIn('user_id',$_user_id_array);
+        }
+
+        $total = $query->count();
+        $p->cacuTotalPage($total);
+        $query = $query->orderBy($p->orderBy, $p->ascOrdesc)->skip($p->skip)->take($p->rows);
 
         $user_id_array = $query->pluck('user_id');
         $orders = $query->select(['id','user_id','product_id'])->get();
@@ -104,7 +115,7 @@ class LocationController extends Controller
             'product'=>$product,
             'orders'=>$orders,
             'userDict'=>$userDict,
-            'total'=>count($orders),
+            'pagination'=>$p,
         ]);
     }
 

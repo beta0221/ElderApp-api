@@ -94,6 +94,7 @@
             background-color: #fff;
         }
     </style>
+    @include('location.pagination_style')
 @endsection
 
 @section('content')
@@ -104,12 +105,21 @@
         <a class="top-bar-right-button" href="{{route('receiveList',['location_slug'=>$location->slug,'product_slug'=>$product->slug])}}">領取紀錄</a>
     </div>
 
-    <div style="padding: 8px 12px 0 12px;">
-        <input id="search-input" type="text" style="width:100%;height:40px;padding:0 4px" placeholder="姓名">
-    </div>
-    <div style="padding: 0 12px;color:gray;margin-top:8px">Total：{{$total}}</div>
+    {{-- <div style="padding: 8px 12px 0 12px;">
+        <input id="search-input" type="text" style="width:80%;height:40px;padding:0 4px" placeholder="姓名">
+        <button onclick="search()" style="width:18%;height:40px">搜尋</button>
+    </div> --}}
+    <div style="padding: 0 12px;color:gray;margin-top:8px">Total：{{$pagination->total}}</div>
+
+    
 
     <div class="name-list">
+
+    @include('location.pagination',[
+        'totalPage'=>$pagination->totalPage,
+        'page'=>$pagination->page,
+        'url'=>'/order-list/location/' . $location->slug . '/' . $product->slug,
+    ])
     @if (count($orders) == 0)
         <div id='no-order' class='name-cell'>目前無人兌換</div>
     @else
@@ -136,17 +146,17 @@
             }
         });
     
-        $('#search-input').on('keyup touchend',function(){
-            var search_value = $(this).val();
-            $('.name-cell').each(function (index, item) { 
-                var name = $(item).data('name');
-                 if(name.includes(search_value)){
-                    $(item).show();
-                 }else{
-                    $(item).hide();
-                 }
-            });
-        });
+        // $('#search-input').on('keyup touchend',function(){
+        //     var search_value = $(this).val();
+        //     $('.name-cell').each(function (index, item) { 
+        //         var name = $(item).data('name');
+        //          if(name.includes(search_value)){
+        //             $(item).show();
+        //          }else{
+        //             $(item).hide();
+        //          }
+        //     });
+        // });
     
         $(document).on('click','.check-btn',function(){
     
@@ -178,5 +188,11 @@
     
     
     });
+
+    function search(){
+        let name = $('#search-input').val();
+        let url = window.location.pathname + "?name=" + name;
+        window.location.href = url;
+    }
     </script>
 @endsection
