@@ -40,6 +40,10 @@ class MyOrderResource extends JsonResource
         }
 
         return [
+            'id'=>$this->id,
+            'user_id'=>$this->user_id,
+            'product_id'=>$this->product_id,
+            'location_id'=>$this->location_id,
             'name'=>$name,
             'imgUrl'=>$imgUrl,
             'location_name'=>$location_name,

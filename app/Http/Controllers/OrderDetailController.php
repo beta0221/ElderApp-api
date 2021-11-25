@@ -99,6 +99,31 @@ class OrderDetailController extends Controller
         //
     }
 
+    public function view_userOrder(Request $request,$id_code){
+        
+        $user = User::where('id_code',$id_code)->firstOrFail();
+        
+        $query = OrderDetail::where('user_id',$user->id)->where('receive',0);
+        $productIdArray = $query->pluck('product_id');
+        $locationIdArray = $query->pluck('location_id');
+        $orderList = $query->get();
+
+        // return response()->json($orderList);
+
+        $productDict = Product::getProductDict($productIdArray);
+        $locationDict = Location::getLocationDict($locationIdArray);
+        
+        $orderList = new MyOrderCollection($orderList);
+        $orderList = $orderList->configureDict($productDict,$locationDict);
+        $orderList = $orderList->toArray($request);
+
+        return view('order.userOrder',[
+            'user' => $user,
+            'orderList' => $orderList
+        ]);
+
+    }
+
     public function receiveOrder(Request $req){
         
         $this->validate($req,[

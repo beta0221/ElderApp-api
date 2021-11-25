@@ -57,7 +57,7 @@ Route::post('/view_nextStatus/{slug}/{order_numero}','LocationController@view_ne
 //訂單
     //目前還沒有登入驗證所以傳四個參數提高一點安全性
 Route::post('/order-detail/receive','OrderDetailController@receiveOrder');
-
+Route::get('/order-detail/user/{id_code}/','OrderDetailController@view_userOrder');
 
 Route::group(['prefix'=>'product'],function(){
     Route::get('list','ProductController@list');
