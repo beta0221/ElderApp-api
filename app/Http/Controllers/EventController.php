@@ -758,11 +758,13 @@ class EventController extends Controller
             ]);
         }
         
-        if(!$event->isParticipated($user_id)){
-            return response()->json([
-                's'=>0,
-                'm'=>'非常抱歉，您不在此活動的參加人員名單中'
-            ]);
+        if($event->slug != "A1639630603"){
+            if(!$event->isParticipated($user_id)){
+                return response()->json([
+                    's'=>0,
+                    'm'=>'非常抱歉，您不在此活動的參加人員名單中'
+                ]);
+            }
         }
 
         switch ($event->event_type) {
@@ -823,11 +825,13 @@ class EventController extends Controller
             ]);
         }
 
-        if(!$event->isParticipated($user->id)){
-            return response()->json([
-                's'=>0,
-                'm'=>'非常抱歉，您不在此活動的參加人員名單中'
-            ]);
+        if($event->slug != "A1639630603"){
+            if(!$event->isParticipated($user->id)){
+                return response()->json([
+                    's'=>0,
+                    'm'=>'非常抱歉，您不在此活動的參加人員名單中'
+                ]);
+            }
         }
 
         switch ($event->event_type) {
