@@ -53,7 +53,7 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
 
             if(!isset($this->nameDict[$log->user_id])){ continue; }
             
-            $to += 1;
+            
             if(!is_null($user_id) && $user_id != $log->user_id){    //上個人結束
                 $this->cellData[] = [
                     null,null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
@@ -68,7 +68,7 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
                 $from = $to;
             }
 
-            
+            $to += 1;
             $name = $this->nameDict[$log->user_id];
             $dateTime = $log->created_at . ' ~ ' . $log->complete_at;
             $hours = $log->total_hours;
@@ -90,7 +90,7 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
         $this->cellData[] = [
             null,null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
         ];
-        $this->mergeArray[] = 'A' . $from . ':' . 'A' . $to;
+        $this->mergeArray[] = 'A' . $from . ':' . 'A' . ($to-1);
 
     }
 
