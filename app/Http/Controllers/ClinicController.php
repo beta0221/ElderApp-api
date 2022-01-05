@@ -402,6 +402,7 @@ class ClinicController extends Controller
     public function view_export(Request $request){
         $clinic = Clinic::where('slug',$request->clinic_slug)->firstOrFail();
         $logs = ClinicUserLog::where('clinic_id',$clinic->id)
+            ->where('is_complete',1)
             ->whereDate('created_at','>=',date($request->from_date))
             ->whereDate('created_at','<=',date($request->to_date))
             ->get();
