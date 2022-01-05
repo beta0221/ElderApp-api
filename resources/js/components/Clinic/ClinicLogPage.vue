@@ -4,6 +4,12 @@
     <div>
         <h3 style="padding:8px 12px">志工紀錄</h3> 
     </div>
+    
+    <div>
+        <v-btn @click="showExportPanel" color="info">
+            匯出
+        </v-btn>
+    </div>
 
     <div>
         <FilterBar :columns="filterColumns" />
@@ -12,6 +18,7 @@
     <DataTable ref="DataTable" :dict="dict" :headers="headers" :requestUrl="requestUrl" />
     <UserLogModal/>
     <ClinicLogModal/>
+    <ExportPanelModal/>
 </div>
 </template>
 
@@ -19,12 +26,14 @@
 import FilterBar from '../FilterBar'
 import UserLogModal from './UserLogModal.vue'
 import ClinicLogModal from './ClinicLogModal.vue'
+import ExportPanelModal from './ExportPanelModal.vue'
 
 export default {
     components:{
         FilterBar,
         UserLogModal,
         ClinicLogModal,
+        ExportPanelModal
     },
     data(){
         return{
@@ -51,6 +60,9 @@ export default {
     methods:{
         showCreateDataModal(){
             EventBus.$emit('showCreateDatalModal');
+        },
+        showExportPanel(){
+            EventBus.$emit('showExportPanel');
         }
     }
 }

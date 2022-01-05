@@ -187,7 +187,8 @@ class OrderController extends Controller
         $fileName = '兌換資料-' . $location->name;
         
         $query = OrderDetail::where('location_id',$location->id)
-            ->whereBetween('created_at',[date($request->from_date),date($request->to_date)]);
+            ->whereDate('created_at','>=',date($request->from_date))
+            ->whereDate('created_at','<=',date($request->to_date));
 
         if($request->has('product_id')){
             $product = Product::findOrFail($request->product_id);

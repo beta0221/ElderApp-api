@@ -223,6 +223,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::group(['prefix'=>'clinic'],function(){
         Route::get('/android/decode','ClinicController@api_decode');
         Route::group(['middleware'=>['JWT','admin']],function(){
+            Route::get('/all/clinic','ClinicController@api_allClinic');
             Route::get('/all/log','ClinicController@api_allLog');
             Route::get('/user/{user_id}/log','ClinicController@api_userLog');
             Route::get('/{clinic_id}/log','ClinicController@api_clinicLog');

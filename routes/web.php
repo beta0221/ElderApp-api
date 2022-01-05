@@ -93,6 +93,7 @@ Route::group(['prefix'=>'insurance'],function(){
 });
 
 Route::group(['prefix'=>'clinic'],function(){
+    Route::get('/export','ClinicController@view_export');
     Route::get('{slug}/manage','ClinicController@view_manageClinic')->name('manageClinic');
     Route::get('{slug}/QRCode','ClinicController@view_QRCode');
     Route::group(['middleware'=>['webAuth','role:clinic_manager']],function(){

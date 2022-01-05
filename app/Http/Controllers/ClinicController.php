@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Clinic;
 use App\ClinicUserLog;
+use App\Exports\ClinicLogExport;
 use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Http\Resources\ClinicUserLogCollection;
@@ -12,6 +13,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClinicController extends Controller
 {
@@ -396,6 +398,23 @@ class ClinicController extends Controller
         ]);
     }
 
+    /** excel 輸出頁面 */
+    public function view_export(Request $request){
+        $clinic = Clinic::where('slug',$request->clinic_slug)->firstOrFail();
+        $logs = ClinicUserLog::where('clinic_id',$clinic->id)
+            ->whereDate('created_at','>=',date($request->from_date))
+            ->whereDate('created_at','<=',date($request->to_date))
+            ->get();
+        
+        $excel = new ClinicLogExport($logs);
+        return Excel::download($excel,"$clinic->name-志工紀錄" . '.xlsx');
+        return response($logs);
+    }
+
+    /** 全部診所列表 */
+    public function api_allClinic(){
+        return response(Clinic::all());
+    }
 
     /** 志工服務列表 */
     public function api_allLog(Request $request){
