@@ -53,10 +53,10 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
 
             if(!isset($this->nameDict[$log->user_id])){ continue; }
             
-
+            $to += 1;
             if(!is_null($user_id) && $user_id != $log->user_id){    //上個人結束
                 $this->cellData[] = [
-                    '加總',null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
+                    null,null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
                 ];
                 $total_hours = 0;
                 $total_meal_fee = 0;
@@ -64,7 +64,8 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
                 $total_system_fee = 0;
                 
                 $this->mergeArray[] = 'A' . $from . ':' . 'A' . ($to-1);
-                $from = $to+1;
+                $to += 1;
+                $from = $to;
             }
 
             
@@ -82,12 +83,12 @@ class ClinicLogExport implements FromCollection,WithEvents,WithHeadings
             $total_meal_fee += self::Meal_fee;
             $total_org_fee += self::Org_fee;
             $total_system_fee += self::System_fee;
-            $to += 1;
+
             
         }
 
         $this->cellData[] = [
-            '加總',null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
+            null,null,$total_hours,$total_meal_fee,$total_org_fee,$total_system_fee
         ];
         $this->mergeArray[] = 'A' . $from . ':' . 'A' . $to;
 
