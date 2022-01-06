@@ -14,8 +14,8 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                
-                <v-btn @click="exportOrderExcel" color="green">輸出訂單</v-btn>
+                <v-btn @click="exportClinicBillExcel" color="info">診所對帳表</v-btn>
+                <v-btn @click="exportClinicUserSignatureExcel" color="green">志工簽名表</v-btn>
                 <v-btn @click="clearQuery">清除</v-btn>
                 <v-btn color="gray darken-1" flat="flat" @click="dialog = false">關閉</v-btn>
             </v-card-actions>
@@ -59,9 +59,14 @@ export default {
                 this.clinics = res.data;
             })
         },
-        exportOrderExcel(){
+        exportClinicBillExcel(){
             if(!this.clinic_slug || !this.from_date || !this.to_date){ alert('請選擇診所及日期');return; }
-            let urlString = this.getUrlString('/clinic/export');
+            let urlString = this.getUrlString('/clinic/export/clinicBill');
+            window.open(urlString);
+        },
+        exportClinicUserSignatureExcel(){
+            if(!this.clinic_slug || !this.from_date || !this.to_date){ alert('請選擇診所及日期');return; }
+            let urlString = this.getUrlString('/clinic/export/signature');
             window.open(urlString);
         },
         getUrlString(pathname){

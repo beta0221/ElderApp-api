@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Clinic;
 use App\ClinicUserLog;
-use App\Exports\ClinicLogExport;
+use App\Exports\ClinicBillExport;
+use App\Exports\ClinicUserSignatureExport;
 use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Http\Resources\ClinicUserLogCollection;
@@ -398,8 +399,8 @@ class ClinicController extends Controller
         ]);
     }
 
-    /** excel 輸出頁面 */
-    public function view_export(Request $request){
+    /** excel 輸出志工千名表頁面 */
+    public function view_exportSignature(Request $request){
         $clinic = Clinic::where('slug',$request->clinic_slug)->firstOrFail();
         $logs = ClinicUserLog::where('clinic_id',$clinic->id)
             ->where('is_complete',1)
@@ -407,8 +408,25 @@ class ClinicController extends Controller
             ->whereDate('created_at','<=',date($request->to_date))
             ->get();
         
-        $excel = new ClinicLogExport($logs);
-        return Excel::download($excel,"$clinic->name-志工紀錄" . '.xlsx');
+        $title = '結算日期：' . $request->from_date . '~' . $request->to_date;
+        $excel = new ClinicUserSignatureExport($logs,$title);
+        return Excel::download($excel,"$clinic->name-志工簽名表" . '.xlsx');
+        return response($logs);
+    }
+
+
+    /** excel 輸出診所對帳表頁面 */
+    public function view_exportClinicBill(Request $request){
+        $clinic = Clinic::where('slug',$request->clinic_slug)->firstOrFail();
+        $logs = ClinicUserLog::where('clinic_id',$clinic->id)
+            ->where('is_complete',1)
+            ->whereDate('created_at','>=',date($request->from_date))
+            ->whereDate('created_at','<=',date($request->to_date))
+            ->get();
+        
+        $title = '結算日期：' . $request->from_date . '~' . $request->to_date;
+        $excel = new ClinicBillExport($logs,$title);
+        return Excel::download($excel,"$clinic->name-診所對帳" . '.xlsx');
         return response($logs);
     }
 
