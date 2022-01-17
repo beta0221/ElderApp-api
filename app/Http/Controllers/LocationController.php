@@ -407,6 +407,8 @@ class LocationController extends Controller
 
     public function view_nextStatus($slug,$order_numero){
         
+        date_default_timezone_set('Asia/Taipei');
+
         $user = request()->user();
         $location = Location::where('slug',$slug)->firstOrFail();
         if(!$result = $location->managers()->find($user->id)){
@@ -418,6 +420,8 @@ class LocationController extends Controller
             if($order->ship_status == Order::STATUS_VOID){ continue; }
             
             $order->ship_status = Order::STATUS_CLOSE;
+            $order->closed_at = date('Y-m-d h:i:s');
+
             $order->save();
         }
 
