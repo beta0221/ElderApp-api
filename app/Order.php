@@ -83,9 +83,13 @@ class Order extends Model
             return -1;
         }
         $nextStatus = $first->ship_status + 1;
-        Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->update([
-            'ship_status'=>$nextStatus
-        ]);
+        $data = ['ship_status'=>$nextStatus];
+
+        if($nextStatus == Order::STATUS_CLOSE){
+            $data['closed_at'] = \Carbon\Carbon::now();
+        }
+
+        Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->update($data);
         return 1;
     }
 

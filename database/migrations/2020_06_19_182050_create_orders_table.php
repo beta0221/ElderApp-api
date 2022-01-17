@@ -38,6 +38,8 @@ class CreateOrdersTable extends Migration
             $table->integer('pay_status')->default(0);
             $table->integer('ship_status')->default(0);
 
+            $table->dateTime('cloased_at')->nullable();
+
             $table->timestamps();
         });
     }
