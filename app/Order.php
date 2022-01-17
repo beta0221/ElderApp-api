@@ -86,7 +86,9 @@ class Order extends Model
         $data = ['ship_status'=>$nextStatus];
 
         if($nextStatus == Order::STATUS_CLOSE){
-            $data['closed_at'] = \Carbon\Carbon::now();
+            date_default_timezone_set('Asia/Taipei');
+            $now = date('Y-m-d H:i:s');
+            $data['closed_at'] = $now;
         }
 
         Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->update($data);
