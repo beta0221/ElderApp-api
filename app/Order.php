@@ -87,7 +87,7 @@ class Order extends Model
 
         if($nextStatus == Order::STATUS_CLOSE){
             date_default_timezone_set('Asia/Taipei');
-            $now = date('Y-m-d H:i:s');
+            $now = date('Y-m-d h:i:s');
             $data['closed_at'] = $now;
         }
 
