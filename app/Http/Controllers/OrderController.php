@@ -218,7 +218,7 @@ class OrderController extends Controller
         $fileName = '訂單資料-' . $location->name;
         $query = Order::where('location_id',$location->id)
             ->where('ship_status',Order::STATUS_CLOSE)
-            ->whereBetween('created_at',[date($req->from_date),date($req->to_date)]);
+            ->whereBetween('closed_at',[date($req->from_date),date($req->to_date)]);
 
         if($req->has('product_id')){
             $product = Product::findOrFail($req->product_id);
