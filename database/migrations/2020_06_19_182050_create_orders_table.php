@@ -38,6 +38,10 @@ class CreateOrdersTable extends Migration
             $table->integer('pay_status')->default(0);
             $table->integer('ship_status')->default(0);
 
+            $table->integer('platform_fee_rate')->unsigned()->nullable();
+            $table->integer('organization_fee_rate')->unsigned()->nullable();
+            $table->integer('host_bonus_rate')->unsigned()->nullable();
+
             $table->dateTime('cloased_at')->nullable();
 
             $table->timestamps();

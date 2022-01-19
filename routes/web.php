@@ -66,7 +66,6 @@ Route::group(['prefix'=>'product'],function(){
 
 Route::group(['prefix'=>'cart'],function(){
     Route::get('/','CartController@index')->name('cart_page');
-    Route::post('checkOut','CartController@checkOut');
 });
 
 Route::group(['prefix'=>'order'],function(){

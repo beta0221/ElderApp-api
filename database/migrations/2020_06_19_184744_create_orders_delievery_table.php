@@ -19,9 +19,6 @@ class CreateOrdersDelieveryTable extends Migration
             $table->integer('user_id');
             $table->string('receiver_name');
             $table->string('receiver_phone');
-            $table->string('county');
-            $table->string('district');
-            $table->integer('zipcode');
             $table->string('address');
 
             $table->timestamps();

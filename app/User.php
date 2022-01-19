@@ -135,6 +135,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\ClinicUserLog','user_id','id');
     }
 
+    public function deliveries(){
+        return $this->hasMany('App\OrderDelievery');
+    }
+
     public function certificates(){
         return $this->belongsToMany('App\EventCertificate','user_certificate','user_id','certificate_id');
     }

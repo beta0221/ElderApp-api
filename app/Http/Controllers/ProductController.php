@@ -18,6 +18,7 @@ use App\Helpers\Pagination;
 use App\Helpers\Tracker;
 use App\Inventory;
 use App\Order;
+use App\OrderDelievery;
 use App\User;
 use Illuminate\Http\Request;
 use DB;
@@ -425,15 +426,48 @@ class ProductController extends Controller
         Inventory::updateInventory($invAction);
 
         //成立訂單
-        $order_numero = rand(0,9) . time() . rand(0,9);
-        Order::insert_row($user->id,null,$request->location_id,$order_numero,$product,0,(int)$request->quantity);
+        $order = Order::insert_row($user->id,null,$request->location_id,$product,0,(int)$request->quantity);
 
         //user 扣點數
-        $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order_numero");
+        $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order->order_numero");
 
         return response([
             's'=>1,
-            'order_numero'=>$order_numero
+            'order_numero'=>$order->order_numero
+        ]);
+
+    }
+
+    /**購買團購組合 */
+    public function purchasePackage(Request $request,$slug){
+        
+        $this->validate($request,[
+            'package_id'=>'required',
+            'receiver_name'=>'required',
+            'receiver_phone'=>'required',
+            'address'=>'required'
+        ]);
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $package = $product->packages()->findOrFail($request->package_id);
+        $user = $request->user();
+
+        $delivery = $user->deliveries()->create($request->only([
+            'receiver_name','receiver_phone','address'
+        ]));
+        
+        $order = Order::insert_row(
+            $user->id,
+            $delivery->id,
+            null,
+            $product,
+            0,
+            $package->quantity,
+            $package
+        );
+
+        return response([
+            's'=>1,
+            'order_numero'=>$order->order_numero
         ]);
 
     }

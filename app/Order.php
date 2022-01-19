@@ -34,9 +34,12 @@ class Order extends Model
     /**
      * insert 進資料庫
      * * @param Int user_id 
+     * @return Order
      */
-    public static function insert_row($user_id,$order_delievery_id,$location_id,$order_numero,Product $product,$cash_quantity,$point_cash_quantity){
+    public static function insert_row($user_id,$order_delievery_id,$location_id,Product $product,$cash_quantity,$point_cash_quantity,ProductPackage $package = null){
         
+        $order_numero = rand(0,9) . time() . rand(0,9);
+
         $total_quantity = (int)$cash_quantity + (int)$point_cash_quantity;
         $total_cash = (int)$point_cash_quantity * $product->pay_cash_price + (int)$cash_quantity * $product->cash;
         $total_point = (int)$point_cash_quantity * $product->pay_cash_point;
@@ -47,7 +50,20 @@ class Order extends Model
             $ship_status = static::STATUS_ARRIVE;
         }
 
-        Order::create([
+        $platform_fee_rate = null;
+        $organization_fee_rate = null;
+        $host_bonus_rate = null;
+
+        if(!is_null($package)){
+            $platform_fee_rate = $package->platform_fee_rate;
+            $organization_fee_rate = $package->organization_fee_rate;
+            $host_bonus_rate = $package->host_bonus_rate;
+
+            $total_cash = $package->price;
+            $total_point = 0;
+        }
+
+        $order = Order::create([
             'user_id'=>$user_id,
             'order_delievery_id'=>$order_delievery_id,
             'location_id'=>$location_id,
@@ -66,11 +82,17 @@ class Order extends Model
             'cash_quantity'=>$cash_quantity,
             'total_quantity'=>$total_quantity,
             //
+            'platform_fee_rate' => $platform_fee_rate,
+            'organization_fee_rate' => $organization_fee_rate,
+            'host_bonus_rate' => $host_bonus_rate,
+            //
             'total_point'=>$total_point,
             'total_cash'=>$total_cash,
             //
             'ship_status'=>$ship_status,
         ]);
+
+        return $order;
     }
 
     /**訂單進入下階段狀態 */

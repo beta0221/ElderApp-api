@@ -119,6 +119,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::get('product-category','ProductController@productCategory');
     Route::post('purchase/{Product}','ProductController@purchase');
     Route::post('purchaseByCash/{Product}','ProductController@purchaseByCash');
+    Route::post('purchasePackage/{Product}','ProductController@purchasePackage');
     
     Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
     Route::get('productList','ProductController@productList');
