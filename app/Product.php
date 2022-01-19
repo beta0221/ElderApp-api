@@ -25,8 +25,27 @@ class Product extends Model
     public function locations(){
         return $this->belongsToMany('App\Location','product_location','product_id','location_id')->withPivot(['quantity','quantity_cash']);
     }
+
+    public function packages(){
+        return $this->hasMany('App\ProductPackage');
+    }
     //relations
 
+
+    /**
+     * 更新團購組合
+     * @param array $packages
+     * @return void
+     */
+    public function updatePackages($packages){
+
+        $this->packages()->delete();
+        foreach ($packages as $package) {
+            unset($package->id);
+            unset($package->product_id);
+            $this->packages()->create((array)$package);    
+        }
+    }
 
     public function getLocationAndQuantity(){
         return DB::table('product_location')->where('product_id',$this->id)->get();

@@ -110,9 +110,14 @@ class ProductController extends Controller
         $request->merge(['firm_id'=>Auth::user()->id]);
         $request->merge(['info'=>$this->resizeHtmlImg($request->info)]);
         try {
-            $product = Product::create($request->except('file','select_location','quantity','quantity_cash'));
+            $product = Product::create($request->except('file','select_location','quantity','quantity_cash','packages'));
         } catch (\Throwable $th) {
             return response($th,500);
+        }
+
+        if(!empty($request->packages)){
+            $packages = json_decode($request->packages);
+            $product->updatePackages($packages);
         }
 
         if(!empty($request->select_location)){
@@ -176,9 +181,12 @@ class ProductController extends Controller
     public function productDetail($slug){
         $product = Product::where('slug',$slug)->firstOrFail();
         $location = $product->getLocationAndQuantity();
+        $packages = $product->packages()->get();
+
         return response([
-            'product'=> new ProductDetailResource($product),
-            'location'=>$location
+            'product' => new ProductDetailResource($product),
+            'location' => $location,
+            'packages' => $packages
         ]);
     }
 
@@ -230,9 +238,14 @@ class ProductController extends Controller
 
         $request->merge(['info'=>$this->resizeHtmlImg($request->info)]);
         try {
-            $product->update($request->except('file','select_location','quantity','quantity_cash'));
+            $product->update($request->except('file','select_location','quantity','quantity_cash','packages'));
         } catch (\Throwable $th) {
             return response($th,500);
+        }
+
+        if(!empty($request->packages)){
+            $packages = json_decode($request->packages);
+            $product->updatePackages($packages);
         }
 
         if(!empty($request->select_location)){

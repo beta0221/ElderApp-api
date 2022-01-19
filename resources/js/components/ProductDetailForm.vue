@@ -122,6 +122,10 @@
         </v-layout>
         
 
+        <hr>
+        <PackageEditor :packages="packages"/>
+        <hr>
+
         <div cols="12" sm="6" md="3">
           <ckeditor id="editor" :editor="editor" v-model="form.info" :config="editorConfig"></ckeditor>
           <!-- <markdown-editor v-model="form.info"></markdown-editor> -->
@@ -138,7 +142,12 @@
 
 <script>
 import MyUploadAdapter from '../Helpers/MyUploadAdapter'
+import PackageEditor from './Product/PackageEditor'
+
 export default {
+  components:{
+    PackageEditor,
+  },
   props: ["product_slug"],
   watch:{
     exchange_public(value){
@@ -198,6 +207,7 @@ export default {
       file:'',
 
       location:[],
+      packages:[],
       quantityDic:{},
       payCashQuantityDict:{},
     };
@@ -276,6 +286,8 @@ export default {
                 this.payCashQuantityDict[item.location_id] = item.quantity_cash;
               });
             }
+            this.packages = res.data.packages;
+
           }
         })
         .catch(err => {
@@ -290,6 +302,7 @@ export default {
       Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
       formData.append('quantity',JSON.stringify(this.quantityDic));
       formData.append('quantity_cash',JSON.stringify(this.payCashQuantityDict));
+      formData.append('packages',JSON.stringify(this.packages));
       if(this.edit_mode){
         this.updateRequest(formData);
       }else{
