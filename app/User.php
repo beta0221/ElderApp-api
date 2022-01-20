@@ -392,6 +392,18 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
     }
 
+    /**增加紅利點數 */
+    public function increaseBonus(int $value){
+        $this->bonus += $value;
+        $this->save();
+    }
+
+    /**減少紅利點數 */
+    public function decreaseBonus(int $value){
+        $this->bonus -= $value;
+        $this->save();
+    }
+
     /**
      * 更新使用者錢包
      * @param bool $give_take 增加或減少 (INCREASE_WALLET,DECREASE_WALLET)

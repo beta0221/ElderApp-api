@@ -34,13 +34,14 @@ class CreateOrdersTable extends Migration
 
             $table->integer('total_point');
             $table->integer('total_cash');
+            $table->integer('bonus_discount')->unsigned()->default(0);
 
             $table->integer('pay_status')->default(0);
             $table->integer('ship_status')->default(0);
 
             $table->integer('platform_fee_rate')->unsigned()->nullable();
             $table->integer('organization_fee_rate')->unsigned()->nullable();
-            $table->integer('host_bonus_rate')->unsigned()->nullable();
+            $table->integer('host_bonus')->unsigned()->nullable();
 
             $table->dateTime('cloased_at')->nullable();
 

@@ -54,6 +54,7 @@ class CreateUsersTable extends Migration
             $table->date('insurance_date')->nullable();
             $table->boolean('valid')->default(false);
             $table->string('invoice')->nullable();
+            $table->integer('bonus')->unsigned()->default(0);
 
             $table->timestamps();
         });

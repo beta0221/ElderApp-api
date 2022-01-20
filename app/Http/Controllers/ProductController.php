@@ -426,7 +426,7 @@ class ProductController extends Controller
         Inventory::updateInventory($invAction);
 
         //成立訂單
-        $order = Order::insert_row($user->id,null,$request->location_id,$product,0,(int)$request->quantity);
+        $order = Order::insert_row($user->id,null,$request->location_id,$product,(int)$request->quantity);
 
         //user 扣點數
         $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order->order_numero");
@@ -445,11 +445,20 @@ class ProductController extends Controller
             'package_id'=>'required',
             'receiver_name'=>'required',
             'receiver_phone'=>'required',
-            'address'=>'required'
+            'address'=>'required',
+            'bonus_discount'=>'required'
         ]);
         $product = Product::where('slug',$slug)->firstOrFail();
         $package = $product->packages()->findOrFail($request->package_id);
         $user = $request->user();
+
+        $totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+        if($user->wallet < $totalPoint){
+            return response('樂必餘額不足，無法購買',400);
+        }
+        if($user->bonus < (int)$request->bonus_discount){
+            return response('紅利點數不足，無法下單',400);
+        }
 
         $delivery = $user->deliveries()->create($request->only([
             'receiver_name','receiver_phone','address'
@@ -460,10 +469,15 @@ class ProductController extends Controller
             $delivery->id,
             null,
             $product,
-            0,
             $package->quantity,
-            $package
+            $package,
+            (int)$request->bonus_discount
         );
+
+        //扣除紅利
+        $user->decreaseBonus((int)$request->bonus_discount);
+        //user 扣點數
+        $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order->order_numero");
 
         return response([
             's'=>1,

@@ -36,12 +36,12 @@ class Order extends Model
      * * @param Int user_id 
      * @return Order
      */
-    public static function insert_row($user_id,$order_delievery_id,$location_id,Product $product,$cash_quantity,$point_cash_quantity,ProductPackage $package = null){
+    public static function insert_row($user_id,$order_delievery_id,$location_id,Product $product,$point_cash_quantity,ProductPackage $package = null,int $bonus_discount = 0){
         
         $order_numero = rand(0,9) . time() . rand(0,9);
 
-        $total_quantity = (int)$cash_quantity + (int)$point_cash_quantity;
-        $total_cash = (int)$point_cash_quantity * $product->pay_cash_price + (int)$cash_quantity * $product->cash;
+        $total_quantity = (int)$point_cash_quantity;
+        $total_cash = (int)$point_cash_quantity * $product->pay_cash_price;
         $total_point = (int)$point_cash_quantity * $product->pay_cash_point;
 
         
@@ -52,15 +52,19 @@ class Order extends Model
 
         $platform_fee_rate = null;
         $organization_fee_rate = null;
-        $host_bonus_rate = null;
+        $host_bonus = null;
 
         if(!is_null($package)){
             $platform_fee_rate = $package->platform_fee_rate;
             $organization_fee_rate = $package->organization_fee_rate;
-            $host_bonus_rate = $package->host_bonus_rate;
+            $host_bonus = $package->price * ($package->host_bonus_rate / 100);
 
             $total_cash = $package->price;
-            $total_point = 0;
+            $total_point = $total_point / 2;
+        }
+
+        if($bonus_discount != 0){
+            $total_cash -= $bonus_discount;
         }
 
         $order = Order::create([
@@ -79,15 +83,16 @@ class Order extends Model
             //
             'point_quantity'=>0,
             'point_cash_quantity'=>$point_cash_quantity,
-            'cash_quantity'=>$cash_quantity,
+            'cash_quantity'=>0,
             'total_quantity'=>$total_quantity,
             //
             'platform_fee_rate' => $platform_fee_rate,
             'organization_fee_rate' => $organization_fee_rate,
-            'host_bonus_rate' => $host_bonus_rate,
+            'host_bonus' => $host_bonus,
             //
             'total_point'=>$total_point,
             'total_cash'=>$total_cash,
+            'bonus_discount'=>$bonus_discount,
             //
             'ship_status'=>$ship_status,
         ]);
@@ -111,6 +116,10 @@ class Order extends Model
             date_default_timezone_set('Asia/Taipei');
             $now = date('Y-m-d h:i:s');
             $data['closed_at'] = $now;
+
+            if($this->host_bonus != 0){
+                $this->user()->increaseBonus($this->host_bonus);
+            }
         }
 
         Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->update($data);
@@ -119,14 +128,29 @@ class Order extends Model
 
     /**作廢訂單 */
     public function voidOrder(){
+
+        //已結案（領取過紅利）
+        if($this->ship_status == Order::STATUS_CLOSE && !is_null($this->host_bonus)){
+            $this->user()->decreaseBonus($this->host_bonus);
+        }
+
+        //使用過紅利折扣
+        if($this->bonus_discount != 0){
+            $this->user()->increaseBonus($this->bonus_discount);
+        }
+
         $this->ship_status = Order::STATUS_VOID;
         $this->save();
-
-        $invAction = InventoryAction::getInstance($this->location_id,$this->product_id,Inventory::TARGET_CASH,Inventory::ACTION_ADD,$this->total_quantity,'系統-訂單作廢');
-        Inventory::updateInventory($invAction);
         
         $eventName = "訂單作廢：" . $this->order_numero;
         $this->user->update_wallet_with_trans(User::INCREASE_WALLET,$this->total_point,$eventName);
+
+
+        if($this->order_delievery_id){
+            return;
+        }
+        $invAction = InventoryAction::getInstance($this->location_id,$this->product_id,Inventory::TARGET_CASH,Inventory::ACTION_ADD,$this->total_quantity,'系統-訂單作廢');
+        Inventory::updateInventory($invAction);
     }
 
     public static function groupOrdersByNumero($orders){
