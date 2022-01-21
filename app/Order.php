@@ -102,14 +102,14 @@ class Order extends Model
 
     /**訂單進入下階段狀態 */
     public static function updateToNextStatus($firm_id,$order_numero){
-        $first = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->first();
-        if(!$first){
+        $order = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->first();
+        if(!$order){
             return 0;
         }
-        if($first->ship_status == Order::STATUS_CLOSE || $first->ship_status == Order::STATUS_VOID){
+        if($order->ship_status == Order::STATUS_CLOSE || $order->ship_status == Order::STATUS_VOID){
             return -1;
         }
-        $nextStatus = $first->ship_status + 1;
+        $nextStatus = $order->ship_status + 1;
         $data = ['ship_status'=>$nextStatus];
 
         if($nextStatus == Order::STATUS_CLOSE){
@@ -117,12 +117,12 @@ class Order extends Model
             $now = date('Y-m-d h:i:s');
             $data['closed_at'] = $now;
 
-            if($this->host_bonus){
-                $this->user()->increaseBonus($this->host_bonus);
+            if($order->host_bonus){
+                $order->user()->increaseBonus($order->host_bonus);
             }
         }
 
-        Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->update($data);
+        $order-update($data);
         return 1;
     }
 
