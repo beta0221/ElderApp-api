@@ -122,7 +122,7 @@ class Order extends Model
             }
         }
 
-        $order-update($data);
+        $order->update($data);
         return 1;
     }
 
