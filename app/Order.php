@@ -117,7 +117,7 @@ class Order extends Model
             $now = date('Y-m-d h:i:s');
             $data['closed_at'] = $now;
 
-            if($this->host_bonus != 0){
+            if($this->host_bonus){
                 $this->user()->increaseBonus($this->host_bonus);
             }
         }
