@@ -135,6 +135,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     });
     //AppUser
     Route::get('product/productDetail/{slug}','ProductController@showV2');
+    Route::get('product/productPackage/{slug}','ProductController@showPackage');
 
     //經銷據點
     Route::apiresource('location','LocationController');

@@ -178,6 +178,19 @@ class ProductController extends Controller
 
     }
 
+    /**App users 團購商品 detail */
+    public function showPackage($slug){
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $packages = $product->packages()->get();
+
+        $product = new ProductDetailResource($product);
+
+        return response([
+            'product'=>$product,
+            'packages'=>$packages
+        ]);
+    }
+
     /**後台用 */
     public function productDetail($slug){
         $product = Product::where('slug',$slug)->firstOrFail();

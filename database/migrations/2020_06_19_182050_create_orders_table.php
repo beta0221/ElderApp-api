@@ -43,7 +43,7 @@ class CreateOrdersTable extends Migration
             $table->integer('organization_fee_rate')->unsigned()->nullable();
             $table->integer('host_bonus')->unsigned()->nullable();
 
-            $table->dateTime('cloased_at')->nullable();
+            $table->dateTime('closed_at')->nullable();
 
             $table->timestamps();
         });
