@@ -451,6 +451,26 @@ class ProductController extends Controller
 
     }
 
+    /**計算紅利＆樂幣(準備結帳) */
+    public function caculatePackage(Request $request,$slug){
+        $this->validate($request,[
+            'package_id'=>'required'
+        ]);
+        $user = $request->user();
+        $product = Product::where('slug',$slug)->firstOrFail();
+        $package = $product->packages()->findOrFail($request->package_id);
+
+        $totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+
+        return response([
+            'bonus' => $user->bonus,
+            'total_point' => $totalPoint,
+            'receiver_name' => $user->name,
+            'receiver_phone' => $user->phone,
+            'address' => $user->address
+        ]);
+    }
+
     /**購買團購組合 */
     public function purchasePackage(Request $request,$slug){
         
