@@ -461,10 +461,14 @@ class ProductController extends Controller
         $package = $product->packages()->findOrFail($request->package_id);
 
         $totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+        $title = $product->name . '-' . $package->quantity . '組';
 
         return response([
+            'title' => $title,
+            'wallet' => $user->wallet,
             'bonus' => $user->bonus,
             'total_point' => $totalPoint,
+            'price' => $package->price,
             'receiver_name' => $user->name,
             'receiver_phone' => $user->phone,
             'address' => $user->address
