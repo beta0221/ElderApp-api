@@ -120,7 +120,7 @@ Route::group(['middleware' => ['JWT','admin']], function () {
     Route::post('purchase/{Product}','ProductController@purchase');
     Route::post('purchaseByCash/{Product}','ProductController@purchaseByCash');
     Route::get('caculatePackage/{Product}','ProductController@caculatePackage')->middleware(['JWT']);
-    Route::post('purchasePackage/{Product}','ProductController@purchasePackage');    
+    Route::post('purchasePackage/{Product}','ProductController@purchasePackage')->middleware(['JWT']);    
     
     Route::get('getAllProduct','ProductController@getAllProduct');  //舊的 版本更新後移除
     Route::get('productList','ProductController@productList');

@@ -65,6 +65,7 @@ class Order extends Model
 
         if($bonus_discount != 0){
             $total_cash -= $bonus_discount;
+            $host_bonus = $total_cash * ($package->host_bonus_rate / 100);
         }
 
         $order = Order::create([
