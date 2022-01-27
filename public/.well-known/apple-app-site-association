@@ -8,6 +8,7 @@
                     "/app/post/*",
 		            "/app/event/*",
 		            "/app/product/*",
+                    "/app/cashProduct/*"
                 ]
             }
         ]
