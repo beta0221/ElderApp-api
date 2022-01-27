@@ -12,6 +12,9 @@
 |
 */
 
+/** Line Messaging api web hook */
+Route::post('line/webhook','LineBotController@webhook');
+
 //登入的使用者------------------------
 Route::group([
     'prefix' => 'auth'
