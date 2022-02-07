@@ -171,9 +171,15 @@ class ProductController extends Controller
         $locationList = new LocationQuantityCollection($locationList);
         $locationList = $locationList->configureDict($locationDict);
 
+        $hasPackage = false;
+        if($product->packages()->count()){
+            $hasPackage = true;
+        }
+
         return response([
             'product'=>$product,
-            'locationList'=>$locationList
+            'locationList'=>$locationList,
+            'hasPackage'=>$hasPackage
         ]);
 
     }
