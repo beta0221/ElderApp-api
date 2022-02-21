@@ -53,7 +53,7 @@ class SendMoney extends Command
 
         foreach ($users as $user) {
             $this->info('user:' . $user->name . '(' . $user->id . ')');
-            AppSendMoney::dispatch($user,800,'久久重陽敬老禮金')->onQueue('sendMoney');
+            AppSendMoney::dispatch($user,800,'虎年大吉-新年紅包')->onQueue('sendMoney');
         }
 
         $this->info('from:'.$from.', to:'.$to.' (success)');
