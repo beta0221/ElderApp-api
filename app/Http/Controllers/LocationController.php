@@ -97,7 +97,10 @@ class LocationController extends Controller
         $query = $query->orderBy($p->orderBy, $p->ascOrdesc)->skip($p->skip)->take($p->rows);
 
         $user_id_array = $query->pluck('user_id');
-        $orders = $query->select(['id','user_id','product_id'])->get();
+        //$orders = $query->select(['id','user_id','product_id'])->get();
+
+        $orders = $query->select(['id','user_id','product_id'])->paginate(10);
+        $links = $orders->appends($request->all())->links();
 
         $users = User::select(['id','name','id_code'])->whereIn('id',$user_id_array)->get();
         $userDict = [];
@@ -116,6 +119,7 @@ class LocationController extends Controller
             'orders'=>$orders,
             'userDict'=>$userDict,
             'pagination'=>$p,
+            'links' => $links
         ]);
     }
 
