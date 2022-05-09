@@ -125,9 +125,9 @@ class OrderController extends Controller
             'order_numero'=>'required',
         ]);
         $user = request()->user();
-        if(!$user->hasRole('firm')){
-            return response('此操作身份必須為"廠商"',403);
-        }
+        // if(!$user->hasRole('firm')){
+        //     return response('此操作身份必須為"廠商"',403);
+        // }
 
         $result = Order::updateToNextStatus($user->id,$request->order_numero);
 
