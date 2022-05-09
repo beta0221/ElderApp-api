@@ -122,7 +122,7 @@ class Order extends Model
             $data['closed_at'] = $now;
 
             if($order->host_bonus){
-                $order->user()->increaseBonus($order->host_bonus);
+                $order->user->increaseBonus($order->host_bonus);
             }
         }
 
