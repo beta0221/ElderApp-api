@@ -103,7 +103,10 @@ class Order extends Model
 
     /**訂單進入下階段狀態 */
     public static function updateToNextStatus($firm_id,$order_numero){
-        $order = Order::where('order_numero',$order_numero)->where('firm_id',$firm_id)->first();
+        
+        $order = Order::where('order_numero',$order_numero)->first();
+            // ->where('firm_id',$firm_id)
+
         if(!$order){
             return 0;
         }
