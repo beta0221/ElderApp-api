@@ -495,10 +495,10 @@ class ProductController extends Controller
         $package = $product->packages()->findOrFail($request->package_id);
         $user = $request->user();
 
-        $totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
-        if($user->wallet < $totalPoint){
-            return response('樂必餘額不足，無法購買',400);
-        }
+        //$totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+        // if($user->wallet < $totalPoint){
+        //     return response('樂必餘額不足，無法購買',400);
+        // }
         if($user->bonus < (int)$request->bonus_discount){
             return response('紅利點數不足，無法下單',400);
         }
@@ -520,7 +520,7 @@ class ProductController extends Controller
         //扣除紅利
         $user->decreaseBonus((int)$request->bonus_discount);
         //user 扣點數
-        $user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order->order_numero");
+        //$user->update_wallet_with_trans(User::DECREASE_WALLET,$totalPoint,"訂單：$order->order_numero");
 
         return response([
             's'=>1,

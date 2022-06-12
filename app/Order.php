@@ -60,7 +60,8 @@ class Order extends Model
             $host_bonus = $package->price * ($package->host_bonus_rate / 100);
 
             $total_cash = $package->price;
-            $total_point = $total_point / 2;
+            //$total_point = $total_point / 2;
+            $total_point = 0;
         }
 
         if($bonus_discount != 0){
