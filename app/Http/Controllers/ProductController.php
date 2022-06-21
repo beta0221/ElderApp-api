@@ -466,7 +466,9 @@ class ProductController extends Controller
         $product = Product::where('slug',$slug)->firstOrFail();
         $package = $product->packages()->findOrFail($request->package_id);
 
-        $totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+        //$totalPoint = (($package->quantity * $product->pay_cash_point) / 2);
+        $totalPoint = 0;
+
         $title = $product->name . '-' . $package->quantity . '組';
 
         return response([
