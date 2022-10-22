@@ -758,7 +758,7 @@ class EventController extends Controller
             ]);
         }
         
-        if($event->slug != "A1639630603"){
+        if($event->slug != "A1666366159"){
             if(!$event->isParticipated($user_id)){
                 return response()->json([
                     's'=>0,
@@ -825,7 +825,7 @@ class EventController extends Controller
             ]);
         }
 
-        if($event->slug != "A1639630603"){
+        if($event->slug != "A1666366159"){
             if(!$event->isParticipated($user->id)){
                 return response()->json([
                     's'=>0,
