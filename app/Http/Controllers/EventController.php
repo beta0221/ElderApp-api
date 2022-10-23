@@ -758,14 +758,14 @@ class EventController extends Controller
             ]);
         }
         
-        if($event->slug != "A1666366159"){
+        // if($event->slug != "A1666366159"){
             if(!$event->isParticipated($user_id)){
                 return response()->json([
                     's'=>0,
                     'm'=>'非常抱歉，您不在此活動的參加人員名單中'
                 ]);
             }
-        }
+        // }
 
         switch ($event->event_type) {
             case Event::TYPE_FREQUENTLY:
@@ -825,14 +825,14 @@ class EventController extends Controller
             ]);
         }
 
-        if($event->slug != "A1666366159"){
+        // if($event->slug != "A1666366159"){
             if(!$event->isParticipated($user->id)){
                 return response()->json([
                     's'=>0,
                     'm'=>'非常抱歉，您不在此活動的參加人員名單中'
                 ]);
             }
-        }
+        // }
 
         switch ($event->event_type) {
             case Event::TYPE_FREQUENTLY:
