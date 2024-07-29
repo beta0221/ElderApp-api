@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Mail;
 
 class MemberController extends Controller
 {
@@ -37,6 +38,9 @@ class MemberController extends Controller
             'memberGroupMembers_list',
             'memberGroupMembers',
             'getAllAssociation',
+            'delete_view',
+            'delete_accepted_view',
+            'delete_request'
         ]]);
         $this->middleware('webAuth:admin', ['only' => ['memberGroupMembers','memberGroupMembers_list']]);
     }
@@ -1058,6 +1062,51 @@ class MemberController extends Controller
         return response()->json($groupLeader);
     }
     
+    /**
+     * 刪除資料 delete page
+     */
+    public function delete_view() {
+        return view('member.delete');
+    }
+
+    /**
+     * 收到刪除請求 page
+     */
+    public function delete_accepted_view() {
+        return view('member.deleteAccepted');
+    }
+
+    /**
+     * 送出 delete 自料請求
+     */
+    public function delete_request(Request $request) {
+
+        $request->validate([
+            'email' => 'required',
+            'name' => 'required',
+            'phone' => 'required',
+            'birthdate'=>'required'
+        ]);
+        
+        $data = [
+            'email' => $request->email,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'birthdate'=> $request->birthdate
+        ];
+
+        Mail::send('emails.messageNotification',
+            $data,
+            function($message) {
+                $message->from('hello@example.com','銀髮學院');
+                $message->to('beta0221@gmail.com');
+                $message->subject('刪除使用者請求');
+            }
+        );
+        
+        return redirect('/member/delete/accepted');
+    }
+
 }
 
 

@@ -31,6 +31,9 @@ Route::get('/member/join','MemberController@create');
 Route::post('/member/join','MemberController@store');
 Route::get('/member/welcome','MemberController@welcome');
 Route::get('/member_tree/{id_code}','MemberController@memberTree');
+Route::get('/member/delete', 'MemberController@delete_view');
+Route::get('/member/delete/accepted', 'MemberController@delete_accepted_view');
+Route::post('/member/delete', 'MemberController@delete_request');
 
 Route::get('/memberGroupMembers','MemberController@memberGroupMembers');
 Route::get('/memberGroupMembers_list','MemberController@memberGroupMembers_list');
