@@ -110,6 +110,30 @@
             border-radius: 0.25rem;
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+        .danger-btn{
+            cursor: pointer;
+            margin-top: .5rem !important;
+            margin-bottom: .5rem !important;
+            display: block;
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
 
     </style>
 </head>
@@ -130,6 +154,7 @@
                 <p class="data-name"></p>
                 <hr>
                 <div class="primary-btn" onclick="moveMember()">移動組員</div>
+                <div class="danger-btn" onclick="removeMemberFromGroup()">刪除組員</div>
                 <p>手機：</p>
                 <p class="p-data data-phone"></p>
                 <p>推薦人：</p>
@@ -144,6 +169,12 @@
             
             <div class="user-detail-cancel" onclick="cancel()">關閉</div>
         </div>
+
+        <form style="display:none" id="action-form" action="/removeMemberFromGroup?app=true" method="POST">
+            {{ csrf_field() }}
+            <input id="token-input" type="text" name="token">
+            <input id="user-id-input" type="test" name="user_id">
+        </form>
     </div>
 
     <div style="background: #007bff;width:99.5%;text-align:center;border-radius: 3px">
@@ -245,6 +276,15 @@
     function moveMember(){
         if(!detailUserId){ return; }
         window.location.href = '/moveMemberPage/' + detailUserId + '?app=true';
+    }
+
+    function removeMemberFromGroup() {
+        if(!detailUserId){ return; }
+        if(!confirm('確定將此使用者從組織移除')){ return; }
+
+        $('#user-id-input').val(detailUserId);
+        $('#token-input').val(localStorage.getItem('token'));
+        $('#action-form').submit();
     }
 
     function showUserDetail(user_id){

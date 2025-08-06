@@ -433,16 +433,29 @@ class MemberController extends Controller
      */
     public function removeMemberFromGroup(Request $request){
         //user_id
-        if(!$user = User::find($request->user_id)){
+        if(!$removeUser = User::find($request->user_id)){
             Session::flash('error', '查無使用者');
             return redirect()->back();
         }
-        if($user->isPrimaryLeaderOfGroup()){
+        if($removeUser->isPrimaryLeaderOfGroup()){
             Session::flash('error', '無法將組織所有者刪除');
             return redirect()->back();
         }
 
-        if(!$result = $user->removeMemberFromGroup()){
+        if($request->app) { // N User 自行刪除
+            $user = $request->user();
+            if ($user->groupLevel() < 2) { //刪除者 大天使以下
+                Session::flash('error', '權限不足');
+                return redirect()->back();
+            }
+
+            if ($removeUser->groupLevel() >= 2) { //被刪除者 大天使以上
+                Session::flash('error', '無法進行此操作');
+                return redirect()->back();
+            }
+        }
+
+        if(!$result = $removeUser->removeMemberFromGroup()){
             Session::flash('error', '系統錯誤');
             return redirect()->back();
         }
