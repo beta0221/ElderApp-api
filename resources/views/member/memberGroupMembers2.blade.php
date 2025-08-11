@@ -134,7 +134,19 @@
             border-radius: 0.25rem;
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
-
+        .alert-box{
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border:1px solid gray;
+            border-radius: .3rem;
+            min-width: 240px;
+            width: 80%;
+            padding: 24px;
+            z-index: 20;
+        }
     </style>
 </head>
 
@@ -146,6 +158,19 @@
         <div style="background:limegreen" class="session-card">{{Session::get('success')}}</div>
     @endif
 
+    <div class="alert-box confirm" style="display: none">
+        <div>
+            <h3>確定將此使用者從組織移除?</h3>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+            <div style="padding: 4px 24px" class="primary-btn" onclick="cancelRemoveMemberFromGroup()">
+                取消
+            </div>
+            <div style="padding: 4px 24px" class="danger-btn" onclick="removeMemberFromGroup()">
+                確定
+            </div>
+        </div>
+    </div>
 
     <div class="user-detail" style="display: none">
         <div class="user-detail-content">
@@ -154,7 +179,7 @@
                 <p class="data-name"></p>
                 <hr>
                 <div class="primary-btn" onclick="moveMember()">移動組員</div>
-                <div class="danger-btn" onclick="removeMemberFromGroup()">刪除組員</div>
+                <div class="danger-btn" onclick="confirmRemoveMemberFromGroup()">刪除組員</div>
                 <p>手機：</p>
                 <p class="p-data data-phone"></p>
                 <p>推薦人：</p>
@@ -278,9 +303,18 @@
         window.location.href = '/moveMemberPage/' + detailUserId + '?app=true';
     }
 
+
+    function confirmRemoveMemberFromGroup() {
+        $('.confirm').show();
+    }
+
+    function cancelRemoveMemberFromGroup() {
+        $('.confirm').hide();
+    }
+
     function removeMemberFromGroup() {
         if(!detailUserId){ return; }
-        if(!confirm('確定將此使用者從組織移除')){ return; }
+        // if(!confirm('確定將此使用者從組織移除')){ return; }
 
         $('#user-id-input').val(detailUserId);
         $('#token-input').val(localStorage.getItem('token'));
