@@ -296,6 +296,7 @@
 
     function cancel(){
         $('.user-detail').hide();
+        cancelRemoveMemberFromGroup();
     }
 
     function moveMember(){
