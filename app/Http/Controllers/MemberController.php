@@ -35,6 +35,7 @@ class MemberController extends Controller
             'moveMember',
             'promoteLeader',
             'updateMemberLevel',
+            'removeMemberFromGroupFromWeb',
             'memberGroupMembers_list',
             'memberGroupMembers',
             'getAllAssociation',
@@ -427,7 +428,6 @@ class MemberController extends Controller
         ]);
 
     }
-
     /**
      *把使用者從組織中移除 
      */
@@ -462,6 +462,34 @@ class MemberController extends Controller
         Session::flash('success', '完成');
         return redirect()->back();
 
+    }
+
+    public function removeMemberFromGroupFromWeb(Request $request) {
+        //user_id
+        if(!$removeUser = User::find($request->user_id)){
+            return response()->json(['error' => '查無使用者'], 404);
+        }
+        
+        if($removeUser->isPrimaryLeaderOfGroup()){
+            return response()->json(['error' => '無法將組織所有者刪除'], 400);
+        }
+
+        if($request->app) { // N User 自行刪除
+            $user = $request->user();
+            if ($user->groupLevel() < 2) { //刪除者 大天使以下
+                return response()->json(['error' => '權限不足'], 403);
+            }
+
+            if ($removeUser->groupLevel() >= 2) { //被刪除者 大天使以上
+                return response()->json(['error' => '無法進行此操作'], 403);
+            }
+        }
+
+        if(!$result = $removeUser->removeMemberFromGroup()){
+            return response()->json(['error' => '系統錯誤'], 500);
+        }
+        
+        return response()->json(['message' => '完成'], 200);
     }
 
     /**

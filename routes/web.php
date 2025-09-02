@@ -41,6 +41,7 @@ Route::get('/excel/memberGroupMembers','MemberController@excel_memberGroupMember
 
 Route::get('getGroupMemberDetail/{id}','MemberController@getMemberDetail')->middleware('JWT');
 Route::post('/removeMemberFromGroup','MemberController@removeMemberFromGroup');
+Route::post('/web/removeMemberFromGroup','MemberController@removeMemberFromGroupFromWeb')->middleware('webAuth');
 Route::get('/moveMemberPage/{user_id}','MemberController@moveMemberPage');
 Route::post('/moveMember/{user_id}','MemberController@moveMember');
 Route::get('/sendGroupRewardPage/{user_id}','MemberController@sendGroupRewardPage');

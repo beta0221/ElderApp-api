@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>組織人員</title>
     <style>
@@ -147,6 +148,47 @@
             padding: 24px;
             z-index: 20;
         }
+        .custom-alert{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-alert-content{
+            background: #fff;
+            border-radius: .3rem;
+            padding: 24px;
+            min-width: 280px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .custom-alert-message{
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .custom-alert-btn{
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: .25rem;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .custom-alert-btn:hover{
+            background: #0056b3;
+        }
     </style>
 </head>
 
@@ -157,6 +199,14 @@
     @if(Session::has('success'))
         <div style="background:limegreen" class="session-card">{{Session::get('success')}}</div>
     @endif
+
+    <!-- Custom Alert -->
+    <div class="custom-alert" id="custom-alert" style="display: none">
+        <div class="custom-alert-content">
+            <div class="custom-alert-message" id="alert-message"></div>
+            <button class="custom-alert-btn" onclick="hideAlert()">確定</button>
+        </div>
+    </div>
 
     <div class="alert-box confirm" style="display: none">
         <div>
@@ -195,11 +245,6 @@
             <div class="user-detail-cancel" onclick="cancel()">關閉</div>
         </div>
 
-        <form style="display:none" id="action-form" action="/removeMemberFromGroup?app=true" method="POST">
-            {{ csrf_field() }}
-            <input id="token-input" type="text" name="token">
-            <input id="user-id-input" type="test" name="user_id">
-        </form>
     </div>
 
     <div style="background: #007bff;width:99.5%;text-align:center;border-radius: 3px">
@@ -313,13 +358,45 @@
         $('.confirm').hide();
     }
 
-    function removeMemberFromGroup() {
-        if(!detailUserId){ return; }
-        // if(!confirm('確定將此使用者從組織移除')){ return; }
+    function showAlert(message) {
+        $('#alert-message').text(message);
+        $('#custom-alert').show();
+    }
 
-        $('#user-id-input').val(detailUserId);
-        $('#token-input').val(localStorage.getItem('token'));
-        $('#action-form').submit();
+    function hideAlert() {
+        $('#custom-alert').hide();
+    }
+
+    function getTokenFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('token');
+    }
+
+    function removeMemberFromGroup() {
+        if(!detailUserId){ 
+            return; 
+        }
+        
+        var csrf_token = $('meta[name="csrf-token"]').attr('content');
+        
+        $.ajax({
+            type: "POST",
+            url: "/web/removeMemberFromGroup?app=true",
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            data: {
+                user_id: detailUserId
+            },
+            success: function(response) {
+                $('.user-detail').hide();
+                $('.confirm').hide();
+                location.reload();
+            },
+            error: function(xhr) {
+                showAlert(xhr.responseText);
+            }
+        });
     }
 
     function showUserDetail(user_id){
