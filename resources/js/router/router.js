@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Token from '../Helpers/Token'
+import AppStorage from '../Helpers/AppStorage'
 
 Vue.use(VueRouter)
 
@@ -23,33 +25,55 @@ import associationEventPage from '../components/associationComponents/Associatio
 
 
 const routes = [
-    {path:'/dashboard', component: Dashboard},
-    {path:'/member', component: MemberTable},
-    {path:'/event', component: EventPage},
-    {path:'/login',name:'login',component: Login,props:true},
-    {path:'/newEvent',component:newEventForm},
-    {path:'/editEvent/:event_slug',component:newEventForm,props:true},
-    {path:'/product', component: ProductTable},
-    {path:'/productForm', component: ProductDetailForm},
-    {path:'/productForm/:product_slug', component: ProductDetailForm,props:true},
-    {path:'/order', component: OrderTable},
-    {path:'/transaction', component: TransTable},
-    {path:'/sendMoney', component: SendMoneyTable},
-    {path:'/location', component: LocationTable},
-    {path:'/insurance', component: InsurancePage},
-    {path:'/clinic', component: ClinicPage},
-    {path:'/clinicLog', component: ClinicLogPage},
-    //
-    {path:'/association/admin', component: associationMemberTable},
-    {path:'/association/member', component: associationMemberTable},
-    {path:'/association/event', component: associationEventPage}
+    {path:'/dashboard', component: Dashboard, meta:{requiresAuth:true}},
+    {path:'/member', component: MemberTable, meta:{requiresAuth:true}},
+    {path:'/event', component: EventPage, meta:{requiresAuth:true}},
+    {path:'/login', name:'login', component: Login, props:true},
+    {path:'/newEvent', component:newEventForm, meta:{requiresAuth:true}},
+    {path:'/editEvent/:event_slug', component:newEventForm, props:true, meta:{requiresAuth:true}},
+    {path:'/product', component: ProductTable, meta:{requiresAuth:true}},
+    {path:'/productForm', component: ProductDetailForm, meta:{requiresAuth:true}},
+    {path:'/productForm/:product_slug', component: ProductDetailForm, props:true, meta:{requiresAuth:true}},
+    {path:'/order', component: OrderTable, meta:{requiresAuth:true}},
+    {path:'/transaction', component: TransTable, meta:{requiresAuth:true}},
+    {path:'/sendMoney', component: SendMoneyTable, meta:{requiresAuth:true}},
+    {path:'/location', component: LocationTable, meta:{requiresAuth:true}},
+    {path:'/insurance', component: InsurancePage, meta:{requiresAuth:true}},
+    {path:'/clinic', component: ClinicPage, meta:{requiresAuth:true}},
+    {path:'/clinicLog', component: ClinicLogPage, meta:{requiresAuth:true}},
+    {path:'/association/admin', component: associationMemberTable, meta:{requiresAuth:true}},
+    {path:'/association/member', component: associationMemberTable, meta:{requiresAuth:true}},
+    {path:'/association/event', component: associationEventPage, meta:{requiresAuth:true}},
+    // 所有未匹配路由（含 /app 入口）導向 /member，由守衛接手驗證
+    {path:'*', redirect:'/member'},
 ]
 
 
 const router = new VueRouter({
-    routes,//short for routes:routes,
+    routes,
     hashbang:false,
     mode:'history',
+})
+
+function isLoggedIn() {
+    const token = AppStorage.getToken()
+    return token && Token.isValid(token)
+}
+
+router.beforeEach((to, from, next) => {
+    if (!to.meta.requiresAuth) {
+        // 已登入卻訪問 /login，直接進 /member
+        if (to.name === 'login' && isLoggedIn()) {
+            return next({ path: '/member' })
+        }
+        return next()
+    }
+
+    if (!isLoggedIn()) {
+        return next({ name: 'login', params: { from_url: to.fullPath } })
+    }
+
+    next()
 })
 
 export default router
