@@ -2,111 +2,73 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ElderApp API - Laravel 5.8 Application
-
-This is a Laravel 5.8 API backend for an elder care application with Vue.js frontend components and JWT authentication.
+## ElderApp API — Laravel 5.8 Backend
 
 ### Development Commands
 
-**Backend (PHP/Laravel):**
 ```bash
-# Install dependencies
-composer install
-
-# Start development server
-php artisan serve
-
-# Run database migrations
+# Backend
+php artisan serve          # Local API at http://localhost:8000
 php artisan migrate
-
-# Seed database
 php artisan db:seed
-
-# Clear application cache
 php artisan cache:clear
 
-# Generate application key
-php artisan key:generate
-
-# Run tests
+# Run all tests
 ./vendor/bin/phpunit
-# or
-php artisan test
+# Run a single test file
+./vendor/bin/phpunit tests/Feature/ExampleTest.php
+
+# Frontend (Vue.js admin panel)
+npm run dev        # one-time build
+npm run watch      # rebuild on change
+npm run production # minified build
 ```
 
-**Frontend (Node.js/Vue.js):**
-```bash
-# Install dependencies
-npm install
+### Architecture
 
-# Development build with watch
-npm run dev
-npm run watch
+**Two separate apps in one repo:**
+- `routes/api.php` — JSON API consumed by iOS/Android mobile clients
+- `routes/web.php` + `resources/js/` — Vue.js admin panel (SPA) served from the same Laravel app
 
-# Production build
-npm run production
+**Authentication layers:**
+- Mobile API: `middleware: ['JWT']` (tymon/jwt-auth) — token parsed in `app/Http/Middleware/JWT.php`; token sent as `Authorization: Bearer <token>`
+- Admin web panel: `middleware: ['webAuth']` — session-based; login at `/web_admin_login_page`
+- `middleware: ['JWT','admin']` guards admin-only API endpoints; `admin` resolves to `CheckAdmin` middleware which accepts roles: `admin`, `employee`, `accountant`, `local_admin`
+- `role:accountant` (via `RoleMiddleware`) gates specific endpoints to a single role
+- `FirmAndAdmin` middleware additionally allows `firm` role
 
-# Development with hot reload
-npm run hot
-```
+**Member hierarchy (`user_group` table):**
+Users belong to groups with 5 levels stored as columns `lv_1`…`lv_5` on the `user_group` row:
+- `lv_1` 主人, `lv_2` 小天使, `lv_3` 大天使, `lv_4` 守護天使, `lv_5` 領航天使
 
-### Architecture Overview
+`User::groupLevel()` reads the user's level from `user_group`. Group logic (joining, promoting, moving members) lives in `app/User.php`.
 
-**Core Structure:**
-- **Laravel 5.8** backend API with **JWT authentication** (tymon/jwt-auth)
-- **Vue.js 2.6** frontend with **Vuetify 1.5** UI framework
-- **MySQL** database with Eloquent ORM
-- **Redis** support for caching and sessions
-- **Laravel Mix** for asset compilation
+**Routing convention:** Many models use `slug` as the route key (`getRouteKeyName()` returns `'slug'`). Events and Products are identified by slug in URLs. Users are identified by `id_code`.
 
-**Key Models & Features:**
-- User management with role-based permissions (admin, member roles)
-- Multi-level member hierarchy with inviter relationships
-- Event management system with certificates and frequency tracking
-- E-commerce functionality (products, orders, cart, inventory)
-- Clinic and location management
-- Insurance integration
-- LINE Bot webhook integration
-- Image upload and processing with Intervention Image
-- Excel export capabilities
+**Dual API versions:** Several Event and Product endpoints exist in two versions. Old `v1` routes are marked with comments `//舊的 版本更新後移除` (old, remove after version update). Prefer the `v2` routes (e.g. `event/eventList`, `event/eventDetail/{slug}`) for new work.
 
-**API Architecture:**
-- RESTful API endpoints in `routes/api.php`
-- JWT middleware for authentication (`middleware: ['JWT']`)
-- Role-based access control (`middleware: ['admin']`, `role:accountant`)
-- Organized controller structure with dedicated controllers for each feature
+**Frontend structure (`resources/js/`):**
+- `app.js` — admin panel entry; `supplierApp.js` — supplier/location panel entry
+- `Helpers/User.js` — manages login, JWT storage in `localStorage`, role checking
+- `Helpers/AppStorage.js` — wraps `localStorage` for token/role/username
+- `router/router.js` — Vue Router config
+- Components are organized by domain under `components/` (Member, Event, Product, Order, Clinic, Location, Insurance, Dashboard)
 
-**Database:**
-- Comprehensive migration system
-- Models with established relationships
-- Transaction logging for payment history
-- Event-user association tracking
+**Excel exports:** `app/Exports/` contains Maatwebsite Excel export classes for orders, members, clinic bills, insurance, and inventory.
 
-**Frontend Integration:**
-- Vue Router for SPA navigation
-- CKEditor for rich text editing
-- FontAwesome icons
-- Bootstrap 4 styling with Vuetify components
+**Image uploads:** Handled by `ImageController` + `app/Helpers/ImageResizer.php`; uploaded images are stored and tracked in `UploadEventBodyImageLog` / `UploadProductInfoImageLog` models.
 
-### Key Configuration Files
+**LINE integration:** LINE Bot webhook at `POST /api/line/webhook` (`LineBotController`). LINE Login via `AuthController@line_login`. LINE account binding at `/api/auth/bind_lineAccount`.
 
-- `config/jwt.php` - JWT authentication settings
-- `config/database.php` - Database connections
-- `phpunit.xml` - Test configuration
-- `.env.example` - Environment variables template
-- `webpack.mix.js` - Asset compilation settings
+### Key Files
 
-### Testing
-
-Tests are configured with PHPUnit and located in:
-- `tests/Unit/` - Unit tests
-- `tests/Feature/` - Feature/integration tests
-
-### Important Notes
-
-- Uses PHP 7.1+ requirements
-- JWT tokens for API authentication
-- Multi-language support (Chinese comments indicate Taiwan/Chinese market)
-- Image processing and upload capabilities
-- Excel export functionality for data management
-- Role-based permission system with granular access control
+| File | Purpose |
+|------|---------|
+| `routes/api.php` | All mobile API routes |
+| `routes/web.php` | Admin web panel routes |
+| `app/User.php` | User model + group hierarchy logic |
+| `app/Http/Middleware/CheckAdmin.php` | Defines which roles count as "admin" |
+| `app/Http/Controllers/MemberController.php` | Largest controller — member CRUD, group management, Excel export |
+| `app/Http/Controllers/EventController.php` | Event lifecycle, certificate issuance, manager assignment |
+| `app/Http/Controllers/ProductController.php` | Products, inventory, purchasing, packages |
+| `app/Helpers/ControllerTrait.php` | `resizeHtmlImg()` — used in controllers that store CKEditor HTML |

@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      target: app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./storage:/var/www/html/storage          # logs, sessions, cache
+      - public_images:/var/www/html/public/images # uploaded user/event images
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - elderapp
+
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - public_images:/var/www/html/public/images:ro
+    depends_on:
+      - app
+    networks:
+      - elderapp
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_DATABASE:-elderapp}
+      MYSQL_USER: ${DB_USERNAME:-elderapp}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - elderapp
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - elderapp
+
+volumes:
+  mysql_data:
+  public_images:    # persistent uploaded images shared between app & web
+
+networks:
+  elderapp:
+    driver: bridge
