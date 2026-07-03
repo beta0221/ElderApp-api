@@ -12,6 +12,10 @@ services:
       - vendor_data:/var/www/html/vendor # 保留 image 裡編譯好的 vendor
       - ./storage:/var/www/html/storage
 
+  db:
+    ports:
+      - "3307:3306"
+
   web:
     volumes:
       - ./public:/var/www/html/public:ro          # Nginx 從 host 讀取編譯產物
